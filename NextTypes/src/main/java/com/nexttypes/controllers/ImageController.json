@@ -1,0 +1,16 @@
+{
+	"resize": {
+		"width": {
+			"type": "int32",
+			"precision": 32,
+			"scale": 0,
+			"not_null": true
+		},
+		"height": {
+			"type": "int32",
+			"precision": 32,
+			"scale": 0,
+			"not_null": true
+		}
+	}
+}

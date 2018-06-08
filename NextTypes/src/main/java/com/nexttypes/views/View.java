@@ -1,0 +1,213 @@
+/*
+ * Copyright 2015-2018 Alejandro Sánchez <alex@nexttypes.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.nexttypes.views;
+
+import java.time.Month;
+import java.time.Year;
+import java.util.LinkedHashMap;
+
+import com.nexttypes.datatypes.Content;
+import com.nexttypes.datatypes.FieldReference;
+import com.nexttypes.enums.Format;
+import com.nexttypes.enums.NodeMode;
+import com.nexttypes.enums.Order;
+import com.nexttypes.exceptions.NotFoundException;
+import com.nexttypes.exceptions.NotImplementedException;
+import com.nexttypes.exceptions.UnauthorizedActionException;
+import com.nexttypes.interfaces.Module;
+import com.nexttypes.interfaces.Node;
+import com.nexttypes.protocol.http.HTTPRequest;
+import com.nexttypes.protocol.http.HTTPStatus;
+import com.nexttypes.settings.Settings;
+import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.TypeSettings;
+import com.nexttypes.system.Constants;
+import com.nexttypes.system.Context;
+import com.nexttypes.system.Loader;
+
+public abstract class View implements Module, AutoCloseable {
+
+	protected Context context;
+	protected HTTPRequest request;
+	protected Node nextNode;
+	protected Settings settings;
+	protected TypeSettings typeSettings;
+	protected Strings strings;
+	protected String user;
+	protected String[] groups;
+
+	public View() {
+
+	}
+
+	public View(HTTPRequest request, String settings) {
+		this.request = request;
+		this.context = request.getContext();
+		this.settings = context.getSettings(settings);
+
+		nextNode = Loader.loadNode(this.settings.getString(Constants.NEXT_NODE), request, NodeMode.READ);
+
+		typeSettings = request.getTypeSettings();
+		strings = request.getStrings();
+
+		user = request.getUser();
+		groups = request.getGroups();
+	}
+
+	public Content notFound(String type, String lang, String view, NotFoundException e) {
+		return new Content(e.getMessage(request.getStrings()), Format.TEXT, HTTPStatus.NOT_FOUND);
+	}
+
+	public Content unauthorized(String type, String lang, String view, UnauthorizedActionException e) {
+		return new Content(e.getMessage(request.getStrings()), Format.TEXT, HTTPStatus.UNAUTHORIZED);
+	}
+
+	public Node getNextNode() {
+		return nextNode;
+	}
+
+	@Override
+	public void close() {
+		if (nextNode != null) {
+			nextNode.close();
+		}
+	}
+
+	@Override
+	public String getUser() {
+		return request.getUser();
+	}
+
+	@Override
+	public String[] getGroups() {
+		return request.getGroups();
+	}
+
+	@Override
+	public void setUser(String user) {
+		this.user = user;
+		nextNode.setUser(user);
+	}
+
+	@Override
+	public void setGroups(String[] groups) {
+		this.groups = groups;
+		nextNode.setGroups(groups);
+	}
+
+	@Override
+	public Context getContext() {
+		return request.getContext();
+	}
+
+	@Override
+	public Strings getStrings() {
+		return request.getStrings();
+	}
+
+	@Override
+	public TypeSettings getTypeSettings() {
+		return typeSettings;
+	}
+
+	public Content getTypesName(String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content getTypesInfo(String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content getType(String type, String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content get(String type, String id, String lang, String view, String etag) {
+		throw new NotImplementedException();
+	}
+
+	public Content getReferences(String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content select(String type, String lang, String view, FieldReference ref, String search,
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean component) {
+		throw new NotImplementedException();
+	}
+
+	public Content preview(String type, String lang, String view, FieldReference ref, String search,
+			LinkedHashMap<String, Order> order, Long offset, Long limit) {
+		throw new NotImplementedException();
+	}
+
+	public Content calendar(String type, String lang, String view, FieldReference ref, Year year, Month month) {
+		throw new NotImplementedException();
+	}
+
+	public Content createForm(String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content alterForm(String type, String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content insertForm(String type, String lang, String view, FieldReference ref) {
+		throw new NotImplementedException();
+	}
+
+	public Content updateForm(String type, String id, String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content executeActionForm(String type, String id, String action, String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content getField(String type, String id, String field, String etag) {
+		throw new NotImplementedException();
+	}
+
+	public Content getElement(String type, String id, String field, String element, String lang, String view,
+			String etag) {
+		throw new NotImplementedException();
+	}
+
+	public Content updateIdForm(String type, String id, String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content importTypesForm(String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content importObjectsForm(String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content updatePasswordForm(String type, String id, String field, String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content loginForm(String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content renameForm(String type, String lang, String view) {
+		throw new NotImplementedException();
+	}
+}

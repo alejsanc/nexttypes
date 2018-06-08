@@ -1,0 +1,31 @@
+[
+	{
+		"title": "control_panel",
+		"anchors": [
+			{
+				"text": "login",
+				"href": "/?form=login"
+			},
+			{
+				"text": "types",
+				"href": "/?info"
+			},
+			{
+				"text": "create_type",
+				"href": "/?form=create"
+			},
+			{
+				"text": "import_types",
+				"href": "/?form=import_types"
+			},
+			{
+				"text": "import_objects",
+				"href": "/?form=import_objects"
+			},
+			{
+				"text": "references",
+				"href": "/?references"
+			}
+		]
+	}
+]

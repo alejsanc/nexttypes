@@ -1,0 +1,469 @@
+{
+	"date": "2015-09-14T12:13:11.124Z",
+	"types": {
+		"group": {
+			"name": "group",
+			"cdate": "2015-06-24T17:40:03Z",
+			"adate": "2015-06-24T17:40:03Z",
+			"fields": {
+				
+			},
+			"indexes": {
+				
+			}
+		},
+		"language": {
+			"name": "language",
+			"cdate": "2015-06-24T17:40:03Z",
+			"adate": "2015-06-24T17:40:03Z",
+			"fields": {
+				
+			},
+			"indexes": {
+				
+			}
+		},
+		"language_language": {
+			"name": "language_language",
+			"cdate": "2015-06-24T17:40:03Z",
+			"adate": "2015-06-24T17:40:03Z",
+			"fields": {
+				"name": {
+					"type": "string",
+					"length": 250,
+					"not_null": true
+				},
+				"language": {
+					"type": "language",
+					"length": 100,
+					"not_null": true
+				},
+				"translation": {
+					"type": "language",
+					"length": 100,
+					"not_null": true
+				}
+			},
+			"indexes": {
+				"language_language_index": {
+					"mode": "unique",
+					"fields": [
+						"language",
+						"translation"
+					]
+				}
+			}
+		},
+		"user": {
+			"name": "user",
+			"cdate": "2015-06-24T17:40:03Z",
+			"adate": "2015-06-24T17:40:03Z",
+			"fields": {
+				"first_name": {
+					"type": "string",
+					"length": 250,
+					"not_null": true
+				},
+				"second_name": {
+					"type": "string",
+					"length": 250,
+					"not_null": true
+				},
+				"timezone": {
+					"type": "timezone",
+					"length": 250,
+					"not_null": true
+				},
+				"email": {
+					"type": "email",
+					"length": 250,
+					"not_null": true
+				},
+				"password": {
+					"type": "password",
+					"length": 60,
+					"not_null": false
+				}
+			},
+			"indexes": {
+				"user_email_index": {
+					"mode": "unique",
+					"fields": [
+						"email"
+					]
+				}
+			}
+		},
+		"group_user": {
+			"name": "group_user",
+			"cdate": "2015-06-24T17:40:03Z",
+			"adate": "2015-06-24T17:40:03Z",
+			"fields": {
+				"group": {
+					"type": "group",
+					"length": 100,
+					"not_null": true
+				},
+				"user": {
+					"type": "user",
+					"length": 100,
+					"not_null": true
+				}
+			},
+			"indexes": {
+				"group_user_index": {
+					"mode": "unique",
+					"fields": [
+						"group",
+						"user"
+					]
+				}
+			}
+		},
+		"group_language": {
+			"name": "group_language",
+			"cdate": "2015-06-24T17:40:03Z",
+			"adate": "2015-06-24T17:40:03Z",
+			"fields": {
+				"group": {
+					"type": "group",
+					"length": 100,
+					"not_null": true
+				},
+				"language": {
+					"type": "language",
+					"length": 100,
+					"not_null": true
+				},
+				"name": {
+					"type": "string",
+					"length": 250,
+					"not_null": true
+				},
+				"description": {
+					"type": "text",
+					"not_null": true
+				}
+			},
+			"indexes": {
+				"group_language_index": {
+					"mode": "unique",
+					"fields": [
+						"group",
+						"language"
+					]
+				}
+			}
+		},
+		"user_certificate": {
+			"name": "user_certificate",
+			"cdate": "2015-06-24T17:40:03Z",
+			"adate": "2015-06-24T17:40:03Z",
+			"fields": {
+				"user": {
+					"type": "user",
+					"length": 100,
+					"not_null": true
+				},
+				"certificate_subject": {
+					"type": "string",
+					"length": 250,
+					"not_null": true
+				}
+			},
+			"indexes": {
+				"user_certificate_subject_index": {
+					"mode": "unique",
+					"fields": [
+						"certificate_subject"
+					]
+				}
+			}
+		}
+	},
+	"objects": {
+		"language": {
+			"count": 2,
+			"items": [
+				{
+					"type": "language",
+					"id": "en",
+					"name": "English",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						
+					}
+				},
+				{
+					"type": "language",
+					"id": "es",
+					"name": "Spanish",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						
+					}
+				}
+			]
+		},
+		"language_language": {
+			"count": 4,
+			"items": [
+				{
+					"type": "language_language",
+					"id": "en-es",
+					"name": "en-es",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"name": "Inglés",
+						"language": {
+							"id": "en",
+							"name": "English"
+						},
+						"translation": {
+							"id": "es",
+							"name": "Spanish"
+						}
+					}
+				},
+				{
+					"type": "language_language",
+					"id": "es-en",
+					"name": "es-en",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"name": "Spanish",
+						"language": {
+							"id": "es",
+							"name": "Spanish"
+						},
+						"translation": {
+							"id": "en",
+							"name": "English"
+						}
+					}
+				},
+				{
+					"type": "language_language",
+					"id": "es-es",
+					"name": "es-es",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"name": "Español",
+						"language": {
+							"id": "es",
+							"name": "Spanish"
+						},
+						"translation": {
+							"id": "es",
+							"name": "Spanish"
+						}
+					}
+				},
+				{
+					"type": "language_language",
+					"id": "en-en",
+					"name": "en-en",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"name": "English",
+						"language": {
+							"id": "en",
+							"name": "English"
+						},
+						"translation": {
+							"id": "en",
+							"name": "English"
+						}
+					}
+				}
+			]
+		},
+		"group": {
+			"count": 2,
+			"items": [
+				{
+					"type": "group",
+					"id": "administrators",
+					"name": "Administrators",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						
+					}
+				},
+				{
+					"type": "group",
+					"id": "users",
+					"name": "Users",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						
+					}
+				}
+			]
+		},
+		"user": {
+			"count": 1,
+			"items": [
+				{
+					"type": "user",
+					"id": "admin",
+					"name": "Admin Admin (admin)",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"first_name": "Admin",
+						"second_name": "Admin",
+						"timezone": "UTC",
+						"email": "admin@example.com",
+						"password": "$2y$12$TFhXz5DvNAl0/jUg7hd56eLT52bZXiuBsDrapQ1Tm8LDaB7qaO3o6"
+					}
+				}
+			]
+		},
+		"group_user": {
+			"count": 1,
+			"items": [
+				{
+					"type": "group_user",
+					"id": "administrators-admin",
+					"name": "administrators-admin",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"group": {
+							"id": "administrators",
+							"name": "Administrators"
+						},
+						"user": {
+							"id": "admin",
+							"name": "Admin Admin (admin)"
+						}
+					}
+				}
+			]
+		},
+		"group_language": {
+			"count": 4,
+			"items": [
+				{
+					"type": "group_language",
+					"id": "administrators-en",
+					"name": "administrators-en",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"group": {
+							"id": "administrators",
+							"name": "Administrators"
+						},
+						"language": {
+							"id": "en",
+							"name": "English"
+						},
+						"name": "Administrators",
+						"description": "Administrators"
+					}
+				},
+				{
+					"type": "group_language",
+					"id": "administrators-es",
+					"name": "administrators-es",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"group": {
+							"id": "administrators",
+							"name": "Administrators"
+						},
+						"language": {
+							"id": "es",
+							"name": "Spanish"
+						},
+						"name": "Administradores",
+						"description": "Administradores"
+					}
+				},
+				{
+					"type": "group_language",
+					"id": "users-en",
+					"name": "users-en",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"group": {
+							"id": "users",
+							"name": "Users"
+						},
+						"language": {
+							"id": "en",
+							"name": "English"
+						},
+						"name": "Users",
+						"description": "Users"
+					}
+				},
+				{
+					"type": "group_language",
+					"id": "users-es",
+					"name": "users-es",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"group": {
+							"id": "users",
+							"name": "Users"
+						},
+						"language": {
+							"id": "es",
+							"name": "Spanish"
+						},
+						"name": "Usuarios",
+						"description": "Usuarios"
+					}
+				}
+			]
+		},
+		"user_certificate": {
+			"count": 1,
+			"items": [
+				{
+					"type": "user_certificate",
+					"id": "admin-certificate",
+					"name": "admin-certificate",
+					"cdate": "2015-06-24T17:40:03Z",
+					"udate": "2015-06-24T17:40:03Z",
+					"backup": false,
+					"fields": {
+						"user": {
+							"id": "admin",
+							"name": "Admin Admin (admin)"
+						},
+						"certificate_subject": "CN=Admin,O=NextTypes"
+					}
+				}
+			]
+		}
+	}
+}

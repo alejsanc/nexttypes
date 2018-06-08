@@ -1,0 +1,130 @@
+/*
+ * Copyright 2015-2018 Alejandro Sánchez <alex@nexttypes.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.nexttypes.datatypes;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.Random;
+
+import com.nexttypes.exceptions.NXException;
+import com.nexttypes.system.Constants;
+
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.ComponentList;
+import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.CalendarComponent;
+import net.fortuna.ical4j.model.component.VEvent;
+import net.fortuna.ical4j.model.property.Attach;
+import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.util.UidGenerator;
+
+public class ICalendar {
+
+	protected Calendar calendar;
+
+	public ICalendar(String uri, Tuple... events) {
+		calendar = new Calendar();
+		calendar.getProperties().add(new ProdId(Constants.NEXTTYPES));
+		calendar.getProperties().add(Version.VERSION_2_0);
+		calendar.getProperties().add(CalScale.GREGORIAN);
+
+		Random random = new Random();
+
+		try {
+			for (Tuple event : events) {
+				String id = event.getString(Constants.ID);
+				String summary = event.getString(Constants.SUMMARY);
+				String startDate = event.getString(Constants.START_DATE);
+				String endDate = event.getString(Constants.END_DATE);
+				String description = event.getString(Constants.DESCRIPTION);
+
+				DateTime startDatetime = new DateTime(startDate, Constants.DATETIME_FORMAT, null);
+
+				VEvent vevent = null;
+
+				if (endDate == null) {
+					vevent = new VEvent(startDatetime, summary);
+				} else {
+					DateTime endDatetime = new DateTime(endDate, Constants.DATETIME_FORMAT, null);
+					vevent = new VEvent(startDatetime, endDatetime, summary);
+				}
+
+				if (description != null) {
+					vevent.getProperties().add(new Description(description));
+				}
+
+				vevent.getProperties().add(new Attach(new URI(uri + id)));
+
+				UidGenerator ug = new UidGenerator(String.valueOf(random.nextInt()));
+				vevent.getProperties().add(ug.generateUid());
+
+				calendar.getComponents().add(vevent);
+			}
+
+			calendar.validate();
+
+		} catch (ParseException | URISyntaxException | SocketException e) {
+			throw new NXException(e);
+		}
+	}
+
+	public ICalendar(byte[] data) {
+		try {
+			CalendarBuilder builder = new CalendarBuilder();
+			calendar = builder.build(new ByteArrayInputStream(data));
+			calendar.validate();
+		} catch (ParserException | IOException e) {
+			throw new NXException(e);
+		}
+	}
+
+	public Calendar getCalendar() {
+		return calendar;
+	}
+
+	public VEvent getFirstEvent() {
+		VEvent event = null;
+
+		ComponentList<CalendarComponent> components = calendar.getComponents();
+
+		for (CalendarComponent component : components) {
+			if (component instanceof VEvent) {
+				event = (VEvent) component;
+			}
+		}
+
+		return event;
+	}
+
+	public ComponentList<CalendarComponent> getComponents() {
+		return calendar.getComponents();
+	}
+
+	@Override
+	public String toString() {
+		return calendar.toString();
+	}
+}

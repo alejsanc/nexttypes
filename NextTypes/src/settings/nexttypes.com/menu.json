@@ -1,0 +1,42 @@
+[{
+	"title" : "project",
+	"anchors" : [ {
+		"text" : "home",
+		"href" : "/article/home"
+	}, {
+		"text" : "system",
+		"href" : "/article/system"
+	}, {
+	    "text" : "software",
+        "href" : "/software/nexttypes"
+
+	}, {
+		"text" : "installation",
+		"href" : "/article/installation"
+	}, {
+		"text" : "api",
+		"href" : "/static/doc/index.html"
+	}, {
+		"text" : "contact",
+		"href" : "/user"
+	} ]
+},
+{
+	"title" : "control_panel",
+	"anchors" : [ {
+		"text" : "types",
+		"href" : "/?info"
+	}, {
+		"text" : "create_type",
+		"href" : "/?form=create"
+	}, {
+		"text" : "import_types",
+		"href" : "/?form=import_types"
+	}, {
+		"text" : "import_objects",
+		"href" : "/?form=import_objects"
+	}, {
+		"text" : "references",
+		"href" : "/?references"
+	} ]
+}]

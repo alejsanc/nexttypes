@@ -1,0 +1,130 @@
+{
+	"try": {
+		"int16": {
+			"type": "int16",
+			"precision": 16,
+			"scale": 0,
+			"not_null": false
+		},
+		"int32": {
+			"type": "int32",
+			"precision": 32,
+			"scale": 0,
+			"not_null": false
+		},
+		"int64": {
+			"type": "int64",
+			"precision": 64,
+			"scale": 0,
+			"not_null": false
+		},
+		"float32": {
+			"type": "float32",
+			"precision": 24,
+			"not_null": false
+		},
+		"float64": {
+			"type": "float64",
+			"precision": 53,
+			"not_null": false
+		},
+		"numeric": {
+			"type": "numeric",
+			"precision": 10,
+			"scale": 2,
+			"not_null": false
+		},
+		"boolean": {
+			"type": "boolean",
+			"not_null": false
+		},
+		"string": {
+			"type": "string",
+			"length": 250,
+			"not_null": false
+		},
+		"text": {
+			"type": "text",
+			"not_null": false
+		},
+		"html": {
+			"type": "html",
+			"not_null": false
+		},
+		"json": {
+			"type": "json",
+			"not_null": false
+		},
+		"xml": {
+			"type": "xml",
+			"not_null": false
+		},
+		"uri": {
+			"type": "uri",
+			"length": 250,
+			"not_null": false
+		},
+		"email": {
+			"type": "email",
+			"length": 250,
+			"not_null": false
+		},
+		"tel": {
+			"type": "tel",
+			"length": 250,
+			"not_null": false
+		},
+		"date": {
+			"type": "date",
+			"not_null": false
+		},
+		"time": {
+			"type": "time",
+			"not_null": false
+		},
+		"datetime": {
+			"type": "datetime",
+			"not_null": false
+		},
+		"timezone": {
+			"type": "timezone",
+			"length": 50,
+			"not_null": false
+		},
+		"color": {
+			"type": "color",
+			"length": 7,
+			"not_null": false
+		},
+		"binary": {
+			"type": "binary",
+			"not_null": false
+		},
+		"image": {
+			"type": "image",
+			"not_null": false
+		},
+		"audio": {
+			"type": "audio",
+			"not_null": false
+		},
+		"video": {
+			"type": "video",
+			"not_null": false
+		},
+		"document": {
+			"type": "document",
+			"not_null": false
+		},
+		"password": {
+			"type": "password",
+			"length": 60,
+			"not_null": false
+		},
+		"article": {
+			"type": "article",
+			"length": 100,
+			"not_null": false
+		}
+	}
+}
