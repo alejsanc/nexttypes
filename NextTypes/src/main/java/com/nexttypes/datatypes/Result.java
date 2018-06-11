@@ -33,21 +33,24 @@ public abstract class Result {
 
 	public Result(Long count, Long offset, Long limit, Long minLimit, Long maxLimit, Long limitIncrement) {
 		this.count = count;
-		this.offset = offset;
-		this.limit = limit;
-		this.minLimit = minLimit;
-		this.maxLimit = maxLimit;
-		this.limitIncrement = limitIncrement;
 
-		long limits = count / limitIncrement;
-		long lastLimit = count % limitIncrement == 0 ? limits * limitIncrement : (limits + 1) * limitIncrement;
+		if (count > 0) {
+			this.offset = offset;
+			this.limit = limit;
+			this.minLimit = minLimit;
+			this.maxLimit = maxLimit;
+			this.limitIncrement = limitIncrement;
 
-		if (limit > lastLimit) {
-			this.limit = lastLimit;
-		}
+			long limits = count / limitIncrement;
+			long lastLimit = count % limitIncrement == 0 ? limits * limitIncrement : (limits + 1) * limitIncrement;
 
-		if (maxLimit > lastLimit) {
-			this.maxLimit = lastLimit;
+			if (limit > lastLimit) {
+				this.limit = lastLimit;
+			}
+
+			if (maxLimit > lastLimit) {
+				this.maxLimit = lastLimit;
+			}
 		}
 	}
 
