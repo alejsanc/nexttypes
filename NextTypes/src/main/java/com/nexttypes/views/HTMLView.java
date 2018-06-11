@@ -272,11 +272,16 @@ public class HTMLView extends View {
 		String dropIndex = strings.getActionName(type, Action.DROP_INDEX);
 		String dropField = strings.getActionName(type, Action.DROP_FIELD);
 
-		Element typeForm = form(type, lang, view).setClass(UNLOAD_CONFIRMATION)
-				.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF).setAttribute(DATA_STRINGS_FIELDS, fields)
-				.setAttribute(DATA_STRINGS_TYPE, typeString).setAttribute(DATA_STRINGS_NAME, name)
-				.setAttribute(DATA_STRINGS_PARAMETERS, parameters).setAttribute(DATA_STRINGS_NOT_NULL, notNull)
-				.setAttribute(DATA_STRINGS_MODE, mode).setAttribute(DATA_STRINGS_DROP_FIELD, dropField)
+		Element typeForm = form(type, lang, view)
+				.setClass(UNLOAD_CONFIRMATION)
+				.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
+				.setAttribute(DATA_STRINGS_FIELDS, fields)
+				.setAttribute(DATA_STRINGS_TYPE, typeString)
+				.setAttribute(DATA_STRINGS_NAME, name)
+				.setAttribute(DATA_STRINGS_PARAMETERS, parameters)
+				.setAttribute(DATA_STRINGS_NOT_NULL, notNull)
+				.setAttribute(DATA_STRINGS_MODE, mode)
+				.setAttribute(DATA_STRINGS_DROP_FIELD, dropField)
 				.setAttribute(DATA_STRINGS_DROP_INDEX, dropIndex);
 
 		String typeName = strings.gts(Constants.TYPE_NAME);
@@ -287,9 +292,9 @@ public class HTMLView extends View {
 			typeForm.appendElement(iconAnchor(strings.getActionName(type, Action.RENAME),
 					uri(type, lang, view) + formParam(Action.RENAME), Icon.PENCIL));
 		} else {
-			typeForm.appendElement(
-					input(HTML.TEXT, Constants.TYPE, typeName).setAttribute(HTML.SIZE, "" + Type.MAX_TYPE_NAME_LENGTH)
-							.setAttribute(HTML.MAXLENGTH, "" + Type.MAX_TYPE_NAME_LENGTH));
+			typeForm.appendElement(input(HTML.TEXT, Constants.TYPE, typeName)
+					.setAttribute(HTML.SIZE, Type.MAX_TYPE_NAME_LENGTH)
+					.setAttribute(HTML.MAXLENGTH, Type.MAX_TYPE_NAME_LENGTH));
 		}
 
 		String addFieldActionName = strings.getActionName(type, Action.ADD_FIELD);
@@ -344,7 +349,8 @@ public class HTMLView extends View {
 		typeForm.appendElement(HTML.H2).appendText(strings.gts(type, Constants.INDEXES) + ":");
 		typeForm.appendElement(HTML.P).appendElement(button(addIndexActionName, null, Icon.PLUS, ADD_INDEX));
 
-		Element indexesTable = typeForm.appendElement(HTML.TABLE).setAttribute(HTML.ID, Constants.INDEXES);
+		Element indexesTable = typeForm.appendElement(HTML.TABLE)
+				.setAttribute(HTML.ID, Constants.INDEXES);
 
 		Element indexesHeader = indexesTable.appendElement(HTML.TR);
 		indexesHeader.appendElement(HTML.TH).appendText(mode);
@@ -495,7 +501,7 @@ public class HTMLView extends View {
 
 			row.appendElement(HTML.TD).appendText(strings.getIdsName(type));
 			row.appendElement(HTML.TD).appendElement(objectSelect(Constants.IDS, Constants.IDS, null, type, true, lang)
-					.setAttribute(HTML.MULTIPLE, HTML.MULTIPLE).setAttribute(HTML.SIZE, size));
+					.setAttribute(HTML.MULTIPLE).setAttribute(HTML.SIZE, size));
 		}
 
 		for (Map.Entry<String, TypeField> entry : fields.entrySet()) {
@@ -1011,7 +1017,7 @@ public class HTMLView extends View {
 
 			row.appendElement(HTML.TD).appendText(strings.getIdName(type));
 			row.appendElement(HTML.TD).appendElement(
-					input(HTML.TEXT, Constants.ID).setAttribute(HTML.MAXLENGTH, "" + Type.MAX_ID_LENGTH));
+					input(HTML.TEXT, Constants.ID).setAttribute(HTML.MAXLENGTH, Type.MAX_ID_LENGTH));
 		}
 
 		for (Entry<String, TypeField> entry : typeFields.entrySet()) {
@@ -1461,13 +1467,13 @@ public class HTMLView extends View {
 	public Element passwordInput(String type, String field, String title) {
 		Element input = document.createElement(HTML.SPAN);
 
-		input.appendElement(input(HTML.PASSWORD, field, title)).setAttribute(HTML.MAXLENGTH,
-				Security.BCRYPT_MAX_PASSWORD_LENGTH + "");
+		input.appendElement(input(HTML.PASSWORD, field, title))
+			.setAttribute(HTML.MAXLENGTH, Security.BCRYPT_MAX_PASSWORD_LENGTH);
 
 		input.appendText(strings.gts(type, Constants.REPEAT) + ": ");
 
-		input.appendElement(input(HTML.PASSWORD, field + Constants._REPEAT, title)).setAttribute(HTML.MAXLENGTH,
-				Security.BCRYPT_MAX_PASSWORD_LENGTH + "");
+		input.appendElement(input(HTML.PASSWORD, field + Constants._REPEAT, title))
+			.setAttribute(HTML.MAXLENGTH, Security.BCRYPT_MAX_PASSWORD_LENGTH);
 
 		return input;
 	}
@@ -1540,8 +1546,8 @@ public class HTMLView extends View {
 	}
 
 	public Element input(String inputType, String name, String title, Object value) {
-		Element input = document.createElement(HTML.INPUT).setAttribute(HTML.TYPE, inputType).setAttribute(HTML.NAME,
-				name);
+		Element input = document.createElement(HTML.INPUT).setAttribute(HTML.TYPE, inputType)
+				.setAttribute(HTML.NAME, name);
 
 		if (title == null) {
 			title = name;
@@ -1604,7 +1610,7 @@ public class HTMLView extends View {
 
 	public void setRequired(Element input, TypeField typeField) {
 		if (typeField.isNotNull()) {
-			input.setAttribute(HTML.REQUIRED, HTML.REQUIRED);
+			input.setAttribute(HTML.REQUIRED);
 		}
 	}
 
@@ -1635,8 +1641,8 @@ public class HTMLView extends View {
 	}
 
 	public Element textareaInput(String type, String field, String title, Object text, String fieldType) {
-		Element textarea = document.createElement(HTML.TEXTAREA).setAttribute(HTML.NAME, field).setAttribute(HTML.TITLE,
-				title);
+		Element textarea = document.createElement(HTML.TEXTAREA).setAttribute(HTML.NAME, field)
+				.setAttribute(HTML.TITLE, title);
 
 		if (text != null) {
 			textarea.appendText(text.toString());
@@ -1684,8 +1690,8 @@ public class HTMLView extends View {
 	public Element objectSelect(String field, String title, Object value, String fieldType, boolean notNull,
 			String lang) {
 
-		Element select = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, field).setAttribute(HTML.TITLE,
-				title);
+		Element select = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, field)
+				.setAttribute(HTML.TITLE, title);
 
 		if (!notNull) {
 			select.appendElement(HTML.OPTION);
@@ -1704,7 +1710,7 @@ public class HTMLView extends View {
 
 			Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, id);
 			if (id.equals(fieldId)) {
-				option.setAttribute(HTML.SELECTED, HTML.SELECTED);
+				option.setAttribute(HTML.SELECTED);
 			}
 			option.appendText(name);
 		}
@@ -1727,7 +1733,7 @@ public class HTMLView extends View {
 			Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, timezoneId)
 					.appendText(offset + " - " + timezoneId);
 			if (timezone.equals(selectedTimezone)) {
-				option.setAttribute(HTML.SELECTED, HTML.SELECTED);
+				option.setAttribute(HTML.SELECTED);
 			}
 		});
 
@@ -1761,10 +1767,11 @@ public class HTMLView extends View {
 		select.setAttribute(HTML.TITLE, title);
 
 		for (String value : values) {
-			Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, value).appendText(value);
+			Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, value)
+					.appendText(value);
 
 			if (value.equals(selectedValue)) {
-				option.setAttribute(HTML.SELECTED, HTML.SELECTED);
+				option.setAttribute(HTML.SELECTED);
 			}
 		}
 
@@ -1780,7 +1787,8 @@ public class HTMLView extends View {
 	}
 
 	public Element colorOutput(Object color) {
-		return document.createElement(HTML.SPAN).setAttribute(HTML.STYLE, HTML.BACKGROUND_COLOR + ": " + color)
+		return document.createElement(HTML.SPAN)
+				.setAttribute(HTML.STYLE, HTML.BACKGROUND_COLOR + ": " + color)
 				.appendText(color.toString());
 	}
 
@@ -1839,8 +1847,8 @@ public class HTMLView extends View {
 		}
 
 		cell.appendElement(selectTableAnchor(fieldName + orderLinkString, type, lang, view, ref, search, orderParameter,
-				offset, limit, component).setClass(SELECT_HEADER_ANCHOR).setAttribute(DATA_MULTI_ORDER,
-						multiOrderParameter.toString()));
+				offset, limit, component).setClass(SELECT_HEADER_ANCHOR)
+				.setAttribute(DATA_MULTI_ORDER,	multiOrderParameter.toString()));
 
 		return cell;
 	}
@@ -1861,8 +1869,7 @@ public class HTMLView extends View {
 		String orderParameter = orderParam(order);
 
 		Element form = form(type, lang, view).setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
-				.setAttribute(DATA_URI,
-						request.getURIRoot()
+				.setAttribute(DATA_URI, request.getURIRoot()
 								+ selectTableURI(type, lang, view, ref, search, orderParameter, offset, limit))
 				.setAttribute(DATA_STRINGS_OBJECTS_DELETE_CONFIRMATION,
 						strings.gts(type, Constants.OBJECTS_DELETE_CONFIRMATION));
@@ -1906,8 +1913,8 @@ public class HTMLView extends View {
 			}
 
 			Element cell = tableRow.appendElement(HTML.TD);
-			cell.appendElement(HTML.A).appendText(idString).setAttribute(HTML.HREF,
-					uri(object.getType(), object.getId(), lang, view));
+			cell.appendElement(HTML.A).appendText(idString)
+				.setAttribute(HTML.HREF, uri(object.getType(), object.getId(), lang, view));
 
 			for (Map.Entry<String, Object> entry : object.getFields().entrySet()) {
 				String field = entry.getKey();
@@ -2121,7 +2128,7 @@ public class HTMLView extends View {
 		for (Long x = minLimit; x <= maxLimit; x += limitIncrement) {
 			Element option = select.appendElement(HTML.OPTION).appendText(x);
 			if (x == limit) {
-				option.setAttribute(HTML.SELECTED, HTML.SELECTED);
+				option.setAttribute(HTML.SELECTED);
 			}
 		}
 
@@ -2276,7 +2283,8 @@ public class HTMLView extends View {
 	public Element referenceAnchor(String fieldType, Object value, String lang, String view) {
 		ObjectReference reference = (ObjectReference) value;
 		Element anchor = document.createElement(HTML.A)
-				.setAttribute(HTML.HREF, uri(fieldType, reference.getId(), lang, view)).appendText(reference.getName());
+				.setAttribute(HTML.HREF, uri(fieldType, reference.getId(), lang, view))
+				.appendText(reference.getName());
 		return anchor;
 	}
 
@@ -2313,8 +2321,9 @@ public class HTMLView extends View {
 		Element fieldElement = null;
 
 		if (value != null) {
-			fieldElement = document.createElement(fieldType).setAttribute(HTML.SRC, "/" + type + "/" + id + "/" + field)
-					.setAttribute(HTML.CONTROLS, HTML.CONTROLS);
+			fieldElement = document.createElement(fieldType)
+					.setAttribute(HTML.SRC, "/" + type + "/" + id + "/" + field)
+					.setAttribute(HTML.CONTROLS);
 		} else {
 			fieldElement = document.createElement(HTML.SPAN);
 		}
@@ -2453,7 +2462,7 @@ public class HTMLView extends View {
 		}
 
 		if (!request.isSecure()) {
-			button.setAttribute(HTML.DISABLED, HTML.DISABLED);
+			button.setAttribute(HTML.DISABLED);
 		}
 
 		return button;
@@ -2551,10 +2560,10 @@ public class HTMLView extends View {
 	public Element booleanOutput(Object value) {
 		Element input = document.createElement(HTML.INPUT)
 				.setAttribute(HTML.TYPE, HTML.CHECKBOX)
-				.setAttribute(HTML.DISABLED, HTML.DISABLED);
+				.setAttribute(HTML.DISABLED);
 
 		if (value != null && (boolean) value) {
-			input.setAttribute(HTML.CHECKED, HTML.CHECKED);
+			input.setAttribute(HTML.CHECKED);
 		}
 
 		return input;
@@ -2564,7 +2573,7 @@ public class HTMLView extends View {
 		Element input = input(HTML.CHECKBOX, name, title);
 
 		if (value) {
-			input.setAttribute(HTML.CHECKED, HTML.CHECKED);
+			input.setAttribute(HTML.CHECKED);
 		}
 
 		return input;
@@ -2576,7 +2585,7 @@ public class HTMLView extends View {
 		Element input = span.appendElement(input(HTML.CHECKBOX, field, title, Constants.TRUE));
 
 		if (value != null && (boolean) value) {
-			input.setAttribute(HTML.CHECKED, HTML.CHECKED);
+			input.setAttribute(HTML.CHECKED);
 		}
 
 		span.appendElement(input(HTML.HIDDEN, field, title, Constants.FALSE));
@@ -2746,22 +2755,23 @@ public class HTMLView extends View {
 		if (head != null) {
 			head.appendElement(HTML.META).setAttribute(HTML.CHARSET, Constants.UTF_8_CHARSET);
 
-			head.appendElement(HTML.META).setAttribute(HTML.NAME, HTML.VIEWPORT).setAttribute(HTML.CONTENT,
-					"width=device-width, initial-scale=1");
+			head.appendElement(HTML.META).setAttribute(HTML.NAME, HTML.VIEWPORT)
+				.setAttribute(HTML.CONTENT, "width=device-width, initial-scale=1");
 
 			String description = strings.gts(type, Constants.DESCRIPTION);
 			if (description != null) {
-				head.appendElement(HTML.META).setAttribute(HTML.NAME, HTML.DESCRIPTION).setAttribute(HTML.CONTENT,
-						description);
+				head.appendElement(HTML.META).setAttribute(HTML.NAME, HTML.DESCRIPTION)
+					.setAttribute(HTML.CONTENT, description);
 			}
 
 			head.appendElement(HTML.SCRIPT).setAttribute(HTML.SRC, "/static/javascript/nexttypes.js");
 
-			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET).setAttribute(HTML.TYPE, "text/css")
-					.setAttribute(HTML.HREF, typeSettings.gts(type, Constants.STYLE));
+			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET)
+				.setAttribute(HTML.TYPE, "text/css")
+				.setAttribute(HTML.HREF, typeSettings.gts(type, Constants.STYLE));
 
-			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.SHORTCUT_ICON).setAttribute(HTML.HREF,
-					"/static/images/logo.ico");
+			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.SHORTCUT_ICON)
+				.setAttribute(HTML.HREF, "/static/images/logo.ico");
 		}
 	}
 
@@ -2806,10 +2816,11 @@ public class HTMLView extends View {
 					String id = entry.getKey();
 					String name = (String) entry.getValue();
 
-					Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, id).appendText(name);
+					Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, id)
+							.appendText(name);
 
 					if (id.equals(lang)) {
-						option.setAttribute(HTML.SELECTED, HTML.SELECTED);
+						option.setAttribute(HTML.SELECTED);
 					}
 				}
 			}
@@ -2857,7 +2868,8 @@ public class HTMLView extends View {
 				form.appendElement(input(HTML.HIDDEN, Constants.VIEW, null, view));
 				form.appendElement(input(HTML.SEARCH, Constants.SEARCH, null, search));
 
-				form.appendElement(document.createElement(HTML.BUTTON).setAttribute(HTML.TYPE, HTML.SUBMIT)
+				form.appendElement(document.createElement(HTML.BUTTON)
+						.setAttribute(HTML.TYPE, HTML.SUBMIT)
 						.appendText(strings.gts(type, Constants.SEARCH)));
 			}
 		}
@@ -2920,17 +2932,20 @@ public class HTMLView extends View {
 
 	public void textEditor() {
 		if (head != null) {
-			head.appendElement(HTML.SCRIPT).setAttribute(HTML.SRC, "/static/lib/codemirror/lib/codemirror.js");
+			head.appendElement(HTML.SCRIPT)
+				.setAttribute(HTML.SRC, "/static/lib/codemirror/lib/codemirror.js");
 
-			head.appendElement(HTML.SCRIPT).setAttribute(HTML.SRC, "/static/lib/tinymce/js/tinymce/tinymce.min.js");
+			head.appendElement(HTML.SCRIPT)
+				.setAttribute(HTML.SRC, "/static/lib/tinymce/js/tinymce/tinymce.min.js");
 
 			head.appendElement(HTML.SCRIPT).setAttribute(HTML.SRC, "/static/javascript/texteditors.js");
 
-			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET).setAttribute(HTML.TYPE, "text/css")
-					.setAttribute(HTML.HREF, "/static/lib/codemirror/lib/codemirror.css");
+			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET)
+				.setAttribute(HTML.TYPE, "text/css")
+				.setAttribute(HTML.HREF, "/static/lib/codemirror/lib/codemirror.css");
 
-			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET).setAttribute(HTML.HREF,
-					"/static/styles/codemirror.css");
+			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET)
+				.setAttribute(HTML.HREF, "/static/styles/codemirror.css");
 		}
 	}
 
@@ -2939,8 +2954,8 @@ public class HTMLView extends View {
 			mode = JAVASCRIPT;
 		}
 
-		return document.createElement(HTML.SCRIPT).setAttribute(HTML.SRC,
-				"/static/lib/codemirror/mode/" + mode + "/" + mode + ".js");
+		return document.createElement(HTML.SCRIPT)
+				.setAttribute(HTML.SRC, "/static/lib/codemirror/mode/" + mode + "/" + mode + ".js");
 	}
 
 	public void images() {
@@ -3028,7 +3043,8 @@ public class HTMLView extends View {
 
 		if (rssSelect != null && head != null) {
 			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.ALTERNATE)
-					.setAttribute(HTML.TYPE, Format.RSS.getContentType()).setAttribute(HTML.TITLE, RSS)
+					.setAttribute(HTML.TYPE, Format.RSS.getContentType())
+					.setAttribute(HTML.TITLE, RSS)
 					.setAttribute(HTML.HREF, uri(type, lang, Constants.RSS));
 		}
 	}
@@ -3160,21 +3176,23 @@ public class HTMLView extends View {
 
 		Element yearSelect = navigator.appendElement(HTML.SELECT).setClass(YEARS);
 		for (int year = date.minusYears(10).getYear(); year <= date.plusYears(10).getYear(); year++) {
-			Element option = yearSelect.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, year).appendText(year);
+			Element option = yearSelect.appendElement(HTML.OPTION)
+					.setAttribute(HTML.VALUE, year).appendText(year);
 
 			if (year == currentYear) {
-				option.setAttribute(HTML.SELECTED, HTML.SELECTED);
+				option.setAttribute(HTML.SELECTED);
 			}
 
 		}
 
 		Element monthSelect = navigator.appendElement(HTML.SELECT).setClass(MONTHS);
 		for (Month month : Month.values()) {
-			Element option = monthSelect.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, month.getValue())
+			Element option = monthSelect.appendElement(HTML.OPTION)
+					.setAttribute(HTML.VALUE, month.getValue())
 					.appendText(month.getDisplayName(TextStyle.FULL, locale));
 
 			if (month.equals(currentMonth)) {
-				option.setAttribute(HTML.SELECTED, HTML.SELECTED);
+				option.setAttribute(HTML.SELECTED);
 			}
 
 		}
@@ -3222,8 +3240,8 @@ public class HTMLView extends View {
 	}
 
 	public Element event(String type, String lang, String view, Tuple event) {
-		Element div = document.createElement(HTML.DIV).setAttribute(HTML.STYLE,
-				HTML.BACKGROUND_COLOR + ": " + event.getColor(Constants.COLOR));
+		Element div = document.createElement(HTML.DIV)
+				.setAttribute(HTML.STYLE, HTML.BACKGROUND_COLOR + ": " + event.getColor(Constants.COLOR));
 
 		div.appendElement(anchor(event.getTime(Constants.START_TIME) + " " + event.getString(Constants.SUMMARY),
 				uri(type, event.getString(Constants.ID), lang, view)));
