@@ -142,8 +142,8 @@ public class ArticleView extends HTMLView {
 			String uri = uri(type, id, lang, view);
 
 			Element article = main.appendElement(HTML.DIV).setClass(Constants.PREVIEW);
-			article.appendElement(
-					imageAnchor(title, uri, tuple.getString(IMAGE_TYPE), tuple.getString(IMAGE_ID), IMAGE));
+			article.appendElement(imageAnchor(title, uri, tuple.getString(Constants.IMAGE_TYPE),
+					tuple.getString(Constants.IMAGE_ID), IMAGE));
 			article.appendElement(time(tuple.getDatetime(Constants.CDATE)));
 			article.appendElement(HTML.H2).appendText(title);
 			article.appendElement(HTML.P).appendText(tuple.getHTMLText(Constants.TEXT) + " ... ")
@@ -164,12 +164,12 @@ public class ArticleView extends HTMLView {
 			Map<String, List<Element>> anchorsById = Stream.of(anchors)
 					.collect(Collectors.groupingBy(anchor -> anchor.getAttribute(DATA_ID)));
 
-			String sql = "select id, link from # where id in(?)";
+			String sql = "select id, href from # where id in(?)";
 			Tuple[] tuples = nextNode.query(sql, type, anchorsById.keySet().toArray());
 
 			for (Tuple tuple : tuples) {
 				for (Element anchor : anchorsById.get(tuple.getString(Constants.ID))) {
-					anchor.setAttribute(HTML.HREF, tuple.getString(LINK));
+					anchor.setAttribute(HTML.HREF, tuple.getString(HTML.HREF));
 				}
 			}
 		}

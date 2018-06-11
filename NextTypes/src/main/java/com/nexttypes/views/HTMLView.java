@@ -96,11 +96,14 @@ import com.nexttypes.system.Utils;
 
 public class HTMLView extends View {
 
+	//Strings
 	public static final String RSS = "RSS";
 	public static final String ICALENDAR = "iCalendar";
-
-	public static final String LINK = "link";
-
+	public static final String HTML5 = "HTML5";
+	public static final String CSS = "CSS";
+	public static final String WCAG = "WCAG";
+		
+	//Data Strings Attributes
 	public static final String DATA_STRINGS_ACCEPT = "data-strings-accept";
 	public static final String DATA_STRINGS_CANCEL = "data-strings-cancel";
 	public static final String DATA_STRINGS_FIELDS = "data-strings-fields";
@@ -114,6 +117,7 @@ public class HTMLView extends View {
 	public static final String DATA_STRINGS_TYPES_DROP_CONFIRMATION = "data-strings-types-drop-confirmation";
 	public static final String DATA_STRINGS_OBJECTS_DELETE_CONFIRMATION = "data-strings-objects-delete-confirmation";
 
+	//Data Attributes
 	public static final String DATA_EDITOR = "data-editor";
 	public static final String DATA_SHOW_PROGRESS = "data-show-progress";
 	public static final String DATA_MULTI_ORDER = "data-multi-order";
@@ -121,7 +125,14 @@ public class HTMLView extends View {
 	public static final String DATA_ID = "data-id";
 	public static final String DATA_LANG = "data-lang";
 	public static final String DATA_COMPONENT = "data-component";
+	
+	//Elements
+	public static final String USER_NAME = "user-name";
+	public static final String LOGOUT_BUTTON = "logout-button";
+	public static final String TYPE_MENU = "type-menu";
+	public static final String VALIDATORS = "validators";
 
+	//Classes
 	public static final String SELECT_HEADER = "select-header";
 	public static final String SELECT_HEADER_ANCHOR = "select-header-anchor";
 	public static final String SELECT_MENU = "select-menu";
@@ -133,19 +144,13 @@ public class HTMLView extends View {
 	public static final String DELETE_ROW = "delete-row";
 	public static final String SUBMIT_FORM = "submit-form";
 	public static final String CLEAR = "clear";
-	public static final String ALL = "all";
 	public static final String ALL_CHECKBOX = "all-checkbox";
 	public static final String ITEM_CHECKBOX = "item-checkbox";
 	public static final String MENU_TITLE = "menu-title";
-	public static final String QRCODE = "qrcode";
-	public static final String TYPE_MENU = "type-menu";
-	public static final String USER_NAME = "user-name";
-	public static final String LOGOUT_BUTTON = "logout-button";
 	public static final String REFERENCE_FIELD = "reference-field";
 	public static final String BINARY_SIZE = "binary-size";
 	public static final String SMALL_TEXTAREA = "small-textarea";
 	public static final String MEDIUM_TEXTAREA = "medium-textarea";
-	public static final String BACKGROUND_COLOR = "background-color";
 	public static final String ORDER_COLUMN = "order-column";
 	public static final String EXPORT_BUTTON = "export-button";
 	public static final String SELECTED_OFFSET = "selected-offset";
@@ -153,7 +158,6 @@ public class HTMLView extends View {
 	public static final String FIELD_OUTPUT = "field-output";
 	public static final String ICON = "icon";
 	public static final String SMALL_ICON = "small-icon";
-	public static final String OUTPUT = "output";
 	public static final String IMAGE = "image";
 	public static final String CALENDAR = "calendar";
 	public static final String CALENDAR_DAY = "calendar-day";
@@ -161,24 +165,11 @@ public class HTMLView extends View {
 	public static final String YEARS = "years";
 	public static final String MONTHS = "months";
 
+	//Text Editor Modes
 	public static final String JSON = "json";
 	public static final String XML = "xml";
 	public static final String VISUAL = "visual";
 	public static final String JAVASCRIPT = "javascript";
-
-	public static final String COLOR = "color";
-	public static final String START_TIME = "start_time";
-	public static final String SUMMARY = "summary";
-
-	public static final String LANGUAGE = "language";
-	public static final String IMAGE_TYPE = "image_type";
-	public static final String IMAGE_ID = "image_id";
-	public static final String DESCRIPTION = "description";
-
-	public static final String VALIDATORS = "validators";
-	public static final String HTML5 = "HTML5";
-	public static final String CSS = "CSS";
-	public static final String WCAG = "WCAG";
 
 	protected HTML document;
 	protected Element head;
@@ -940,8 +931,7 @@ public class HTMLView extends View {
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
 		Element body = table.appendElement(HTML.TBODY);
 
-		header.appendElement(HTML.TH).appendElement(
-				booleanInput(ALL, strings.gts(Constants.CHECK_UNCHECK_ALL), false).setClass(ALL_CHECKBOX));
+		header.appendElement(HTML.TH).appendElement(allCheckBox(null));
 
 		header.appendElement(HTML.TH).appendText(strings.gts(Constants.NAME));
 		header.appendElement(HTML.TH).appendText(strings.gts(Constants.OBJECTS));
@@ -977,6 +967,12 @@ public class HTMLView extends View {
 		form.appendElement(exportButton(null));
 
 		return form;
+	}
+	
+	public Element allCheckBox(String type) {
+		return document.createElement(HTML.INPUT).setAttribute(HTML.TYPE, HTML.CHECKBOX)
+				.setAttribute(HTML.TITLE, strings.gts(type, Constants.CHECK_UNCHECK_ALL))
+				.setClass(ALL_CHECKBOX);
 	}
 
 	public Element insertForm(String type, LinkedHashMap<String, TypeField> typeFields, String lang, String view,
@@ -1784,7 +1780,7 @@ public class HTMLView extends View {
 	}
 
 	public Element colorOutput(Object color) {
-		return document.createElement(HTML.SPAN).setAttribute(HTML.STYLE, BACKGROUND_COLOR + ": " + color)
+		return document.createElement(HTML.SPAN).setAttribute(HTML.STYLE, HTML.BACKGROUND_COLOR + ": " + color)
 				.appendText(color.toString());
 	}
 
@@ -1884,8 +1880,7 @@ public class HTMLView extends View {
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
 		Element body = table.appendElement(HTML.TBODY);
 
-		header.appendElement(HTML.TH).appendElement(
-				booleanInput(ALL, strings.gts(type, Constants.CHECK_UNCHECK_ALL), false).setClass(ALL_CHECKBOX));
+		header.appendElement(HTML.TH).appendElement(allCheckBox(type));
 
 		header.appendElement(
 				selectTableHeaderCell(type, Constants.ID, lang, view, ref, search, order, offset, limit, component));
@@ -2981,12 +2976,12 @@ public class HTMLView extends View {
 			Tuple[] tuples = nextNode.query(sql, new Object[] { imagesById.keySet().toArray() });
 
 			for (Tuple tuple : tuples) {
-				for (Element div : imagesById.get(tuple.getString(Constants.ID) + ":" + tuple.getString(LANGUAGE))) {
+				for (Element div : imagesById.get(tuple.getString(Constants.ID) + ":" + tuple.getString(Constants.LANGUAGE))) {
 					Element container = div;
 
 					Element image = document.createElement(HTML.IMG)
-							.setAttribute(HTML.SRC,
-									"/" + tuple.getString(IMAGE_TYPE) + "/" + tuple.getString(IMAGE_ID) + "/" + IMAGE)
+							.setAttribute(HTML.SRC, "/" + tuple.getString(Constants.IMAGE_TYPE)
+								+ "/" + tuple.getString(Constants.IMAGE_ID) + "/" + IMAGE)
 							.setAttribute(HTML.ALT, tuple.getString(HTML.ALT));
 
 					String href = tuple.getString(HTML.HREF);
@@ -3000,7 +2995,7 @@ public class HTMLView extends View {
 						image = anchor;
 					}
 
-					String description = tuple.getString(DESCRIPTION);
+					String description = tuple.getString(Constants.DESCRIPTION);
 					if (description != null) {
 						Element figure = div.appendElement(HTML.FIGURE);
 						figure.appendElement(image);
@@ -3017,7 +3012,7 @@ public class HTMLView extends View {
 
 	public void qrcode(String type, String id) {
 		if (id != null) {
-			Element qrcodeElement = document.getElementById(QRCODE);
+			Element qrcodeElement = document.getElementById(Constants.QRCODE);
 
 			if (qrcodeElement != null) {
 				String objectURI = request.getHost() + "/" + type + "/" + id;
@@ -3129,7 +3124,7 @@ public class HTMLView extends View {
 
 		Element monthElement = document.createElement(HTML.TABLE);
 
-		monthElement.setClass(Action.CALENDAR);
+		monthElement.setClass(CALENDAR);
 		monthElement.appendElement(monthHead(lang));
 		Element tbody = monthElement.appendElement(HTML.TBODY);
 
@@ -3228,9 +3223,9 @@ public class HTMLView extends View {
 
 	public Element event(String type, String lang, String view, Tuple event) {
 		Element div = document.createElement(HTML.DIV).setAttribute(HTML.STYLE,
-				BACKGROUND_COLOR + ": " + event.getColor(COLOR));
+				HTML.BACKGROUND_COLOR + ": " + event.getColor(Constants.COLOR));
 
-		div.appendElement(anchor(event.getTime(START_TIME) + " " + event.getString(SUMMARY),
+		div.appendElement(anchor(event.getTime(Constants.START_TIME) + " " + event.getString(Constants.SUMMARY),
 				uri(type, event.getString(Constants.ID), lang, view)));
 
 		return div;

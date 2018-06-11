@@ -34,8 +34,6 @@ import net.fortuna.ical4j.model.component.VEvent;
 public class ProjectController extends Controller {
 
 	public static final String PROJECT_MEETING = "project_meeting";
-	public static final String START_TIME = "start_time";
-	public static final String END_TIME = "end_time";
 	public static final String PROJECT = "project";
 	public static final String DOCUMENT = "document";
 	public static final String PROJECT_MEMBER = "project_member";
@@ -84,12 +82,12 @@ public class ProjectController extends Controller {
 			if (startDateString != null) {
 				LocalDateTime startDate = LocalDateTime.parse(startDateString, formatter);
 				object.put(Constants.DATE, startDate.toLocalDate());
-				object.put(START_TIME, startDate.toLocalTime());
+				object.put(Constants.START_TIME, startDate.toLocalTime());
 			}
 
 			if (endDateString != null) {
 				LocalDateTime endDate = LocalDateTime.parse(endDateString, formatter);
-				object.put(END_TIME, endDate.toLocalTime());
+				object.put(Constants.END_TIME, endDate.toLocalTime());
 			}
 
 			object.put(Constants.DESCRIPTION, vevent.getDescription().getValue());
@@ -138,11 +136,16 @@ public class ProjectController extends Controller {
 			break;
 
 		case PROJECT_MEMBER:
-			sql = "select" + " pm.id," + " p.owner as user"
+			sql = "select" 
+					+ " pm.id,"
+					+ " p.owner as user"
 
-					+ " from" + " project p" + " join project_member pm on p.id = pm.project"
+				+ " from"
+					+ " project p"
+					+ " join project_member pm on p.id = pm.project"
 
-					+ " where" + " pm.id in (?)";
+				+ " where" 
+					+ " pm.id in (?)";
 
 			parameters = new Object[] { ids };
 			break;
@@ -150,23 +153,32 @@ public class ProjectController extends Controller {
 		case PROJECT_DOCUMENT_CHAPTER:
 		case PROJECT_MEETING_PARTICIPANT:
 		case PROJECT_TICKET_MESSAGE:
-			sql = "select" + " type.id," + " pm.member as user"
+			sql = "select"
+					+ " type.id,"
+					+ " pm.member as user"
 
-					+ " from" + " project_member pm"
+				+ " from"
+					+ " project_member pm"
 					+ " right join # ptype on (pm.project = ptype.project and pm.member = ?)"
 					+ " join # type on ptype.id = type.#"
 
-					+ " where" + " type.id in (?)";
+				+ " where"
+					+ " type.id in (?)";
+			
 			parameters = new Object[] { getParentType(), user, type, getParentField(), ids };
 			break;
 
 		default:
-			sql = "select" + " type.id," + " pm.member as user"
+			sql = "select"
+					+ " type.id,"
+					+ " pm.member as user"
 
-					+ " from" + " project_member pm"
+				+ " from"
+					+ " project_member pm"
 					+ " right join # type on (pm.project = type.project and pm.member = ?)"
 
-					+ " where" + " type.id in (?)";
+				+ " where"
+					+ " type.id in (?)";
 			parameters = new Object[] { type, user, ids };
 			break;
 		}
@@ -202,11 +214,17 @@ public class ProjectController extends Controller {
 		case PROJECT_DOCUMENT_CHAPTER:
 		case PROJECT_MEETING_PARTICIPANT:
 		case PROJECT_TICKET_MESSAGE:
-			sql = "select" + " count(pm.member) = 1"
+			sql = "select"
+					+ " count(pm.member) = 1"
 
-					+ " from" + " project_member pm" + " join # ptype on pm.project = ptype.project"
+				+ " from"
+					+ " project_member pm"
+					+ " join # ptype on pm.project = ptype.project"
 
-					+ " where" + " ptype.id = ?" + " and pm.member = ?";
+				+ " where"
+					+ " ptype.id = ?"
+				+ " and pm.member = ?";
+			
 			parameters = new Object[] { parentType, parent, user };
 			break;
 

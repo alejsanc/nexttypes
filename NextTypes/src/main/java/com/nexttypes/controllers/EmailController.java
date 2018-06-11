@@ -30,6 +30,7 @@ import com.nexttypes.datatypes.URI;
 import com.nexttypes.enums.Format;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.Node;
+import com.nexttypes.system.Constants;
 import com.nexttypes.system.Controller;
 
 public class EmailController extends Controller {
@@ -38,8 +39,7 @@ public class EmailController extends Controller {
 	public static final String FROM = "from";
 	public static final String TO = "to";
 	public static final String SUBJECT = "subject";
-	public static final String MESSAGE = "message";
-
+	
 	public EmailController(String type, String[] ids, String user, String[] groups, Node nextNode) {
 		super(type, ids, user, groups, nextNode);
 	}
@@ -57,7 +57,7 @@ public class EmailController extends Controller {
 			message.setFrom(object.getEmail(FROM));
 			message.addRecipient(Message.RecipientType.TO, object.getEmail(TO));
 			message.setSubject(object.getString(SUBJECT));
-			message.setContent(object.getHTML(MESSAGE).toString(), Format.XHTML.getContentType());
+			message.setContent(object.getHTML(Constants.MESSAGE).toString(), Format.XHTML.getContentType());
 			Transport.send(message);
 
 		} catch (MessagingException e) {

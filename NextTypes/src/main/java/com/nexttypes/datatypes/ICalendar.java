@@ -55,7 +55,7 @@ public class ICalendar {
 
 		try {
 			for (Tuple event : events) {
-				String id = event.getString(Constants.ID);
+				String id = event.getString(Constants.ID); 
 				String summary = event.getString(Constants.SUMMARY);
 				String startDate = event.getString(Constants.START_DATE);
 				String endDate = event.getString(Constants.END_DATE);
