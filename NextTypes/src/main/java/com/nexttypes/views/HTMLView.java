@@ -2864,13 +2864,15 @@ public class HTMLView extends View {
 			if (form != null) {
 				form.setAttribute(HTML.ACTION, "/" + type).setAttribute(HTML.METHOD, HTML.GET);
 
+				String searchName = strings.gts(type, Constants.SEARCH);
+				
 				form.appendElement(input(HTML.HIDDEN, Constants.LANG, null, lang));
 				form.appendElement(input(HTML.HIDDEN, Constants.VIEW, null, view));
-				form.appendElement(input(HTML.SEARCH, Constants.SEARCH, null, search));
+				form.appendElement(input(HTML.SEARCH, Constants.SEARCH, searchName, search));
 
 				form.appendElement(document.createElement(HTML.BUTTON)
 						.setAttribute(HTML.TYPE, HTML.SUBMIT)
-						.appendText(strings.gts(type, Constants.SEARCH)));
+						.appendText(searchName));
 			}
 		}
 	}
