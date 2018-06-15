@@ -75,7 +75,6 @@ public class Constants {
 	public static final String EMPTY_FIELD = "empty_field";
 	public static final String EMPTY_FIELD_NAME = "empty_field_name";
 	public static final String EMPTY_ID = "empty_id";
-	public static final String EMPTY_IDS_LIST = "empty_ids_list";
 	public static final String EMPTY_INDEX_FIELDS_LIST = "empty_index_fields_list";
 	public static final String EMPTY_INDEX_NAME = "empty_index_name";
 	public static final String EMPTY_INPUT = "empty_input";
@@ -205,6 +204,7 @@ public class Constants {
 	public static final String NEW_PASSWORD = "new_password";
 	public static final String NEW_PASSWORD_REPEAT = "new_password_repeat";
 	public static final String NEXT_NODE = "next_node";
+	public static final String NO_OBJECTS_SELECTED = "no_objects_selected";
 	public static final String NO_TYPES_FOUND = "no_types_found";
 	public static final String NOT_NULL = "not_null";
 	public static final String NOT_NULL_ALTERED = "not_null_altered";

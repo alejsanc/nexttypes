@@ -18,8 +18,8 @@ package com.nexttypes.controllers;
 
 import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.Image;
+import com.nexttypes.exceptions.ActionException;
 import com.nexttypes.exceptions.ObjectException;
-import com.nexttypes.exceptions.TypeException;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.Constants;
@@ -39,7 +39,7 @@ public class ImageController extends Controller {
 	@Action(RESIZE)
 	public ActionResult resize(Integer width, Integer height) {
 		if (ids == null || ids.length == 0) {
-			throw new TypeException(type, Constants.EMPTY_IDS_LIST);
+			throw new ActionException(type, RESIZE, Constants.NO_OBJECTS_SELECTED);
 		}
 
 		for (String id : ids) {

@@ -18,10 +18,10 @@ package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.Strings;
 
-public class ActionFieldException extends FieldException {
+public class ActionFieldException extends ActionException {
 	protected static final long serialVersionUID = 1L;
 
-	protected String action;
+	protected String field;
 	protected Object value;
 
 	public ActionFieldException(String type, String action, String field, String setting) {
@@ -29,13 +29,13 @@ public class ActionFieldException extends FieldException {
 	}
 
 	public ActionFieldException(String type, String action, String field, String setting, Object value) {
-		super(type, field, setting);
-		this.action = action;
+		super(type, action, setting);
+		this.field = field;
 		this.value = value;
 	}
 
-	public String getAction() {
-		return action;
+	public String getField() {
+		return field;
 	}
 
 	public Object getValue() {
@@ -45,7 +45,7 @@ public class ActionFieldException extends FieldException {
 	@Override
 	public String getMessage(Strings strings) {
 		String typeName = strings.getTypeName(type);
-		String actionName = strings.getActionName(type, action);
+		String actionName = strings.getActionName(type,  action);
 		String fieldName = strings.getActionFieldName(type, action, field);
 
 		String message = strings.gts(type, setting) + ": " + typeName + "::" + actionName + "::" + fieldName;

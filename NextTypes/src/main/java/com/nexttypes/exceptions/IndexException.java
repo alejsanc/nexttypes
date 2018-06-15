@@ -34,6 +34,8 @@ public class IndexException extends TypeException {
 
 	@Override
 	public String getMessage(Strings strings) {
-		return strings.gts(type, setting) + ": " + type + ":" + index;
+		String typeName = strings.getTypeName(type);
+		
+		return strings.gts(type, setting) + ": " + typeName + "::" + index;
 	}
 }

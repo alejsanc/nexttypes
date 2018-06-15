@@ -19,27 +19,21 @@ package com.nexttypes.exceptions;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.system.Constants;
 
-public class ActionExecutionException extends NXException {
+public class ActionExecutionException extends ActionException {
 	private static final long serialVersionUID = 1L;
 
-	protected String action;
-
 	public ActionExecutionException(String type, String action, Exception parentException) {
-		super(type, Constants.ACTION_EXECUTION_ERROR);
-		this.action = action;
+		super(type, action, Constants.ACTION_EXECUTION_ERROR);
 		this.parentException = parentException;
-	}
-
-	public String getAction() {
-		return action;
 	}
 
 	@Override
 	public String getMessage(Strings strings) {
 		String typeName = strings.getTypeName(type);
 		String actionName = strings.getActionName(type, action);
-
+		
 		String message = parentException.getMessage();
+		
 		if (message == null) {
 			Throwable cause = parentException.getCause();
 
@@ -54,7 +48,7 @@ public class ActionExecutionException extends NXException {
 			}
 		}
 
-		return strings.gts(type, Constants.ACTION_EXECUTION_ERROR) + ": " + typeName + "::" + actionName + ": "
-				+ message;
+		return strings.gts(type, Constants.ACTION_EXECUTION_ERROR) + ": "
+			+ typeName + "::" + actionName + ": " + message;
 	}
 }

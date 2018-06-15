@@ -34,6 +34,9 @@ public class ElementException extends FieldException {
 
 	@Override
 	public String getMessage(Strings strings) {
-		return strings.gts(type, setting) + ": " + type + ":" + field + ":" + element;
+		String typeName = strings.getTypeName(type);
+		String fieldName = strings.getFieldName(type, field);
+		
+		return strings.gts(type, setting) + ": " + typeName + "::" + fieldName + "::" + element;
 	}
 }

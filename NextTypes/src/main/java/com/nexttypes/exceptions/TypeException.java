@@ -27,6 +27,6 @@ public class TypeException extends NXException {
 
 	@Override
 	public String getMessage(Strings strings) {
-		return strings.gts(type, setting) + ": " + type;
+		return strings.gts(type, setting) + ": " + strings.getTypeName(type);
 	}
 }

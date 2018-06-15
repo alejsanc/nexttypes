@@ -443,7 +443,7 @@ public class PostgreSQLNode implements Node {
 
 		checkType(typeName);
 
-		if (existsType(typeName)) {
+		if (single && existsType(typeName)) {
 			throw new TypeException(typeName, Constants.TYPE_ALREADY_EXISTS);
 		}
 
@@ -860,7 +860,7 @@ public class PostgreSQLNode implements Node {
 		checkType(typeName);
 
 		if (adate != null && !adate.equals(getADate(typeName))) {
-			throw new TypeException(typeName, Constants.ALREADY_ALTERED_TYPE);
+			throw new NXException(typeName, Constants.ALREADY_ALTERED_TYPE);
 		}
 
 		AlterResult result = new AlterResult();
@@ -3904,7 +3904,7 @@ public class PostgreSQLNode implements Node {
 
 	protected void checkId(String type, String id) {
 		if (id == null || id.length() == 0) {
-			throw new TypeException(type, Constants.EMPTY_ID);
+			throw new NXException(type, Constants.EMPTY_ID);
 		}
 	}
 
@@ -3916,7 +3916,7 @@ public class PostgreSQLNode implements Node {
 
 	protected void checkIds(String type, String[] ids) {
 		if (ids == null || ids.length == 0) {
-			throw new TypeException(type, Constants.EMPTY_IDS_LIST);
+			throw new TypeException(type, Constants.NO_OBJECTS_SELECTED);
 		}
 	}
 

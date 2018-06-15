@@ -35,6 +35,8 @@ public class ViewNotFoundException extends NXException {
 
 	@Override
 	public String getMessage(Strings strings) {
-		return strings.gts(type, Constants.VIEW_NOT_FOUND) + ": " + type + ":" + view;
+		String typeName = strings.getTypeName(type);
+		
+		return strings.gts(type, Constants.VIEW_NOT_FOUND) + ": " + typeName + "::" + view;
 	}
 }

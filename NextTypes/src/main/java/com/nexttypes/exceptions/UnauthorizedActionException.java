@@ -19,30 +19,18 @@ package com.nexttypes.exceptions;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.system.Constants;
 
-public class UnauthorizedActionException extends TypeException {
+public class UnauthorizedActionException extends ActionException {
 	protected static final long serialVersionUID = 1L;
 
-	protected String action;
-
 	public UnauthorizedActionException(String type, String action) {
-		super(type, Constants.UNAUTHORIZED_ACTION);
-		this.action = action;
-	}
-
-	public String getAction() {
-		return action;
+		super(type, action, Constants.UNAUTHORIZED_ACTION);
 	}
 
 	@Override
 	public String getMessage(Strings strings) {
-		StringBuilder message = new StringBuilder(strings.gts(type, Constants.UNAUTHORIZED_ACTION) + ": ");
-
-		if (type != null) {
-			message.append(strings.getTypeName(type) + "::");
-		}
-
-		message.append(strings.getActionName(type, action));
-
-		return message.toString();
+		String typeName = strings.getTypeName(type);
+		String actionName = strings.getActionName(type, action);
+		
+		return strings.gts(type, Constants.UNAUTHORIZED_ACTION) + ": " + typeName + "::" + actionName;
 	}
 }

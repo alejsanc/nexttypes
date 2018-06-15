@@ -35,6 +35,8 @@ public class IndexNotFoundException extends NotFoundException {
 
 	@Override
 	public String getMessage(Strings strings) {
-		return strings.gts(type, Constants.INDEX_NOT_FOUND) + ": " + type + ":" + index;
+		String typeName = strings.getTypeName(type);
+		
+		return strings.gts(type, Constants.INDEX_NOT_FOUND) + ": " + typeName + "::" + index;
 	}
 }

@@ -43,7 +43,9 @@ public class FieldNotFoundException extends NotFoundException {
 		String message = strings.gts(type, Constants.FIELD_NOT_FOUND) + ": ";
 
 		if (type != null) {
-			message += type + ":" + field;
+			String typeName = strings.getTypeName(type);
+						
+			message += typeName + "::" + field;
 		} else {
 			message += this.message;
 		}

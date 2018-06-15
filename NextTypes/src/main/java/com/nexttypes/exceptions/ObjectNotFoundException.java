@@ -35,6 +35,8 @@ public class ObjectNotFoundException extends NotFoundException {
 
 	@Override
 	public String getMessage(Strings strings) {
-		return strings.gts(type, Constants.OBJECT_NOT_FOUND) + ": " + type + "::" + id;
+		String typeName = strings.getTypeName(type);
+		
+		return strings.gts(type, Constants.OBJECT_NOT_FOUND) + ": " + typeName + "::" + id;
 	}
 }

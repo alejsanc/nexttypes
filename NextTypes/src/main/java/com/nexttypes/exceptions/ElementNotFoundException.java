@@ -46,6 +46,10 @@ public class ElementNotFoundException extends NotFoundException {
 	}
 
 	public String getMessage(Strings strings) {
-		return strings.gts(type, Constants.ELEMENT_NOT_FOUND) + ": " + type + "::" + id + "::" + field + "::" + element;
+		String typeName = strings.getTypeName(type);
+		String fieldName = strings.getFieldName(type, field);
+		
+		return strings.gts(type, Constants.ELEMENT_NOT_FOUND)
+				+ ": " + typeName + "::" + id + "::" + fieldName + "::" + element;
 	}
 }

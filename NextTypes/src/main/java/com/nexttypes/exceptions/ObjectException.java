@@ -34,6 +34,8 @@ public class ObjectException extends TypeException {
 
 	@Override
 	public String getMessage(Strings strings) {
-		return strings.gts(type, setting) + ": " + type + ":" + id;
+		String typeName = strings.getTypeName(type);
+		
+		return strings.gts(type, setting) + ": " + typeName + "::" + id;
 	}
 }

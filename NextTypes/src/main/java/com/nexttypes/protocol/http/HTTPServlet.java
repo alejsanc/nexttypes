@@ -60,7 +60,6 @@ import com.nexttypes.exceptions.InvalidUserOrPasswordException;
 import com.nexttypes.exceptions.MethodNotAllowedException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.NotFoundException;
-import com.nexttypes.exceptions.TypeException;
 import com.nexttypes.exceptions.UnauthorizedActionException;
 import com.nexttypes.exceptions.ViewNotFoundException;
 import com.nexttypes.interfaces.Node;
@@ -428,7 +427,7 @@ public class HTTPServlet extends HttpServlet {
 			if (req.getType() == null) {
 				throw new NXException(Constants.EMPTY_TYPE_NAME);
 			} else if (req.getId() == null) {
-				throw new TypeException(req.getType(), Constants.EMPTY_ID);
+				throw new NXException(req.getType(), Constants.EMPTY_ID);
 			} else if (req.getField() == null) {
 				nextNode.update(req.getType(), req.getId(), (byte[]) value);
 			} else {
