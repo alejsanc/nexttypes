@@ -664,13 +664,17 @@ public class HTMLView extends View {
 			String referencedType = reference.getReferencedType();
 			String referencingType = reference.getReferencingType();
 			String referencingField = reference.getReferencingField();
+			
+			String referencedTypeName = strings.getTypeName(referencedType);
+			String referencingTypeName = strings.getTypeName(referencingType);
+			String referencingFieldName = strings.getFieldName(referencingType, referencingField);
 
 			Element row = body.appendElement(HTML.TR);
 			row.appendElement(HTML.TD)
-					.appendElement(anchor(referencedType, uri(referencedType, lang, view) + "&" + Constants.INFO));
+					.appendElement(anchor(referencedTypeName, uri(referencedType, lang, view) + "&" + Constants.INFO));
 			row.appendElement(HTML.TD)
-					.appendElement(anchor(referencingType, uri(referencingType, lang, view) + "&" + Constants.INFO));
-			row.appendElement(HTML.TD).appendText(referencingField);
+					.appendElement(anchor(referencingTypeName, uri(referencingType, lang, view) + "&" + Constants.INFO));
+			row.appendElement(HTML.TD).appendText(referencingFieldName);
 		}
 
 		return render();
