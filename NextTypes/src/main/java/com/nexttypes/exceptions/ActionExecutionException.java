@@ -18,6 +18,7 @@ package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.Strings;
 import com.nexttypes.system.Constants;
+import com.nexttypes.system.Utils;
 
 public class ActionExecutionException extends ActionException {
 	private static final long serialVersionUID = 1L;
@@ -38,13 +39,9 @@ public class ActionExecutionException extends ActionException {
 			Throwable cause = parentException.getCause();
 
 			if (cause != null) {
-				message = cause.getMessage();
-
-				if (message == null) {
-					message = cause.getClass().getName();
-				}
+				message = Utils.getExceptionMessage(cause);
 			} else {
-				message = parentException.getClass().getName();
+				message = Utils.getExceptionMessage(parentException);
 			}
 		}
 

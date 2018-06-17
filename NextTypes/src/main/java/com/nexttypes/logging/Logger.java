@@ -24,6 +24,7 @@ import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Context;
+import com.nexttypes.system.Utils;
 
 public class Logger extends java.util.logging.Logger {
 
@@ -86,7 +87,7 @@ public class Logger extends java.util.logging.Logger {
 		if (e instanceof NXException) {
 			message = ((NXException) e).getMessage(strings);
 		} else {
-			message = e.getMessage();
+			message = Utils.getExceptionMessage(e);
 		}
 
 		log(level, e.getStackTrace()[0].getClassName(), user, remoteAddress, message);

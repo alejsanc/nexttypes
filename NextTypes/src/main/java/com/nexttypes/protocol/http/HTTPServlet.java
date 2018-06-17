@@ -852,7 +852,7 @@ public class HTTPServlet extends HttpServlet {
 		if (e instanceof NXException) {
 			message = ((NXException) e).getMessage(strings);
 		} else {
-			message = e.getMessage();
+			message = Utils.getExceptionMessage(e);
 		}
 
 		String remoteAddress = request.getRemoteAddr();

@@ -163,4 +163,16 @@ public class Utils {
 		}
 		return directory;
 	}
+	
+	public static String getExceptionMessage(Throwable e) {
+		String message = e.getMessage();
+		
+		if (message == null) {
+			message = e.getClass().getName();
+		} else {
+			message = e.getClass().getName() + ": " + message;
+		}
+		
+		return message;
+	}
 }
