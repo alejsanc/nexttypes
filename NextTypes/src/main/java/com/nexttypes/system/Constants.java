@@ -266,6 +266,7 @@ public class Constants {
 	public static final String SIZE = "size";
 	public static final String START_DATE = "start_date";
 	public static final String START_TIME = "start_time";
+	public static final String STATIC = "static";
 	public static final String STYLE = "style";
 	public static final String SUCCESSFUL_LOGIN = "successful_login";
 	public static final String SUCCESSFUL_LOGOUT = "successful_logout";
@@ -287,6 +288,7 @@ public class Constants {
 	public static final String TYPE_NAME_TOO_LONG = "type_name_too_long";
 	public static final String TYPE_NOT_FOUND = "type_not_found";
 	public static final String TYPE_OR_FIELD_NAME_TOO_LONG = "type_or_field_name_too_long";
+	public static final String TYPE_RESERVED_NAME = "type_reserved_name";
 	public static final String TYPE_SUCCESSFULLY_ALTERED = "type_successfully_altered";
 	public static final String TYPE_SUCCESSFULLY_CREATED = "type_successfully_created";
 	public static final String TYPE_SUCCESSFULLY_RENAMED = "type_successfully_renamed";

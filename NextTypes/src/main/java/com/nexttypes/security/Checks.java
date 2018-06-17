@@ -67,6 +67,10 @@ public class Checks {
 	}
 
 	public static void checkType(String type) {
+		if (Constants.STATIC.equals(type)) {
+			throwException(Constants.TYPE_RESERVED_NAME, type);
+		}
+		
 		checkMaxLength(type, Type.MAX_TYPE_NAME_LENGTH, Constants.TYPE_NAME_TOO_LONG);
 		checkString(type, TYPE_FIELD_INDEX_ACTION_CHECK, Constants.INVALID_TYPE_NAME);
 	}
