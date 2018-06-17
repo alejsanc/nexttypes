@@ -27,6 +27,7 @@ import org.aspectj.lang.JoinPoint;
 
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.NXObject;
+import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Type;
 import com.nexttypes.datatypes.TypeField;
@@ -74,9 +75,17 @@ public class Checks {
 		checkMaxLength(type, Type.MAX_TYPE_NAME_LENGTH, Constants.TYPE_NAME_TOO_LONG);
 		checkString(type, TYPE_FIELD_INDEX_ACTION_CHECK, Constants.INVALID_TYPE_NAME);
 	}
+	
+	public static void checkCompositeType(String type) {
+		if (ArrayUtils.contains(PT.PRIMITIVE_TYPES, type)) {
+			throwException(Constants.PRIMITIVE_TYPE_WITH_THE_SAME_NAME, type);
+		}
+	}
 
 	public static void checkType(Type type) {
 		checkType(type.getName());
+		
+		checkCompositeType(type.getName());
 
 		for (Entry<String, TypeField> entry : type.getFields().entrySet()) {
 			checkField(entry.getKey());

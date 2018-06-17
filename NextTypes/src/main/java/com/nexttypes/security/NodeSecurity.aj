@@ -85,6 +85,8 @@ public aspect NodeSecurity extends Checks {
     	
     	checkType(type);
     	checkType(newName);
+    	checkCompositeType(type);
+    	checkCompositeType(newName);
     	checkPermissions(type, Action.RENAME, thisJoinPoint);
     }
 

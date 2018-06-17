@@ -447,10 +447,6 @@ public class PostgreSQLNode implements Node {
 			throw new TypeException(typeName, Constants.TYPE_ALREADY_EXISTS);
 		}
 
-		if (ArrayUtils.contains(PT.PRIMITIVE_TYPES, typeName)) {
-			throw new TypeException(typeName, Constants.PRIMITIVE_TYPE_WITH_THE_SAME_NAME);
-		}
-
 		StringBuilder sql = new StringBuilder("create table \"" + typeName + "\"" + " (id character varying("
 				+ Type.MAX_ID_LENGTH + ") not null primary key,"
 				+ " cdate timestamp not null, udate timestamp not null," + " backup boolean not null");
@@ -3885,7 +3881,7 @@ public class PostgreSQLNode implements Node {
 			throw new NXException(Constants.EMPTY_TYPE_NAME);
 		}
 	}
-
+	
 	protected void checkField(String type, String field) {
 		if (field == null || field.length() == 0) {
 			throw new TypeException(type, Constants.EMPTY_FIELD_NAME);
