@@ -72,7 +72,7 @@ import com.nexttypes.system.Utils;
 public class HTTPRequest {
 
 	protected static final String[] REQUEST_PARAMETERS = new String[] { Constants.TYPE, Constants.TYPES,
-			Constants.ADATE, Constants.ID, Constants.UDATE, Constants.IDS, Constants.NEW_ID, Constants.NEW_NAME,
+			Constants.ADATE, Constants.ID, Constants.UDATE, Constants.OBJECTS, Constants.NEW_ID, Constants.NEW_NAME,
 			Constants.EXISTING_TYPES_ACTION, Constants.EXISTING_OBJECTS_ACTION, Constants.OFFSET, Constants.LIMIT,
 			Constants.ORDER, Constants.SEARCH, Constants.CURRENT_PASSWORD, Constants.NEW_PASSWORD,
 			Constants.NEW_PASSWORD_REPEAT, Constants.VIEW, Constants.REF, Constants.FORM, Constants.YEAR,
@@ -101,8 +101,8 @@ public class HTTPRequest {
 	protected String new_name;
 	protected String lang;
 	protected String view;
-	protected String[] ids;
 	protected String[] types;
+	protected String[] objects;
 	protected FieldReference ref;
 	protected String search;
 	protected LinkedHashMap<String, Order> order;
@@ -186,7 +186,7 @@ public class HTTPRequest {
 		Checks.checkId(new_id);
 		Checks.checkView(view);
 		Checks.checkLang(lang);
-		Checks.checkIds(ids);
+		Checks.checkObjects(objects);
 		Checks.checkTypes(types);
 		Checks.checkRef(ref);
 		Checks.checkOrder(order);
@@ -658,8 +658,8 @@ public class HTTPRequest {
 		return order;
 	}
 
-	public String[] getIds() {
-		return ids;
+	public String[] getObjects() {
+		return objects;
 	}
 
 	public String[] getTypes() {

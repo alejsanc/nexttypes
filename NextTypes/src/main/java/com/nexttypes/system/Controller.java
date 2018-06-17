@@ -51,19 +51,20 @@ import com.nexttypes.settings.TypeSettings;
 public class Controller {
 	protected Node nextNode;
 	protected String type;
-	protected String[] ids;
+	protected String[] objects;
 	protected String user;
 	protected String[] groups;
 	protected Context context;
 	protected TypeSettings typeSettings;
 	protected Strings strings;
 
-	public Controller(String type, String[] ids, String user, String[] groups, Node nextNode) {
+	public Controller(String type, String[] objects, String user, String[] groups, Node nextNode) {
 		this.nextNode = nextNode;
 		this.type = type;
+		this.objects = objects;
 		this.user = user;
 		this.groups = groups;
-		this.ids = ids;
+		
 		context = nextNode.getContext();
 		typeSettings = nextNode.getTypeSettings();
 		strings = nextNode.getStrings();
@@ -272,8 +273,8 @@ public class Controller {
 		return nextNode.getTypeActions(type);
 	}
 
-	public void delete(String type, String... ids) {
-		nextNode.delete(type, ids);
+	public void delete(String type, String... objects) {
+		nextNode.delete(type, objects);
 	}
 
 	public Object getField(String type, String id, String field) {

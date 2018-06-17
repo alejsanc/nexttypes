@@ -30,8 +30,8 @@ import com.nexttypes.system.Controller;
 
 public class UserCertificateController extends Controller {
 
-	public UserCertificateController(String type, String[] ids, String user, String[] groups, Node nextNode) {
-		super(type, ids, user, groups, nextNode);
+	public UserCertificateController(String type, String[] objects, String user, String[] groups, Node nextNode) {
+		super(type, objects, user, groups, nextNode);
 	}
 
 	@Override
@@ -72,14 +72,15 @@ public class UserCertificateController extends Controller {
 	}
 
 	@Override
-	public void delete(String type, String... ids) {
-		checkPermissions(type, ids, Action.DELETE);
-		nextNode.delete(type, ids);
+	public void delete(String type, String... objects) {
+		checkPermissions(type, objects, Action.DELETE);
+		nextNode.delete(type, objects);
 	}
 
-	protected void checkPermissions(String type, String[] ids, String method) {
+	protected void checkPermissions(String type, String[] objects, String method) {
 		if (!ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
-			if (nextNode.getBoolean("select count(*) != 0 from # where id in(?) and \"user\" != ?", type, ids, user)) {
+			if (nextNode.getBoolean("select count(*) != 0 from # where id in(?) and \"user\" != ?",
+					type, objects, user)) {
 				throwException(type, method);
 			}
 		}

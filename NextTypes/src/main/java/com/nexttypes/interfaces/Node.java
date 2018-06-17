@@ -197,7 +197,7 @@ public interface Node extends Module, AutoCloseable {
 
 	public ZonedDateTime dropIndex(String type, String index);
 
-	public void delete(String type, String... ids);
+	public void delete(String type, String... objects);
 
 	public Object getField(String type, String id, String field);
 
@@ -237,7 +237,7 @@ public interface Node extends Module, AutoCloseable {
 
 	public ActionResult executeAction(String type, String id, String action, Object... parameters);
 
-	public ActionResult executeAction(String type, String[] ids, String action, Object... parameters);
+	public ActionResult executeAction(String type, String[] objects, String action, Object... parameters);
 
 	public Long count(String type);
 
@@ -263,7 +263,8 @@ public interface Node extends Module, AutoCloseable {
 
 	public TypesStream backup(String lang, boolean full);
 
-	public ObjectsStream exportObjects(String type, String[] ids, String lang, LinkedHashMap<String, Order> order);
+	public ObjectsStream exportObjects(String type, String[] objects, String lang,
+			LinkedHashMap<String, Order> order);
 
 	public ImportTypesResult importTypes(InputStream types, ImportAction existingTypesAction,
 			ImportAction existingObjectsAction);

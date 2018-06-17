@@ -497,11 +497,13 @@ public class HTMLView extends View {
 				row.appendElement(HTML.TD).appendText(id);
 			}
 		} else {
-			Integer size = typeSettings.getActionInt32(type, action, Constants.IDS_SELECT + "." + Constants.SIZE);
+			Integer size = typeSettings.getActionInt32(type, action, Constants.OBJECTS_SELECT + "."
+					+ Constants.SIZE);
 
-			row.appendElement(HTML.TD).appendText(strings.getIdsName(type));
-			row.appendElement(HTML.TD).appendElement(objectSelect(Constants.IDS, Constants.IDS, null, type, true, lang)
-					.setAttribute(HTML.MULTIPLE).setAttribute(HTML.SIZE, size));
+			row.appendElement(HTML.TD).appendText(strings.getObjectsName(type));
+			row.appendElement(HTML.TD).appendElement(
+					objectSelect(Constants.OBJECTS, Constants.OBJECTS, null, type, true, lang)
+						.setAttribute(HTML.MULTIPLE).setAttribute(HTML.SIZE, size));
 		}
 
 		for (Map.Entry<String, TypeField> entry : fields.entrySet()) {
@@ -1906,8 +1908,9 @@ public class HTMLView extends View {
 		for (NXObject object : objects) {
 			Element tableRow = body.appendElement(HTML.TR);
 
-			tableRow.appendElement(HTML.TD)
-					.appendElement(input(HTML.CHECKBOX, Constants.IDS, null, object.getId()).setClass(ITEM_CHECKBOX));
+			tableRow.appendElement(HTML.TD).appendElement(
+					input(HTML.CHECKBOX, Constants.OBJECTS, strings.getObjectsName(type), object.getId())
+							.setClass(ITEM_CHECKBOX));
 
 			String idString = null;
 			if (object.getId().length() >= 25) {

@@ -29,8 +29,8 @@ import com.nexttypes.system.Controller;
 
 public class UserController extends Controller {
 
-	public UserController(String type, String[] ids, String user, String[] groups, Node nextNode) {
-		super(type, ids, user, groups, nextNode);
+	public UserController(String type, String[] objects, String user, String[] groups, Node nextNode) {
+		super(type, objects, user, groups, nextNode);
 	}
 
 	@Override

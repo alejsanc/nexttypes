@@ -33,11 +33,11 @@ public class Strings extends TypeSettings {
 	}
 
 	public String getIdName(String type) {
-		return getTypeString(type, Constants.ID + "." + Constants.NAME);
+		return getTypeString(type, Constants.ID, Constants.ID);
 	}
 
-	public String getIdsName(String type) {
-		return getTypeString(type, Constants.IDS + "." + Constants.NAME);
+	public String getObjectsName(String type) {
+		return getTypeString(type, Constants.OBJECTS, Constants.OBJECTS);
 	}
 
 	public String getFieldName(String type, String field) {

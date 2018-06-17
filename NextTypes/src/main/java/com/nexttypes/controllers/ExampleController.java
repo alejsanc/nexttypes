@@ -43,8 +43,8 @@ public class ExampleController extends Controller {
 	public static final String TRY = "try";
 	public static final String OK = "OK";
 
-	public ExampleController(String type, String[] ids, String user, String[] groups, Node nextNode) {
-		super(type, ids, user, groups, nextNode);
+	public ExampleController(String type, String[] objects, String user, String[] groups, Node nextNode) {
+		super(type, objects, user, groups, nextNode);
 	}
 
 	@Action(TRY)

@@ -174,12 +174,12 @@ public class Console {
 					break;
 
 				case EXPORT_OBJECTS:
-					String[] ids = command.getOptionValues(EXPORT_OBJECTS);
+					String[] objects = command.getOptionValues(EXPORT_OBJECTS);
 					String type = command.getOptionValue(Constants.TYPE);
 					LinkedHashMap<String, Order> order = Utils
 							.parserOrderString(command.getOptionValue(Constants.ORDER));
 
-					try (ObjectsStream objectsExport = nextNode.exportObjects(type, ids, lang, order)) {
+					try (ObjectsStream objectsExport = nextNode.exportObjects(type, objects, lang, order)) {
 						writeResult(objectsExport);
 					}
 

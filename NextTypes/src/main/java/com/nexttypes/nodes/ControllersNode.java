@@ -130,11 +130,11 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public ActionResult executeAction(String type, String[] ids, String action, Object... parameters) {
+	public ActionResult executeAction(String type, String[] objects, String action, Object... parameters) {
 		ActionResult result = null;
 		Method method = null;
 
-		Controller controller = getController(type, ids);
+		Controller controller = getController(type, objects);
 		LinkedHashMap<String, TypeField> fields = controller.getActionFields(action);
 
 		if (fields == null) {
@@ -189,7 +189,7 @@ public class ControllersNode implements Node {
 		return getController(type, null);
 	}
 
-	protected Controller getController(String type, String[] ids) {
+	protected Controller getController(String type, String[] objects) {
 		String className = typeSettings.gts(type, Constants.CONTROLLER);
 
 		Controller controller = null;
@@ -197,9 +197,9 @@ public class ControllersNode implements Node {
 		ProxyNode proxyNode = new ProxyNode(type, nextNode, this);
 
 		if (className != null) {
-			controller = Loader.loadController(className, type, ids, user, groups, proxyNode);
+			controller = Loader.loadController(className, type, objects, user, groups, proxyNode);
 		} else {
-			controller = new Controller(type, ids, user, groups, proxyNode);
+			controller = new Controller(type, objects, user, groups, proxyNode);
 		}
 
 		return controller;
@@ -278,8 +278,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public ObjectsStream exportObjects(String type, String[] ids, String lang, LinkedHashMap<String, Order> order) {
-		return nextNode.exportObjects(type, ids, lang, order);
+	public ObjectsStream exportObjects(String type, String[] objects, String lang, LinkedHashMap<String, Order> order) {
+		return nextNode.exportObjects(type, objects, lang, order);
 	}
 
 	@Override
@@ -554,8 +554,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public void delete(String type, String... ids) {
-		getController(type).delete(type, ids);
+	public void delete(String type, String... objects) {
+		getController(type).delete(type, objects);
 	}
 
 	@Override

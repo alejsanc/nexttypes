@@ -71,11 +71,11 @@ public class Loader {
 		return loadController(className, type, new String[] { id }, user, groups, nextNode);
 	}
 
-	public static Controller loadController(String className, String type, String[] ids, String user, String[] groups,
+	public static Controller loadController(String className, String type, String[] objects, String user, String[] groups,
 			Node nextNode) {
 		return (Controller) Loader.load(className,
 				new Class[] { String.class, String[].class, String.class, String[].class, Node.class },
-				new Object[] { type, ids, user, groups, nextNode });
+				new Object[] { type, objects, user, groups, nextNode });
 	}
 
 	public static Task loadTask(String className, Context context) {

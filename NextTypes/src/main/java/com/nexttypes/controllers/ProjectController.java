@@ -43,8 +43,8 @@ public class ProjectController extends Controller {
 	public static final String PROJECT_MEETING_PARTICIPANT = "project_meeting_participant";
 	public static final String PROJECT_TICKET_MESSAGE = "project_ticket_message";
 
-	public ProjectController(String type, String[] ids, String user, String[] groups, Node nextNode) {
-		super(type, ids, user, groups, nextNode);
+	public ProjectController(String type, String[] objects, String user, String[] groups, Node nextNode) {
+		super(type, objects, user, groups, nextNode);
 	}
 
 	@Override
@@ -105,9 +105,9 @@ public class ProjectController extends Controller {
 	}
 
 	@Override
-	public void delete(String type, String... ids) {
-		checkPermissions(type, ids, Action.DELETE);
-		nextNode.delete(type, ids);
+	public void delete(String type, String... objects) {
+		checkPermissions(type, objects, Action.DELETE);
+		nextNode.delete(type, objects);
 	}
 
 	@Override
@@ -125,14 +125,14 @@ public class ProjectController extends Controller {
 		checkPermissions(type, new String[] { id }, method);
 	}
 
-	protected void checkPermissions(String type, String[] ids, String method) {
+	protected void checkPermissions(String type, String[] objects, String method) {
 		String sql = null;
 		Object[] parameters = null;
 
 		switch (type) {
 		case PROJECT:
 			sql = "select id, owner as user from project where id in (?)";
-			parameters = new Object[] { ids };
+			parameters = new Object[] { objects };
 			break;
 
 		case PROJECT_MEMBER:
@@ -147,7 +147,7 @@ public class ProjectController extends Controller {
 				+ " where" 
 					+ " pm.id in (?)";
 
-			parameters = new Object[] { ids };
+			parameters = new Object[] { objects };
 			break;
 
 		case PROJECT_DOCUMENT_CHAPTER:
@@ -165,7 +165,7 @@ public class ProjectController extends Controller {
 				+ " where"
 					+ " type.id in (?)";
 			
-			parameters = new Object[] { getParentType(), user, type, getParentField(), ids };
+			parameters = new Object[] { getParentType(), user, type, getParentField(), objects };
 			break;
 
 		default:
@@ -179,7 +179,7 @@ public class ProjectController extends Controller {
 
 				+ " where"
 					+ " type.id in (?)";
-			parameters = new Object[] { type, user, ids };
+			parameters = new Object[] { type, user, objects };
 			break;
 		}
 

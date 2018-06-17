@@ -40,8 +40,8 @@ public class EmailController extends Controller {
 	public static final String TO = "to";
 	public static final String SUBJECT = "subject";
 	
-	public EmailController(String type, String[] ids, String user, String[] groups, Node nextNode) {
-		super(type, ids, user, groups, nextNode);
+	public EmailController(String type, String[] objects, String user, String[] groups, Node nextNode) {
+		super(type, objects, user, groups, nextNode);
 	}
 
 	@Override

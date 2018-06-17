@@ -115,8 +115,6 @@ public class Constants {
 	public static final String ID = "id";
 	public static final String ID_NAME = "id_name";
 	public static final String ID_TOO_LONG = "id_too_long";
-	public static final String IDS = "ids";
-	public static final String IDS_SELECT = "ids_select";
 	public static final String IGNORED_OBJECTS = "ignored_objects";
 	public static final String IGNORED_TYPES = "ignored_types";
 	public static final String IMAGE = "image";
@@ -217,6 +215,7 @@ public class Constants {
 	public static final String OBJECT_SUCCESSFULLY_UPDATED = "object_successfully_updated";
 	public static final String OBJECTS = "objects";
 	public static final String OBJECTS_DELETE_CONFIRMATION = "objects_delete_confirmation";
+	public static final String OBJECTS_SELECT = "objects_select";
 	public static final String OBJECTS_SUCCESSFULLY_DELETED = "objects_successfully_deleted";
 	public static final String OFFSET = "offset";
 	public static final String OFFSET_TEXT_MODE = "offset_text_mode";

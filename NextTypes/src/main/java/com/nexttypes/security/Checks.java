@@ -117,9 +117,9 @@ public class Checks {
 		checkString(id, ID_ELEMENT_CHECK, Constants.INVALID_ID);
 	}
 
-	public static void checkIds(String[] ids) {
-		if (ids != null) {
-			for (String id : ids) {
+	public static void checkObjects(String[] objects) {
+		if (objects != null) {
+			for (String id : objects) {
 				checkId(id);
 			}
 		}
@@ -200,7 +200,7 @@ public class Checks {
 				if (value instanceof String) {
 					checkId((String) value);
 				} else if (value instanceof String[]) {
-					checkIds((String[]) value);
+					checkObjects((String[]) value);
 				}
 			} else if (!ArrayUtils.contains(FIELD_RESERVED_NAMES, field)) {
 				checkField(field);

@@ -166,9 +166,9 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.DROP_INDEX, thisJoinPoint);
     }
 
-    before(String type, String[] ids) : execution(* Node.delete(..)) && args(type, ids) {
+    before(String type, String[] objects) : execution(* Node.delete(..)) && args(type, objects) {
     	checkType(type);
-    	checkIds(ids);
+    	checkObjects(objects);
     	checkPermissions(type, Action.DELETE, thisJoinPoint);
     }
 
@@ -203,12 +203,12 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(Action.BACKUP, thisJoinPoint);
     }
 
-    before(String type, String[] ids, String lang, LinkedHashMap<String, Order> order) :
+    before(String type, String[] objects, String lang, LinkedHashMap<String, Order> order) :
     	execution(* Node.exportObjects(..))
-		&& args(type, ids, lang, order) {
+		&& args(type, objects, lang, order) {
     	
     	checkType(type);
-    	checkIds(ids);
+    	checkObjects(objects);
     	checkLang(lang);
     	checkOrder(order);
     	checkPermissions(type, Action.EXPORT_OBJECTS, thisJoinPoint);
@@ -231,11 +231,11 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, action, thisJoinPoint);
     }
 
-    before(String type, String[] ids, String action) : execution(* Node.executeAction(..)) 
-		&& args(type, ids, action, ..) {
+    before(String type, String[] objects, String action) : execution(* Node.executeAction(..)) 
+		&& args(type, objects, action, ..) {
 
     	checkType(type);
-    	checkIds(ids);
+    	checkObjects(objects);
     	checkAction(action);
     	checkPermissions(type, action, thisJoinPoint);
     }

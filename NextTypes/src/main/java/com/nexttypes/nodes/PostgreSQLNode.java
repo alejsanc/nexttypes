@@ -1868,10 +1868,10 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public void delete(String type, String... ids) {
-		checkIds(type, ids);
+	public void delete(String type, String... objects) {
+		checkObjects(type, objects);
 
-		execute("delete from \"" + type + "\" where id in(?)", ids.length, new Object[] { ids });
+		execute("delete from \"" + type + "\" where id in(?)", objects.length, new Object[] { objects });
 	}
 
 	@Override
@@ -2178,13 +2178,15 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public ObjectsStream exportObjects(String type, String[] ids, String lang, LinkedHashMap<String, Order> order) {
+	public ObjectsStream exportObjects(String type, String[] objects, String lang,
+			LinkedHashMap<String, Order> order) {
+		
 		checkType(type);
 
 		IdFilter filter = null;
 
-		if (ids != null && ids.length > 0) {
-			filter = new IdFilter(Comparison.EQUAL, ids);
+		if (objects != null && objects.length > 0) {
+			filter = new IdFilter(Comparison.EQUAL, objects);
 		}
 
 		return selectStream(type, null, lang, filter, null, order, true, true, false, true, 0L, 0L);
@@ -3241,7 +3243,7 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public ActionResult executeAction(String type, String[] ids, String action, Object... parameters) {
+	public ActionResult executeAction(String type, String[] objects, String action, Object... parameters) {
 		throw new NotImplementedException();
 	}
 
@@ -3913,9 +3915,8 @@ public class PostgreSQLNode implements Node {
 			throw new NXException(Constants.EMPTY_TYPES_LIST);
 		}
 	}
-
-	protected void checkIds(String type, String[] ids) {
-		if (ids == null || ids.length == 0) {
+	protected void checkObjects(String type, String[] objects) {
+		if (objects == null || objects.length == 0) {
 			throw new TypeException(type, Constants.NO_OBJECTS_SELECTED);
 		}
 	}

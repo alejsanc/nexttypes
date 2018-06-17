@@ -222,7 +222,7 @@ public class HTTPServlet extends HttpServlet {
 	protected void exportObjects(HTTPRequest req, Node nextNode, HttpServletResponse response, Strings strings)
 			throws IOException {
 
-		try (Stream stream = nextNode.exportObjects(req.getType(), req.getIds(), req.getLang(), req.getOrder())) {
+		try (Stream stream = nextNode.exportObjects(req.getType(), req.getObjects(), req.getLang(), req.getOrder())) {
 			Content content = new Content(stream, Format.JSON);
 			content.setHeader(HTTPHeader.CONTENT_DISPOSITION,
 					"attachment; filename=\"" + req.getType() + "." + Format.JSON.getExtension() + "\"");
@@ -315,7 +315,7 @@ public class HTTPServlet extends HttpServlet {
 				break;
 
 			case Action.DELETE:
-				nextNode.delete(req.getType(), req.getIds());
+				nextNode.delete(req.getType(), req.getObjects());
 				content = new Content(strings.gts(req.getType(), Constants.OBJECTS_SUCCESSFULLY_DELETED));
 				break;
 
@@ -352,12 +352,12 @@ public class HTTPServlet extends HttpServlet {
 
 			default:
 				String id = req.getId();
-				String[] ids = id != null ? new String[] { id } : req.getIds();
+				String[] objects = id != null ? new String[] { id } : req.getObjects();
 
 				LinkedHashMap<String, TypeField> fields = nextNode.getActionFields(req.getType(), req.getAction());
 				Object[] values = req.readActionFields(fields);
 
-				Object actionResult = nextNode.executeAction(req.getType(), ids, req.getAction(), values);
+				Object actionResult = nextNode.executeAction(req.getType(), objects, req.getAction(), values);
 				content = new Content(actionResult, Format.JSON);
 				break;
 			}

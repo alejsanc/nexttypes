@@ -159,7 +159,7 @@ public class CalDAVView extends WebDAVView {
 	}
 
 	protected Content report(String type) {
-		ArrayList<String> ids = new ArrayList<>();
+		ArrayList<String> objects = new ArrayList<>();
 
 		try {
 			multiStatus = new MultiStatus();
@@ -177,7 +177,7 @@ public class CalDAVView extends WebDAVView {
 			case "{urn:ietf:params:xml:ns:caldav}calendar-multiget":
 				for (Element element : report.getContentElements(DavConstants.XML_HREF, DavConstants.NAMESPACE)) {
 					String href = element.getTextContent();
-					ids.add((href.substring(href.lastIndexOf("/") + 1, href.length())));
+					objects.add((href.substring(href.lastIndexOf("/") + 1, href.length())));
 				}
 				break;
 			}
@@ -190,9 +190,9 @@ public class CalDAVView extends WebDAVView {
 			String sql = typeSettings.gts(type, Constants.ICAL_SELECT);
 			Object[] parameters = null;
 
-			if (ids.size() > 0) {
+			if (objects.size() > 0) {
 				sql += " where type.id in(?)";
-				parameters = new Object[] { ids.toArray() };
+				parameters = new Object[] { objects.toArray() };
 			}
 
 			Tuple[] resources = nextNode.query(sql, parameters);

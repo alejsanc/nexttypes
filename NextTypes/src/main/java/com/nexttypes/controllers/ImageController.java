@@ -32,17 +32,17 @@ public class ImageController extends Controller {
 	public final String IMAGE_SUCCESSFULLY_RESIZED = "image_successfully_resized";
 	public final String IMAGES_SUCCESSFULLY_RESIZED = "images_successfully_resized";
 
-	public ImageController(String type, String[] ids, String user, String[] groups, Node nextNode) {
-		super(type, ids, user, groups, nextNode);
+	public ImageController(String type, String[] objects, String user, String[] groups, Node nextNode) {
+		super(type, objects, user, groups, nextNode);
 	}
 
 	@Action(RESIZE)
 	public ActionResult resize(Integer width, Integer height) {
-		if (ids == null || ids.length == 0) {
+		if (objects == null || objects.length == 0) {
 			throw new ActionException(type, RESIZE, Constants.NO_OBJECTS_SELECTED);
 		}
 
-		for (String id : ids) {
+		for (String id : objects) {
 			Image image = getImageField(type, id, Constants.IMAGE);
 			if (image != null) {
 				updateField(type, id, Constants.IMAGE, image.resize(width, height));
@@ -51,7 +51,7 @@ public class ImageController extends Controller {
 			}
 		}
 
-		String message = ids.length == 1 ? IMAGE_SUCCESSFULLY_RESIZED : IMAGES_SUCCESSFULLY_RESIZED;
+		String message = objects.length == 1 ? IMAGE_SUCCESSFULLY_RESIZED : IMAGES_SUCCESSFULLY_RESIZED;
 
 		return new ActionResult(strings.gts(type, message));
 	}

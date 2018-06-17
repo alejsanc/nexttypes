@@ -383,8 +383,8 @@ public class ProxyNode implements Node {
 	}
 
 	@Override
-	public void delete(String type, String... ids) {
-		getNextNode(type).delete(type, ids);
+	public void delete(String type, String... objects) {
+		getNextNode(type).delete(type, objects);
 	}
 
 	@Override
@@ -508,8 +508,8 @@ public class ProxyNode implements Node {
 	}
 
 	@Override
-	public ActionResult executeAction(String type, String[] ids, String action, Object... parameters) {
-		return getNextNode(type).executeAction(type, ids, action, parameters);
+	public ActionResult executeAction(String type, String[] objects, String action, Object... parameters) {
+		return getNextNode(type).executeAction(type, objects, action, parameters);
 	}
 
 	@Override
@@ -573,8 +573,8 @@ public class ProxyNode implements Node {
 	}
 
 	@Override
-	public ObjectsStream exportObjects(String type, String[] ids, String lang, LinkedHashMap<String, Order> order) {
-		return nextNode.exportObjects(type, ids, lang, order);
+	public ObjectsStream exportObjects(String type, String[] objects, String lang, LinkedHashMap<String, Order> order) {
+		return nextNode.exportObjects(type, objects, lang, order);
 	}
 
 	@Override
