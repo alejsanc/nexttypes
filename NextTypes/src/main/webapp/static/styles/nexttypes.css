@@ -405,9 +405,21 @@ video {
 	margin-left: 1px;
 }
 
+.reference-output {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-size: 125%;
+}
+
 .field-output {
 	margin-top: 5px;
 	margin-bottom: 5px
+}
+
+.search-output {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-size: 125%;
 }
 
 .center {
@@ -428,15 +440,19 @@ video {
 }
 
 .calendar {
+	margin-top: 10px;
+}
+
+.calendar-month {
 	width: 100%;
 }
 
-.calendar td {
+.calendar-month td {
 	width: 14%;
 	text-align: left;
 }
 
-.calendar a {
+.calendar-month a {
 	color: black;
 	font-size: 75%;
 }

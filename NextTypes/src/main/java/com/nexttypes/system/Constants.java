@@ -60,6 +60,8 @@ public class Constants {
 	public static final String DATE = "date";
 	public static final String DEFAULT_LANG = "default_lang";
 	public static final String DEFAULT_VIEW = "default_view";
+	public static final String DELETE_REFERENCE = "delete_reference";
+	public static final String DELETE_SEARCH = "delete_search";
 	public static final String DESCRIPTION = "description";
 	public static final String DIRECTORY = "directory";
 	public static final String DISALLOWED_ATTRIBUTE = "disallowed_attribute";
@@ -202,6 +204,7 @@ public class Constants {
 	public static final String NEW_PASSWORD = "new_password";
 	public static final String NEW_PASSWORD_REPEAT = "new_password_repeat";
 	public static final String NEXT_NODE = "next_node";
+	public static final String NO_OBJECTS_FOUND = "no_objects_found";
 	public static final String NO_OBJECTS_SELECTED = "no_objects_selected";
 	public static final String NO_TYPES_FOUND = "no_types_found";
 	public static final String NOT_NULL = "not_null";
@@ -259,6 +262,7 @@ public class Constants {
 	public static final String SETTINGS_DIRECTORY = "settings_directory";
 	public static final String SHOW_HEADER = "show_header";
 	public static final String SHOW_ID = "show_id";
+	public static final String SHOW_PREVIEW = "show_preview";
 	public static final String SHOW_PROGRESS = "show_progress";
 	public static final String SHOW_TYPE = "show_type";
 	public static final String SHOW_VALIDATORS = "show_validators";

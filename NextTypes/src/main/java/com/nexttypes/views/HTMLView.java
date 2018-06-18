@@ -16,7 +16,6 @@
 
 package com.nexttypes.views;
 
-import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
@@ -133,6 +132,8 @@ public class HTMLView extends View {
 	public static final String VALIDATORS = "validators";
 
 	//Classes
+	public static final String REFERENCE_OUTPUT = "reference-output";
+	public static final String SEARCH_OUTPUT = "search-output";
 	public static final String SELECT_HEADER = "select-header";
 	public static final String SELECT_HEADER_ANCHOR = "select-header-anchor";
 	public static final String SELECT_MENU = "select-menu";
@@ -160,6 +161,7 @@ public class HTMLView extends View {
 	public static final String SMALL_ICON = "small-icon";
 	public static final String IMAGE = "image";
 	public static final String CALENDAR = "calendar";
+	public static final String CALENDAR_MONTH = "calendar-month";
 	public static final String CALENDAR_DAY = "calendar-day";
 	public static final String CALENDAR_TODAY = "calendar-today";
 	public static final String YEARS = "years";
@@ -818,7 +820,7 @@ public class HTMLView extends View {
 			setTitle(Utils.format(title, typeName));
 
 			if (search != null) {
-				main.appendElement(HTML.H2).appendText(strings.gts(type, Constants.SEARCH) + ": " + search);
+				main.appendElement(searchOutput(type, lang, view, ref, search));
 			}
 
 			main.appendElement(select);
@@ -836,7 +838,17 @@ public class HTMLView extends View {
 		}
 
 		return content;
-
+	}
+	
+	public Element searchOutput(String type, String lang, String view, FieldReference ref, String search) {
+		Element div = document.createElement(HTML.DIV).setClass(SEARCH_OUTPUT);
+		div.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.SEARCH) + ": ");
+		div.appendText(search);
+		
+		String uri = uri(type, lang, view) + refParam(ref) + previewParam();
+				
+		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_SEARCH), uri, Icon.DELETE));
+		return div;
 	}
 
 	@Override
@@ -1119,9 +1131,10 @@ public class HTMLView extends View {
 		logo(type, lang, view);
 		user(type, lang, view);
 		langs(lang);
-		search(type, lang, view, request.getSearch());
+		search(type, lang, view, request.getRef(), request.getSearch());
 		menu(type, lang, view);
-		typeMenu(type, request.getId(), lang, view, request.getRef(), request.isComponent());
+		typeMenu(type, request.getId(), lang, view, request.getRef(), request.getSearch(), 
+				request.isComponent());
 		rss(type, lang);
 		actions(type, request.getId(), lang, view);
 		qrcode(type, request.getId());
@@ -1162,14 +1175,15 @@ public class HTMLView extends View {
 			selectHeader.appendElement(HTML.STRONG).appendText(title);
 			selectHeader.appendText(" " + count + " " + strings.gts(type, Constants.OBJECTS));
 			selectHeader.appendElement(HTML.NAV).setClass(SELECT_MENU)
-					.appendElements(htmlView.typeMenuElements(type, null, lang, view, ref, component));
+					.appendElements(htmlView.typeMenuElements(type, null, lang, view, ref, search, component));
 		} else {
 			htmlView = this;
-			select.appendElement(HTML.P).appendText(" " + count + " " + strings.gts(type, Constants.OBJECTS));
-
+			
 			if (ref != null) {
-				select.appendElement(reference(type, ref, lang, view));
+				select.appendElement(referenceOutput(type, lang, view, ref, search ));
 			}
+			
+			select.appendElement(HTML.P).appendText(" " + count + " " + strings.gts(type, Constants.OBJECTS));
 		}
 
 		LinkedHashMap<String, TypeField> referenceTypeFields = nextNode.getTypeFields(type);
@@ -1183,13 +1197,19 @@ public class HTMLView extends View {
 		return select;
 	}
 
-	public Element reference(String type, FieldReference ref, String lang, String view) {
+	public Element referenceOutput(String type, String lang, String view, FieldReference ref,
+			String search) {
+		
 		String refType = nextNode.getTypeField(type, ref.getField()).getType();
 
-		Element h2 = document.createElement(HTML.H2);
-		h2.appendText(ref.getField() + ": ");
-		h2.appendElement(anchor(nextNode.getName(refType, ref.getId(), lang), uri(refType, ref.getId(), lang, view)));
-		return h2;
+		Element div = document.createElement(HTML.DIV).setClass(REFERENCE_OUTPUT);
+		div.appendElement(HTML.STRONG).appendText(strings.getFieldName(type, ref.getField()) + ": ");
+		div.appendElement(anchor(nextNode.getName(refType, ref.getId(), lang), uri(refType, ref.getId(), lang, view)));
+		
+		String uri = uri(type, lang, view) + searchParam(search);
+		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_REFERENCE), uri, Icon.DELETE));
+		
+		return div;
 	}
 
 	public Element downReferences(String refType, String refId, String lang, String view) {
@@ -2159,7 +2179,7 @@ public class HTMLView extends View {
 	public String selectTableURI(String type, String lang, String view, FieldReference ref, String search, String order,
 			Long offset, Long limit) {
 
-		return uri(type, lang, view) + refParam(ref) + param(Constants.SEARCH, search) + param(Constants.ORDER, order)
+		return uri(type, lang, view) + refParam(ref) + searchParam(search) + param(Constants.ORDER, order)
 				+ param(Constants.OFFSET, offset) + param(Constants.LIMIT, limit);
 	}
 
@@ -2172,7 +2192,15 @@ public class HTMLView extends View {
 	}
 
 	public String formParam(String action) {
-		return "&" + Constants.FORM + "=" + action;
+		return param(Constants.FORM, action);
+	}
+	
+	public String previewParam() {
+		return request.isPreview() ? "&" + Action.PREVIEW : "";
+	}
+	
+	public String searchParam(String search) {
+		return param(Constants.SEARCH, search);
 	}
 
 	public String orderParam(LinkedHashMap<String, Order> order) {
@@ -2397,9 +2425,8 @@ public class HTMLView extends View {
 		return anchor;
 	}
 
-	public Element iconAnchor(String text, String href, String image) {
-		Element anchor = imageAnchor(text, href, "/static/icons/" + image + ".svg").setClass(ICON);
-		return anchor;
+	public Element iconAnchor(String text, String href, String icon) {
+		return imageAnchor(text, href, "/static/icons/" + icon + ".svg").setClass(ICON);
 	}
 
 	public Element logoAnchor(String type, String lang, String view) {
@@ -2476,12 +2503,13 @@ public class HTMLView extends View {
 	}
 
 	public Element[] typeMenuElements(String type, String id, String lang, String view, FieldReference ref,
-			boolean component) {
+			String search, boolean component) {
 		Form form = request.getForm();
 
 		ArrayList<Element> elements = new ArrayList<>();
 
 		String refParam = refParam(ref);
+		String searchParam = param(Constants.SEARCH, search);
 
 		if (id != null && form != null) {
 			elements.add(iconAnchor(strings.gts(type, Constants.VIEW), uri(type, id, lang, view) + refParam,
@@ -2493,31 +2521,19 @@ public class HTMLView extends View {
 					uri(type, lang, view) + formParam(Action.INSERT) + refParam, Icon.PLUS));
 		}
 
-		if (id != null || form != null || ref != null || request.isInfo() || request.isPreview()
+		if (id != null || form != null || component || request.isInfo() || request.isPreview()
 				|| request.isCalendar()) {
 
-			String uri = uri(type, lang, view);
-
-			if (form != null || component || request.isCalendar()) {
-				uri += refParam;
-			}
+			String uri = uri(type, lang, view) + refParam + searchParam;
 
 			elements.add(iconAnchor(strings.gts(type, Constants.LIST), uri, Icon.LIST));
 		}
 
-		if (!request.isPreview()) {
-			boolean previewMethod = false;
-
-			for (Method method : getClass().getDeclaredMethods()) {
-				if (Action.PREVIEW.equals(method.getName())) {
-					previewMethod = true;
-				}
-			}
-
-			if (previewMethod) {
-				elements.add(iconAnchor(strings.getActionName(type, Action.PREVIEW),
-						uri(type, lang, view) + "&" + Action.PREVIEW, Icon.LIST_RICH));
-			}
+		if (typeSettings.getTypeBoolean(type, Constants.SHOW_PREVIEW) && !request.isPreview()) {
+			
+			String uri = uri(type, lang, view) + "&" + Action.PREVIEW + searchParam;
+							
+			elements.add(iconAnchor(strings.getActionName(type, Action.PREVIEW), uri, Icon.LIST_RICH));
 		}
 
 		if (id == null && !Form.ALTER.equals(form)) {
@@ -2547,15 +2563,11 @@ public class HTMLView extends View {
 			elements.add(iconAnchor(ICALENDAR, uri(type, lang, Constants.ICAL) + refParam, Icon.FILE));
 		}
 
-		if (!request.isCalendar() || ref != null) {
+		if (!request.isCalendar()) {
 			String calendarSelect = typeSettings.gts(type, Constants.CALENDAR_SELECT);
 
 			if (calendarSelect != null) {
-				String uri = uri(type, lang, view) + "&" + Action.CALENDAR;
-
-				if (!request.isCalendar()) {
-					uri += refParam;
-				}
+				String uri = uri(type, lang, view) + "&" + Action.CALENDAR + refParam;
 
 				elements.add(iconAnchor(strings.getActionName(type, Action.CALENDAR), uri, Icon.CALENDAR));
 			}
@@ -2864,7 +2876,7 @@ public class HTMLView extends View {
 		}
 	}
 
-	public void search(String type, String lang, String view, String search) {
+	public void search(String type, String lang, String view, FieldReference ref, String search) {
 		if (type != null) {
 			Element form = document.getElementById(Constants.SEARCH);
 
@@ -2876,6 +2888,15 @@ public class HTMLView extends View {
 				form.appendElement(input(HTML.HIDDEN, Constants.LANG, null, lang));
 				form.appendElement(input(HTML.HIDDEN, Constants.VIEW, null, view));
 				form.appendElement(input(HTML.SEARCH, Constants.SEARCH, searchName, search));
+				
+				if (request.isPreview()) {
+					form.appendElement(input(HTML.HIDDEN, Action.PREVIEW, null, Action.PREVIEW));
+				}
+				
+				if (ref != null) {
+					form.appendElement(input(HTML.HIDDEN, Constants.REF, null, 
+							ref.getField() + ":" + ref.getId()));
+				}
 
 				form.appendElement(document.createElement(HTML.BUTTON)
 						.setAttribute(HTML.TYPE, HTML.SUBMIT)
@@ -2884,12 +2905,13 @@ public class HTMLView extends View {
 		}
 	}
 
-	public void typeMenu(String type, String id, String lang, String view, FieldReference ref, boolean component) {
+	public void typeMenu(String type, String id, String lang, String view, FieldReference ref,
+			String search, boolean component) {
 		if (type != null) {
 			Element typeMenu = document.getElementById(TYPE_MENU);
 
 			if (typeMenu != null) {
-				typeMenu.appendElements(typeMenuElements(type, id, lang, view, ref, component));
+				typeMenu.appendElements(typeMenuElements(type, id, lang, view, ref, search, component));
 			}
 		}
 	}
@@ -3116,7 +3138,7 @@ public class HTMLView extends View {
 		parameters.add(lastDate);
 
 		if (ref != null) {
-			main.appendElement(reference(type, ref, lang, view));
+			main.appendElement(referenceOutput(type, lang, view, ref, null));
 
 			filters.append(" and # = ?");
 			parameters.add(ref.getField());
@@ -3133,7 +3155,7 @@ public class HTMLView extends View {
 	public Element calendar(String type, String lang, String view, FieldReference ref, Month month, LocalDate today,
 			LocalDate date, Tuple[] events, LocalDate firstDate) {
 
-		Element calendar = document.createElement(HTML.DIV);
+		Element calendar = document.createElement(HTML.DIV).setClass(CALENDAR);
 
 		Map<LocalDate, List<Tuple>> eventsByDate = Arrays.stream(events)
 				.collect(Collectors.groupingBy(event -> event.getDate(Constants.DATE)));
@@ -3147,9 +3169,8 @@ public class HTMLView extends View {
 	public Element month(String type, String lang, String view, Month month, LocalDate today, LocalDate date,
 			Map<LocalDate, List<Tuple>> eventsByDate) {
 
-		Element monthElement = document.createElement(HTML.TABLE);
+		Element monthElement = document.createElement(HTML.TABLE).setClass(CALENDAR_MONTH);
 
-		monthElement.setClass(CALENDAR);
 		monthElement.appendElement(monthHead(lang));
 		Element tbody = monthElement.appendElement(HTML.TBODY);
 

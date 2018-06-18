@@ -102,7 +102,7 @@ public class ArticleView extends HTMLView {
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
 		loadTemplate(type, lang, view);
-
+			
 		StringBuilder sql = new StringBuilder(
 				"select"
 						+ " a.id,"
@@ -129,30 +129,43 @@ public class ArticleView extends HTMLView {
 		parameters.add(lang);
 
 		if (ref != null && ref.getField().equals(CATEGORY)) {
+			setTitle(nextNode.getString("select name from category_language where category = ?"
+					+ " and language = ?", ref.getId(), lang));
+			
 			sql.append(" join article_category ac on (a.id = ac.article and ac.category = ?)");
 			parameters.add(ref.getId());
 		}
+		
+		if (search != null) {
+			main.appendElement(searchOutput(type, lang, view, ref, search));
+		}
+
 
 		Tuples tuples = nextNode.select(type, sql, parameters, null, search, new String[] { "al.title", "al.text" },
 				"cdate desc", offset, limit);
 
-		for (Tuple tuple : tuples.getItems()) {
-			String id = tuple.getString(Constants.ID);
-			String title = tuple.getString(Constants.TITLE);
-			String uri = uri(type, id, lang, view);
+		if (tuples.getCount() > 0) {
+		
+			for (Tuple tuple : tuples.getItems()) {
+				String id = tuple.getString(Constants.ID);
+				String title = tuple.getString(Constants.TITLE);
+				String uri = uri(type, id, lang, view);
 
-			Element article = main.appendElement(HTML.DIV).setClass(Constants.PREVIEW);
-			article.appendElement(imageAnchor(title, uri, tuple.getString(Constants.IMAGE_TYPE),
+				Element article = main.appendElement(HTML.DIV).setClass(Constants.PREVIEW);
+				article.appendElement(imageAnchor(title, uri, tuple.getString(Constants.IMAGE_TYPE),
 					tuple.getString(Constants.IMAGE_ID), IMAGE));
-			article.appendElement(time(tuple.getDatetime(Constants.CDATE)));
-			article.appendElement(HTML.H2).appendText(title);
-			article.appendElement(HTML.P).appendText(tuple.getHTMLText(Constants.TEXT) + " ... ")
+				article.appendElement(time(tuple.getDatetime(Constants.CDATE)));
+				article.appendElement(HTML.H2).appendText(title);
+				article.appendElement(HTML.P).appendText(tuple.getHTMLText(Constants.TEXT) + " ... ")
 					.appendElement(anchor(strings.gts(type, Constants.READ_MORE), uri));
-		}
+			}
 
-		main.appendElement(selectTableIndex(type, lang, view, tuples.getCount(), tuples.getOffset(), tuples.getLimit(),
+			main.appendElement(selectTableIndex(type, lang, view, tuples.getCount(), tuples.getOffset(), tuples.getLimit(),
 				tuples.getMinLimit(), tuples.getMaxLimit(), tuples.getLimitIncrement(), ref, search, orderParam(order),
 				false));
+		} else {
+			main.appendElement(HTML.P).appendText(strings.gts(Constants.NO_OBJECTS_FOUND));
+		}
 
 		return render(type);
 	}
