@@ -17,6 +17,7 @@
 package com.nexttypes.protocol.http;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.cert.X509Certificate;
 import java.time.ZonedDateTime;
@@ -756,6 +757,7 @@ public class HTTPServlet extends HttpServlet {
 		String user = Auth.GUEST;
 
 		try {
+			request.setCharacterEncoding(Constants.UTF_8_CHARSET);
 			response.setCharacterEncoding(Constants.UTF_8_CHARSET);
 
 			Content content = maxRequestsExceeded(request);

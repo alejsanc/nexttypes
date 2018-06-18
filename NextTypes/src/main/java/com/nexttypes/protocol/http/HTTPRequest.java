@@ -18,7 +18,6 @@ package com.nexttypes.protocol.http;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.time.Month;
 import java.time.Year;
@@ -146,12 +145,6 @@ public class HTTPRequest {
 		remoteAddress = request.getRemoteAddr();
 		session = request.getSession();
 		secure = request.isSecure();
-
-		try {
-			request.setCharacterEncoding(Constants.UTF_8_CHARSET);
-		} catch (UnsupportedEncodingException e) {
-			throw new NXException(e);
-		}
 
 		requestMethod = HTTPMethod.valueOf(request.getMethod());
 
