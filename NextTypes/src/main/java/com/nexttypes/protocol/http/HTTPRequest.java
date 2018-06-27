@@ -41,6 +41,7 @@ import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.File;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.PT;
@@ -50,6 +51,7 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.URI;
 import com.nexttypes.datatypes.Video;
+import com.nexttypes.enums.Comparison;
 import com.nexttypes.enums.Form;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.IndexMode;
@@ -57,6 +59,7 @@ import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.IndexException;
+import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.security.Checks;
 import com.nexttypes.security.Security;
@@ -71,13 +74,14 @@ import com.nexttypes.system.Utils;
 public class HTTPRequest {
 
 	protected static final String[] REQUEST_PARAMETERS = new String[] { Constants.TYPE, Constants.TYPES,
-			Constants.ADATE, Constants.ID, Constants.UDATE, Constants.OBJECTS, Constants.NEW_ID, Constants.NEW_NAME,
-			Constants.EXISTING_TYPES_ACTION, Constants.EXISTING_OBJECTS_ACTION, Constants.OFFSET, Constants.LIMIT,
-			Constants.ORDER, Constants.SEARCH, Constants.CURRENT_PASSWORD, Constants.NEW_PASSWORD,
-			Constants.NEW_PASSWORD_REPEAT, Constants.VIEW, Constants.REF, Constants.FORM, Constants.YEAR,
-			Constants.MONTH, Constants.TYPE_ACTION, Constants.LOGIN_USER, Constants.LOGIN_PASSWORD, Constants.COMPONENT,
-			Constants.INCLUDE_OBJECTS, Constants.INFO, Constants.NAMES, Constants.CALENDAR, Constants.PREVIEW,
-			Constants.REFERENCES };
+			Constants.ADATE, Constants.ID, Constants.UDATE, Constants.OBJECTS, Constants.NEW_ID,
+			Constants.NEW_NAME, Constants.EXISTING_TYPES_ACTION, Constants.EXISTING_OBJECTS_ACTION,
+			Constants.OFFSET, Constants.LIMIT, Constants.ORDER, Constants.SEARCH,
+			Constants.CURRENT_PASSWORD, Constants.NEW_PASSWORD, Constants.NEW_PASSWORD_REPEAT,
+			Constants.VIEW, Constants.REF, Constants.FORM, Constants.YEAR, Constants.MONTH,
+			Constants.TYPE_ACTION, Constants.LOGIN_USER, Constants.LOGIN_PASSWORD, 
+			Constants.COMPONENT, Constants.INCLUDE_OBJECTS, Constants.INFO, Constants.NAMES,
+			Constants.CALENDAR, Constants.PREVIEW, Constants.REFERENCES, Action.FILTER_COMPONENT };
 
 	protected Settings settings;
 	protected TypeSettings typeSettings;
@@ -123,6 +127,7 @@ public class HTTPRequest {
 	protected String login_user;
 	protected String login_password;
 	protected boolean component = false;
+	protected Integer filter_component;
 	protected boolean include_objects = false;
 	protected boolean info = false;
 	protected boolean names = false;
@@ -130,7 +135,7 @@ public class HTTPRequest {
 	protected boolean preview = false;
 	protected boolean calendar = false;
 
-	protected LinkedHashMap<String, LinkedHashMap<String, HashMap<String, String>>> compoundParameters;
+	protected LinkedHashMap<String, LinkedHashMap<String, HashMap<String, String>>> compositeParameters;
 
 	public HTTPRequest(HttpServletRequest request, Settings settings, Context context, String lang, Strings strings,
 			Auth user, URI uri) {
@@ -158,7 +163,7 @@ public class HTTPRequest {
 
 		fields = new HTTPRequestParameters();
 		parameters = new HTTPRequestParameters();
-		compoundParameters = new LinkedHashMap<>();
+		compositeParameters = new LinkedHashMap<>();
 
 		readParameters();
 
@@ -263,6 +268,8 @@ public class HTTPRequest {
 						if (tmp != null && tmp.length() > 0) {
 							if (fieldType == String.class) {
 								value = tmp;
+							} else if (fieldType == Integer.class) {
+								value = Integer.parseInt(tmp);
 							} else if (fieldType == Long.class) {
 								value = Long.parseLong(tmp);
 							} else if (fieldType == Month.class) {
@@ -276,7 +283,7 @@ public class HTTPRequest {
 								value = new FieldReference(fieldId[0], null, fieldId[1]);
 							} else if (fieldType == ZonedDateTime.class) {
 								value = ZonedDateTime.parse(tmp);
-							} else if (parameterName.equals("order")) {
+							} else if (parameterName.equals(Constants.ORDER)) {
 								value = Utils.parserOrderString(tmp);
 							}
 						}
@@ -289,7 +296,7 @@ public class HTTPRequest {
 
 			} else {
 				if (parameterName.contains(":")) {
-					parseCompoundParameter(parameterName);
+					parseCompositeParameter(parameterName);
 				} else {
 					String[] parameterValues = request.getParameterValues(parameterName);
 					if (parameterName.startsWith("@")) {
@@ -302,15 +309,21 @@ public class HTTPRequest {
 		}
 	}
 
-	protected void parseCompoundParameter(String parameterName) {
+	protected void parseCompositeParameter(String parameterName) {
 		String value = request.getParameter(parameterName);
-		if (value != null && value.length() > 0) {
+		if (value != null) {
+			value = value.trim();
+			
+			if (value.length() == 0) {
+				value = null;
+			}
+			
 			String[] parameter = parameterName.split(":");
 
-			LinkedHashMap<String, HashMap<String, String>> name = compoundParameters.get(parameter[0]);
+			LinkedHashMap<String, HashMap<String, String>> name = compositeParameters.get(parameter[0]);
 			if (name == null) {
 				name = new LinkedHashMap<>();
-				compoundParameters.put(parameter[0], name);
+				compositeParameters.put(parameter[0], name);
 			}
 
 			HashMap<String, String> number = name.get(parameter[1]);
@@ -333,9 +346,9 @@ public class HTTPRequest {
 			TypeField typeField = entry.getValue();
 			String fieldType = typeField.getType();
 
-			if (ArrayUtils.contains(PT.BINARY_TYPES, fieldType)) {
+			if (PT.isBinaryType(fieldType)) {
 
-				Object value = readField(fieldType, field);
+				Object value = readField(field, fieldType);
 
 				if (value != null) {
 					object.put(field, value);
@@ -347,7 +360,7 @@ public class HTTPRequest {
 					throw new FieldException(type, field, Constants.PASSWORD_FIELD_UPDATE);
 				}
 
-				object.put(field, readField(fieldType, field));
+				object.put(field, readField(field, fieldType));
 			}
 		}
 
@@ -369,24 +382,28 @@ public class HTTPRequest {
 		}
 	}
 
-	public Object[] readActionFields(LinkedHashMap<String, TypeField> fields) {
-		if (fields == null) {
+	public Object[] readActionFields(LinkedHashMap<String, TypeField> typeFields) {
+		if (typeFields == null) {
 			throw new ActionNotFoundException(type, type_action);
 		}
 
 		ArrayList<Object> values = new ArrayList<>();
 
-		for (Map.Entry<String, TypeField> entry : fields.entrySet()) {
-			values.add(readField(entry.getValue().getType(), entry.getKey()));
+		for (Map.Entry<String, TypeField> entry : typeFields.entrySet()) {
+			values.add(readField(entry.getKey(), entry.getValue().getType()));
 		}
 
 		return values.toArray();
 	}
 
-	protected Object readField(String type, String field) {
+	protected Object readField(String field, String fieldType) {
+		return readField(fields, field, fieldType);
+	}
+	
+	protected Object readField(Tuple fields, String field, String fieldType) {
 		Object value = null;
 
-		switch (type) {
+		switch (fieldType) {
 		case PT.HTML:
 			value = fields.getHTML(field, lang, typeSettings.getFieldString(type, field, Constants.HTML_ALLOWED_TAGS));
 			break;
@@ -462,13 +479,104 @@ public class HTTPRequest {
 
 		return value;
 	}
+	
+	public Filter[] readFilters(LinkedHashMap<String, TypeField> typeFields) {
+		ArrayList<Filter> filters = new ArrayList<>();
+		
+		LinkedHashMap<String, HashMap<String, String>> filtersParameters = 
+				compositeParameters.get(Constants.FILTERS);
+		
+		if (filtersParameters != null) {
+		
+			for(Map.Entry<String, HashMap<String, String>> entry : filtersParameters.entrySet()) {
+			
+				HashMap<String, String> filterParameters = entry.getValue();
+			
+				String field = filterParameters.get(Constants.FIELD);
+				Comparison comparison = Comparison.valueOf(
+						filterParameters.get(Constants.COMPARISON).toUpperCase());
+			
+				Object value = filterParameters.get(Constants.VALUE);
+				
+				if (!Constants.ID.equals(field)) {
+					String fieldType = typeFields.get(field).getType();
+				
+					if (PT.isPrimitiveType(fieldType) && !PT.isFilterType(fieldType)) {
+						throw new InvalidValueException(Constants.INVALID_FILTER_TYPE, fieldType);
+					}
+				
+					switch(fieldType) {
+					case PT.INT16:
+						value = Tuple.parseInt16(value);
+						break;
+					
+					case PT.INT32:
+						value = Tuple.parseInt32(value);
+						break;
+					
+					case PT.INT64:
+						value = Tuple.parseInt64(value);
+						break;
+					
+					case PT.FLOAT32:
+						value = Tuple.parseFloat32(value);
+						break;
+					
+					case PT.FLOAT64:
+						value = Tuple.parseFloat64(value);
+						break;
+					
+					case PT.NUMERIC:
+						value = Tuple.parseNumeric(value);
+						break;
+					
+					case PT.BOOLEAN:
+						value = Tuple.parseBoolean(value);
+						break;
+					
+					case PT.COLOR:
+						value = Tuple.parseColor(value);
+						break;
+					
+					case PT.DATE:
+						value = Tuple.parseDate(value);
+						break;
+					
+					case PT.TIME:
+						value = Tuple.parseTime(value);
+						break;
+					
+					case PT.TIMEZONE:
+						value = Tuple.parseTimezone(value);
+						break;
+					
+					case PT.DATETIME:
+						value = Tuple.parseDatetime(value);
+						break;
+					
+					case PT.EMAIL:
+						value = Tuple.parseEmail(value);
+						break;
+					
+					case PT.URI:
+						value = Tuple.parseURI(value);
+						break;					
+					}
+				}
+			
+				filters.add(new Filter(field, comparison, value, true));
+			}
+		}
+		
+		return filters.toArray(new Filter[] {});
+	}
 
 	public Type readType() {
 		Type typeObject = new Type(type);
 		LinkedHashMap<String, TypeField> typeObjectFields = typeObject.getFields();
 		LinkedHashMap<String, TypeIndex> typeObjectIndexes = typeObject.getIndexes();
 
-		LinkedHashMap<String, HashMap<String, String>> fields = compoundParameters.get(Constants.FIELDS);
+		LinkedHashMap<String, HashMap<String, String>> fields = compositeParameters.get(Constants.FIELDS);
 
 		if (fields != null) {
 			for (Map.Entry<String, HashMap<String, String>> entry : fields.entrySet()) {
@@ -490,7 +598,7 @@ public class HTTPRequest {
 			}
 		}
 
-		LinkedHashMap<String, HashMap<String, String>> indexes = compoundParameters.get(Constants.INDEXES);
+		LinkedHashMap<String, HashMap<String, String>> indexes = compositeParameters.get(Constants.INDEXES);
 
 		if (indexes != null) {
 			for (Map.Entry<String, HashMap<String, String>> entry : indexes.entrySet()) {
@@ -573,6 +681,10 @@ public class HTTPRequest {
 
 	public boolean isComponent() {
 		return component;
+	}
+	
+	public Integer getFilterComponent() {
+		return filter_component;
 	}
 
 	public boolean includeObjects() {
@@ -739,12 +851,22 @@ public class HTTPRequest {
 
 		@Override
 		public Object get(String field) {
-			String[] value = (String[]) fields.get(field);
-			if (value != null && value.length > 0 && value[0] != null && value[0].length() > 0) {
-				return value[0];
-			} else {
-				return null;
-			}
+			String value = null;
+			String[] values = (String[]) fields.get(field);
+			
+			if (values != null && values.length > 0) {
+				value = values[0];
+				
+				if (value != null) {
+					value = value.trim();
+				
+					if (value.length() == 0) {
+						value = null;
+					}
+				}
+			} 
+			
+			return value;
 		}
 
 		@Override

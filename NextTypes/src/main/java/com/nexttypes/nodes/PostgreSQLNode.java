@@ -63,7 +63,7 @@ import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.DocumentPreview;
-import com.nexttypes.datatypes.FieldFilter;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.FieldInfo;
 import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.HTMLFragment;
@@ -112,7 +112,6 @@ import com.nexttypes.exceptions.TypeNotFoundException;
 import com.nexttypes.interfaces.ComplexType;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
-import com.nexttypes.interfaces.QueryFilter;
 import com.nexttypes.interfaces.TuplesStream;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.logging.Logger;
@@ -469,7 +468,7 @@ public class PostgreSQLNode implements Node {
 
 			}
 
-			if (single && !ArrayUtils.contains(PT.PRIMITIVE_TYPES, fieldType)) {
+			if (single && !PT.isPrimitiveType(fieldType)) {
 				sql.append(", constraint " + typeName + "_" + field + " foreign key (\"" + field + "\")"
 						+ " references \"" + fieldType + "\"(id) on update cascade deferrable initially immediate");
 			}
@@ -543,7 +542,7 @@ public class PostgreSQLNode implements Node {
 
 		setFieldType(type, field, fieldType);
 
-		if (addReferences && !ArrayUtils.contains(PT.PRIMITIVE_TYPES, fieldType)) {
+		if (addReferences && !PT.isPrimitiveType(fieldType)) {
 			addReference(type, field, fieldType);
 		}
 
@@ -643,7 +642,7 @@ public class PostgreSQLNode implements Node {
 		if (!fieldType.equals(nodeFieldType)) {
 			setFieldType(type, field, fieldType);
 
-			if (!ArrayUtils.contains(PT.PRIMITIVE_TYPES, nodeFieldType)) {
+			if (!PT.isPrimitiveType(nodeFieldType)) {
 				dropReference(type, field);
 			}
 
@@ -660,7 +659,7 @@ public class PostgreSQLNode implements Node {
 			execute("alter table \"" + type + "\" alter column \"" + field + "\" type "
 					+ sqlType(fieldType, sqlParameters(fieldParameters)));
 
-			if (addReferences && result.isTypeAltered() && !ArrayUtils.contains(PT.PRIMITIVE_TYPES, fieldType)) {
+			if (addReferences && result.isTypeAltered() && !PT.isPrimitiveType(fieldType)) {
 				addReference(type, field, fieldType);
 			}
 		}
@@ -1048,7 +1047,7 @@ public class PostgreSQLNode implements Node {
 	}
 
 	protected void checkNumericField(NXObject object, String field, String fieldType) {
-		if (ArrayUtils.contains(PT.NUMERIC_TYPES, fieldType)) {
+		if (PT.isNumericType(fieldType)) {
 			String type = object.getType();
 			BigDecimal value = object.getNumeric(field);
 
@@ -1355,32 +1354,32 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Objects select(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		QueryFilter[] filters = filter != null ? new QueryFilter[] { filter } : null;
+		Filter[] filters = filter != null ? new Filter[] { filter } : null;
 		return select(type, fields, lang, filters, search, order, false, false, true, false, offset, limit);
 	}
 
 	@Override
-	public Objects select(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 
-		QueryFilter[] filters = filter != null ? new QueryFilter[] { filter } : null;
+		Filter[] filters = filter != null ? new Filter[] { filter } : null;
 
 		return select(type, fields, lang, filters, search, order, fulltext, binary, documentPreview, password, offset,
 				limit);
 	}
 
 	@Override
-	public Objects select(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
 		return select(type, fields, lang, filters, search, order, false, false, true, false, offset, limit);
 	}
 
 	@Override
-	public Objects select(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 
@@ -1391,19 +1390,23 @@ public class PostgreSQLNode implements Node {
 			SelectQuery query = new SelectQuery(type, fields, lang, filters, search, order, fulltext, binary,
 					documentPreview, password, offset, limit);
 
-			Tuple[] tuples = query(query.getSQL(), query.getParameters());
+			if (query.getCount() > 0) {
+			
+				Tuple[] tuples = query(query.getSQL(), query.getParameters());
 
-			ArrayList<NXObject> items = new ArrayList<NXObject>();
+				ArrayList<NXObject> items = new ArrayList<NXObject>();
 
-			for (Tuple tuple : tuples) {
-				items.add(getObject(type, query.getTypeFields(), fulltext, binary, documentPreview, tuple));
-			}
+				for (Tuple tuple : tuples) {
+					items.add(getObject(type, query.getTypeFields(), fulltext, binary, documentPreview, tuple));
+				}
 
-			objects = new Objects(items.toArray(new NXObject[] {}), query.getCount(), query.getOffset(),
+				objects = new Objects(items.toArray(new NXObject[] {}), query.getCount(), query.getOffset(),
 					query.getLimit(), query.getMinLimit(), query.getMaxLimit(), query.getLimitIncrement());
-
+			} else {
+				objects = new Objects();
+			}
 		} catch (FulltextIndexNotFoundException e) {
-			objects = new Objects(null, 0L, null, null, null, null, null);
+			objects = new Objects();
 		}
 
 		return objects;
@@ -1413,45 +1416,65 @@ public class PostgreSQLNode implements Node {
 	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
 			String[] searchFields, String order, Long offset, Long limit) {
 
+		Tuples tuples = null;
+		
 		SelectQuery query = new SelectQuery(type, sql, parameters, filters, search, searchFields, order, offset, limit);
 
-		return new Tuples(query(query.getSQL(), query.getParameters()), query.getCount(), query.getOffset(),
+		if (query.getCount() > 0) {
+		
+			tuples = new Tuples(query(query.getSQL(), query.getParameters()), query.getCount(), query.getOffset(),
 				query.getLimit(), query.getMinLimit(), query.getMaxLimit(), query.getLimitIncrement());
+		} else {
+			tuples = new Tuples();
+		}
+		
+		return tuples;
 	}
 
 	@Override
 	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order) {
 
+		Tuple[] tuples = null;
+		
 		SelectQuery query = new SelectQuery(type, sql, parameters, filters, order);
 
-		return query(query.getSQL(), query.getParameters());
+		if (query.getCount() > 0) {
+		
+			tuples = query(query.getSQL(), query.getParameters());
+		
+		} else {
+			
+			tuples = new Tuple[] {};
+		}
+		
+		return tuples;
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		QueryFilter[] filters = filter != null ? new QueryFilter[] { filter } : null;
+		Filter[] filters = filter != null ? new Filter[] { filter } : null;
 		return selectStream(type, fields, lang, filters, search, order, false, false, true, false, offset, limit);
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 
-		QueryFilter[] filters = filter != null ? new QueryFilter[] { filter } : null;
+		Filter[] filters = filter != null ? new Filter[] { filter } : null;
 		return selectStream(type, fields, lang, filters, search, order, fulltext, binary, documentPreview, password,
 				offset, limit);
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return selectStream(type, fields, lang, filters, search, order, false, false, true, false, offset, limit);
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 
@@ -1460,9 +1483,12 @@ public class PostgreSQLNode implements Node {
 		try {
 			SelectQuery query = new SelectQuery(type, fields, lang, filters, search, order, fulltext, binary,
 					documentPreview, password, offset, limit);
-			TuplesStream tuples = new SQLTuplesStream(query.getSQL(), query.getParameters());
-			objects = new PostgreSQLObjectsStream(type, query.getTypeFields(), fulltext, binary, documentPreview,
+			
+			if (query.getCount() > 0) {
+				TuplesStream tuples = new SQLTuplesStream(query.getSQL(), query.getParameters());
+				objects = new PostgreSQLObjectsStream(type, query.getTypeFields(), fulltext, binary, documentPreview,
 					query.getCount(), tuples);
+			}
 		} catch (FulltextIndexNotFoundException e) {
 
 		}
@@ -2131,26 +2157,26 @@ public class PostgreSQLNode implements Node {
 
 	@Override
 	public TypesStream backup(String lang, boolean full) {
-		FieldFilter filter = full ? null : new FieldFilter(Constants.BACKUP, Comparison.EQUAL, false);
+		Filter filter = full ? null : new Filter(Constants.BACKUP, Comparison.EQUAL, false, true);
 
 		return new BackupStream(exportTypes(getTypesName(), lang, filter, true));
 	}
 
 	@Override
 	public TypesStream exportTypes(String[] types, String lang, boolean includeObjects) {
-		return exportTypes(types, lang, (QueryFilter[]) null, includeObjects);
+		return exportTypes(types, lang, (Filter[]) null, includeObjects);
 	}
 
 	@Override
-	public TypesStream exportTypes(String[] types, String lang, QueryFilter filter, boolean includeObjects) {
+	public TypesStream exportTypes(String[] types, String lang, Filter filter, boolean includeObjects) {
 
-		QueryFilter[] filters = filter != null ? new QueryFilter[] { filter } : null;
+		Filter[] filters = filter != null ? new Filter[] { filter } : null;
 
 		return exportTypes(types, lang, filters, includeObjects);
 	}
 
 	@Override
-	public TypesStream exportTypes(String[] types, String lang, QueryFilter[] filters, boolean includeObjects) {
+	public TypesStream exportTypes(String[] types, String lang, Filter[] filters, boolean includeObjects) {
 
 		checkTypes(types);
 
@@ -2235,7 +2261,7 @@ public class PostgreSQLNode implements Node {
 			for (String importedType : result.getImportedTypes()) {
 				for (Map.Entry<String, TypeField> entry : t.getTypes().get(importedType).getFields().entrySet()) {
 					String fieldType = entry.getValue().getType();
-					if (!ArrayUtils.contains(PT.PRIMITIVE_TYPES, fieldType)) {
+					if (!PT.isPrimitiveType(fieldType)) {
 						addReference(importedType, entry.getKey(), fieldType);
 					}
 				}
@@ -2246,7 +2272,7 @@ public class PostgreSQLNode implements Node {
 
 				for (String addedField : entry.getValue().getAddedFields()) {
 					String addedFieldType = t.getTypes().get(entry.getKey()).getFields().get(addedField).getType();
-					if (!ArrayUtils.contains(PT.PRIMITIVE_TYPES, addedFieldType)) {
+					if (!PT.isPrimitiveType(addedFieldType)) {
 						addReference(alteredType, addedField, addedFieldType);
 					}
 				}
@@ -2259,7 +2285,7 @@ public class PostgreSQLNode implements Node {
 					if (alteredFieldResult.isTypeAltered()) {
 						String alteredFieldType = t.getTypes().get(entry.getKey()).getFields().get(alteredFieldName)
 								.getType();
-						if (!ArrayUtils.contains(PT.PRIMITIVE_TYPES, alteredFieldType)) {
+						if (!PT.isPrimitiveType(alteredFieldType)) {
 							addReference(alteredType, alteredFieldName, alteredFieldType);
 						}
 					}
@@ -3504,14 +3530,16 @@ public class PostgreSQLNode implements Node {
 
 			count = count(sql.toString(), parameters.toArray());
 
-			if (order != null) {
-				sql.append(" order by " + order);
-			}
+			if (count > 0) {
+				if (order != null) {
+					sql.append(" order by " + order);
+				}
 
-			sql.append(" " + offsetLimitSQL(type, offset, limit));
+				sql.append(" " + offsetLimitSQL(type, offset, limit));
+			}
 		}
 
-		protected SelectQuery(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+		protected SelectQuery(String type, String[] fields, String lang, Filter[] filters, String search,
 				LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 				boolean password, Long offset, Long limit) {
 
@@ -3535,8 +3563,10 @@ public class PostgreSQLNode implements Node {
 			}
 
 			if (filters != null) {
-				for (QueryFilter filter : filters) {
-					typeFields.remove(filter.getName());
+				for (Filter filter : filters) {
+					if (!filter.include()) {
+						typeFields.remove(filter.getField());
+					}
 				}
 			}
 
@@ -3657,28 +3687,31 @@ public class PostgreSQLNode implements Node {
 
 			count = count(sql.toString(), parameters.toArray());
 
-			sql.append(" order by ");
-			if (order != null && !order.isEmpty()) {
-				for (Map.Entry<String, Order> entry : order.entrySet()) {
-					String fieldValue = entry.getKey();
-					String fieldString = typeSettings.getFieldString(type, fieldValue, Constants.ORDER,
+			if (count > 0) {
+			
+				sql.append(" order by ");
+				if (order != null && !order.isEmpty()) {
+					for (Map.Entry<String, Order> entry : order.entrySet()) {
+						String fieldValue = entry.getKey();
+						String fieldString = typeSettings.getFieldString(type, fieldValue, Constants.ORDER,
 							"\"" + fieldValue + "\"");
-					sql.append(fieldString);
+						sql.append(fieldString);
 
-					Order orderValue = entry.getValue();
+						Order orderValue = entry.getValue();
 
-					if (orderValue != null) {
-						sql.append(" " + orderValue);
+						if (orderValue != null) {
+							sql.append(" " + orderValue);
+						}
+
+						sql.append(",");
 					}
-
-					sql.append(",");
+					sql.deleteCharAt(sql.length() - 1);
+				} else {
+					sql.append("id");
 				}
-				sql.deleteCharAt(sql.length() - 1);
-			} else {
-				sql.append("id");
-			}
 
-			sql.append(" " + offsetLimitSQL(type, offset, limit));
+				sql.append(" " + offsetLimitSQL(type, offset, limit));
+			}
 		}
 
 		protected void addTypeFilters(String type, StringBuilder whereSQL) {
@@ -3693,26 +3726,32 @@ public class PostgreSQLNode implements Node {
 			}
 		}
 
-		protected void addFilters(StringBuilder whereSQL, QueryFilter[] filters) {
+		protected void addFilters(StringBuilder whereSQL, Filter[] filters) {
 			addFilters(null, whereSQL, filters);
 		}
 
-		protected void addFilters(String type, StringBuilder whereSQL, QueryFilter[] filters) {
-			if (filters != null) {
+		protected void addFilters(String type, StringBuilder whereSQL, Filter[] filters) {
+			if (filters != null && filters.length > 0) {
 				whereSQL.append(" where ");
 
-				for (QueryFilter filter : filters) {
+				for (Filter filter : filters) {
 
 					if (type != null) {
 						whereSQL.append("\"" + type + "\".");
 					}
+					
+					Object value = filter.getValue();
 
-					whereSQL.append("\"" + filter.getName() + "\" ");
-					parameters.add(filter.getValue());
+					whereSQL.append("\"" + filter.getField() + "\" ");
+					parameters.add(value);
 
 					switch (filter.getComparison()) {
 					case EQUAL:
-						whereSQL.append("in(?)");
+						if (value == null) {
+							whereSQL.append("is null");
+						} else {
+							whereSQL.append("in(?)");
+						}
 						break;
 					case GREATER:
 						whereSQL.append("> ?");
@@ -3727,7 +3766,11 @@ public class PostgreSQLNode implements Node {
 						whereSQL.append("<= ?");
 						break;
 					case NOT_EQUAL:
-						whereSQL.append("not in(?)");
+						if (value == null) {
+							whereSQL.append("is not null");
+						} else {
+							whereSQL.append("not in(?)");
+						}
 						break;
 					}
 
@@ -3835,7 +3878,7 @@ public class PostgreSQLNode implements Node {
 
 			this.offset = offset;
 			this.limit = limit;
-
+			
 			return offsetLimitSQL;
 		}
 

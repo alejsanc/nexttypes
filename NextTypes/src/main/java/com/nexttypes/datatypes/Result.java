@@ -33,8 +33,9 @@ public abstract class Result {
 
 	public Result(Long count, Long offset, Long limit, Long minLimit, Long maxLimit, Long limitIncrement) {
 		this.count = count;
-
+		
 		if (count > 0) {
+			
 			this.offset = offset;
 			this.limit = limit;
 			this.minLimit = minLimit;

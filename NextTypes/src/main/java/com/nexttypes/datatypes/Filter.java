@@ -17,31 +17,33 @@
 package com.nexttypes.datatypes;
 
 import com.nexttypes.enums.Comparison;
-import com.nexttypes.interfaces.QueryFilter;
 
-public class FieldFilter implements QueryFilter {
+public class Filter {
 	protected String field;
 	protected Comparison comparison;
 	protected Object value;
+	protected boolean include;
 
-	public FieldFilter(String field, Comparison comparison, Object value) {
+	public Filter(String field, Comparison comparison, Object value, boolean include) {
 		this.field = field;
 		this.comparison = comparison;
 		this.value = value;
+		this.include = include;
 	}
 
-	@Override
-	public String getName() {
+	public String getField() {
 		return field;
 	}
 
-	@Override
 	public Comparison getComparison() {
 		return comparison;
 	}
 
-	@Override
 	public Object getValue() {
 		return value;
+	}
+	
+	public boolean include() {
+		return include;
 	}
 }

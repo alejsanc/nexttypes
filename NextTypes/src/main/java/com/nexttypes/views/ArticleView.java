@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.FieldReference;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTML;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Tuple;
@@ -98,8 +99,8 @@ public class ArticleView extends HTMLView {
 	}
 
 	@Override
-	public Content preview(String type, String lang, String view, FieldReference ref, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
+	public Content preview(String type, String lang, String view, FieldReference ref, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
 		loadTemplate(type, lang, view);
 			
@@ -137,7 +138,7 @@ public class ArticleView extends HTMLView {
 		}
 		
 		if (search != null) {
-			main.appendElement(searchOutput(type, lang, view, ref, search));
+			main.appendElement(searchOutput(type, lang, view, ref, filters, search, order));
 		}
 
 
@@ -160,9 +161,9 @@ public class ArticleView extends HTMLView {
 					.appendElement(anchor(strings.gts(type, Constants.READ_MORE), uri));
 			}
 
-			main.appendElement(selectTableIndex(type, lang, view, tuples.getCount(), tuples.getOffset(), tuples.getLimit(),
-				tuples.getMinLimit(), tuples.getMaxLimit(), tuples.getLimitIncrement(), ref, search, orderParam(order),
-				false));
+			main.appendElement(selectTableIndex(type, lang, view, ref, filters, search, order,
+					tuples.getCount(), tuples.getOffset(), tuples.getLimit(), tuples.getMinLimit(),
+					tuples.getMaxLimit(), tuples.getLimitIncrement(), false));
 		} else {
 			main.appendElement(HTML.P).appendText(strings.gts(Constants.NO_OBJECTS_FOUND));
 		}

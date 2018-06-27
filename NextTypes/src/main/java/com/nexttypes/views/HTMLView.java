@@ -44,7 +44,7 @@ import com.nexttypes.datatypes.Anchor;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.DocumentPreview;
-import com.nexttypes.datatypes.FieldFilter;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.HTML;
 import com.nexttypes.datatypes.HTMLFragment;
@@ -132,6 +132,8 @@ public class HTMLView extends View {
 	public static final String VALIDATORS = "validators";
 
 	//Classes
+	public static final String ADD_FILTER = "add-filter";
+	public static final String FILTER_FIELD = "filter-field";
 	public static final String REFERENCE_OUTPUT = "reference-output";
 	public static final String SEARCH_OUTPUT = "search-output";
 	public static final String SELECT_HEADER = "select-header";
@@ -306,13 +308,15 @@ public class HTMLView extends View {
 
 		Element fieldsTable = typeForm.appendElement(HTML.TABLE).setAttribute(HTML.ID, Constants.FIELDS);
 
-		Element fieldsHeader = fieldsTable.appendElement(HTML.TR);
+		Element fieldsHeader = fieldsTable.appendElement(HTML.THEAD).appendElement(HTML.TR);
 		fieldsHeader.appendElement(HTML.TH).appendText(typeString);
 		fieldsHeader.appendElement(HTML.TH).appendText(name);
 		fieldsHeader.appendElement(HTML.TH).appendText(parameters);
 		fieldsHeader.appendElement(HTML.TH).appendText(notNull);
 		fieldsHeader.appendElement(HTML.TH);
 
+		Element fieldsBody = fieldsTable.appendElement(HTML.TBODY);
+		
 		if (type != null) {
 			ZonedDateTime adate = nextNode.getADate(type);
 			typeForm.appendElement(input(HTML.HIDDEN, Constants.ADATE, Constants.ADATE, adate));
@@ -325,7 +329,7 @@ public class HTMLView extends View {
 				TypeField typeField = entry.getValue();
 				String fieldType = typeField.getType();
 
-				Element row = fieldsTable.appendElement(HTML.TR);
+				Element row = fieldsBody.appendElement(HTML.TR);
 
 				Element typeCell = row.appendElement(HTML.TD);
 				typeCell.appendElement(select(field + ":" + Constants.TYPE, strings.gts(type, Constants.TYPE),
@@ -354,11 +358,13 @@ public class HTMLView extends View {
 		Element indexesTable = typeForm.appendElement(HTML.TABLE)
 				.setAttribute(HTML.ID, Constants.INDEXES);
 
-		Element indexesHeader = indexesTable.appendElement(HTML.TR);
+		Element indexesHeader = indexesTable.appendElement(HTML.THEAD).appendElement(HTML.TR);
 		indexesHeader.appendElement(HTML.TH).appendText(mode);
 		indexesHeader.appendElement(HTML.TH).appendText(name);
 		indexesHeader.appendElement(HTML.TH).appendText(fields);
 		indexesHeader.appendElement(HTML.TH);
+		
+		Element indexesBody = indexesTable.appendElement(HTML.TBODY);
 
 		if (type != null) {
 			LinkedHashMap<String, TypeIndex> typeIndexes = nextNode.getTypeIndexes(type);
@@ -367,7 +373,7 @@ public class HTMLView extends View {
 				String index = Constants.INDEXES + ":" + x;
 				String indexName = entry.getKey();
 				TypeIndex typeIndex = entry.getValue();
-				Element row = indexesTable.appendElement(HTML.TR);
+				Element row = indexesBody.appendElement(HTML.TR);
 				row.appendElement(HTML.TD).appendElement(select(index + ":" + Constants.MODE, mode,
 						IndexMode.getStringValues(), typeIndex.getMode().toString()));
 
@@ -797,55 +803,65 @@ public class HTMLView extends View {
 
 		return content;
 	}
+	
+	@Override
+	public Content selectComponent(String type, String lang, String view, FieldReference ref,
+			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset,
+			Long limit) {
+		
+		document = new HTML();
+		document.setDocType(null);
+		
+		Element select = selectElement(type, lang, view, ref, filters, search, order, offset, limit, true);
+
+		return new Content(select.toString());
+	}
 
 	@Override
-	public Content select(String type, String lang, String view, FieldReference ref, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean component) {
-		Content content = null;
+	public Content select(String type, String lang, String view, FieldReference ref, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
+		
+		loadTemplate(type, lang, view);
+				
+		String title = strings.gts(type, Constants.SELECT_TITLE);
+		String typeName = strings.getTypeName(type);
+		setTitle(Utils.format(title, typeName));
 
-		if (component) {
-			document = new HTML();
-			document.setDocType(null);
-		} else {
-			loadTemplate(type, lang, view);
+		if (ref != null) {
+			main.appendElement(referenceOutput(type, lang, view, ref, filters, search, order));
 		}
+		
+		if (search != null) {
+			main.appendElement(searchOutput(type, lang, view, ref, filters, search, order));
+		}
+		
+		Element select = selectElement(type, lang, view, ref, filters, search, order, offset, limit, false);
 
-		Element select = selectElement(type, lang, view, ref, search, order, offset, limit, component);
-
-		if (component) {
-			content = new Content(select.toString());
-		} else {
-			String title = strings.gts(type, Constants.SELECT_TITLE);
-			String typeName = strings.getTypeName(type);
-			setTitle(Utils.format(title, typeName));
-
-			if (search != null) {
-				main.appendElement(searchOutput(type, lang, view, ref, search));
-			}
-
-			main.appendElement(select);
-
-			if (search != null) {
-				String[] searchTypes = typeSettings.getTypeStringArray(type, Constants.FULLTEXT_SEARCH_TYPES);
-				if (searchTypes != null) {
-					for (String searchType : searchTypes) {
-						main.appendElement(selectElement(searchType, lang, view, null, search, order, 0L, null, true));
-					}
+		main.appendElement(select);
+		
+		if (search != null) {
+			String[] searchTypes = typeSettings.getTypeStringArray(type, Constants.FULLTEXT_SEARCH_TYPES);
+			if (searchTypes != null) {
+				main.appendElement(HTML.H2).appendText(strings.gts(type, Constants.OTHER_TYPES));
+				
+				for (String searchType : searchTypes) {
+					main.appendElement(selectElement(searchType, lang, view, null, null, search, null,
+							0L, null, true));
 				}
 			}
-
-			content = render(type);
 		}
 
-		return content;
+		return render(type);
 	}
 	
-	public Element searchOutput(String type, String lang, String view, FieldReference ref, String search) {
+	public Element searchOutput(String type, String lang, String view, FieldReference ref,
+			Filter[] filters, String search, LinkedHashMap<String, Order> order) {
 		Element div = document.createElement(HTML.DIV).setClass(SEARCH_OUTPUT);
 		div.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.SEARCH) + ": ");
 		div.appendText(search);
 		
-		String uri = uri(type, lang, view) + refParam(ref) + previewParam();
+		String uri = uri(type, lang, view) + refParam(ref) + filtersParams(filters) + previewParam()
+			+ orderParam(order);
 				
 		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_SEARCH), uri, Icon.DELETE));
 		return div;
@@ -1035,7 +1051,8 @@ public class HTMLView extends View {
 
 			row.appendElement(HTML.TD).appendText(strings.getIdName(type));
 			row.appendElement(HTML.TD).appendElement(
-					input(HTML.TEXT, Constants.ID).setAttribute(HTML.MAXLENGTH, Type.MAX_ID_LENGTH));
+					input(HTML.TEXT, Constants.ID, strings.getIdName(type))
+						.setAttribute(HTML.MAXLENGTH, Type.MAX_ID_LENGTH));
 		}
 
 		for (Entry<String, TypeField> entry : typeFields.entrySet()) {
@@ -1131,7 +1148,8 @@ public class HTMLView extends View {
 		logo(type, lang, view);
 		user(type, lang, view);
 		langs(lang);
-		search(type, lang, view, request.getRef(), request.getSearch());
+		search(type, lang, view, request.getRef(), request.getSearch(), request.getOrder(),
+				request.getOffset(), request.getLimit());
 		menu(type, lang, view);
 		typeMenu(type, request.getId(), lang, view, request.getRef(), request.getSearch(), 
 				request.isComponent());
@@ -1147,20 +1165,35 @@ public class HTMLView extends View {
 		document.getTitle().appendText(title);
 	}
 
-	public Element selectElement(String type, String lang, String view, FieldReference ref, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean component) {
+	public Element selectElement(String type, String lang, String view, FieldReference ref,
+			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset,
+			Long limit, boolean component) {
 
-		FieldFilter filter = ref != null ? new FieldFilter(ref.getField(), Comparison.EQUAL, ref.getId()) : null;
-
+		Filter[] refAndFilters = null;
+		
+		if (ref != null) {
+			Filter refFilter = new Filter(ref.getField(), Comparison.EQUAL, ref.getId(), false);
+			
+			if (filters != null) {
+				refAndFilters = (Filter[]) ArrayUtils.add(filters, refFilter);
+			} else {
+				refAndFilters = new Filter[] { refFilter };
+			}
+		} else {
+			refAndFilters = filters;
+		}
+		
 		Element select = document.createElement(HTML.DIV);
 		select.setClass(HTML.SELECT);
 
 		String[] fields = typeSettings.getActionStringArray(type, Action.SELECT, Constants.FIELDS);
-		Objects result = nextNode.select(type, fields, lang, filter, search, order, offset, limit);
+		Objects result = nextNode.select(type, fields, lang, refAndFilters, search, order, offset, limit);
 		NXObject[] objects = result.getItems();
 		Long count = result.getCount();
 		offset = result.getOffset();
 		limit = result.getLimit();
+		
+		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type);
 
 		HTMLView htmlView = null;
 
@@ -1179,26 +1212,147 @@ public class HTMLView extends View {
 		} else {
 			htmlView = this;
 			
-			if (ref != null) {
-				select.appendElement(referenceOutput(type, lang, view, ref, search ));
-			}
-			
 			select.appendElement(HTML.P).appendText(" " + count + " " + strings.gts(type, Constants.OBJECTS));
+			
+			select.appendElement(filters(type, filters, typeFields, lang));		
 		}
 
-		LinkedHashMap<String, TypeField> referenceTypeFields = nextNode.getTypeFields(type);
-
 		if (objects != null && objects.length > 0) {
-			select.appendElement(htmlView.selectTable(type, objects, referenceTypeFields, lang, view, count, offset,
-					limit, result.getMinLimit(), result.getMaxLimit(), result.getLimitIncrement(), ref, search, order,
-					component));
+			select.appendElement(htmlView.selectTable(type, objects, typeFields, lang, view, ref,
+					filters, search, order, count, offset, limit, result.getMinLimit(), result.getMaxLimit(),
+					result.getLimitIncrement(), component));
 		}
 
 		return select;
 	}
+	
+	@Override
+	public Content filterComponent(String type, String field, String lang, String view, int count) {
+		document = new HTML();
+		document.setDocType(null);
+		
+		if (field == null) {
+			field = Constants.ID;
+		}
+		
+		Element filter = filter(type, new Filter(field, Comparison.EQUAL, null, true), count,
+				nextNode.getTypeFields(type), lang);
+		
+		return new Content(filter.toString());
+	}
+	
+	public Element filters(String type, Filter[] filters, LinkedHashMap<String, TypeField> typeFields,
+			String lang) {
+		
+		Element div = document.createElement(HTML.DIV);
+		
+		div.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.FILTERS) + ": ");
+		div.appendElement(button(strings.gts(type, Constants.ADD_FILTER), ADD_FILTER));
+		div.appendElement(document.createElement(HTML.BUTTON))
+			.setAttribute(HTML.TYPE, HTML.SUBMIT)
+			.setAttribute(HTML.FORM, Constants.SEARCH)
+			.appendText(strings.gts(type, Constants.SEARCH));
+		
+		Element table = div.appendElement(HTML.TABLE).setAttribute(HTML.ID, Constants.FILTERS);
+		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
+		header.appendElement(HTML.TH).appendText(strings.gts(type, Constants.FIELD));
+		header.appendElement(HTML.TH).appendText(strings.gts(type, Constants.COMPARISON));
+		header.appendElement(HTML.TH).appendText(strings.gts(type, Constants.VALUE));
+		header.appendElement(HTML.TH);
+		
+		Element body = table.appendElement(HTML.TBODY);
+		
+		for (int x = 0; x < filters.length; x++) {
+			body.appendElement(filter(type, filters[x], x, typeFields, lang));			
+		}
+		
+		return div;
+	}
+	
+	public Element filter(String type, Filter filter, int count, LinkedHashMap<String, TypeField> typeFields,
+			String lang) {
+		
+		Element row = document.createElement(HTML.TR);
+		
+		String filterField = filter.getField();
+		
+		Element fieldSelect = row.appendElement(HTML.TD).appendElement(HTML.SELECT)
+				.setAttribute(HTML.CLASS, FILTER_FIELD)
+				.setAttribute(HTML.NAME, Constants.FILTERS + ":" + count + ":" + Constants.FIELD)
+				.setAttribute(HTML.FORM, Constants.SEARCH);
+				
+		Element option = fieldSelect.appendElement(HTML.OPTION)
+				.setAttribute(HTML.VALUE, Constants.ID)
+				.appendText(strings.getIdName(type));
+		
+		if (Constants.ID.equals(filterField)) {
+			option.setAttribute(HTML.SELECTED);
+		}
+	
+		for (Map.Entry<String, TypeField> entry : typeFields.entrySet()) {
+			String fieldType = entry.getValue().getType();
+			
+			if (!PT.isPrimitiveType(fieldType) || PT.isFilterType(fieldType)) {
+				String field = entry.getKey();
+				option = fieldSelect.appendElement(HTML.OPTION)
+						.setAttribute(HTML.VALUE, field)
+						.appendText(strings.getFieldName(type, field));
+			
+				if (field.equals(filterField)) {
+					option.setAttribute(HTML.SELECTED);
+				}
+			}
+		}
+		
+		Element comparisonSelect = row.appendElement(HTML.TD).appendElement(HTML.SELECT)
+				.setAttribute(HTML.NAME, Constants.FILTERS + ":" + count + ":" + Constants.COMPARISON)
+				.setAttribute(HTML.FORM, Constants.SEARCH);
+	
+		for (Comparison comparison : Comparison.values()) {
+			option = comparisonSelect.appendElement(HTML.OPTION)
+				.setAttribute(HTML.VALUE, comparison.toString().toLowerCase())
+				.appendText(strings.getComparisonName(type, comparison.toString().toLowerCase()));
+			
+			if (comparison.equals(filter.getComparison())) {
+				option.setAttribute(HTML.SELECTED);
+			}
+		}
+		
+		Element valueInput = null;
+		TypeField typeField = typeFields.get(filterField);
+		
+		if (Constants.ID.equals(filterField)) {
+			valueInput = objectSelect(Constants.ID, strings.getIdName(type),
+					filter.getValue(), type, true, lang);
+		} else {
+		
+			String filterFieldName = strings.getFieldName(type, filterField);
+			valueInput = fieldInput(type, filterField, filterFieldName,
+				filter.getValue(), typeField, lang);
+		}
+		
+		String valueName = Constants.FILTERS + ":" + count + ":" + Constants.VALUE;
+		
+		if (typeField != null && PT.BOOLEAN.equals(typeField.getType())) {
+			for (Element input : valueInput.getChildElements()) {
+				input.setAttribute(HTML.NAME, valueName).setAttribute(HTML.FORM, Constants.SEARCH);
+			}
+		} else {
+			valueInput.setAttribute(HTML.NAME, valueName).setAttribute(HTML.FORM, Constants.SEARCH);
+		}
+		
+		row.appendElement(HTML.TD).appendElement(valueInput);
+		
+		String dropFilter = strings.gts(type, Constants.DROP_FILTER);
+		
+		row.appendElement(HTML.TD).appendElement(smallImageButton(dropFilter, Icon.MINUS, DELETE_ROW))
+			.setAttribute(HTML.FORM, Constants.SEARCH);
+		
+		return row;
+	}
 
 	public Element referenceOutput(String type, String lang, String view, FieldReference ref,
-			String search) {
+			Filter[] filters, String search, LinkedHashMap<String, Order> order) {
 		
 		String refType = nextNode.getTypeField(type, ref.getField()).getType();
 
@@ -1206,7 +1360,8 @@ public class HTMLView extends View {
 		div.appendElement(HTML.STRONG).appendText(strings.getFieldName(type, ref.getField()) + ": ");
 		div.appendElement(anchor(nextNode.getName(refType, ref.getId(), lang), uri(refType, ref.getId(), lang, view)));
 		
-		String uri = uri(type, lang, view) + searchParam(search);
+		String uri = uri(type, lang, view) + filtersParams(filters) + searchParam(search)
+			+ orderParam(order);
 		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_REFERENCE), uri, Icon.DELETE));
 		
 		return div;
@@ -1217,13 +1372,13 @@ public class HTMLView extends View {
 
 		for (TypeReference downReference : nextNode.getDownReferences(refType)) {
 			FieldReference ref = new FieldReference(downReference.getField(), refType, refId);
-			references
-					.appendElement(selectElement(downReference.getType(), lang, view, ref, null, null, 0L, null, true));
+			references.appendElement(selectElement(downReference.getType(), lang, view, ref, null, null,
+					null, 0L, null, true));
 		}
 
 		return references;
 	}
-
+	
 	public Element updateForm(NXObject object, LinkedHashMap<String, TypeField> typeFields, String lang, String view,
 			boolean showType, boolean showId, boolean showHeader, boolean showProgress) {
 		String type = object.getType();
@@ -1387,12 +1542,14 @@ public class HTMLView extends View {
 		return password;
 	}
 
-	public Element fieldInput(String type, String field, String title, Object value, TypeField typeField, String lang) {
+	public Element fieldInput(String type, String field, String title, Object value, TypeField typeField,
+			String lang) {
+		
 		return fieldInput(type, null, field, title, value, typeField, lang);
 	}
 
-	public Element fieldInput(String type, String action, String field, String title, Object value, TypeField typeField,
-			String lang) {
+	public Element fieldInput(String type, String action, String field, String title, Object value,
+			TypeField typeField, String lang) {
 
 		field = "@" + field;
 
@@ -1419,14 +1576,14 @@ public class HTMLView extends View {
 		case PT.HTML:
 		case PT.JSON:
 		case PT.XML:
-			input = textareaInput(type, field, title, value, typeField.getType());
+			input = textareaInput(type, field, title, value, typeField);
 			break;
 		case PT.BINARY:
 		case PT.IMAGE:
 		case PT.DOCUMENT:
 		case PT.AUDIO:
 		case PT.VIDEO:
-			input = binaryInput(type, action, field, title, value, typeField.getType(), lang);
+			input = binaryInput(type, action, field, title, value, typeField, lang);
 			break;
 		case PT.TIMEZONE:
 			input = timezoneSelect(field, title, value);
@@ -1438,14 +1595,19 @@ public class HTMLView extends View {
 			input = passwordInput(type, field, title);
 			break;
 		default:
-			input = objectSelect(field, title, value, typeField.getType(), typeField.isNotNull(), lang);
+			input = objectSelect(field, title, value, typeField, lang);
 		}
 
 		return input;
 	}
 
-	public Element binaryInput(String type, String action, String field, String title, Object value, String fieldType,
-			String lang) {
+	public Element binaryInput(String type, String action, String field, String title, Object value,
+			TypeField typeField, String lang) {
+		
+		return binaryInput(type, action, field, title, value, typeField.getType(), lang);
+	}
+	public Element binaryInput(String type, String action, String field, String title, Object value,
+			String fieldType, String lang) {
 		String allowedContentTypes = null;
 
 		if (action != null) {
@@ -1552,7 +1714,7 @@ public class HTMLView extends View {
 			setMaxMinValues(input, typeField);
 		}
 
-		if (ArrayUtils.contains(PT.STRING_TYPES, typeField.getType())) {
+		if (PT.isStringType(typeField.getType())) {
 			setMaxLength(input, typeField);
 		}
 
@@ -1561,10 +1723,6 @@ public class HTMLView extends View {
 		}
 
 		return input;
-	}
-
-	public Element input(String inputType, String name) {
-		return input(inputType, name, null, (Object) null);
 	}
 
 	public Element input(String inputType, String name, String title) {
@@ -1665,6 +1823,11 @@ public class HTMLView extends View {
 
 		return span;
 	}
+	
+	public Element textareaInput(String type, String field, String title, Object text,
+			TypeField typeField) {
+		return textareaInput(type, field, title, text, typeField.getType());
+	}
 
 	public Element textareaInput(String type, String field, String title, Object text, String fieldType) {
 		Element textarea = document.createElement(HTML.TEXTAREA).setAttribute(HTML.NAME, field)
@@ -1712,9 +1875,14 @@ public class HTMLView extends View {
 
 		return textarea;
 	}
-
-	public Element objectSelect(String field, String title, Object value, String fieldType, boolean notNull,
+	
+	public Element objectSelect(String field, String title, Object value, TypeField typeField,
 			String lang) {
+		return objectSelect(field, title, value, typeField.getType(), typeField.isNotNull(), lang);
+	}
+
+	public Element objectSelect(String field, String title, Object value, String fieldType, 
+			boolean notNull, String lang) {
 
 		Element select = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, field)
 				.setAttribute(HTML.TITLE, title);
@@ -1724,8 +1892,11 @@ public class HTMLView extends View {
 		}
 
 		String fieldId = null;
-		if (value != null) {
+		
+		if (value instanceof ObjectReference) {
 			fieldId = ((ObjectReference) value).getId();
+		} else if (value instanceof String) {
+			fieldId = (String) value;
 		}
 
 		LinkedHashMap<String, String> names = nextNode.getObjectsName(fieldType, lang);
@@ -1818,13 +1989,14 @@ public class HTMLView extends View {
 				.appendText(color.toString());
 	}
 
-	public Element selectTableHeaderCell(String type, String field, String lang, String view, FieldReference ref,
-			String search, LinkedHashMap<String, Order> order, Long offset, Long limit, boolean component) {
+	public Element selectTableHeaderCell(String type, String field, String lang, String view,
+			FieldReference ref, Filter[] filters, String search, LinkedHashMap<String, Order> order,
+			Long offset, Long limit, boolean component) {
 
 		Element cell = document.createElement(HTML.TH);
 		String fieldName = Constants.ID.equals(field) ? strings.getIdName(type) : strings.getFieldName(type, field);
 		String orderLinkString = "";
-		String orderParameter = null;
+		LinkedHashMap<String, Order> fieldOrder = new LinkedHashMap<>();
 		StringBuilder multiOrderParameter = new StringBuilder();
 		int index = 1;
 
@@ -1837,7 +2009,7 @@ public class HTMLView extends View {
 					if (value.equals(Order.ASC)) {
 						value = Order.DESC;
 						orderLinkString = "▴";
-						orderParameter = key + ":" + value;
+						fieldOrder.put(key, value);
 					} else {
 						value = null;
 						orderLinkString = "▾";
@@ -1865,16 +2037,16 @@ public class HTMLView extends View {
 		}
 
 		if (order == null || !order.containsKey(field)) {
-			orderParameter = field + ":" + Order.ASC;
+			fieldOrder.put(field, Order.ASC);
 			if (multiOrderParameter.length() > 0) {
 				multiOrderParameter.append(",");
 			}
-			multiOrderParameter.append(orderParameter);
+			multiOrderParameter.append(field + ":" + Order.ASC);
 		}
 
-		cell.appendElement(selectTableAnchor(fieldName + orderLinkString, type, lang, view, ref, search, orderParameter,
-				offset, limit, component).setClass(SELECT_HEADER_ANCHOR)
-				.setAttribute(DATA_MULTI_ORDER,	multiOrderParameter.toString()));
+		cell.appendElement(selectTableAnchor(fieldName + orderLinkString, type, lang, view, ref, filters,
+				search, fieldOrder, offset, limit, component).setClass(SELECT_HEADER_ANCHOR)
+					.setAttribute(DATA_MULTI_ORDER,	multiOrderParameter.toString()));
 
 		return cell;
 	}
@@ -1883,27 +2055,26 @@ public class HTMLView extends View {
 			String lang, String view, Long count, Long offset, Long limit, Long minLimit, Long maxLimit,
 			Long limitIncrement, String search, LinkedHashMap<String, Order> order, boolean component) {
 
-		return selectTable(type, objects, typeFields, lang, view, count, offset, limit, minLimit, maxLimit,
-				limitIncrement, null, search, order, component);
+		return selectTable(type, objects, typeFields, lang, view, null, null, search, order, count,
+				offset, limit, minLimit, maxLimit, limitIncrement, component);
 	}
 
 	public Element selectTable(String type, NXObject[] objects, LinkedHashMap<String, TypeField> typeFields,
-			String lang, String view, Long count, Long offset, Long limit, Long minLimit, Long maxLimit,
-			Long limitIncrement, FieldReference ref, String search, LinkedHashMap<String, Order> order,
-			boolean component) {
-
-		String orderParameter = orderParam(order);
+			String lang, String view, FieldReference ref, Filter[] filters, String search,
+			LinkedHashMap<String, Order> order, Long count, Long offset, Long limit, Long minLimit,
+			Long maxLimit, Long limitIncrement, boolean component) {
 
 		Element form = form(type, lang, view).setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
 				.setAttribute(DATA_URI, request.getURIRoot()
-								+ selectTableURI(type, lang, view, ref, search, orderParameter, offset, limit))
+								+ selectTableURI(type, lang, view, ref, filters, search, order,
+										offset, limit))
 				.setAttribute(DATA_STRINGS_OBJECTS_DELETE_CONFIRMATION,
 						strings.gts(type, Constants.OBJECTS_DELETE_CONFIRMATION));
 
-		form.appendElement(input(HTML.HIDDEN, Constants.ORDER, Constants.ORDER, orderParameter));
+		form.appendElement(input(HTML.HIDDEN, Constants.ORDER, Constants.ORDER, orderString(order)));
 
-		Element index = selectTableIndex(type, lang, view, count, offset, limit, minLimit, maxLimit, limitIncrement,
-				ref, search, orderParameter, component);
+		Element index = selectTableIndex(type, lang, view, ref, filters, search, order, count,
+				offset, limit, minLimit, maxLimit, limitIncrement, component);
 		Element indexHeader = index;
 		Element indexFooter = index.clone();
 		form.appendElement(indexHeader);
@@ -1915,12 +2086,12 @@ public class HTMLView extends View {
 
 		header.appendElement(HTML.TH).appendElement(allCheckBox(type));
 
-		header.appendElement(
-				selectTableHeaderCell(type, Constants.ID, lang, view, ref, search, order, offset, limit, component));
+		header.appendElement(selectTableHeaderCell(type, Constants.ID, lang, view, ref, filters, 
+				search, order, offset, limit, component));
 
 		for (Map.Entry<String, Object> entry : objects[0].getFields().entrySet()) {
-			header.appendElement(selectTableHeaderCell(type, entry.getKey(), lang, view, ref, search, order, offset,
-					limit, component));
+			header.appendElement(selectTableHeaderCell(type, entry.getKey(), lang, view, ref, filters, 
+					search, order, offset, limit, component));
 		}
 
 		header.appendElement(HTML.TH);
@@ -1997,14 +2168,17 @@ public class HTMLView extends View {
 		return buttons;
 	}
 
-	public Element selectTableIndex(String type, String lang, String view, Long count, Long selectedOffset, Long limit,
-			Long minLimit, Long maxLimit, Long limitIncrement, String search, String order, boolean component) {
-		return selectTableIndex(type, lang, view, count, selectedOffset, limit, minLimit, maxLimit, limitIncrement,
-				null, search, order, component);
+	public Element selectTableIndex(String type, String lang, String view, String search,
+			LinkedHashMap<String, Order> order, Long count, Long selectedOffset, Long limit,
+			Long minLimit, Long maxLimit, Long limitIncrement,  boolean component) {
+		
+		return selectTableIndex(type, lang, view, null, null, search, order, count, selectedOffset, limit,
+				minLimit, maxLimit, limitIncrement, component);
 	}
 
-	public Element selectTableIndex(String type, String lang, String view, Long count, Long selectedOffset, Long limit,
-			Long minLimit, Long maxLimit, Long limitIncrement, FieldReference ref, String search, String order,
+	public Element selectTableIndex(String type, String lang, String view, FieldReference ref, 
+			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long count,
+			Long selectedOffset, Long limit, Long minLimit, Long maxLimit, Long limitIncrement,
 			boolean component) {
 
 		Element index = document.createElement(HTML.DIV).setClass(SELECT_INDEX);
@@ -2018,11 +2192,11 @@ public class HTMLView extends View {
 			Long longObjectsCount = typeSettings.getTypeInt64(type, Constants.LONG_OBJECTS_COUNT);
 
 			if (offsets < longObjectsCount) {
-				index.appendElements(shortSelectTableIndex(type, lang, view, count, selectedOffset, limit, ref, search,
-						order, component));
+				index.appendElements(shortSelectTableIndex(type, lang, view, ref, filters, search,
+						order, count, selectedOffset, limit, component));
 			} else {
-				index.appendElements(longSelectTableIndex(type, lang, view, count, selectedOffset, limit, ref, search,
-						order, component));
+				index.appendElements(longSelectTableIndex(type, lang, view, ref, filters, search,
+						order, count, selectedOffset, limit,  component));
 			}
 		}
 
@@ -2035,8 +2209,9 @@ public class HTMLView extends View {
 		return index;
 	}
 
-	public Element[] shortSelectTableIndex(String type, String lang, String view, Long count, Long selectedOffset,
-			Long limit, FieldReference ref, String search, String order, boolean component) {
+	public Element[] shortSelectTableIndex(String type, String lang, String view, FieldReference ref,
+			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long count,
+			Long selectedOffset, Long limit, boolean component) {
 
 		ArrayList<Element> index = new ArrayList<>();
 
@@ -2046,8 +2221,8 @@ public class HTMLView extends View {
 			String text = selectTableIndexOffsetText(offsetTextMode, count, offset, limit);
 
 			if (offset != selectedOffset) {
-				index.add(selectTableAnchor(text, type, lang, view, ref, search, order, offset, limit, component)
-						.setClass(Constants.OFFSET));
+				index.add(selectTableAnchor(text, type, lang, view, ref, filters, search, order, offset,
+						limit, component).setClass(Constants.OFFSET));
 			} else {
 				index.add(document.createElement(HTML.SPAN).setClass(SELECTED_OFFSET).appendText(text));
 			}
@@ -2056,8 +2231,9 @@ public class HTMLView extends View {
 		return index.toArray(new Element[] {});
 	}
 
-	public Element[] longSelectTableIndex(String type, String lang, String view, Long count, Long selectedOffset,
-			Long limit, FieldReference ref, String search, String order, boolean component) {
+	public Element[] longSelectTableIndex(String type, String lang, String view, FieldReference ref,
+			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long count,
+			Long selectedOffset, Long limit, boolean component) {
 
 		ArrayList<Element> index = new ArrayList<>();
 
@@ -2079,15 +2255,15 @@ public class HTMLView extends View {
 			if (rightOffset <= lastOffset) {
 				text = selectTableIndexOffsetText(offsetTextMode, count, rightOffset, limit);
 
-				index.add(selectTableAnchor(text, type, lang, view, ref, search, order, rightOffset, limit, component)
-						.setClass(NEAR_SELECTED_OFFSET));
+				index.add(selectTableAnchor(text, type, lang, view, ref, filters, search, order,
+						rightOffset, limit, component).setClass(NEAR_SELECTED_OFFSET));
 			}
 
 			if (leftOffset >= 0) {
 				text = selectTableIndexOffsetText(offsetTextMode, count, leftOffset, limit);
 
-				index.add(0, selectTableAnchor(text, type, lang, view, ref, search, order, leftOffset, limit, component)
-						.setClass(NEAR_SELECTED_OFFSET));
+				index.add(0, selectTableAnchor(text, type, lang, view, ref, filters, search, order,
+						leftOffset, limit, component).setClass(NEAR_SELECTED_OFFSET));
 			}
 		}
 
@@ -2100,8 +2276,8 @@ public class HTMLView extends View {
 
 			text = selectTableIndexOffsetText(offsetTextMode, count, rightOffset, limit);
 
-			index.add(selectTableAnchor(text, type, lang, view, ref, search, order, rightOffset, limit, component)
-					.setClass(Constants.OFFSET));
+			index.add(selectTableAnchor(text, type, lang, view, ref, filters, search, order,
+					rightOffset, limit, component).setClass(Constants.OFFSET));
 		}
 
 		for (int x = 1; leftOffset > 0; x *= 2) {
@@ -2113,8 +2289,8 @@ public class HTMLView extends View {
 
 			text = selectTableIndexOffsetText(offsetTextMode, count, leftOffset, limit);
 
-			index.add(0, selectTableAnchor(text, type, lang, view, ref, search, order, leftOffset, limit, component)
-					.setClass(Constants.OFFSET));
+			index.add(0, selectTableAnchor(text, type, lang, view, ref, filters, search, order,
+					leftOffset, limit, component).setClass(Constants.OFFSET));
 		}
 
 		return index.toArray(new Element[] {});
@@ -2162,11 +2338,13 @@ public class HTMLView extends View {
 		return select;
 	}
 
-	public Element selectTableAnchor(String text, String type, String lang, String view, FieldReference ref,
-			String search, String order, Long offset, Long limit, boolean component) {
+	public Element selectTableAnchor(String text, String type, String lang, String view,
+			FieldReference ref, Filter[] filters, String search, LinkedHashMap<String, Order> order,
+			Long offset, Long limit, boolean component) {
 
 		Element anchor = document.createElement(HTML.A)
-				.setAttribute(HTML.HREF, selectTableURI(type, lang, view, ref, search, order, offset, limit))
+				.setAttribute(HTML.HREF, selectTableURI(type, lang, view, ref, filters, search,
+						order, offset, limit))
 				.appendText(text);
 
 		if (component) {
@@ -2176,11 +2354,11 @@ public class HTMLView extends View {
 		return anchor;
 	}
 
-	public String selectTableURI(String type, String lang, String view, FieldReference ref, String search, String order,
-			Long offset, Long limit) {
+	public String selectTableURI(String type, String lang, String view, FieldReference ref, 
+			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
-		return uri(type, lang, view) + refParam(ref) + searchParam(search) + param(Constants.ORDER, order)
-				+ param(Constants.OFFSET, offset) + param(Constants.LIMIT, limit);
+		return uri(type, lang, view) + refParam(ref) + filtersParams(filters) + searchParam(search)
+			+ orderParam(order) + param(Constants.OFFSET, offset) + param(Constants.LIMIT, limit);
 	}
 
 	public String param(String name, Object value) {
@@ -2188,7 +2366,11 @@ public class HTMLView extends View {
 	}
 
 	public String refParam(FieldReference ref) {
-		return ref != null ? "&" + Constants.REF + "=" + ref.getField() + ":" + ref.getId() : "";
+		return ref != null ? "&" + Constants.REF + "=" + refString(ref) : "";
+	}
+	
+	public String refString(FieldReference ref) {
+		return ref.getField() + ":" + ref.getId();
 	}
 
 	public String formParam(String action) {
@@ -2202,8 +2384,12 @@ public class HTMLView extends View {
 	public String searchParam(String search) {
 		return param(Constants.SEARCH, search);
 	}
-
+	
 	public String orderParam(LinkedHashMap<String, Order> order) {
+		return param(Constants.ORDER, orderString(order));
+	}
+
+	public String orderString(LinkedHashMap<String, Order> order) {
 		String orderParameter = null;
 
 		if (order != null && !order.isEmpty()) {
@@ -2216,6 +2402,32 @@ public class HTMLView extends View {
 		}
 
 		return orderParameter;
+	}
+	
+	public String filtersParams(Filter[] filters) {
+		StringBuilder params = new StringBuilder();
+		
+		if (filters != null) {
+			for (int x = 0; x < filters.length; x++) {
+				Filter filter = filters[x];
+				String paramRoot = "&" + Constants.FILTERS + ":" + x + ":";
+			
+				params.append(paramRoot + Constants.FIELD + "=" + filter.getField());
+			
+				params.append(paramRoot + Constants.COMPARISON + "=" 
+					+ filter.getComparison().toString().toLowerCase());
+			
+				params.append(paramRoot + Constants.VALUE + "=");
+				
+				Object value = filter.getValue();
+				
+				if (value != null) {
+					params.append(value);
+				}
+			}
+		}
+		
+		return params.toString();
 	}
 
 	public Element fieldOutput(String label, Object... elements) {
@@ -2876,7 +3088,8 @@ public class HTMLView extends View {
 		}
 	}
 
-	public void search(String type, String lang, String view, FieldReference ref, String search) {
+	public void search(String type, String lang, String view, FieldReference ref, String search,
+			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		if (type != null) {
 			Element form = document.getElementById(Constants.SEARCH);
 
@@ -2885,8 +3098,8 @@ public class HTMLView extends View {
 
 				String searchName = strings.gts(type, Constants.SEARCH);
 				
-				form.appendElement(input(HTML.HIDDEN, Constants.LANG, null, lang));
-				form.appendElement(input(HTML.HIDDEN, Constants.VIEW, null, view));
+				form.appendElement(input(HTML.HIDDEN, Constants.LANG, Constants.LANG, lang));
+				form.appendElement(input(HTML.HIDDEN, Constants.VIEW, Constants.VIEW, view));
 				form.appendElement(input(HTML.SEARCH, Constants.SEARCH, searchName, search));
 				
 				if (request.isPreview()) {
@@ -2894,8 +3107,20 @@ public class HTMLView extends View {
 				}
 				
 				if (ref != null) {
-					form.appendElement(input(HTML.HIDDEN, Constants.REF, null, 
-							ref.getField() + ":" + ref.getId()));
+					form.appendElement(input(HTML.HIDDEN, Constants.REF, null, refString(ref)));
+				}
+				
+				if (order != null) {
+					form.appendElement(input(HTML.HIDDEN, Constants.ORDER, Constants.ORDER,
+							orderString(order)));
+				}
+				
+				if (offset != null) {
+					form.appendElement(input(HTML.HIDDEN, Constants.OFFSET, Constants.OFFSET, offset));
+				}
+				
+				if (limit != null) {
+					form.appendElement(input(HTML.HIDDEN, Constants.LIMIT, Constants.LIMIT, limit));
 				}
 
 				form.appendElement(document.createElement(HTML.BUTTON)
@@ -3138,7 +3363,7 @@ public class HTMLView extends View {
 		parameters.add(lastDate);
 
 		if (ref != null) {
-			main.appendElement(referenceOutput(type, lang, view, ref, null));
+			main.appendElement(referenceOutput(type, lang, view, ref, null, null, null));
 
 			filters.append(" and # = ?");
 			parameters.add(ref.getField());

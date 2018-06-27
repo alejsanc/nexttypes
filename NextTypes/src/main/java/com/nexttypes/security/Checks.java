@@ -26,6 +26,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.aspectj.lang.JoinPoint;
 
 import com.nexttypes.datatypes.FieldReference;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Tuple;
@@ -35,7 +36,6 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.interfaces.Module;
-import com.nexttypes.interfaces.QueryFilter;
 import com.nexttypes.system.Constants;
 
 public class Checks {
@@ -77,7 +77,7 @@ public class Checks {
 	}
 	
 	public static void checkCompositeType(String type) {
-		if (ArrayUtils.contains(PT.PRIMITIVE_TYPES, type)) {
+		if (PT.isPrimitiveType(type)) {
 			throwException(Constants.PRIMITIVE_TYPE_WITH_THE_SAME_NAME, type);
 		}
 	}
@@ -196,17 +196,17 @@ public class Checks {
 		}
 	}
 
-	public static void checkFilters(QueryFilter[] filters) {
+	public static void checkFilters(Filter[] filters) {
 		if (filters != null) {
-			for (QueryFilter filter : filters) {
+			for (Filter filter : filters) {
 				checkFilter(filter);
 			}
 		}
 	}
 
-	public static void checkFilter(QueryFilter filter) {
+	public static void checkFilter(Filter filter) {
 		if (filter != null) {
-			String field = filter.getName();
+			String field = filter.getField();
 
 			if (Constants.ID.equals(field)) {
 				Object value = filter.getValue();

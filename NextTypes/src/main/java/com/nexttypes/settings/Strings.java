@@ -63,4 +63,8 @@ public class Strings extends TypeSettings {
 		}
 		return name;
 	}
+	
+	public String getComparisonName(String type, String comparison) {
+		return getTypeString(type, Constants.COMPARISONS + "." + comparison + "." + Constants.NAME);
+	}
 }

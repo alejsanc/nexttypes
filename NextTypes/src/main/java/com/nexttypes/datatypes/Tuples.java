@@ -21,6 +21,10 @@ import com.nexttypes.system.Constants;
 
 public class Tuples extends Result {
 	protected Tuple[] items;
+	
+	public Tuples() {
+		this(null, 0L, null, null, null, null, null);
+	}
 
 	public Tuples(Tuple[] items, Long count, Long offset, Long limit, Long minLimit, Long maxLimit,
 			Long limitIncrement) {

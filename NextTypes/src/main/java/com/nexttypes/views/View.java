@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.FieldReference;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.enums.Order;
@@ -144,13 +145,13 @@ public abstract class View implements Module, AutoCloseable {
 		throw new NotImplementedException();
 	}
 
-	public Content select(String type, String lang, String view, FieldReference ref, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean component) {
+	public Content select(String type, String lang, String view, FieldReference ref, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		throw new NotImplementedException();
 	}
 
-	public Content preview(String type, String lang, String view, FieldReference ref, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
+	public Content preview(String type, String lang, String view, FieldReference ref, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		throw new NotImplementedException();
 	}
 
@@ -208,6 +209,17 @@ public abstract class View implements Module, AutoCloseable {
 	}
 
 	public Content renameForm(String type, String lang, String view) {
+		throw new NotImplementedException();
+	}
+
+	public Content filterComponent(String type, String field, String lang, String view, int count) {
+		throw new NotImplementedException();
+	}
+
+	public Content selectComponent(String type, String lang, String view, FieldReference ref,
+			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset,
+			Long limit) {
+		
 		throw new NotImplementedException();
 	}
 }

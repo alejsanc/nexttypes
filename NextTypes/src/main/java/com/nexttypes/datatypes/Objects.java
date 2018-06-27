@@ -27,6 +27,10 @@ public class Objects extends Result {
 
 	protected NXObject[] items;
 
+	public Objects() {
+		this(null, 0L, null, null, null, null, null);
+	}
+	
 	public Objects(NXObject[] items, Long count, Long offset, Long limit, Long minLimit, Long maxLimit,
 			Long limitIncrement) {
 

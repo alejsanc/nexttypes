@@ -17,7 +17,6 @@
 package com.nexttypes.protocol.http;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.security.cert.X509Certificate;
 import java.time.ZonedDateTime;
@@ -138,8 +137,12 @@ public class HTTPServlet extends HttpServlet {
 					}
 
 				} else if (id == null) {
-
-					if (Form.INSERT.equals(form)) {
+					
+					Integer filterCount = req.getFilterComponent();
+					if (filterCount != null) {
+						content = view.filterComponent(req.getType(), null, req.getLang(),
+								req.getView(), filterCount);
+					} else if (Form.INSERT.equals(form)) {
 						content = view.insertForm(req.getType(), req.getLang(), req.getView(), req.getRef());
 					} else if (Form.ALTER.equals(form)) {
 						content = view.alterForm(req.getType(), req.getLang(), req.getView());
@@ -149,23 +152,33 @@ public class HTTPServlet extends HttpServlet {
 						content = view.executeActionForm(req.getType(), null, req.getAction(), req.getLang(),
 								req.getView());
 					} else {
+						LinkedHashMap<String, TypeField> typeFields = null;
+						
 						if (req.isInfo()) {
 							content = view.getType(req.getType(), req.getLang(), req.getView());
 						} else if (req.isPreview()) {
-							content = view.preview(req.getType(), req.getLang(), req.getView(), req.getRef(),
-									req.getSearch(), req.getOrder(), req.getOffset(), req.getLimit());
+							typeFields = view.getNextNode().getTypeFields(req.getType());
+							content = view.preview(req.getType(), req.getLang(), req.getView(),
+									req.getRef(), req.readFilters(typeFields), req.getSearch(),
+									req.getOrder(), req.getOffset(), req.getLimit());
 						} else if (req.isCalendar()) {
-							content = view.calendar(req.getType(), req.getLang(), req.getView(), req.getRef(),
-									req.getYear(), req.getMonth());
+							content = view.calendar(req.getType(), req.getLang(), req.getView(),
+									req.getRef(), req.getYear(), req.getMonth());
+						} else if (req.isComponent()) {
+							typeFields = view.getNextNode().getTypeFields(req.getType());
+							content = view.selectComponent(req.getType(), req.getLang(), req.getView(),
+									req.getRef(), req.readFilters(typeFields), req.getSearch(),
+									req.getOrder(), req.getOffset(), req.getLimit());
 						} else {
-							content = view.select(req.getType(), req.getLang(), req.getView(), req.getRef(),
-									req.getSearch(), req.getOrder(), req.getOffset(), req.getLimit(),
-									req.isComponent());
+							typeFields = view.getNextNode().getTypeFields(req.getType());
+							content = view.select(req.getType(), req.getLang(), req.getView(),
+									req.getRef(), req.readFilters(typeFields), req.getSearch(),
+									req.getOrder(), req.getOffset(), req.getLimit());
 						}
 					}
 
 				} else if (req.getField() == null) {
-
+					
 					if (Form.UPDATE.equals(form)) {
 						content = view.updateForm(req.getType(), req.getId(), req.getLang(), req.getView());
 					} else if (Form.UPDATE_ID.equals(form)) {
@@ -178,7 +191,11 @@ public class HTTPServlet extends HttpServlet {
 					}
 
 				} else if (req.getElement() == null) {
-					if (Form.UPDATE_PASSWORD.equals(form)) {
+					Integer filterCount = req.getFilterComponent();
+					if (filterCount != null) {
+						content = view.filterComponent(req.getType(), req.getField(), req.getLang(),
+								req.getView(), filterCount);
+					} else if (Form.UPDATE_PASSWORD.equals(form)) {
 						content = view.updatePasswordForm(req.getType(), req.getId(), req.getField(), req.getLang(),
 								req.getView());
 					} else {
@@ -557,8 +574,8 @@ public class HTTPServlet extends HttpServlet {
 				if (req.getType() == null) {
 					content = view.getTypesName(req.getLang(), Constants.WEBDAV);
 				} else if (req.getId() == null) {
-					content = view.select(req.getType(), req.getLang(), Constants.WEBDAV, req.getRef(), req.getSearch(),
-							req.getOrder(), req.getOffset(), req.getLimit(), req.isComponent());
+					content = view.select(req.getType(), req.getLang(), Constants.WEBDAV, req.getRef(),
+							null, req.getSearch(), req.getOrder(), req.getOffset(), req.getLimit());
 				} else if (req.getField() == null) {
 					content = view.get(req.getType(), req.getId(), req.getLang(), Constants.WEBDAV, req.getETag());
 				} else {
@@ -821,7 +838,7 @@ public class HTTPServlet extends HttpServlet {
 
 	protected void writeException(Exception e, HttpServletRequest request, HttpServletResponse response,
 			Strings strings, String userName) {
-		
+		e.printStackTrace();
 		HTTPStatus status = null;
 		String message = null;
 

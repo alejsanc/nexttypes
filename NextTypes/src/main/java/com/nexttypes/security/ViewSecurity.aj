@@ -18,10 +18,11 @@ package com.nexttypes.security;
 
 import java.util.LinkedHashMap;
 
-import com.nexttypes.views.View;
-import com.nexttypes.system.Action;
 import com.nexttypes.datatypes.FieldReference;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.enums.Order;
+import com.nexttypes.system.Action;
+import com.nexttypes.views.View;
 
 public aspect ViewSecurity extends Checks {
     before(String lang, String view) : (execution(* View.getTypesName(..))) && args(lang, view) {
@@ -164,25 +165,51 @@ public aspect ViewSecurity extends Checks {
     }
 
     before(String type, String lang, String view, FieldReference ref, String search,
-	    LinkedHashMap<String, Order> order) : 
-		(execution(* View.select(..))) && args(type, lang, view, ref, search, order, ..) {
+	    Filter[] filters, LinkedHashMap<String, Order> order) : 
+		(execution(* View.select(..))) && args(type, lang, view, ref, search, filters, order, ..) {
 	
     	checkType(type);
     	checkLang(lang);
     	checkView(view);
     	checkRef(ref);
+    	checkFilters(filters);
     	checkOrder(order);
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
     
     before(String type, String lang, String view, FieldReference ref, String search,
-	    LinkedHashMap<String, Order> order) : 
-		(execution(* View.preview(..))) && args(type, lang, view, ref, search, order, ..) {
+    		Filter[] filters, LinkedHashMap<String, Order> order) : 
+    		(execution(* View.selectComponent(..)))
+    		&& args(type, lang, view, ref, search, filters, order, ..) {
+    	
+    	checkType(type);
+        checkLang(lang);
+        checkView(view);
+        checkRef(ref);
+        checkFilters(filters);
+        checkOrder(order);
+        checkPermissions(type, Action.SELECT_COMPONENT, thisJoinPoint);
+    }
+    
+    before(String type, String field, String lang, String view) :
+    	execution(* View.filterComponent(..)) && args(type, field, lang, view) {
+    	
+    	checkType(type);
+    	checkField(field);
+    	checkLang(lang);
+    	checkView(view);
+    	checkPermissions(type, Action.FILTER_COMPONENT, thisJoinPoint);
+    }
+    
+    before(String type, String lang, String view, FieldReference ref, String search,
+	    Filter[] filters, LinkedHashMap<String, Order> order) : 
+		(execution(* View.preview(..))) && args(type, lang, view, ref, search, filters, order, ..) {
 	
     	checkType(type);
     	checkLang(lang);
     	checkView(view);
     	checkRef(ref);
+    	checkFilters(filters);
     	checkOrder(order);
     	checkPermissions(type, Action.PREVIEW, thisJoinPoint);
     }

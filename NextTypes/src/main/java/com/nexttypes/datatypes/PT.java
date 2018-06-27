@@ -16,6 +16,8 @@
 
 package com.nexttypes.datatypes;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 public class PT {
 	public static final String INT16 = "int16";
 	public static final String INT32 = "int32";
@@ -55,5 +57,31 @@ public class PT {
 	public static final String[] BINARY_TYPES = new String[] { BINARY, IMAGE, DOCUMENT, AUDIO, VIDEO };
 
 	public static final String[] COMPLEX_TYPES = new String[] { IMAGE, DOCUMENT, AUDIO, VIDEO };
-
+	
+	public static final String[] FILTER_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64,
+			NUMERIC, BOOLEAN, STRING, TEXT, URI, EMAIL, TEL, DATE, TIME, DATETIME, TIMEZONE, COLOR };
+	
+	public static boolean isPrimitiveType(String type) {
+		return ArrayUtils.contains(PRIMITIVE_TYPES, type);
+	}
+	
+	public static boolean isStringType(String type) {
+		return ArrayUtils.contains(STRING_TYPES, type);
+	}
+	
+	public static boolean isNumericType(String type) {
+		return ArrayUtils.contains(NUMERIC_TYPES, type);
+	}
+	
+	public static boolean isBinaryType(String type) {
+		return ArrayUtils.contains(BINARY_TYPES, type);
+	}
+	
+	public static boolean isComplexType(String type) {
+		return ArrayUtils.contains(COMPLEX_TYPES, type);
+	}
+	
+	public static boolean isFilterType(String type) {
+		return ArrayUtils.contains(FILTER_TYPES, type);
+	}
 }

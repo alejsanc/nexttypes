@@ -235,20 +235,16 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 						value = parser.getBinaryValue();
 						break;
 					case PT.IMAGE:
-						value = parser.readValueAs(new TypeReference<Image>() {
-						});
+						value = parser.readValueAs(new TypeReference<Image>() {});
 						break;
 					case PT.DOCUMENT:
-						value = parser.readValueAs(new TypeReference<Document>() {
-						});
+						value = parser.readValueAs(new TypeReference<Document>() {});
 						break;
 					case PT.AUDIO:
-						value = parser.readValueAs(new TypeReference<Audio>() {
-						});
+						value = parser.readValueAs(new TypeReference<Audio>() {});
 						break;
 					case PT.VIDEO:
-						value = parser.readValueAs(new TypeReference<Video>() {
-						});
+						value = parser.readValueAs(new TypeReference<Video>() {});
 						break;
 					default:
 						value = parseObjectReference();

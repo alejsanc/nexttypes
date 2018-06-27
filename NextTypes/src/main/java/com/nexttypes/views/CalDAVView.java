@@ -38,6 +38,7 @@ import org.w3c.dom.Element;
 
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.FieldReference;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.ICalendar;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.enums.Format;
@@ -60,8 +61,8 @@ public class CalDAVView extends WebDAVView {
 	}
 
 	@Override
-	public Content select(String type, String lang, String view, FieldReference ref, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean component) {
+	public Content select(String type, String lang, String view, FieldReference ref, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
 		if (HTTPMethod.REPORT.equals(request.getRequestMethod())) {
 			return report(type);

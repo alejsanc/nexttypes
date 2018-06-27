@@ -18,8 +18,10 @@ package com.nexttypes.views;
 
 import java.util.LinkedHashMap;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import com.nexttypes.datatypes.Content;
-import com.nexttypes.datatypes.FieldFilter;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.Objects;
@@ -90,12 +92,18 @@ public class SerialView extends View {
 	}
 
 	@Override
-	public Content select(String type, String lang, String view, FieldReference ref, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean component) {
+	public Content select(String type, String lang, String view, FieldReference ref, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
-		FieldFilter[] filters = ref != null
-				? new FieldFilter[] { new FieldFilter(ref.getField(), Comparison.EQUAL, ref.getId()) }
-				: null;
+		if (ref != null) {
+			Filter refFilter = new Filter(ref.getField(), Comparison.EQUAL, ref.getId(), false);
+			
+			if (filters != null) {
+				filters = (Filter[]) ArrayUtils.add(filters, refFilter);
+			} else {
+				filters = new Filter[] { refFilter };
+			}
+		}
 
 		Objects objects = nextNode.select(type, null, lang, filters, search, order, true, true, false, false, offset,
 				limit);

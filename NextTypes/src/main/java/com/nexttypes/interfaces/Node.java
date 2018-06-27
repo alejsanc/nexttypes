@@ -36,6 +36,7 @@ import com.nexttypes.datatypes.AlterResult;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.ImportObjectsResult;
@@ -102,17 +103,17 @@ public interface Node extends Module, AutoCloseable {
 	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext, boolean binary,
 			boolean documentPreview, boolean password);
 
-	public Objects select(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit);
 
-	public Objects select(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit);
 
-	public Objects select(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit);
 
-	public Objects select(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit);
 
@@ -121,17 +122,17 @@ public interface Node extends Module, AutoCloseable {
 
 	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order);
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit);
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit);
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit);
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit);
 
@@ -257,9 +258,9 @@ public interface Node extends Module, AutoCloseable {
 
 	public TypesStream exportTypes(String[] types, String lang, boolean includeObjects);
 
-	public TypesStream exportTypes(String[] types, String lang, QueryFilter filter, boolean includeObjects);
+	public TypesStream exportTypes(String[] types, String lang, Filter filter, boolean includeObjects);
 
-	public TypesStream exportTypes(String[] types, String lang, QueryFilter[] filters, boolean includeObjects);
+	public TypesStream exportTypes(String[] types, String lang, Filter[] filters, boolean includeObjects);
 
 	public TypesStream backup(String lang, boolean full);
 

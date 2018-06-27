@@ -40,6 +40,7 @@ import com.nexttypes.datatypes.AlterResult;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.ImportObjectsResult;
@@ -71,7 +72,6 @@ import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.ComplexType;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
-import com.nexttypes.interfaces.QueryFilter;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.settings.Settings;
@@ -227,14 +227,14 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public TypesStream exportTypes(String[] types, String lang, QueryFilter filter, boolean includeObjects) {
+	public TypesStream exportTypes(String[] types, String lang, Filter filter, boolean includeObjects) {
 		TypesStream export = nextNode.exportTypes(types, lang, filter, includeObjects);
 		setTypeActions(export.getTypes());
 		return export;
 	}
 
 	@Override
-	public TypesStream exportTypes(String[] types, String lang, QueryFilter[] filters, boolean includeObjects) {
+	public TypesStream exportTypes(String[] types, String lang, Filter[] filters, boolean includeObjects) {
 		TypesStream export = nextNode.exportTypes(types, lang, filters, includeObjects);
 		setTypeActions(export.getTypes());
 		return export;
@@ -264,7 +264,7 @@ public class ControllersNode implements Node {
 
 	protected void checkNumericField(String type, String action, String field, String fieldType, Object value) {
 
-		if (ArrayUtils.contains(PT.NUMERIC_TYPES, fieldType)) {
+		if (PT.isNumericType(fieldType)) {
 			BigDecimal numericValue = Tuple.parseNumeric(value);
 
 			BigDecimal minValue = typeSettings.getFieldNumeric(type, field, Constants.MIN_VALUE);
@@ -403,14 +403,14 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Objects select(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return getController(type).select(type, fields, lang, filter, search, order, offset, limit);
 
 	}
 
 	@Override
-	public Objects select(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 		return getController(type).select(type, fields, lang, filter, search, order, fulltext, binary, documentPreview,
@@ -418,14 +418,14 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Objects select(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return getController(type).select(type, fields, lang, filters, search, order, offset, limit);
 
 	}
 
 	@Override
-	public Objects select(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 		return getController(type).select(type, fields, lang, filters, search, order, fulltext, binary, documentPreview,
@@ -444,14 +444,14 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return getController(type).selectStream(type, fields, lang, filter, search, order, offset, limit);
 
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 		return getController(type).selectStream(type, fields, lang, filter, search, order, fulltext, binary,
@@ -459,14 +459,14 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return getController(type).selectStream(type, fields, lang, filters, search, order, offset, limit);
 
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 		return getController(type).selectStream(type, fields, lang, filters, search, order, fulltext, binary,

@@ -27,6 +27,7 @@ import com.nexttypes.datatypes.AlterFieldResult;
 import com.nexttypes.datatypes.AlterIndexResult;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.NXObject;
@@ -44,7 +45,6 @@ import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
-import com.nexttypes.interfaces.QueryFilter;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
 
@@ -168,24 +168,24 @@ public class Controller {
 		return nextNode.get(type, id, fields, lang, fulltext, binary, documentPreview, password);
 	}
 
-	public Objects select(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return nextNode.select(type, fields, lang, filter, search, order, offset, limit);
 	}
 
-	public Objects select(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 		return nextNode.select(type, fields, lang, filter, search, order, fulltext, binary, documentPreview, password,
 				offset, limit);
 	}
 
-	public Objects select(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return nextNode.select(type, fields, lang, filters, search, order, offset, limit);
 	}
 
-	public Objects select(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 		return nextNode.select(type, fields, lang, filters, search, order, fulltext, binary, documentPreview, password,
@@ -201,24 +201,24 @@ public class Controller {
 		return nextNode.select(type, sql, parameters, filters, order);
 	}
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return nextNode.selectStream(type, fields, lang, filter, search, order, offset, limit);
 	}
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter filter, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 		return nextNode.selectStream(type, fields, lang, filter, search, order, fulltext, binary, documentPreview,
 				password, offset, limit);
 	}
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return nextNode.selectStream(type, fields, lang, filters, search, order, offset, limit);
 	}
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit) {
 		return nextNode.selectStream(type, fields, lang, filters, search, order, fulltext, binary, documentPreview,

@@ -19,13 +19,13 @@ package com.nexttypes.security;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.Type;
 import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.enums.Order;
 import com.nexttypes.interfaces.Node;
-import com.nexttypes.interfaces.QueryFilter;
 import com.nexttypes.system.Action;
  
 public aspect NodeSecurity extends Checks {
@@ -182,7 +182,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(types, Action.EXPORT_TYPES, thisJoinPoint);
     }
 
-    before(String[] types, String lang, QueryFilter filter) : execution(* Node.exportTypes(..))
+    before(String[] types, String lang, Filter filter) : execution(* Node.exportTypes(..))
     	&& args(types, lang, filter, ..) {
     	
     	checkTypes(types);
@@ -191,7 +191,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(types, Action.EXPORT_TYPES, thisJoinPoint);
     }
 
-    before(String[] types, String lang, QueryFilter[] filters) : execution(* Node.exportTypes(..))
+    before(String[] types, String lang, Filter[] filters) : execution(* Node.exportTypes(..))
     	&& args(types, lang, filters, ..) {
     	
     	checkTypes(types);
@@ -252,7 +252,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.GET, thisJoinPoint);
     }
 
-    before(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+    before(String type, String[] fields, String lang, Filter[] filters, String search,
 	    LinkedHashMap<String, Order> order) :
 		(execution(* Node.select(..)))
 		&& args(type, fields, lang, filters, search, order, ..) {
@@ -265,7 +265,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
 
-    before(String type, String[] fields, String lang, QueryFilter[] filters, String search,
+    before(String type, String[] fields, String lang, Filter[] filters, String search,
 	    LinkedHashMap<String, Order> order) :
 		(execution(* Node.selectStream(..)))
 		&& args(type, fields, lang, filters, search, order, ..) {
@@ -278,7 +278,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
 
-    before(String type, String[] fields, String lang, QueryFilter filter, String search,
+    before(String type, String[] fields, String lang, Filter filter, String search,
 	    LinkedHashMap<String, Order> order) :
 		(execution(* Node.select(..)))
 		&& args(type, fields, lang, filter, search, order, ..) {
@@ -291,7 +291,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
 
-    before(String type, String[] fields, String lang, QueryFilter filter, String search,
+    before(String type, String[] fields, String lang, Filter filter, String search,
 	    LinkedHashMap<String, Order> order) :
 		(execution(* Node.selectStream(..)))
 		&& args(type, fields, lang, filter, search, order, ..) {

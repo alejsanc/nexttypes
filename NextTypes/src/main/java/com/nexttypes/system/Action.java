@@ -42,6 +42,7 @@ public @interface Action {
 	public static final String EXECUTE_ACTION_FORM = "execute_action_form";
 	public static final String EXPORT_OBJECTS = "export_objects";
 	public static final String EXPORT_TYPES = "export_types";
+	public static final String FILTER_COMPONENT = "filter_component";
 	public static final String GET = "get";
 	public static final String GET_ELEMENT = "get_element";
 	public static final String GET_FIELD = "get_field";
@@ -64,6 +65,7 @@ public @interface Action {
 	public static final String RENAME_FORM = "rename_form";
 	public static final String RENAME_INDEX = "rename_index";
 	public static final String SELECT = "select";
+	public static final String SELECT_COMPONENT = "select_component";
 	public static final String UPDATE = "update";
 	public static final String UPDATE_FIELD = "update_field";
 	public static final String UPDATE_FORM = "update_form";

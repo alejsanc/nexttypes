@@ -68,6 +68,7 @@ const ICON = {
 
 var fieldCount = 0;
 var indexCount = 0;
+var filterCount = 0;
 
 var pageURI = new URL(window.location);
 var pageLang = document.documentElement.getAttribute("lang");
@@ -77,15 +78,19 @@ document.addEventListener("DOMContentLoaded", function(){
 	
 	var fieldsTable = document.getElementById("fields");
 	var indexesTable = document.getElementById("indexes");
+	var filtersTable = document.getElementById("filters");
 
-	if(fieldsTable != null){
-		fieldCount = fieldsTable.rows.length-1;
+	if (fieldsTable != null) {
+		fieldCount = fieldsTable.tBodies[0].rows.length;
 	}
 	
-	if(indexesTable != null){
-		indexCount = indexesTable.rows.length-1;
+	if (indexesTable != null) {
+		indexCount = indexesTable.tBodies[0].rows.length;
 	}
 
+	if (filtersTable != null) {
+		filterCount = filtersTable.tBodies[0].rows.length;
+	}
 });
 
 window.addEventListener("beforeunload", function(event){
@@ -104,11 +109,13 @@ window.addEventListener("beforeunload", function(event){
 function initEventListeners(){
 	addEventListeners(document, "button.add-field", "click", addTypeField);
 	addEventListeners(document, "button.add-index", "click", addTypeIndex);
+	addEventListeners(document, "button.add-filter", "click", addFilter);
 	addEventListeners(document, "button.delete-row", "click", deleteRow);
 	addEventListeners(document, "select.langs", "change", changeLanguage);
 	addEventListeners(document, "select.years", "change", changeYear);
 	addEventListeners(document, "select.months", "change", changeMonth);
 	addEventListeners(document, "input[type='file']", "change", fileSelected);
+	addEventListeners(document, "select.filter-field", "change", changeFilterField)
 	addSelectTableEventListeners(document);
 	
 	var forms = document.querySelectorAll("form.unload-confirmation");
@@ -176,13 +183,14 @@ function addTypeField(event){
 		var types = Object.values(PRIMITIVE_TYPES).concat(JSON.parse(request.responseText));
 				
 		var table = document.getElementById("fields");
+		var body = table.tBodies[0];
 		var form = table.parentNode;
 		
-		var rowCount = table.rows.length;
+		var rowCount = body.rows.length;
 		var field = "fields:"+fieldCount;
 		fieldCount++;
     
-		var row = table.insertRow(rowCount);
+		var row = body.insertRow(rowCount);
 
 		row.insertCell(0).appendChild(select(field+":type", form.getAttribute("data-strings-type"), types));
 		var fieldNameInput = input("text", field+":name", form.getAttribute("data-strings-name"));
@@ -223,13 +231,14 @@ function addTypeIndex(event){
 	formChanged(event);
 	
 	var table = document.getElementById("indexes");
+	var body = table.tBodies[0];
 	var form = table.parentNode; 
 	
-    var rowCount = table.rows.length;
+    var rowCount = body.rows.length;
     var index = "indexes:"+indexCount;
     indexCount++;
     
-    var row = table.insertRow(rowCount);
+    var row = body.insertRow(rowCount);
 
     row.insertCell(0).appendChild(select(index+":mode", form.getAttribute("data-strings-mode"), Object.values(INDEX_MODES)));
     var indexNameInput = input("text", index+":name", form.getAttribute("data-strings-name"));
@@ -244,12 +253,51 @@ function addTypeIndex(event){
     addFormChangeEventListeners(row);
 }
 
+function addFilter(event) {
+	var table = document.getElementById("filters");
+	var body = table.tBodies[0];
+	
+	var rowCount = body.rows.length;
+	filterCount++;
+	
+	var row = body.insertRow(rowCount);
+	
+	loadFilter(row, null);	
+}
+
+function loadFilter(row, field) {
+	var uri = new URL(window.location);
+	uri.searchParams.set("filter_component", filterCount);
+	
+	if (field && field != "id") {
+		uri.pathname = uri.pathname + "/id/" + field;
+	}
+	
+	var request = new XMLHttpRequest();
+	request.open("GET", uri, true);
+	request.onload = function(e){
+		var container = document.createElement("div");
+		container.innerHTML = request.responseText;
+		container.querySelector("button.delete-row").addEventListener("click", deleteRow);
+		container.querySelector("select.filter-field").addEventListener("change", changeFilterField);
+		row.parentNode.replaceChild(container.firstChild, row);
+	}
+	request.send(null);
+}
+
+function changeFilterField(event) {
+	var select = event.currentTarget;
+	var field = select.options[select.selectedIndex].value;
+	
+	loadFilter(select.parentNode.parentNode, field);
+}
+
 function deleteRow(event){
 	formChanged(event);
 	
 	var row = event.currentTarget.parentNode.parentNode;
-	var table = row.parentNode;
-	table.deleteRow(row.rowIndex);
+	var tableBody = row.parentNode;
+	tableBody.deleteRow(row.rowIndex - 1);
 }
 
 function input(type, name, title){

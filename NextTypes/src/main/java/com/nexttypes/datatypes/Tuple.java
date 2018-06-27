@@ -29,7 +29,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 
 import javax.mail.internet.AddressException;
@@ -96,12 +95,11 @@ public class Tuple {
 
 	public static String parseString(Object value) {
 		if (value instanceof Timestamp) {
-			value = ((Timestamp) value).toLocalDateTime()
-					.format(DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT));
+			value = parseDatetime(value);
 		} else if (value instanceof Date) {
-			value = ((Date) value).toLocalDate().format(DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT));
+			value = parseDate(value);
 		} else if (value instanceof Time) {
-			value = ((Time) value).toLocalTime().format(DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT));
+			value = parseTime(value);
 		} else if (value instanceof byte[]) {
 			value = bytesToString(value);
 		}

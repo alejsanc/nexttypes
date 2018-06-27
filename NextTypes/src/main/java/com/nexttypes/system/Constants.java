@@ -21,6 +21,7 @@ public class Constants {
 	public static final String ACTION_NOT_FOUND = "action_not_found";
 	public static final String ACTIONS = "actions";
 	public static final String ADATE = "adate";
+	public static final String ADD_FILTER = "add_filter";
 	public static final String ADDED_FIELDS = "added_fields";
 	public static final String ADDED_INDEXES = "added_indexes";
 	public static final String ALLOWED_CONTENT_TYPES = "allowed_content_types";
@@ -46,6 +47,8 @@ public class Constants {
 	public static final String CHANNEL = "channel";
 	public static final String CHECK_UNCHECK_ALL = "check_uncheck_all";
 	public static final String COLOR = "color";
+	public static final String COMPARISON = "comparison";
+	public static final String COMPARISONS = "comparisons";
 	public static final String COMPONENT = "component";
 	public static final String CONTENT = "content";
 	public static final String CONTENT_SECURITY_POLICY = "content_security_policy";
@@ -67,6 +70,7 @@ public class Constants {
 	public static final String DISALLOWED_ATTRIBUTE = "disallowed_attribute";
 	public static final String DISALLOWED_CONTENT_TYPE = "disallowed_content_type";
 	public static final String DISALLOWED_TAG = "disallowed_tag";
+	public static final String DROP_FILTER = "drop_filter";
 	public static final String DROPPED_FIELDS = "dropped_fields";
 	public static final String DROPPED_INDEXES = "dropped_indexes";
 	public static final String DUPLICATE_FIELD = "duplicate_field";
@@ -94,6 +98,7 @@ public class Constants {
 	public static final String EXISTING_TYPES_ACTIONS = "existing_types_actions";
 	public static final String EXPORT = "export";
 	public static final String FALSE = "false";
+	public static final String FIELD = "field";
 	public static final String FIELD_HAS_NO_ELEMENTS = "field_has_no_elements";
 	public static final String FIELD_HAS_NULL_VALUES = "field_has_null_values";
 	public static final String FIELD_IS_PART_OF_INDEX = "field_is_part_of_index";
@@ -143,6 +148,7 @@ public class Constants {
 	public static final String INVALID_ELEMENT_NAME = "invalid_element_name";
 	public static final String INVALID_EMAIL = "invalid_email";
 	public static final String INVALID_FIELD_NAME = "invalid_field_name";
+	public static final String INVALID_FILTER_TYPE = "invalid_filter_type";
 	public static final String INVALID_HOST_NAME = "invalid_host_name";
 	public static final String INVALID_ID = "invalid_id";
 	public static final String INVALID_IMAGE = "invalid_image";
@@ -224,6 +230,7 @@ public class Constants {
 	public static final String OFFSET_TEXT_MODE = "offset_text_mode";
 	public static final String OLD_NAME = "old_name";
 	public static final String ORDER = "order";
+	public static final String OTHER_TYPES = "other_types";
 	public static final String OUT_OF_RANGE_VALUE = "out_of_range_value";
 	public static final String PARAMETERS = "parameters";
 	public static final String PARAMETERS_ALTERED = "parameters_altered";

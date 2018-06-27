@@ -17,30 +17,11 @@
 package com.nexttypes.datatypes;
 
 import com.nexttypes.enums.Comparison;
-import com.nexttypes.interfaces.QueryFilter;
 import com.nexttypes.system.Constants;
 
-public class IdFilter implements QueryFilter {
-	protected Object value;
-	protected Comparison comparison;
-
+public class IdFilter extends Filter {
+	
 	public IdFilter(Comparison comparison, Object value) {
-		this.comparison = comparison;
-		this.value = value;
-	}
-
-	@Override
-	public Object getValue() {
-		return value;
-	}
-
-	@Override
-	public String getName() {
-		return Constants.ID;
-	}
-
-	@Override
-	public Comparison getComparison() {
-		return comparison;
+		super(Constants.ID, comparison, value, true);
 	}
 }
