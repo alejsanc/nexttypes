@@ -510,7 +510,7 @@ public class HTMLView extends View {
 
 			row.appendElement(HTML.TD).appendText(strings.getObjectsName(type));
 			row.appendElement(HTML.TD).appendElement(
-					objectSelect(Constants.OBJECTS, Constants.OBJECTS, null, type, true, lang)
+					objectInput(Constants.OBJECTS, Constants.OBJECTS, null, type, true, lang)
 						.setAttribute(HTML.MULTIPLE).setAttribute(HTML.SIZE, size));
 		}
 
@@ -1115,7 +1115,7 @@ public class HTMLView extends View {
 		Element form = document.createElement(HTML.FORM).setAttribute(HTML.ACTION, action);
 
 		if (request.isSecure()) {
-			form.appendElement(input(HTML.HIDDEN, Constants.SESSION, null, request.getSessionToken()));
+			form.appendElement(input(HTML.HIDDEN, Constants.SESSION, Constants.SESSION, request.getSessionToken()));
 		}
 
 		return form;
@@ -1322,7 +1322,7 @@ public class HTMLView extends View {
 		TypeField typeField = typeFields.get(filterField);
 		
 		if (Constants.ID.equals(filterField)) {
-			valueInput = objectSelect(Constants.ID, strings.getIdName(type),
+			valueInput = objectInput(Constants.ID, strings.getIdName(type),
 					filter.getValue(), type, true, lang);
 		} else {
 		
@@ -1526,7 +1526,7 @@ public class HTMLView extends View {
 		Element cell = document.createElement(HTML.TD);
 
 		if (typeField.getType().equals(PT.PASSWORD)) {
-			cell.appendElement(passwordOutput(object.getType(), object.getId(), field, lang, view));
+			cell.appendElement(passwordFieldOutput(object.getType(), object.getId(), field, lang, view));
 		} else {
 			cell.appendElement(fieldInput(object.getType(), field, title, value, typeField, lang));
 		}
@@ -1534,7 +1534,7 @@ public class HTMLView extends View {
 		return cell;
 	}
 
-	public Element passwordOutput(String type, String id, String field, String lang, String view) {
+	public Element passwordFieldOutput(String type, String id, String field, String lang, String view) {
 		Element password = document.createElement(HTML.SPAN);
 		password.appendText(Security.HIDDEN_PASSWORD + " ");
 		password.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_PASSWORD),
@@ -1550,8 +1550,6 @@ public class HTMLView extends View {
 
 	public Element fieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField, String lang) {
-
-		field = "@" + field;
 
 		Element input = null;
 
@@ -1570,70 +1568,69 @@ public class HTMLView extends View {
 		case PT.TIME:
 		case PT.DATETIME:
 		case PT.COLOR:
-			input = input(field, title, value, typeField);
+			input = fieldInput(field, title, value, typeField);
 			break;
 		case PT.TEXT:
 		case PT.HTML:
 		case PT.JSON:
 		case PT.XML:
-			input = textareaInput(type, field, title, value, typeField);
+			input = textareaFieldInput(type, field, title, value, typeField);
 			break;
 		case PT.BINARY:
 		case PT.IMAGE:
 		case PT.DOCUMENT:
 		case PT.AUDIO:
 		case PT.VIDEO:
-			input = binaryInput(type, action, field, title, value, typeField, lang);
+			input = binaryFieldInput(type, action, field, title, value, typeField, lang);
 			break;
 		case PT.TIMEZONE:
-			input = timezoneSelect(field, title, value);
+			input = timezoneFieldInput(field, title, value);
 			break;
 		case PT.BOOLEAN:
-			input = booleanInput(field, title, value);
+			input = booleanFieldInput(field, title, value);
 			break;
 		case PT.PASSWORD:
-			input = passwordInput(type, field, title);
+			input = passwordFieldInput(type, field, title);
 			break;
 		default:
-			input = objectSelect(field, title, value, typeField, lang);
+			input = objectFieldInput(field, title, value, typeField, lang);
 		}
 
 		return input;
 	}
 
-	public Element binaryInput(String type, String action, String field, String title, Object value,
+	public Element binaryFieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField, String lang) {
 		
-		return binaryInput(type, action, field, title, value, typeField.getType(), lang);
+		return binaryFieldInput(type, action, field, title, value, typeField.getType(), lang);
 	}
-	public Element binaryInput(String type, String action, String field, String title, Object value,
+	public Element binaryFieldInput(String type, String action, String field, String title, Object value,
 			String fieldType, String lang) {
 		String allowedContentTypes = null;
 
 		if (action != null) {
-			allowedContentTypes = typeSettings.getActionFieldString(type, action, field.substring(1),
+			allowedContentTypes = typeSettings.getActionFieldString(type, action, field,
 					Constants.ALLOWED_CONTENT_TYPES);
 		} else {
-			allowedContentTypes = typeSettings.getFieldString(type, field.substring(1),
-					Constants.ALLOWED_CONTENT_TYPES);
+			allowedContentTypes = typeSettings.getFieldString(type, field, Constants.ALLOWED_CONTENT_TYPES);
 		}
 
 		if (allowedContentTypes == null && PT.IMAGE.equals(fieldType)) {
 			allowedContentTypes = Format.IMAGES.getContentType();
 		}
 
-		return binaryInput(type, field, title, value, allowedContentTypes, lang);
+		return binaryInput("@" + field, title, value, allowedContentTypes, lang);
 	}
 
-	public Element binaryInput(String field, String title, String allowedContentTypes, String lang) {
-		return binaryInput(null, field, title, null, allowedContentTypes, lang);
+	public Element binaryInput(String name, String title, String allowedContentTypes, String lang) {
+		return binaryInput(name, title, null, allowedContentTypes, lang);
 	}
 
-	public Element binaryInput(String type, String field, String title, Object value, String allowedContentTypes,
+	public Element binaryInput(String name, String title, Object value, String allowedContentTypes,
 			String lang) {
 		Element span = document.createElement(HTML.SPAN);
 
-		Element input = span.appendElement(input(HTML.FILE, field, title));
+		Element input = span.appendElement(input(HTML.FILE, name, title));
 
 		if (allowedContentTypes != null) {
 			input.setAttribute(HTML.ACCEPT, allowedContentTypes);
@@ -1643,30 +1640,28 @@ public class HTMLView extends View {
 
 		if (value == null) {
 			value = 0;
-		} else {
-			span.appendElement(smallImageButton(strings.gts(type, CLEAR), Icon.DELETE, CLEAR));
-		}
+		} 
 
 		size.appendText(humanReadableBytes((Integer) value, lang));
 
 		return span;
 	}
 
-	public Element passwordInput(String type, String field, String title) {
+	public Element passwordFieldInput(String type, String field, String title) {
 		Element input = document.createElement(HTML.SPAN);
 
-		input.appendElement(input(HTML.PASSWORD, field, title))
+		input.appendElement(input(HTML.PASSWORD, "@" + field, title))
 			.setAttribute(HTML.MAXLENGTH, Security.BCRYPT_MAX_PASSWORD_LENGTH);
 
 		input.appendText(strings.gts(type, Constants.REPEAT) + ": ");
 
-		input.appendElement(input(HTML.PASSWORD, field + Constants._REPEAT, title))
+		input.appendElement(input(HTML.PASSWORD, "@" + field + Constants._REPEAT, title))
 			.setAttribute(HTML.MAXLENGTH, Security.BCRYPT_MAX_PASSWORD_LENGTH);
 
 		return input;
 	}
 
-	public Element input(String field, String title, Object value, TypeField typeField) {
+	public Element fieldInput(String field, String title, Object value, TypeField typeField) {
 		String inputType = null;
 
 		switch (typeField.getType()) {
@@ -1704,11 +1699,13 @@ public class HTMLView extends View {
 			break;
 		}
 
-		return input(inputType, field, title, value, typeField);
+		return fieldInput(field, title, value, typeField, inputType);
 	}
 
-	public Element input(String inputType, String field, String title, Object value, TypeField typeField) {
-		Element input = input(inputType, field, title, value);
+	public Element fieldInput(String field, String title, Object value, TypeField typeField,
+			String inputType) {
+		
+		Element input = input(inputType, "@" + field, title, value);
 
 		if (inputType.equals(HTML.NUMBER)) {
 			setMaxMinValues(input, typeField);
@@ -1813,35 +1810,36 @@ public class HTMLView extends View {
 		return textarea;
 	}
 
-	public Element documentOutput(String type, String id, String field, Object value, String lang, boolean preview) {
+	public Element documentFieldOutput(String type, String id, String field, Object value, String lang, boolean preview) {
 
 		DocumentPreview docPrev = (DocumentPreview) value;
 
 		Element span = document.createElement(HTML.SPAN);
 		span.appendElement(textareaOutput(docPrev.getText(), preview));
-		span.appendElement(binaryOutput(type, id, field, docPrev.getSize(), lang));
+		span.appendElement(binaryFieldOutput(type, id, field, docPrev.getSize(), lang));
 
 		return span;
 	}
 	
-	public Element textareaInput(String type, String field, String title, Object text,
+	public Element textareaFieldInput(String type, String field, String title, Object value,
 			TypeField typeField) {
-		return textareaInput(type, field, title, text, typeField.getType());
+		return textareaFieldInput(type, field, title, value, typeField.getType());
 	}
 
-	public Element textareaInput(String type, String field, String title, Object text, String fieldType) {
-		Element textarea = document.createElement(HTML.TEXTAREA).setAttribute(HTML.NAME, field)
+	public Element textareaFieldInput(String type, String field, String title, Object value,
+			String fieldType) {
+		Element textarea = document.createElement(HTML.TEXTAREA).setAttribute(HTML.NAME, "@" + field)
 				.setAttribute(HTML.TITLE, title);
 
-		if (text != null) {
-			textarea.appendText(text.toString());
+		if (value != null) {
+			textarea.appendText(value.toString());
 		}
 
 		if (fieldType != null) {
 			textarea.setClass(fieldType);
 		}
 
-		String[] modes = typeSettings.getFieldStringArray(type, field.substring(1), Constants.EDITOR);
+		String[] modes = typeSettings.getFieldStringArray(type, field, Constants.EDITOR);
 
 		if (modes == null || modes.length == 0) {
 			switch (fieldType) {
@@ -1876,45 +1874,49 @@ public class HTMLView extends View {
 		return textarea;
 	}
 	
-	public Element objectSelect(String field, String title, Object value, TypeField typeField,
+	public Element objectFieldInput(String field, String title, Object value, TypeField typeField,
 			String lang) {
-		return objectSelect(field, title, value, typeField.getType(), typeField.isNotNull(), lang);
+		return objectInput("@" + field, title, value, typeField.getType(), typeField.isNotNull(), lang);
 	}
 
-	public Element objectSelect(String field, String title, Object value, String fieldType, 
+	public Element objectInput(String name, String title, Object value, String type, 
 			boolean notNull, String lang) {
 
-		Element select = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, field)
+		Element select = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name)
 				.setAttribute(HTML.TITLE, title);
 
 		if (!notNull) {
 			select.appendElement(HTML.OPTION);
 		}
 
-		String fieldId = null;
+		String id = null;
 		
 		if (value instanceof ObjectReference) {
-			fieldId = ((ObjectReference) value).getId();
+			id = ((ObjectReference) value).getId();
 		} else if (value instanceof String) {
-			fieldId = (String) value;
+			id = (String) value;
 		}
 
-		LinkedHashMap<String, String> names = nextNode.getObjectsName(fieldType, lang);
+		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, lang);
 
 		for (Entry<String, String> entry : names.entrySet()) {
-			String id = entry.getKey();
-			String name = entry.getValue();
+			String objectId = entry.getKey();
+			String objectName = entry.getValue();
 
-			Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, id);
-			if (id.equals(fieldId)) {
+			Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, objectId);
+			if (objectId.equals(id)) {
 				option.setAttribute(HTML.SELECTED);
 			}
-			option.appendText(name);
+			option.appendText(objectName);
 		}
 		return select;
 	}
+	
+	public Element timezoneFieldInput(String field, String title, Object value) {
+		return timezoneInput("@" + field, title, value);
+	}
 
-	public Element timezoneSelect(String name, String title, Object selectedTimezone) {
+	public Element timezoneInput(String name, String title, Object value) {
 		Element select = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name);
 
 		if (title == null) {
@@ -1929,7 +1931,7 @@ public class HTMLView extends View {
 
 			Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, timezoneId)
 					.appendText(offset + " - " + timezoneId);
-			if (timezone.equals(selectedTimezone)) {
+			if (timezone.equals(value)) {
 				option.setAttribute(HTML.SELECTED);
 			}
 		});
@@ -2495,19 +2497,19 @@ public class HTMLView extends View {
 				fieldElement = htmlOutput(value);
 				break;
 			case PT.BINARY:
-				fieldElement = binaryOutput(object.getType(), object.getId(), field, value, lang);
+				fieldElement = binaryFieldOutput(object.getType(), object.getId(), field, value, lang);
 				break;
 			case PT.IMAGE:
-				fieldElement = imageOutput(object.getType(), object.getId(), field, value);
+				fieldElement = imageFieldOutput(object.getType(), object.getId(), field, value);
 				break;
 			case PT.DOCUMENT:
-				fieldElement = documentOutput(object.getType(), object.getId(), field, value, lang, preview);
+				fieldElement = documentFieldOutput(object.getType(), object.getId(), field, value, lang, preview);
 				break;
 			case PT.AUDIO:
-				fieldElement = audioOutput(object.getType(), object.getId(), field, value);
+				fieldElement = audioFieldOutput(object.getType(), object.getId(), field, value);
 				break;
 			case PT.VIDEO:
-				fieldElement = videoOutput(object.getType(), object.getId(), field, value);
+				fieldElement = videoFieldOutput(object.getType(), object.getId(), field, value);
 				break;
 			case PT.TEXT:
 			case PT.JSON:
@@ -2546,13 +2548,13 @@ public class HTMLView extends View {
 		return html;
 	}
 
-	public Element binaryOutput(String type, String id, String field, Object value, String lang) {
+	public Element binaryFieldOutput(String type, String id, String field, Object value, String lang) {
 		Element binary = document.createElement(HTML.SPAN);
 		binary.appendElement(anchor(humanReadableBytes((Integer) value, lang), uri(type, id, field, null, null)));
 		return binary;
 	}
 
-	public Element imageOutput(String type, String id, String field, Object value) {
+	public Element imageFieldOutput(String type, String id, String field, Object value) {
 		Element fieldElement = null;
 
 		if (value != null) {
@@ -2564,7 +2566,7 @@ public class HTMLView extends View {
 		return fieldElement;
 	}
 
-	public Element mediaOutput(String type, String id, String field, Object value, String fieldType) {
+	public Element mediaFieldOutput(String type, String id, String field, Object value, String fieldType) {
 		Element fieldElement = null;
 
 		if (value != null) {
@@ -2578,12 +2580,12 @@ public class HTMLView extends View {
 		return fieldElement;
 	}
 
-	public Element audioOutput(String type, String id, String field, Object value) {
-		return mediaOutput(type, id, field, value, HTML.AUDIO);
+	public Element audioFieldOutput(String type, String id, String field, Object value) {
+		return mediaFieldOutput(type, id, field, value, HTML.AUDIO);
 	}
 
-	public Element videoOutput(String type, String id, String field, Object value) {
-		return mediaOutput(type, id, field, value, HTML.VIDEO);
+	public Element videoFieldOutput(String type, String id, String field, Object value) {
+		return mediaFieldOutput(type, id, field, value, HTML.VIDEO);
 	}
 
 	public Element textOutput(Object value) {
@@ -2810,16 +2812,16 @@ public class HTMLView extends View {
 		return input;
 	}
 
-	public Element booleanInput(String field, String title, Object value) {
+	public Element booleanFieldInput(String field, String title, Object value) {
 		Element span = document.createElement(HTML.SPAN);
 
-		Element input = span.appendElement(input(HTML.CHECKBOX, field, title, Constants.TRUE));
+		Element input = span.appendElement(input(HTML.CHECKBOX, "@" + field, title, Constants.TRUE));
 
 		if (value != null && (boolean) value) {
 			input.setAttribute(HTML.CHECKED);
 		}
 
-		span.appendElement(input(HTML.HIDDEN, field, title, Constants.FALSE));
+		span.appendElement(input(HTML.HIDDEN, "@" + field, title, Constants.FALSE));
 
 		return span;
 	}

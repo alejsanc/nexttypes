@@ -100,8 +100,8 @@ public interface Node extends Module, AutoCloseable {
 
 	public boolean checkPassword(String type, String id, String field, String password);
 
-	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext, boolean binary,
-			boolean documentPreview, boolean password);
+	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext,
+			boolean binary, boolean documentPreview, boolean password);
 
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit);
@@ -117,24 +117,25 @@ public interface Node extends Module, AutoCloseable {
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, Long offset, Long limit);
 
-	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
-			String[] searchFields, String order, Long offset, Long limit);
+	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
+			String search, String[] searchFields, String order, Long offset, Long limit);
 
-	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order);
+	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
+			String order);
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit);
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit);
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit);
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter,
+			String search, LinkedHashMap<String, Order> order, boolean fulltext, boolean binary,
+			boolean documentPreview, boolean password, Long offset, Long limit);
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit);
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit);
 
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit);
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, boolean fulltext, boolean binary,
+			boolean documentPreview, boolean password, Long offset, Long limit);
 
 	public Type getType(String type);
 

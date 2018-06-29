@@ -164,9 +164,9 @@ public aspect ViewSecurity extends Checks {
     	checkView(view);
     }
 
-    before(String type, String lang, String view, FieldReference ref, String search,
-	    Filter[] filters, LinkedHashMap<String, Order> order) : 
-		(execution(* View.select(..))) && args(type, lang, view, ref, search, filters, order, ..) {
+    before(String type, String lang, String view, FieldReference ref, Filter[] filters, String search,
+    		LinkedHashMap<String, Order> order) : 
+		(execution(* View.select(..))) && args(type, lang, view, ref, filters, search, order, ..) {
 	
     	checkType(type);
     	checkLang(lang);
@@ -177,10 +177,10 @@ public aspect ViewSecurity extends Checks {
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
     
-    before(String type, String lang, String view, FieldReference ref, String search,
-    		Filter[] filters, LinkedHashMap<String, Order> order) : 
+    before(String type, String lang, String view, FieldReference ref, Filter[] filters, String search,
+    		 LinkedHashMap<String, Order> order) : 
     		(execution(* View.selectComponent(..)))
-    		&& args(type, lang, view, ref, search, filters, order, ..) {
+    		&& args(type, lang, view, ref, filters, search, order, ..) {
     	
     	checkType(type);
         checkLang(lang);
@@ -192,7 +192,7 @@ public aspect ViewSecurity extends Checks {
     }
     
     before(String type, String field, String lang, String view) :
-    	execution(* View.filterComponent(..)) && args(type, field, lang, view) {
+    	execution(* View.filterComponent(..)) && args(type, field, lang, view, ..) {
     	
     	checkType(type);
     	checkField(field);
@@ -201,9 +201,9 @@ public aspect ViewSecurity extends Checks {
     	checkPermissions(type, Action.FILTER_COMPONENT, thisJoinPoint);
     }
     
-    before(String type, String lang, String view, FieldReference ref, String search,
-	    Filter[] filters, LinkedHashMap<String, Order> order) : 
-		(execution(* View.preview(..))) && args(type, lang, view, ref, search, filters, order, ..) {
+    before(String type, String lang, String view, FieldReference ref, Filter[] filters, String search,
+    		LinkedHashMap<String, Order> order) : 
+		(execution(* View.preview(..))) && args(type, lang, view, ref, filters, search, order, ..) {
 	
     	checkType(type);
     	checkLang(lang);

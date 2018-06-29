@@ -838,7 +838,7 @@ public class HTTPServlet extends HttpServlet {
 
 	protected void writeException(Exception e, HttpServletRequest request, HttpServletResponse response,
 			Strings strings, String userName) {
-		e.printStackTrace();
+		
 		HTTPStatus status = null;
 		String message = null;
 
