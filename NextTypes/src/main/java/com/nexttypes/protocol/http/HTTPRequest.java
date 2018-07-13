@@ -52,7 +52,6 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.URI;
 import com.nexttypes.datatypes.Video;
 import com.nexttypes.enums.Comparison;
-import com.nexttypes.enums.Form;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.IndexMode;
 import com.nexttypes.enums.Order;
@@ -116,7 +115,7 @@ public class HTTPRequest {
 	protected ZonedDateTime adate;
 	protected Year year;
 	protected Month month;
-	protected Form form;
+	protected String form;
 	protected Long offset;
 	protected Long limit;
 	protected ImportAction existing_types_action;
@@ -176,6 +175,10 @@ public class HTTPRequest {
 		}
 
 		parseURIPath();
+		
+		if (objects != null && objects.length == 1 && objects[0].contains("\n")) {
+			objects = objects[0].split("\\r\\n|\\n");
+		}
 
 		Checks.checkType(type);
 		Checks.checkId(id);
@@ -498,7 +501,7 @@ public class HTTPRequest {
 			
 				Object value = filterParameters.get(Constants.VALUE);
 				
-				if (!Constants.ID.equals(field)) {
+				if (!Comparison.LIKE.equals(comparison) && !Constants.ID.equals(field)) {
 					String fieldType = typeFields.get(field).getType();
 				
 					if (PT.isPrimitiveType(fieldType) && !PT.isFilterType(fieldType)) {
@@ -667,7 +670,7 @@ public class HTTPRequest {
 		return request;
 	}
 
-	public Form getForm() {
+	public String getForm() {
 		return form;
 	}
 

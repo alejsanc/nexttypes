@@ -3743,8 +3743,7 @@ public class PostgreSQLNode implements Node {
 					Object value = filter.getValue();
 
 					whereSQL.append("\"" + filter.getField() + "\" ");
-					parameters.add(value);
-
+					
 					switch (filter.getComparison()) {
 					case EQUAL:
 						if (value == null) {
@@ -3772,7 +3771,13 @@ public class PostgreSQLNode implements Node {
 							whereSQL.append("not in(?)");
 						}
 						break;
+					case LIKE:
+						whereSQL.append("::text like ?");
+						value = "%" + value + "%";
+						break;
 					}
+					
+					parameters.add(value);
 
 					whereSQL.append(" and ");
 				}

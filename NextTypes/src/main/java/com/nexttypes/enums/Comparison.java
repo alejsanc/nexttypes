@@ -17,10 +17,22 @@
 package com.nexttypes.enums;
 
 public enum Comparison {
-	EQUAL,
-	NOT_EQUAL,
-	GREATER,
-	GREATER_OR_EQUAL,
-	LESS,
-	LESS_OR_EQUAL
+	EQUAL("equal"),
+	NOT_EQUAL("not_equal"),
+	GREATER("greater"),
+	GREATER_OR_EQUAL("greater_or_equal"),
+	LESS("less"),
+	LESS_OR_EQUAL("less_or_equal"),
+	LIKE("like");
+	
+	protected String comparison;
+	
+	private Comparison(String comparison) {
+		this.comparison = comparison;
+	}
+	
+	@Override
+	public String toString() {
+		return comparison;
+	}
 }

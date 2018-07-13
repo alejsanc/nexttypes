@@ -51,6 +51,8 @@ public class PT {
 			IMAGE, AUDIO, VIDEO, DOCUMENT, PASSWORD };
 
 	public static final String[] STRING_TYPES = new String[] { STRING, URI, EMAIL, TEL };
+	
+	public static final String[] TEXT_TYPES = new String[] { TEXT, HTML, JSON, XML };
 
 	public static final String[] NUMERIC_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64, NUMERIC };
 
@@ -59,7 +61,7 @@ public class PT {
 	public static final String[] COMPLEX_TYPES = new String[] { IMAGE, DOCUMENT, AUDIO, VIDEO };
 	
 	public static final String[] FILTER_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64,
-			NUMERIC, BOOLEAN, STRING, TEXT, URI, EMAIL, TEL, DATE, TIME, DATETIME, TIMEZONE, COLOR };
+			NUMERIC, BOOLEAN, STRING, TEXT, HTML, JSON, XML, URI, EMAIL, TEL, DATE, TIME, DATETIME, TIMEZONE, COLOR };
 	
 	public static boolean isPrimitiveType(String type) {
 		return ArrayUtils.contains(PRIMITIVE_TYPES, type);
@@ -67,6 +69,10 @@ public class PT {
 	
 	public static boolean isStringType(String type) {
 		return ArrayUtils.contains(STRING_TYPES, type);
+	}
+	
+	public static boolean isTextType(String type) {
+		return ArrayUtils.contains(TEXT_TYPES, type);
 	}
 	
 	public static boolean isNumericType(String type) {

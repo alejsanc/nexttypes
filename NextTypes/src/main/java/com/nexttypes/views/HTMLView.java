@@ -47,6 +47,7 @@ import com.nexttypes.datatypes.DocumentPreview;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.HTML;
+import com.nexttypes.datatypes.HTML.InputGroup;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Menu;
 import com.nexttypes.datatypes.MenuSection;
@@ -66,7 +67,6 @@ import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.datatypes.TypeReference;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.Comparison;
-import com.nexttypes.enums.Form;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.IndexMode;
 import com.nexttypes.enums.Order;
@@ -74,6 +74,7 @@ import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.ElementException;
 import com.nexttypes.exceptions.ElementNotFoundException;
 import com.nexttypes.exceptions.FieldException;
+import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.NotFoundException;
 import com.nexttypes.exceptions.ObjectNotFoundException;
@@ -134,6 +135,8 @@ public class HTMLView extends View {
 	//Classes
 	public static final String ADD_FILTER = "add-filter";
 	public static final String FILTER_FIELD = "filter-field";
+	public static final String RADIO_OBJECT_INPUT = "radio-object-input";
+	public static final String TEXTAREA_OBJECTS_INPUT = "textarea-objects-input";
 	public static final String REFERENCE_OUTPUT = "reference-output";
 	public static final String SEARCH_OUTPUT = "search-output";
 	public static final String SELECT_HEADER = "select-header";
@@ -174,7 +177,7 @@ public class HTMLView extends View {
 	public static final String XML = "xml";
 	public static final String VISUAL = "visual";
 	public static final String JAVASCRIPT = "javascript";
-
+		
 	protected HTML document;
 	protected Element head;
 	protected Element main;
@@ -508,10 +511,11 @@ public class HTMLView extends View {
 			Integer size = typeSettings.getActionInt32(type, action, Constants.OBJECTS_SELECT + "."
 					+ Constants.SIZE);
 
-			row.appendElement(HTML.TD).appendText(strings.getObjectsName(type));
+			String objectsName = strings.getObjectsName(type);
+			
+			row.appendElement(HTML.TD).appendText(objectsName);
 			row.appendElement(HTML.TD).appendElement(
-					objectInput(Constants.OBJECTS, Constants.OBJECTS, null, type, true, lang)
-						.setAttribute(HTML.MULTIPLE).setAttribute(HTML.SIZE, size));
+					objectsInput(Constants.OBJECTS, objectsName, size, null, type, true, lang));
 		}
 
 		for (Map.Entry<String, TypeField> entry : fields.entrySet()) {
@@ -1310,8 +1314,8 @@ public class HTMLView extends View {
 	
 		for (Comparison comparison : Comparison.values()) {
 			option = comparisonSelect.appendElement(HTML.OPTION)
-				.setAttribute(HTML.VALUE, comparison.toString().toLowerCase())
-				.appendText(strings.getComparisonName(type, comparison.toString().toLowerCase()));
+				.setAttribute(HTML.VALUE, comparison.toString())
+				.appendText(strings.getComparisonName(type, comparison.toString()));
 			
 			if (comparison.equals(filter.getComparison())) {
 				option.setAttribute(HTML.SELECTED);
@@ -1320,26 +1324,22 @@ public class HTMLView extends View {
 		
 		Element valueInput = null;
 		TypeField typeField = typeFields.get(filterField);
-		
-		if (Constants.ID.equals(filterField)) {
-			valueInput = objectInput(Constants.ID, strings.getIdName(type),
-					filter.getValue(), type, true, lang);
-		} else {
-		
-			String filterFieldName = strings.getFieldName(type, filterField);
-			valueInput = fieldInput(type, filterField, filterFieldName,
-				filter.getValue(), typeField, lang);
-		}
-		
 		String valueName = Constants.FILTERS + ":" + count + ":" + Constants.VALUE;
 		
-		if (typeField != null && PT.BOOLEAN.equals(typeField.getType())) {
-			for (Element input : valueInput.getChildElements()) {
-				input.setAttribute(HTML.NAME, valueName).setAttribute(HTML.FORM, Constants.SEARCH);
-			}
+		if (Constants.ID.equals(filterField)) {
+			valueInput = objectInput(valueName, strings.getIdName(type),
+					filter.getValue(), type, true, lang);
 		} else {
-			valueInput.setAttribute(HTML.NAME, valueName).setAttribute(HTML.FORM, Constants.SEARCH);
+			if (PT.isTextType(typeField.getType())) {
+				typeField = new TypeField(PT.STRING, null, null, null, typeField.isNotNull());
+			}
+			
+			String filterFieldName = strings.getFieldName(type, filterField);
+			valueInput = fieldInput(type, filterField, filterFieldName, filter.getValue(), typeField,
+					lang).setAttribute(HTML.NAME, valueName);
 		}
+		
+		valueInput.setAttribute(HTML.FORM, Constants.SEARCH);
 		
 		row.appendElement(HTML.TD).appendElement(valueInput);
 		
@@ -1593,7 +1593,7 @@ public class HTMLView extends View {
 			input = passwordFieldInput(type, field, title);
 			break;
 		default:
-			input = objectFieldInput(field, title, value, typeField, lang);
+			input = objectFieldInput(type, field, title, value, typeField, lang);
 		}
 
 		return input;
@@ -1874,27 +1874,99 @@ public class HTMLView extends View {
 		return textarea;
 	}
 	
-	public Element objectFieldInput(String field, String title, Object value, TypeField typeField,
-			String lang) {
-		return objectInput("@" + field, title, value, typeField.getType(), typeField.isNotNull(), lang);
+	public Element objectFieldInput(String type, String field, String title, Object value,
+			TypeField typeField, String lang) {
+		
+		String mode = typeSettings.getFieldString(type, field, Constants.OBJECT_INPUT_MODE);
+		
+		if (HTML.TEXTAREA.equals(mode)) {
+			throw new InvalidValueException(Constants.INVALID_OBJECT_INPUT_MODE, mode);
+		}
+		
+		return objectInput("@" + field, title, value, typeField.getType(), typeField.isNotNull(), mode,
+				lang);
 	}
-
-	public Element objectInput(String name, String title, Object value, String type, 
+	
+	public Element objectInput(String name, String title, Object value, String type,
 			boolean notNull, String lang) {
+		
+		String mode = typeSettings.gts(type, Constants.OBJECT_INPUT_MODE);
+		
+		if (HTML.TEXTAREA.equals(mode)) {
+			throw new InvalidValueException(Constants.INVALID_OBJECT_INPUT_MODE, mode);
+		}
+		
+		return objectInput(name, title, value, type, notNull, mode, lang);
+	}
+	
+	public Element objectsInput(String name, String title, Integer size, Object value, String type,
+			boolean notNull, String lang) {
+	
+		String mode = typeSettings.gts(type, Constants.OBJECTS_INPUT_MODE);
+		
+		if (HTML.TEXT.equals(mode) || HTML.RADIO.equals(mode)) {
+			throw new InvalidValueException(Constants.INVALID_OBJECTS_INPUT_MODE, mode);
+		}
+		
+		Element input = objectInput(name, title, value, type, notNull, mode, lang);
+		
+		if (HTML.SELECT.equals(mode)) {
+			input.setAttribute(HTML.MULTIPLE).setAttribute(HTML.SIZE, size);
+		}
+		
+		return input;
+	}
+	
+	public Element objectInput(String name, String title, Object value, String type, 
+			boolean notNull, String mode, String lang) {
 
-		Element select = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name)
+		Element input = null;
+		
+		if (value instanceof ObjectReference) {
+			value = ((ObjectReference) value).getId();
+		} 
+		
+		switch(mode) {
+		case HTML.SELECT:			
+			input = objectSelectInput(name, title, value, type, notNull, lang);
+			break;
+			
+		case HTML.TEXT:		
+			input = objectTextInput(name, title, value);
+			break;
+			
+		case HTML.TEXTAREA:			
+			input = objectTextareaInput(name, title, value);
+			break;
+			
+		case HTML.RADIO:			
+			input = objectRadioInput(name, title, value, type, notNull, lang);
+			break;
+		}
+		
+		return input;
+	}
+	
+	public Element objectTextInput(String name, String title, Object value) {
+		
+		return input(HTML.TEXT, name, title, value);
+	}
+	
+	public Element objectTextareaInput(String name, String title, Object value) {
+		
+		return document.createElement(HTML.TEXTAREA)
+				.setAttribute(HTML.NAME, name)
+				.setClass(TEXTAREA_OBJECTS_INPUT);
+	}
+	
+	public Element objectSelectInput(String name, String title, Object value, String type,
+			boolean notNull, String lang) {
+		
+		Element input = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name)
 				.setAttribute(HTML.TITLE, title);
 
 		if (!notNull) {
-			select.appendElement(HTML.OPTION);
-		}
-
-		String id = null;
-		
-		if (value instanceof ObjectReference) {
-			id = ((ObjectReference) value).getId();
-		} else if (value instanceof String) {
-			id = (String) value;
+			input.appendElement(HTML.OPTION);
 		}
 
 		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, lang);
@@ -1903,13 +1975,60 @@ public class HTMLView extends View {
 			String objectId = entry.getKey();
 			String objectName = entry.getValue();
 
-			Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, objectId);
-			if (objectId.equals(id)) {
+			Element option = input.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, objectId);
+			if (objectId.equals(value)) {
 				option.setAttribute(HTML.SELECTED);
 			}
 			option.appendText(objectName);
 		}
-		return select;
+		
+		if (value == null) {
+			input.getFirstChildElement().setAttribute(HTML.SELECTED);
+		}
+		
+		return input;
+	}
+	
+	public Element objectRadioInput(String name, String title, Object value, String type, 
+			boolean notNull, String lang) {
+		
+		InputGroup inputGroup = document.createInputGroup();
+		inputGroup.setClass(RADIO_OBJECT_INPUT);
+		
+		if (!notNull) {
+			String nullString = strings.gts(type, Constants.NULL);
+			
+			inputGroup.appendInput(input(HTML.RADIO, name, nullString, ""));
+			
+			inputGroup.appendText(nullString);
+			
+		}
+		
+		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, lang);
+		
+		for (Entry<String, String> entry : names.entrySet()) {
+			String objectId = entry.getKey();
+			String objectName = entry.getValue();
+
+			Element input = inputGroup.appendInput(input(HTML.RADIO, name, objectName,
+					objectId));
+			
+			if (objectId.equals(value)) {
+				input.setAttribute(HTML.CHECKED);
+			}
+			
+			inputGroup.appendText(objectName);
+		}
+		
+		if (value == null) {
+			Element[] inputs = inputGroup.getInputs();
+			
+			if (inputs != null && inputs.length > 0) {
+				inputs[0].setAttribute(HTML.CHECKED);
+			}
+		}
+		
+		return inputGroup;
 	}
 	
 	public Element timezoneFieldInput(String field, String title, Object value) {
@@ -2416,8 +2535,7 @@ public class HTMLView extends View {
 			
 				params.append(paramRoot + Constants.FIELD + "=" + filter.getField());
 			
-				params.append(paramRoot + Constants.COMPARISON + "=" 
-					+ filter.getComparison().toString().toLowerCase());
+				params.append(paramRoot + Constants.COMPARISON + "=" + filter.getComparison());
 			
 				params.append(paramRoot + Constants.VALUE + "=");
 				
@@ -2718,7 +2836,7 @@ public class HTMLView extends View {
 
 	public Element[] typeMenuElements(String type, String id, String lang, String view, FieldReference ref,
 			String search, boolean component) {
-		Form form = request.getForm();
+		String form = request.getForm();
 
 		ArrayList<Element> elements = new ArrayList<>();
 
@@ -2730,7 +2848,7 @@ public class HTMLView extends View {
 					Icon.MAGNIFYING_GLASS));
 		}
 
-		if (!Form.INSERT.equals(form)) {
+		if (!Action.INSERT.equals(form)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.INSERT),
 					uri(type, lang, view) + formParam(Action.INSERT) + refParam, Icon.PLUS));
 		}
@@ -2750,12 +2868,12 @@ public class HTMLView extends View {
 			elements.add(iconAnchor(strings.getActionName(type, Action.PREVIEW), uri, Icon.LIST_RICH));
 		}
 
-		if (id == null && !Form.ALTER.equals(form)) {
+		if (id == null && !Action.ALTER.equals(form)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.ALTER),
 					uri(type, lang, view) + formParam(Action.ALTER), Icon.PENCIL));
 		}
 
-		if (id != null && !Form.UPDATE.equals(form)) {
+		if (id != null && !Action.UPDATE.equals(form)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.UPDATE),
 					uri(type, id, lang, view) + formParam(Action.UPDATE), Icon.PENCIL));
 		}
@@ -2813,17 +2931,17 @@ public class HTMLView extends View {
 	}
 
 	public Element booleanFieldInput(String field, String title, Object value) {
-		Element span = document.createElement(HTML.SPAN);
+		InputGroup group = document.createInputGroup();
 
-		Element input = span.appendElement(input(HTML.CHECKBOX, "@" + field, title, Constants.TRUE));
+		Element input = group.appendInput(input(HTML.CHECKBOX, "@" + field, title, Constants.TRUE));
 
 		if (value != null && (boolean) value) {
 			input.setAttribute(HTML.CHECKED);
 		}
 
-		span.appendElement(input(HTML.HIDDEN, "@" + field, title, Constants.FALSE));
+		group.appendInput(input(HTML.HIDDEN, "@" + field, title, Constants.FALSE));
 
-		return span;
+		return group;
 	}
 
 	public Element dates(String type, ZonedDateTime cdate, ZonedDateTime udate) {
@@ -3147,10 +3265,10 @@ public class HTMLView extends View {
 		Element actionsElement = document.getElementById(Constants.ACTIONS);
 
 		if (actionsElement != null) {
-			Form form = request.getForm();
+			String form = request.getForm();
 
-			if (type != null && !Form.INSERT.equals(form) && !Form.ALTER.equals(form) && !Form.RENAME.equals(form)
-					&& !request.isInfo()) {
+			if (type != null && !Action.INSERT.equals(form) && !Action.ALTER.equals(form)
+					&& !Action.RENAME.equals(form) && !request.isInfo()) {
 
 				LinkedHashMap<String, LinkedHashMap<String, TypeField>> actions = nextNode.getTypeActions(type);
 

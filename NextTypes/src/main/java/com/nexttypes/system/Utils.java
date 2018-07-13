@@ -123,7 +123,7 @@ public class Utils {
 
 		return output;
 	}
-
+	
 	public static String format(String text, Object... parameters) {
 		if (text != null && text.length() > 0) {
 			try (Formatter formatter = new Formatter()) {

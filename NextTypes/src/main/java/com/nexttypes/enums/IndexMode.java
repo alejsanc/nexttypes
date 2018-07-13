@@ -30,7 +30,7 @@ public enum IndexMode {
 	public static String[] getStringValues() {
 		return new String[] { INDEX.toString(), UNIQUE.toString(), FULLTEXT.toString() };
 	}
-
+	
 	@Override
 	public String toString() {
 		return mode;

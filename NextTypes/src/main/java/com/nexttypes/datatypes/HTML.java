@@ -17,6 +17,7 @@
 package com.nexttypes.datatypes;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.w3c.dom.Document;
 
@@ -120,6 +121,7 @@ public class HTML extends XML {
 	public static final String ACCEPT = "accept";
 	public static final String MULTIPART_FORM_DATA = "multipart/form-data";
 	public static final String BACKGROUND_COLOR = "background-color";
+	public static final String RADIO = "radio";
 
 	public HTML() {
 		super();
@@ -185,5 +187,34 @@ public class HTML extends XML {
 
 	public Element getFooter() {
 		return getElementByTagName(FOOTER);
+	}
+	
+	public class InputGroup extends Element {
+		protected ArrayList<Element> inputs = new ArrayList<>();
+		
+		public InputGroup() {
+			super(document.createElement(HTML.SPAN));
+		}
+		
+		@Override
+		public Element setAttribute(String name, String value) {
+			for (Element input : inputs) {
+				input.setAttribute(name, value);
+			}
+			return this;
+		}
+		
+		public Element appendInput(Element input) {
+			inputs.add(input);
+			return appendElement(input);
+		}
+		
+		public Element[] getInputs() {
+			return inputs.toArray(new Element[] {});
+		}
+	}
+	
+	public InputGroup createInputGroup() {
+		return new InputGroup();
 	}
 }

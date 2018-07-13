@@ -471,6 +471,16 @@ video {
 	font-weight: bold;
 }
 
+.radio-object-input {
+	display: block;
+	text-align: left;
+}
+
+.textarea-objects-input {
+	width: 400px;
+	height: 200px;
+}
+
 .preview {
 	display: table;
 	border-color: black;

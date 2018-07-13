@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015-2018 Alejandro Sánchez <alex@nexttypes.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.nexttypes.system;
 
 public class Constants {
@@ -155,6 +171,8 @@ public class Constants {
 	public static final String INVALID_INDEX_NAME = "invalid_index_name";
 	public static final String INVALID_INPUT = "invalid_input";
 	public static final String INVALID_LANG = "invalid_lang";
+	public static final String INVALID_OBJECT_INPUT_MODE = "invalid_object_input_mode";
+	public static final String INVALID_OBJECTS_INPUT_MODE = "invalid_objects_input_mode";
 	public static final String INVALID_PARAMETERS = "invalid_parameters";
 	public static final String INVALID_PASSWORD = "invalid_password";
 	public static final String INVALID_ROW_COUNT = "invalid_row_count";
@@ -215,10 +233,13 @@ public class Constants {
 	public static final String NO_TYPES_FOUND = "no_types_found";
 	public static final String NOT_NULL = "not_null";
 	public static final String NOT_NULL_ALTERED = "not_null_altered";
+	public static final String NULL = "null";
 	public static final String NULL_TEXT = "null_text";
 	public static final String OBJECT = "object";
 	public static final String OBJECT_ALREADY_EXISTS = "object_already_exists";
 	public static final String OBJECT_ID_SUCCESSFULLY_UPDATED = "object_id_successfully_updated";
+	public static final String OBJECT_INPUT_MODE = "object_input_mode";
+	public static final String OBJECTS_INPUT_MODE = "objects_input_mode";
 	public static final String OBJECT_NOT_FOUND = "object_not_found";
 	public static final String OBJECT_SUCCESSFULLY_INSERTED = "object_successfully_inserted";
 	public static final String OBJECT_SUCCESSFULLY_UPDATED = "object_successfully_updated";

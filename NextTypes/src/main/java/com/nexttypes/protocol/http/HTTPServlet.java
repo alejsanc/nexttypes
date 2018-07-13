@@ -50,7 +50,6 @@ import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.URI;
 import com.nexttypes.datatypes.UpdateResponse;
-import com.nexttypes.enums.Form;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.exceptions.CertificateNotFoundException;
@@ -105,19 +104,19 @@ public class HTTPServlet extends HttpServlet {
 
 		String type = req.getType();
 		String id = req.getId();
-		Form form = req.getForm();
+		String form = req.getForm();
 
 		try (View view = getView(req)) {
 			try {
 				if (type == null) {
 
-					if (Form.CREATE.equals(form)) {
+					if (Action.CREATE.equals(form)) {
 						content = view.createForm(req.getLang(), req.getView());
-					} else if (Form.IMPORT_TYPES.equals(form)) {
+					} else if (Action.IMPORT_TYPES.equals(form)) {
 						content = view.importTypesForm(req.getLang(), req.getView());
-					} else if (Form.IMPORT_OBJECTS.equals(form)) {
+					} else if (Action.IMPORT_OBJECTS.equals(form)) {
 						content = view.importObjectsForm(req.getLang(), req.getView());
-					} else if (Form.LOGIN.equals(form)) {
+					} else if (Action.LOGIN.equals(form)) {
 						content = view.loginForm(req.getLang(), req.getView());
 					} else {
 
@@ -142,13 +141,13 @@ public class HTTPServlet extends HttpServlet {
 					if (filterCount != null) {
 						content = view.filterComponent(req.getType(), null, req.getLang(),
 								req.getView(), filterCount);
-					} else if (Form.INSERT.equals(form)) {
+					} else if (Action.INSERT.equals(form)) {
 						content = view.insertForm(req.getType(), req.getLang(), req.getView(), req.getRef());
-					} else if (Form.ALTER.equals(form)) {
+					} else if (Action.ALTER.equals(form)) {
 						content = view.alterForm(req.getType(), req.getLang(), req.getView());
-					} else if (Form.RENAME.equals(form)) {
+					} else if (Action.RENAME.equals(form)) {
 						content = view.renameForm(req.getType(), req.getLang(), req.getView());
-					} else if (Form.EXECUTE_ACTION.equals(form)) {
+					} else if (Action.EXECUTE_ACTION.equals(form)) {
 						content = view.executeActionForm(req.getType(), null, req.getAction(), req.getLang(),
 								req.getView());
 					} else {
@@ -179,11 +178,11 @@ public class HTTPServlet extends HttpServlet {
 
 				} else if (req.getField() == null) {
 					
-					if (Form.UPDATE.equals(form)) {
+					if (Action.UPDATE.equals(form)) {
 						content = view.updateForm(req.getType(), req.getId(), req.getLang(), req.getView());
-					} else if (Form.UPDATE_ID.equals(form)) {
+					} else if (Action.UPDATE_ID.equals(form)) {
 						content = view.updateIdForm(req.getType(), req.getId(), req.getLang(), req.getView());
-					} else if (Form.EXECUTE_ACTION.equals(form)) {
+					} else if (Action.EXECUTE_ACTION.equals(form)) {
 						content = view.executeActionForm(req.getType(), req.getId(), req.getAction(), req.getLang(),
 								req.getView());
 					} else {
@@ -195,7 +194,7 @@ public class HTTPServlet extends HttpServlet {
 					if (filterCount != null) {
 						content = view.filterComponent(req.getType(), req.getField(), req.getLang(),
 								req.getView(), filterCount);
-					} else if (Form.UPDATE_PASSWORD.equals(form)) {
+					} else if (Action.UPDATE_PASSWORD.equals(form)) {
 						content = view.updatePasswordForm(req.getType(), req.getId(), req.getField(), req.getLang(),
 								req.getView());
 					} else {

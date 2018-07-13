@@ -276,11 +276,16 @@ function loadFilter(row, field) {
 	var request = new XMLHttpRequest();
 	request.open("GET", uri, true);
 	request.onload = function(e){
-		var container = document.createElement("div");
-		container.innerHTML = request.responseText;
-		container.querySelector("button.delete-row").addEventListener("click", deleteRow);
-		container.querySelector("select.filter-field").addEventListener("change", changeFilterField);
-		row.parentNode.replaceChild(container.firstChild, row);
+		
+		if(request.status == 200){
+			var container = document.createElement("div");
+			container.innerHTML = request.responseText;
+			container.querySelector("button.delete-row").addEventListener("click", deleteRow);
+			container.querySelector("select.filter-field").addEventListener("change", changeFilterField);
+			row.parentNode.replaceChild(container.firstChild, row);
+		} else {
+			alert(request.responseText);
+		}
 	}
 	request.send(null);
 }
@@ -376,8 +381,7 @@ function submitForm(event){
 				}
 			};
 		}
-		
-		request.onload = function(event){
+				request.onload = function(event){
 			var response = null;
 			var message = null;
 			var dialogType = null;
@@ -666,10 +670,14 @@ function loadSelectTable(element, uri){
 		var request = new XMLHttpRequest();
 		request.open("GET", uri+"&component", true);
 		request.onload = function(e){
-			var container = document.createElement("div");
-			container.innerHTML = request.responseText;
-			addSelectTableEventListeners(container);
-			element.parentNode.replaceChild(container.firstChild, element);
+			if(request.status == 200){
+				var container = document.createElement("div");
+				container.innerHTML = request.responseText;
+				addSelectTableEventListeners(container);
+				element.parentNode.replaceChild(container.firstChild, element);
+			} else {
+				alert(request.responseText);
+			}
 		}
 		request.send(null);
 	}else{
