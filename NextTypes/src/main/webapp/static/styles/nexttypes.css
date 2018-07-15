@@ -471,12 +471,12 @@ video {
 	font-weight: bold;
 }
 
-.radio-object-input {
+.object-radio-input {
 	display: block;
 	text-align: left;
 }
 
-.textarea-objects-input {
+.objects-textarea-input {
 	width: 400px;
 	height: 200px;
 }

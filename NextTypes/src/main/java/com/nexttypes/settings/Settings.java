@@ -66,15 +66,9 @@ public class Settings {
 		String value = null;
 
 		for (Properties file : settings) {
-			value = file.getProperty(setting);
+			value = Utils.trim(file.getProperty(setting));
 
 			if (value != null) {
-				value = value.trim();
-
-				if (value.length() == 0) {
-					value = null;
-				}
-
 				break;
 			}
 		}

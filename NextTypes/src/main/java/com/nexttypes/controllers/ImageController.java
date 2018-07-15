@@ -18,7 +18,6 @@ package com.nexttypes.controllers;
 
 import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.Image;
-import com.nexttypes.exceptions.ActionException;
 import com.nexttypes.exceptions.ObjectException;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.system.Action;
@@ -38,10 +37,7 @@ public class ImageController extends Controller {
 
 	@Action(RESIZE)
 	public ActionResult resize(Integer width, Integer height) {
-		if (objects == null || objects.length == 0) {
-			throw new ActionException(type, RESIZE, Constants.NO_OBJECTS_SELECTED);
-		}
-
+		
 		for (String id : objects) {
 			Image image = getImageField(type, id, Constants.IMAGE);
 			if (image != null) {

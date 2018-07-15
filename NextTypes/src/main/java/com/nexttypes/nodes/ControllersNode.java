@@ -64,6 +64,7 @@ import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.enums.Order;
+import com.nexttypes.exceptions.ActionException;
 import com.nexttypes.exceptions.ActionExecutionException;
 import com.nexttypes.exceptions.ActionFieldException;
 import com.nexttypes.exceptions.ActionNotFoundException;
@@ -131,6 +132,14 @@ public class ControllersNode implements Node {
 
 	@Override
 	public ActionResult executeAction(String type, String[] objects, String action, Object... parameters) {
+		
+		Boolean objectsInputNotNull = typeSettings.getActionBoolean(type, action,
+				Constants.OBJECTS_INPUT_NOT_NULL);
+		
+		if (objectsInputNotNull && (objects == null || objects.length == 0)) {
+			throw new ActionException(type, action, Constants.EMPTY_OBJECTS_LIST);
+		}		
+		
 		ActionResult result = null;
 		Method method = null;
 

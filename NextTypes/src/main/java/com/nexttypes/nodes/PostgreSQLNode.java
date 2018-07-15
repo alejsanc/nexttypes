@@ -3961,7 +3961,7 @@ public class PostgreSQLNode implements Node {
 	}
 	protected void checkObjects(String type, String[] objects) {
 		if (objects == null || objects.length == 0) {
-			throw new TypeException(type, Constants.NO_OBJECTS_SELECTED);
+			throw new TypeException(type, Constants.EMPTY_OBJECTS_LIST);
 		}
 	}
 

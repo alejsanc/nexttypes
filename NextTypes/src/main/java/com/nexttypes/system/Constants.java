@@ -100,6 +100,7 @@ public class Constants {
 	public static final String EMPTY_INDEX_FIELDS_LIST = "empty_index_fields_list";
 	public static final String EMPTY_INDEX_NAME = "empty_index_name";
 	public static final String EMPTY_INPUT = "empty_input";
+	public static final String EMPTY_OBJECTS_LIST = "empty_objects_list";
 	public static final String EMPTY_PASSWORD = "empty_password";
 	public static final String EMPTY_TYPE_NAME = "empty_type_name";
 	public static final String EMPTY_TYPES_LIST = "empty_types_list";
@@ -229,7 +230,6 @@ public class Constants {
 	public static final String NEW_PASSWORD_REPEAT = "new_password_repeat";
 	public static final String NEXT_NODE = "next_node";
 	public static final String NO_OBJECTS_FOUND = "no_objects_found";
-	public static final String NO_OBJECTS_SELECTED = "no_objects_selected";
 	public static final String NO_TYPES_FOUND = "no_types_found";
 	public static final String NOT_NULL = "not_null";
 	public static final String NOT_NULL_ALTERED = "not_null_altered";
@@ -245,6 +245,8 @@ public class Constants {
 	public static final String OBJECT_SUCCESSFULLY_UPDATED = "object_successfully_updated";
 	public static final String OBJECTS = "objects";
 	public static final String OBJECTS_DELETE_CONFIRMATION = "objects_delete_confirmation";
+	public static final String OBJECTS_INPUT_SIZE = "objects_input_size";
+	public static final String OBJECTS_INPUT_NOT_NULL = "objects_input_not_null";
 	public static final String OBJECTS_SELECT = "objects_select";
 	public static final String OBJECTS_SUCCESSFULLY_DELETED = "objects_successfully_deleted";
 	public static final String OFFSET = "offset";

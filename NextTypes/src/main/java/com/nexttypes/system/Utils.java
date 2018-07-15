@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Formatter;
 import java.util.LinkedHashMap;
@@ -121,6 +122,42 @@ public class Utils {
 			}
 		}
 
+		return output;
+	}
+	
+	public static String trim(String input) {
+		String output = null;
+		
+		if (input != null && input.length() > 0) {
+			String value = input.trim();
+			
+			if (value.length() > 0) {
+				output = value;
+			}
+		}
+		
+		return output;
+	}
+	
+	public static String[] trim(String[] input) {
+		String[] output = null;
+		
+		if (input != null && input.length > 0) {
+			ArrayList<String> values = new ArrayList<>();
+			
+			for (String value : input) {
+				value = trim(value);
+				
+				if (value != null) {
+					values.add(value);
+				}
+			}
+			
+			if (values.size() > 0) {
+				output = values.toArray(new String[] {});
+			}
+		}
+		
 		return output;
 	}
 	

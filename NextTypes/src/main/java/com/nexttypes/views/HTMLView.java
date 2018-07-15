@@ -135,8 +135,8 @@ public class HTMLView extends View {
 	//Classes
 	public static final String ADD_FILTER = "add-filter";
 	public static final String FILTER_FIELD = "filter-field";
-	public static final String RADIO_OBJECT_INPUT = "radio-object-input";
-	public static final String TEXTAREA_OBJECTS_INPUT = "textarea-objects-input";
+	public static final String OBJECT_RADIO_INPUT = "object-radio-input";
+	public static final String OBJECTS_TEXTAREA_INPUT = "objects-textarea-input";
 	public static final String REFERENCE_OUTPUT = "reference-output";
 	public static final String SEARCH_OUTPUT = "search-output";
 	public static final String SELECT_HEADER = "select-header";
@@ -177,6 +177,9 @@ public class HTMLView extends View {
 	public static final String XML = "xml";
 	public static final String VISUAL = "visual";
 	public static final String JAVASCRIPT = "javascript";
+	
+	//Objects Input Modes
+	public static final String MULTIPLE_SELECT = "multiple_select";
 		
 	protected HTML document;
 	protected Element head;
@@ -508,14 +511,10 @@ public class HTMLView extends View {
 				row.appendElement(HTML.TD).appendText(id);
 			}
 		} else {
-			Integer size = typeSettings.getActionInt32(type, action, Constants.OBJECTS_SELECT + "."
-					+ Constants.SIZE);
-
 			String objectsName = strings.getObjectsName(type);
 			
 			row.appendElement(HTML.TD).appendText(objectsName);
-			row.appendElement(HTML.TD).appendElement(
-					objectsInput(Constants.OBJECTS, objectsName, size, null, type, true, lang));
+			row.appendElement(HTML.TD).appendElement(actionObjectsInput(type, action, objectsName, lang));
 		}
 
 		for (Map.Entry<String, TypeField> entry : fields.entrySet()) {
@@ -988,17 +987,17 @@ public class HTMLView extends View {
 			String type = typeInfo.getName();
 			String typeName = strings.getTypeName(type);
 
-			Element tableRow = body.appendElement(HTML.TR);
-			tableRow.appendElement(HTML.TD)
+			Element row = body.appendElement(HTML.TR);
+			row.appendElement(HTML.TD)
 					.appendElement(input(HTML.CHECKBOX, Constants.TYPES, null, type).setClass(ITEM_CHECKBOX));
-			tableRow.appendElement(HTML.TD).appendElement(anchor(typeName, uri(type, lang, view)));
-			tableRow.appendElement(HTML.TD).appendText(typeInfo.getObjects() + "");
-			tableRow.appendElement(HTML.TD).appendText(humanReadableBytes(typeInfo.getSize(), lang));
-			tableRow.appendElement(HTML.TD).appendElement(iconAnchor(strings.getActionName(type, Action.INSERT),
+			row.appendElement(HTML.TD).appendElement(anchor(typeName, uri(type, lang, view)));
+			row.appendElement(HTML.TD).appendText(typeInfo.getObjects() + "");
+			row.appendElement(HTML.TD).appendText(humanReadableBytes(typeInfo.getSize(), lang));
+			row.appendElement(HTML.TD).appendElement(iconAnchor(strings.getActionName(type, Action.INSERT),
 					uri(type, lang, view) + formParam(Action.INSERT), Icon.PLUS));
-			tableRow.appendElement(HTML.TD).appendElement(iconAnchor(strings.getActionName(type, Action.ALTER),
+			row.appendElement(HTML.TD).appendElement(iconAnchor(strings.getActionName(type, Action.ALTER),
 					uri(type, lang, view) + formParam(Action.ALTER), Icon.PENCIL));
-			tableRow.appendElement(HTML.TD).appendElement(iconAnchor(strings.gts(type, Constants.TYPE),
+			row.appendElement(HTML.TD).appendElement(iconAnchor(strings.gts(type, Constants.TYPE),
 					uri(type, lang, view) + "&" + Constants.INFO, Icon.INFO));
 		}
 
@@ -1584,7 +1583,7 @@ public class HTMLView extends View {
 			input = binaryFieldInput(type, action, field, title, value, typeField, lang);
 			break;
 		case PT.TIMEZONE:
-			input = timezoneFieldInput(field, title, value);
+			input = timezoneFieldInput(field, title, value, typeField);
 			break;
 		case PT.BOOLEAN:
 			input = booleanFieldInput(field, title, value);
@@ -1874,14 +1873,18 @@ public class HTMLView extends View {
 		return textarea;
 	}
 	
+	public Element actionObjectsInput(String type, String action, String title, String lang) {
+		Boolean notNull = typeSettings.getActionBoolean(type, action, Constants.OBJECTS_INPUT_NOT_NULL);
+		String mode = typeSettings.getActionString(type, action, Constants.OBJECTS_INPUT_MODE);
+		Integer size = typeSettings.getActionInt32(type, action, Constants.OBJECTS_INPUT_SIZE);
+		
+		return objectsInput(Constants.OBJECTS, title, null, type, notNull, mode, size, lang);
+	}
+	
 	public Element objectFieldInput(String type, String field, String title, Object value,
 			TypeField typeField, String lang) {
 		
 		String mode = typeSettings.getFieldString(type, field, Constants.OBJECT_INPUT_MODE);
-		
-		if (HTML.TEXTAREA.equals(mode)) {
-			throw new InvalidValueException(Constants.INVALID_OBJECT_INPUT_MODE, mode);
-		}
 		
 		return objectInput("@" + field, title, value, typeField.getType(), typeField.isNotNull(), mode,
 				lang);
@@ -1892,36 +1895,14 @@ public class HTMLView extends View {
 		
 		String mode = typeSettings.gts(type, Constants.OBJECT_INPUT_MODE);
 		
-		if (HTML.TEXTAREA.equals(mode)) {
-			throw new InvalidValueException(Constants.INVALID_OBJECT_INPUT_MODE, mode);
-		}
-		
 		return objectInput(name, title, value, type, notNull, mode, lang);
-	}
-	
-	public Element objectsInput(String name, String title, Integer size, Object value, String type,
-			boolean notNull, String lang) {
-	
-		String mode = typeSettings.gts(type, Constants.OBJECTS_INPUT_MODE);
-		
-		if (HTML.TEXT.equals(mode) || HTML.RADIO.equals(mode)) {
-			throw new InvalidValueException(Constants.INVALID_OBJECTS_INPUT_MODE, mode);
-		}
-		
-		Element input = objectInput(name, title, value, type, notNull, mode, lang);
-		
-		if (HTML.SELECT.equals(mode)) {
-			input.setAttribute(HTML.MULTIPLE).setAttribute(HTML.SIZE, size);
-		}
-		
-		return input;
 	}
 	
 	public Element objectInput(String name, String title, Object value, String type, 
 			boolean notNull, String mode, String lang) {
 
 		Element input = null;
-		
+				
 		if (value instanceof ObjectReference) {
 			value = ((ObjectReference) value).getId();
 		} 
@@ -1935,13 +1916,45 @@ public class HTMLView extends View {
 			input = objectTextInput(name, title, value);
 			break;
 			
+		case HTML.RADIO:			
+			input = objectRadioInput(name, title, value, type, notNull, lang);
+			break;
+			
+		default:
+			throw new InvalidValueException(Constants.INVALID_OBJECT_INPUT_MODE, mode);
+		}		
+		
+		return input;
+	}
+	
+	public Element objectsInput(String name, String title, Object value, String type, 
+			boolean notNull, String mode, Integer size, String lang) {
+
+		Element input = null;
+		
+		switch(mode) {
 		case HTML.TEXTAREA:			
-			input = objectTextareaInput(name, title, value);
+			input = objectsTextareaInput(name, title);
+			break;
+			
+		case MULTIPLE_SELECT:
+			input = objectsMultipleSelectInput(name, title, size, type, lang);
+			break;
+			
+		case HTML.SELECT:			
+			input = objectSelectInput(name, title, value, type, notNull, lang);
+			break;
+			
+		case HTML.TEXT:		
+			input = objectTextInput(name, title, value);
 			break;
 			
 		case HTML.RADIO:			
 			input = objectRadioInput(name, title, value, type, notNull, lang);
 			break;
+			
+		default:
+			throw new InvalidValueException(Constants.INVALID_OBJECTS_INPUT_MODE, mode);
 		}
 		
 		return input;
@@ -1952,11 +1965,33 @@ public class HTMLView extends View {
 		return input(HTML.TEXT, name, title, value);
 	}
 	
-	public Element objectTextareaInput(String name, String title, Object value) {
+	public Element objectsTextareaInput(String name, String title) {
 		
 		return document.createElement(HTML.TEXTAREA)
 				.setAttribute(HTML.NAME, name)
-				.setClass(TEXTAREA_OBJECTS_INPUT);
+				.setAttribute(HTML.TITLE, title)
+				.setClass(OBJECTS_TEXTAREA_INPUT);
+	}
+	
+	public Element objectsMultipleSelectInput(String name, String title, Integer size, 
+			String type, String lang) {
+		
+		Element input = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name)
+				.setAttribute(HTML.TITLE, title);
+
+		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, lang);
+
+		for (Entry<String, String> entry : names.entrySet()) {
+			String objectId = entry.getKey();
+			String objectName = entry.getValue();
+
+			input.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, objectId).appendText(objectName);
+		}
+		
+		input.setAttribute(HTML.MULTIPLE).setAttribute(HTML.SIZE, size);
+		
+		return input;
+		
 	}
 	
 	public Element objectSelectInput(String name, String title, Object value, String type,
@@ -1993,7 +2028,7 @@ public class HTMLView extends View {
 			boolean notNull, String lang) {
 		
 		InputGroup inputGroup = document.createInputGroup();
-		inputGroup.setClass(RADIO_OBJECT_INPUT);
+		inputGroup.setClass(OBJECT_RADIO_INPUT);
 		
 		if (!notNull) {
 			String nullString = strings.gts(type, Constants.NULL);
@@ -2031,12 +2066,16 @@ public class HTMLView extends View {
 		return inputGroup;
 	}
 	
-	public Element timezoneFieldInput(String field, String title, Object value) {
-		return timezoneInput("@" + field, title, value);
+	public Element timezoneFieldInput(String field, String title, Object value, TypeField typeField) {
+		return timezoneInput("@" + field, title, value, typeField.isNotNull());
 	}
 
-	public Element timezoneInput(String name, String title, Object value) {
+	public Element timezoneInput(String name, String title, Object value, boolean notNull) {
 		Element select = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name);
+		
+		if (!notNull) {
+			select.appendElement(HTML.OPTION);
+		}
 
 		if (title == null) {
 			title = name;

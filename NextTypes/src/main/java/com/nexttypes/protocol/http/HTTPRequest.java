@@ -263,12 +263,12 @@ public class HTTPRequest {
 					Object value = null;
 
 					if (fieldType == String[].class) {
-						value = request.getParameterValues(parameterName);
+						value = Utils.trim(request.getParameterValues(parameterName));
 					} else if (fieldType == boolean.class) {
 						value = true;
 					} else {
-						String tmp = request.getParameter(parameterName);
-						if (tmp != null && tmp.length() > 0) {
+						String tmp = Utils.trim(request.getParameter(parameterName));
+						if (tmp != null) {
 							if (fieldType == String.class) {
 								value = tmp;
 							} else if (fieldType == Integer.class) {
@@ -313,30 +313,23 @@ public class HTTPRequest {
 	}
 
 	protected void parseCompositeParameter(String parameterName) {
-		String value = request.getParameter(parameterName);
-		if (value != null) {
-			value = value.trim();
-			
-			if (value.length() == 0) {
-				value = null;
-			}
-			
-			String[] parameter = parameterName.split(":");
+		String value = Utils.trim(request.getParameter(parameterName));
+								
+		String[] parameter = parameterName.split(":");
 
-			LinkedHashMap<String, HashMap<String, String>> name = compositeParameters.get(parameter[0]);
-			if (name == null) {
-				name = new LinkedHashMap<>();
-				compositeParameters.put(parameter[0], name);
-			}
-
-			HashMap<String, String> number = name.get(parameter[1]);
-			if (number == null) {
-				number = new HashMap<>();
-				name.put(parameter[1], number);
-			}
-
-			number.put(parameter[2], value);
+		LinkedHashMap<String, HashMap<String, String>> name = compositeParameters.get(parameter[0]);
+		if (name == null) {
+			name = new LinkedHashMap<>();
+			compositeParameters.put(parameter[0], name);
 		}
+
+		HashMap<String, String> number = name.get(parameter[1]);
+		if (number == null) {
+			number = new HashMap<>();
+			name.put(parameter[1], number);
+		}
+
+		number.put(parameter[2], value);
 	}
 
 	public NXObject readObject(LinkedHashMap<String, TypeField> typeFields) {
@@ -858,15 +851,7 @@ public class HTTPRequest {
 			String[] values = (String[]) fields.get(field);
 			
 			if (values != null && values.length > 0) {
-				value = values[0];
-				
-				if (value != null) {
-					value = value.trim();
-				
-					if (value.length() == 0) {
-						value = null;
-					}
-				}
+				value = Utils.trim(values[0]);
 			} 
 			
 			return value;
