@@ -99,6 +99,7 @@ public class Serial {
 		module.addSerializer(JSON.class, serializer);
 		module.addSerializer(Color.class, serializer);
 		module.addSerializer(InternetAddress.class, serializer);
+		module.addSerializer(URI.class, serializer);
 		module.addSerializer(IndexMode.class, serializer);
 
 		mapper.registerModule(module);

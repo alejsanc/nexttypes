@@ -1485,12 +1485,14 @@ public class PostgreSQLNode implements Node {
 					documentPreview, password, offset, limit);
 			
 			if (query.getCount() > 0) {
-				TuplesStream tuples = new SQLTuplesStream(query.getSQL(), query.getParameters());
+				TuplesStream tuples = new PostgreSQLTuplesStream(query.getSQL(), query.getParameters());
 				objects = new PostgreSQLObjectsStream(type, query.getTypeFields(), fulltext, binary, documentPreview,
 					query.getCount(), tuples);
+			} else {
+				objects = new PostgreSQLObjectsStream();
 			}
 		} catch (FulltextIndexNotFoundException e) {
-
+			objects = new PostgreSQLObjectsStream();
 		}
 
 		return objects;
@@ -3283,6 +3285,10 @@ public class PostgreSQLNode implements Node {
 		protected Long count;
 		protected TuplesStream tuples;
 
+		protected PostgreSQLObjectsStream() {
+			count = 0L;
+		}
+		
 		protected PostgreSQLObjectsStream(String type, LinkedHashMap<String, TypeField> typeFields, boolean fulltext,
 				boolean binary, boolean documentPreview, Long count, TuplesStream tuples) {
 			this.type = type;
@@ -3321,14 +3327,14 @@ public class PostgreSQLNode implements Node {
 		}
 	}
 
-	protected class SQLTuplesStream implements TuplesStream {
+	protected class PostgreSQLTuplesStream implements TuplesStream {
 		protected String sql;
 		protected Object[] parameters;
 		protected PreparedStatement statement;
 		protected ResultSet result;
 		protected ResultSetMetaData metaData;
 
-		protected SQLTuplesStream(String sql, Object... parameters) {
+		protected PostgreSQLTuplesStream(String sql, Object... parameters) {
 			this.sql = sql;
 			this.parameters = parameters;
 		}
