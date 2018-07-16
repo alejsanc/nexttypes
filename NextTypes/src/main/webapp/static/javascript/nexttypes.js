@@ -422,12 +422,10 @@ function submitForm(event){
 						response = JSON.parse(request.responseText);
 						message = response["message"];
 						form.elements["adate"].value = response["adate"];
-						callback = function(){
-							var inputs = form.querySelectorAll("input[name$=':name']");
-							for(let input of inputs){
-								var field = input.name.split(":");
-								form.elements[field[0] + ":" + field[1]+ ":old_name"].value = input.value;
-							}
+						var inputs = form.querySelectorAll("input[name$=':name']");
+						for(let input of inputs){
+							var field = input.name.split(":");
+							form.elements[field[0] + ":" + field[1]+ ":old_name"].value = input.value;
 						}
 						break;
 						
