@@ -111,10 +111,11 @@ function initEventListeners(){
 	addEventListeners(document, "button.add-index", "click", addTypeIndex);
 	addEventListeners(document, "button.add-filter", "click", addFilter);
 	addEventListeners(document, "button.delete-row", "click", deleteRow);
+	addEventListeners(document, "a.clear-binary-input", "click", clearBinaryInput);
 	addEventListeners(document, "select.langs", "change", changeLanguage);
 	addEventListeners(document, "select.years", "change", changeYear);
 	addEventListeners(document, "select.months", "change", changeMonth);
-	addEventListeners(document, "input[type='file']", "change", fileSelected);
+	addEventListeners(document, "input.binary", "change", binaryInputChange);
 	addEventListeners(document, "select.filter-field", "change", changeFilterField)
 	addSelectTableEventListeners(document);
 	
@@ -446,6 +447,17 @@ function submitForm(event){
 						response = JSON.parse(request.responseText);
 						message = response["message"];
 						form.elements["udate"].value = response["udate"];
+						
+						var sizes = form.querySelectorAll("span.binary-input-size");
+						for (let size of sizes) {
+							size.setAttribute("data-size", size.innerText);
+						}
+						
+						var anchors = form.querySelectorAll("a.clear-binary-input");
+						for (let anchor of anchors) {
+							anchor.classList.add("hidden");
+						}
+						
 						break;			
 							
 					case ACTION.UPDATE_ID:
@@ -685,10 +697,29 @@ function loadSelectTable(element, uri){
 	}
 }
 
-function fileSelected(event){
+function binaryInputChange(event){
 	var input = event.target;
+	var binaryInput = input.parentNode;
 	var file = input.files[0];
-	input.parentNode.querySelector("span.binary-size").innerText = humanReadableBytes(file.size, pageLang);
+	
+	binaryInput.querySelector("span.binary-input-size").innerText
+		= humanReadableBytes(file.size, pageLang);
+	
+	binaryInput.querySelector("a.clear-binary-input").classList.remove("hidden");
+}
+
+function clearBinaryInput(event) {
+	event.preventDefault();
+	
+	var target = event.currentTarget;
+	var binaryInput = target.parentNode;
+	
+	binaryInput.querySelector("input.binary").value = null;
+	
+	var binaryInputSize = binaryInput.querySelector("span.binary-input-size");
+	binaryInputSize.innerText = binaryInputSize.getAttribute("data-size");
+	
+	target.classList.add("hidden");
 }
 
 function changeLanguage(event){

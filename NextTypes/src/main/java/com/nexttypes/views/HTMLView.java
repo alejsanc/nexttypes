@@ -125,6 +125,7 @@ public class HTMLView extends View {
 	public static final String DATA_ID = "data-id";
 	public static final String DATA_LANG = "data-lang";
 	public static final String DATA_COMPONENT = "data-component";
+	public static final String DATA_SIZE = "data-size";
 	
 	//Elements
 	public static final String USER_NAME = "user-name";
@@ -149,12 +150,12 @@ public class HTMLView extends View {
 	public static final String ADD_INDEX = "add-index";
 	public static final String DELETE_ROW = "delete-row";
 	public static final String SUBMIT_FORM = "submit-form";
-	public static final String CLEAR = "clear";
+	public static final String CLEAR_BINARY_INPUT = "clear-binary-input";
 	public static final String ALL_CHECKBOX = "all-checkbox";
 	public static final String ITEM_CHECKBOX = "item-checkbox";
 	public static final String MENU_TITLE = "menu-title";
 	public static final String REFERENCE_FIELD = "reference-field";
-	public static final String BINARY_SIZE = "binary-size";
+	public static final String BINARY_INPUT_SIZE = "binary-input-size";
 	public static final String SMALL_TEXTAREA = "small-textarea";
 	public static final String MEDIUM_TEXTAREA = "medium-textarea";
 	public static final String ORDER_COLUMN = "order-column";
@@ -1618,7 +1619,13 @@ public class HTMLView extends View {
 			allowedContentTypes = Format.IMAGES.getContentType();
 		}
 
-		return binaryInput("@" + field, title, value, allowedContentTypes, lang);
+		Element input = binaryInput("@" + field, title, value, allowedContentTypes, lang);
+		Element clearAnchor = iconAnchor(strings.gts(type, Constants.CLEAR), null, Icon.DELETE)
+				.setClass(ICON + " " + CLEAR_BINARY_INPUT + " " + HTML.HIDDEN);
+		
+		input.appendElement(clearAnchor);
+		
+		return input;
 	}
 
 	public Element binaryInput(String name, String title, String allowedContentTypes, String lang) {
@@ -1627,23 +1634,26 @@ public class HTMLView extends View {
 
 	public Element binaryInput(String name, String title, Object value, String allowedContentTypes,
 			String lang) {
-		Element span = document.createElement(HTML.SPAN);
+		Element binaryInput = document.createElement(HTML.SPAN);
 
-		Element input = span.appendElement(input(HTML.FILE, name, title));
+		Element input = binaryInput.appendElement(input(HTML.FILE, name, title)).setClass(PT.BINARY);
 
 		if (allowedContentTypes != null) {
 			input.setAttribute(HTML.ACCEPT, allowedContentTypes);
 		}
 
-		Element size = span.appendElement(HTML.SPAN).setClass(BINARY_SIZE);
+		Element binaryInputSize = binaryInput.appendElement(HTML.SPAN).setClass(BINARY_INPUT_SIZE);
 
 		if (value == null) {
 			value = 0;
 		} 
 
-		size.appendText(humanReadableBytes((Integer) value, lang));
-
-		return span;
+		String size = humanReadableBytes((Integer) value, lang);
+		
+		binaryInputSize.appendText(size);
+		binaryInputSize.setAttribute(DATA_SIZE, size);
+		
+		return binaryInput;
 	}
 
 	public Element passwordFieldInput(String type, String field, String title) {
