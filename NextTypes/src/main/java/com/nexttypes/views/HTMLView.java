@@ -420,11 +420,11 @@ public class HTMLView extends View {
 		String title = strings.gts(type, Constants.RENAME_TITLE);
 		String typeName = strings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
-		main.appendElement(renameTable(type, lang, view));
+		main.appendElement(renameFormElement(type, lang, view));
 		return render(type);
 	}
 
-	public Element renameTable(String type, String lang, String view) {
+	public Element renameFormElement(String type, String lang, String view) {
 		String newName = strings.gts(type, Constants.NEW_NAME);
 
 		Element form = form(type, lang, view);
@@ -904,7 +904,7 @@ public class HTMLView extends View {
 		String title = strings.gts(type, Constants.UPDATE_ID_TITLE);
 		String typeName = strings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
-		main.appendElement(updateIdTable(type, id, lang, view));
+		main.appendElement(updateIdFormElement(type, id, lang, view));
 		return render(type);
 	}
 
@@ -914,7 +914,7 @@ public class HTMLView extends View {
 		String title = strings.gts(type, Constants.UPDATE_PASSWORD_TITLE);
 		String typeName = strings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
-		main.appendElement(updatePasswordTable(type, id, field, lang, view));
+		main.appendElement(updatePasswordFormElement(type, id, field, lang, view));
 		return render(type);
 	}
 
@@ -1448,7 +1448,7 @@ public class HTMLView extends View {
 		return form;
 	}
 
-	public Element updateIdTable(String type, String id, String lang, String view) {
+	public Element updateIdFormElement(String type, String id, String lang, String view) {
 		String newId = strings.gts(type, Constants.NEW_ID);
 
 		Element form = form(type, id, lang, view);
@@ -1470,7 +1470,7 @@ public class HTMLView extends View {
 		return form;
 	}
 
-	public Element updatePasswordTable(String type, String id, String field, String lang, String view) {
+	public Element updatePasswordFormElement(String type, String id, String field, String lang, String view) {
 		Element form = form(type, id, field, lang, view);
 		Element table = form.appendElement(HTML.TABLE);
 		Element body = table.appendElement(HTML.TBODY);
