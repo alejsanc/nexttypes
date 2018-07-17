@@ -402,28 +402,35 @@ function submitForm(event){
 				switch(action){
 					case ACTION.DELETE:
 						message = request.responseText;
+						
 						callback = function(){
 							loadSelectTable(button, form.getAttribute("data-uri"));
 						}
+						
 						break;
 					
 					case ACTION.DROP:
 						message = request.responseText;
-						callback = function(){
-							var inputs = form.querySelectorAll("input[type='checkbox']:checked");
-							for(let input of inputs){
-								var row = input.parentNode.parentNode;
-								row.parentNode.removeChild(row);
-							}
+						
+						var allCheckBox = form.querySelector("input.all-checkbox");
+						allCheckBox.checked = false;
+							
+						var inputs = form.querySelectorAll("input.item-checkbox[type='checkbox']:checked");
+						for (let input of inputs) {
+							var row = input.parentNode.parentNode;
+							row.parentNode.deleteRow(row.rowIndex - 1);
 						}
+						
 						break;
 				
 					case ACTION.ALTER:
 						response = JSON.parse(request.responseText);
 						message = response["message"];
+						
 						form.elements["adate"].value = response["adate"];
+						
 						var inputs = form.querySelectorAll("input[name$=':name']");
-						for(let input of inputs){
+						for (let input of inputs) {
 							var field = input.name.split(":");
 							form.elements[field[0] + ":" + field[1]+ ":old_name"].value = input.value;
 						}
@@ -432,6 +439,7 @@ function submitForm(event){
 					case ACTION.RENAME:
 						response = JSON.parse(request.responseText);
 						message = response["message"];
+						
 						callback = function() {
 							var pathname = pageURI.pathname;
 							var newName = form.elements["new_name"].value;
@@ -439,11 +447,13 @@ function submitForm(event){
 							pageURI.searchParams.set("form", "alter");
 							window.location = pageURI;
 						}
+						
 						break;
 							
 					case ACTION.UPDATE:
 						response = JSON.parse(request.responseText);
 						message = response["message"];
+						
 						form.elements["udate"].value = response["udate"];
 						
 						var sizes = form.querySelectorAll("span.binary-input-size");
@@ -461,6 +471,7 @@ function submitForm(event){
 					case ACTION.UPDATE_ID:
 						response = JSON.parse(request.responseText);
 						message = response["message"];
+						
 						callback = function(){
 							var pathname = pageURI.pathname;
 							var newId = form.elements["new_id"].value;
@@ -468,22 +479,29 @@ function submitForm(event){
 							pageURI.searchParams.set("form", "update");
 							window.location = pageURI;
 						}
+						
 						break;
 					
 					case ACTION.LOGIN:
 						message = request.responseText;
+						
 						var user = document.getElementById("user");
 						user.classList.remove("hidden");
+						
 						var logout_button = document.getElementById("logout-button");
 						logout_button.classList.remove("hidden");
+						
 						var userName = document.getElementById("user-name");
 						userName.innerText = form.elements["login_user"].value;
+						
 						break;
 						
 					case ACTION.LOGOUT:
 						message = request.responseText;
+						
 						var user = document.getElementById("user");
 						user.classList.add("hidden");
+						
 						break;
 						
 					case ACTION.CREATE:
