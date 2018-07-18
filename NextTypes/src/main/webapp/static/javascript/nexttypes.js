@@ -404,7 +404,11 @@ function submitForm(event){
 						message = request.responseText;
 						
 						callback = function(){
-							loadSelectTable(button, form.getAttribute("data-uri"));
+							if (button.getAttribute("data-component")) {
+								loadSelectTable(button, form.getAttribute("data-uri"));
+							} else {
+								window.location.reload(true);
+							}
 						}
 						
 						break;
@@ -668,49 +672,54 @@ function setFormInput(form, name, value){
 }
 
 function selectTableIndexAnchor(event){
-	event.preventDefault();
-	loadSelectTable(event.currentTarget, event.currentTarget.href);
+	var anchor = event.currentTarget;
+	
+	if (anchor.getAttribute("data-component")) {
+		event.preventDefault();
+		loadSelectTable(anchor, anchor.href);
+	}
 }
 
 function selectTableHeaderAnchor(event){
 	event.preventDefault();
 	
-	var uri = event.currentTarget.href;
+	var anchor = event.currentTarget;
+	
+	var uri = anchor.href;
 		
 	if(event.ctrlKey){
 		uri = new URL(uri);
-		var order = event.currentTarget.getAttribute("data-multi-order");
+		var order = anchor.getAttribute("data-multi-order");
 		if(order != null && order.length > 0){
 			uri.searchParams.set("order", order);
 		}
 	}
 	
-	loadSelectTable(event.currentTarget, uri);
+	if (anchor.getAttribute("data-component")) {
+		loadSelectTable(anchor, uri);
+	} else {
+		window.location = uri;
+	}
 }
 
 function loadSelectTable(element, uri){
-	var component = element.getAttribute("data-component");
-	if(component){
-		while(!element.classList.contains("select")){
-			element = element.parentNode;
-		}
-		
-		var request = new XMLHttpRequest();
-		request.open("GET", uri+"&component", true);
-		request.onload = function(e){
-			if(request.status == 200){
-				var container = document.createElement("div");
-				container.innerHTML = request.responseText;
-				addSelectTableEventListeners(container);
-				element.parentNode.replaceChild(container.firstChild, element);
-			} else {
-				alert(request.responseText);
-			}
-		}
-		request.send(null);
-	}else{
-		window.location = uri;
+	while(!element.classList.contains("select")){
+		element = element.parentNode;
 	}
+		
+	var request = new XMLHttpRequest();
+	request.open("GET", uri+"&component", true);
+	request.onload = function(e){
+		if(request.status == 200){
+			var container = document.createElement("div");
+			container.innerHTML = request.responseText;
+			addSelectTableEventListeners(container);
+			element.parentNode.replaceChild(container.firstChild, element);
+		} else {
+			alert(request.responseText);
+		}
+	}
+	request.send(null);
 }
 
 function binaryInputChange(event){
@@ -752,13 +761,12 @@ function changeMonth(event){
 
 function changeLimit(event) {
 	var select = event.currentTarget;
-	var component = select.getAttribute("data-component");
-	
-	if (component) {
+		
+	if (select.getAttribute("data-component")) {
 		var uri = new URL(select.form.getAttribute("data-uri"));
 		var limit = select.options[select.selectedIndex].value;
 		uri.searchParams.set("limit", limit);
-		loadSelectTable(select, uri)
+		loadSelectTable(select, uri);
 	} else {
 		changeURIParameter(event, "limit");
 	}
