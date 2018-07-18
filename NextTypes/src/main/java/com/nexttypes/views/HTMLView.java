@@ -1207,7 +1207,7 @@ public class HTMLView extends View {
 		if (Component.REFERENCE.equals(component)) {
 			htmlView = getHTMLView(type, view);
 			if (ref != null) {
-				ref.setType(nextNode.getFieldType(type, ref.getField()));
+				ref.setType(typeFields.get(ref.getField()).getType());
 			}
 			String title = strings.getReferenceName(type, ref);
 			Element selectHeader = select.appendElement(HTML.DIV);
