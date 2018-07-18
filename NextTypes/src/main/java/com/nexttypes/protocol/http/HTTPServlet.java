@@ -163,11 +163,11 @@ public class HTTPServlet extends HttpServlet {
 						} else if (req.isCalendar()) {
 							content = view.calendar(req.getType(), req.getLang(), req.getView(),
 									req.getRef(), req.getYear(), req.getMonth());
-						} else if (req.isComponent()) {
+						} else if (req.getComponent() != null) {
 							typeFields = view.getNextNode().getTypeFields(req.getType());
 							content = view.selectComponent(req.getType(), req.getLang(), req.getView(),
 									req.getRef(), req.readFilters(typeFields), req.getSearch(),
-									req.getOrder(), req.getOffset(), req.getLimit());
+									req.getOrder(), req.getOffset(), req.getLimit(), req.getComponent());
 						} else {
 							typeFields = view.getNextNode().getTypeFields(req.getType());
 							content = view.select(req.getType(), req.getLang(), req.getView(),

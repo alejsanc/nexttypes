@@ -52,6 +52,7 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.URI;
 import com.nexttypes.datatypes.Video;
 import com.nexttypes.enums.Comparison;
+import com.nexttypes.enums.Component;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.IndexMode;
 import com.nexttypes.enums.Order;
@@ -125,7 +126,7 @@ public class HTTPRequest {
 	protected String new_password_repeat;
 	protected String login_user;
 	protected String login_password;
-	protected boolean component = false;
+	protected Component component;
 	protected Integer filter_component;
 	protected boolean include_objects = false;
 	protected boolean info = false;
@@ -675,7 +676,7 @@ public class HTTPRequest {
 		return limit;
 	}
 
-	public boolean isComponent() {
+	public Component getComponent() {
 		return component;
 	}
 	

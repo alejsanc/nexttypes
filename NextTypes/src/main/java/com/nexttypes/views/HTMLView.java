@@ -70,6 +70,7 @@ import com.nexttypes.enums.Comparison;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.IndexMode;
 import com.nexttypes.enums.Order;
+import com.nexttypes.enums.Component;
 import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.ElementException;
 import com.nexttypes.exceptions.ElementNotFoundException;
@@ -811,12 +812,13 @@ public class HTMLView extends View {
 	@Override
 	public Content selectComponent(String type, String lang, String view, FieldReference ref,
 			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset,
-			Long limit) {
+			Long limit, Component component) {
 		
 		document = new HTML();
 		document.setDocType(null);
 		
-		Element select = selectElement(type, lang, view, ref, filters, search, order, offset, limit, true);
+		Element select = selectElement(type, lang, view, ref, filters, search, order, offset, limit,
+				component);
 
 		return new Content(select.toString());
 	}
@@ -839,7 +841,8 @@ public class HTMLView extends View {
 			main.appendElement(searchOutput(type, lang, view, ref, filters, search, order));
 		}
 		
-		Element select = selectElement(type, lang, view, ref, filters, search, order, offset, limit, false);
+		Element select = selectElement(type, lang, view, ref, filters, search, order, offset, limit,
+				Component.TYPE);
 
 		main.appendElement(select);
 		
@@ -850,7 +853,7 @@ public class HTMLView extends View {
 				
 				for (String searchType : searchTypes) {
 					main.appendElement(selectElement(searchType, lang, view, null, null, search, null,
-							0L, null, true));
+							0L, null, Component.REFERENCE));
 				}
 			}
 		}
@@ -1156,7 +1159,7 @@ public class HTMLView extends View {
 				request.getOffset(), request.getLimit());
 		menu(type, lang, view);
 		typeMenu(type, request.getId(), lang, view, request.getRef(), request.getSearch(), 
-				request.isComponent());
+				request.getComponent());
 		rss(type, lang);
 		actions(type, request.getId(), lang, view);
 		qrcode(type, request.getId());
@@ -1171,7 +1174,7 @@ public class HTMLView extends View {
 
 	public Element selectElement(String type, String lang, String view, FieldReference ref,
 			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset,
-			Long limit, boolean component) {
+			Long limit, Component component) {
 
 		Filter[] refAndFilters = null;
 		
@@ -1201,7 +1204,7 @@ public class HTMLView extends View {
 
 		HTMLView htmlView = null;
 
-		if (component) {
+		if (Component.REFERENCE.equals(component)) {
 			htmlView = getHTMLView(type, view);
 			if (ref != null) {
 				ref.setType(nextNode.getFieldType(type, ref.getField()));
@@ -1373,7 +1376,7 @@ public class HTMLView extends View {
 		for (TypeReference downReference : nextNode.getDownReferences(refType)) {
 			FieldReference ref = new FieldReference(downReference.getField(), refType, refId);
 			references.appendElement(selectElement(downReference.getType(), lang, view, ref, null, null,
-					null, 0L, null, true));
+					null, 0L, null, Component.REFERENCE));
 		}
 
 		return references;
@@ -2161,7 +2164,7 @@ public class HTMLView extends View {
 
 	public Element selectTableHeaderCell(String type, String field, String lang, String view,
 			FieldReference ref, Filter[] filters, String search, LinkedHashMap<String, Order> order,
-			Long offset, Long limit, boolean component) {
+			Long offset, Long limit, Component component) {
 
 		Element cell = document.createElement(HTML.TH);
 		String fieldName = Constants.ID.equals(field) ? strings.getIdName(type) : strings.getFieldName(type, field);
@@ -2223,7 +2226,7 @@ public class HTMLView extends View {
 
 	public Element selectTable(String type, NXObject[] objects, LinkedHashMap<String, TypeField> typeFields,
 			String lang, String view, Long count, Long offset, Long limit, Long minLimit, Long maxLimit,
-			Long limitIncrement, String search, LinkedHashMap<String, Order> order, boolean component) {
+			Long limitIncrement, String search, LinkedHashMap<String, Order> order, Component component) {
 
 		return selectTable(type, objects, typeFields, lang, view, null, null, search, order, count,
 				offset, limit, minLimit, maxLimit, limitIncrement, component);
@@ -2232,7 +2235,7 @@ public class HTMLView extends View {
 	public Element selectTable(String type, NXObject[] objects, LinkedHashMap<String, TypeField> typeFields,
 			String lang, String view, FieldReference ref, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long count, Long offset, Long limit, Long minLimit,
-			Long maxLimit, Long limitIncrement, boolean component) {
+			Long maxLimit, Long limitIncrement, Component component) {
 
 		Element form = form(type, lang, view).setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
 				.setAttribute(DATA_URI, request.getURIRoot()
@@ -2307,10 +2310,10 @@ public class HTMLView extends View {
 
 		Element button = button(actionName, Action.DELETE, Icon.MINUS, SUBMIT_FORM);
 
-		if (component) {
-			button.setAttribute(DATA_COMPONENT);
+		if (component != null) {
+			button.setAttribute(DATA_COMPONENT, component.toString());
 		}
-
+		
 		div.appendElement(button);
 
 		div.appendElement(exportButton(type));
@@ -2340,7 +2343,7 @@ public class HTMLView extends View {
 
 	public Element selectTableIndex(String type, String lang, String view, String search,
 			LinkedHashMap<String, Order> order, Long count, Long selectedOffset, Long limit,
-			Long minLimit, Long maxLimit, Long limitIncrement,  boolean component) {
+			Long minLimit, Long maxLimit, Long limitIncrement, Component component) {
 		
 		return selectTableIndex(type, lang, view, null, null, search, order, count, selectedOffset, limit,
 				minLimit, maxLimit, limitIncrement, component);
@@ -2349,7 +2352,7 @@ public class HTMLView extends View {
 	public Element selectTableIndex(String type, String lang, String view, FieldReference ref, 
 			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long count,
 			Long selectedOffset, Long limit, Long minLimit, Long maxLimit, Long limitIncrement,
-			boolean component) {
+			Component component) {
 
 		Element index = document.createElement(HTML.DIV).setClass(SELECT_INDEX);
 
@@ -2366,7 +2369,7 @@ public class HTMLView extends View {
 						order, count, selectedOffset, limit, component));
 			} else {
 				index.appendElements(longSelectTableIndex(type, lang, view, ref, filters, search,
-						order, count, selectedOffset, limit,  component));
+						order, count, selectedOffset, limit, component));
 			}
 		}
 
@@ -2381,7 +2384,7 @@ public class HTMLView extends View {
 
 	public Element[] shortSelectTableIndex(String type, String lang, String view, FieldReference ref,
 			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long count,
-			Long selectedOffset, Long limit, boolean component) {
+			Long selectedOffset, Long limit, Component component) {
 
 		ArrayList<Element> index = new ArrayList<>();
 
@@ -2403,7 +2406,7 @@ public class HTMLView extends View {
 
 	public Element[] longSelectTableIndex(String type, String lang, String view, FieldReference ref,
 			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long count,
-			Long selectedOffset, Long limit, boolean component) {
+			Long selectedOffset, Long limit, Component component) {
 
 		ArrayList<Element> index = new ArrayList<>();
 
@@ -2491,11 +2494,11 @@ public class HTMLView extends View {
 	}
 
 	public Element selectTableLimitSelect(String type, Long count, Long limit, Long minLimit, Long maxLimit,
-			Long limitIncrement, boolean component) {
+			Long limitIncrement, Component component) {
 		Element select = document.createElement(HTML.SELECT).setClass(Constants.LIMIT);
 
-		if (component) {
-			select.setAttribute(DATA_COMPONENT);
+		if (component != null) {
+			select.setAttribute(DATA_COMPONENT, component.toString());
 		}
 
 		for (Long x = minLimit; x <= maxLimit; x += limitIncrement) {
@@ -2510,15 +2513,15 @@ public class HTMLView extends View {
 
 	public Element selectTableAnchor(String text, String type, String lang, String view,
 			FieldReference ref, Filter[] filters, String search, LinkedHashMap<String, Order> order,
-			Long offset, Long limit, boolean component) {
+			Long offset, Long limit, Component component) {
 
 		Element anchor = document.createElement(HTML.A)
 				.setAttribute(HTML.HREF, selectTableURI(type, lang, view, ref, filters, search,
 						order, offset, limit))
 				.appendText(text);
 
-		if (component) {
-			anchor.setAttribute(DATA_COMPONENT);
+		if (component != null) {
+			anchor.setAttribute(DATA_COMPONENT, component.toString());
 		}
 
 		return anchor;
@@ -2884,7 +2887,7 @@ public class HTMLView extends View {
 	}
 
 	public Element[] typeMenuElements(String type, String id, String lang, String view, FieldReference ref,
-			String search, boolean component) {
+			String search, Component component) {
 		String form = request.getForm();
 
 		ArrayList<Element> elements = new ArrayList<>();
@@ -2902,7 +2905,7 @@ public class HTMLView extends View {
 					uri(type, lang, view) + formParam(Action.INSERT) + refParam, Icon.PLUS));
 		}
 
-		if (id != null || form != null || component || request.isInfo() || request.isPreview()
+		if (id != null || form != null || component != null || request.isInfo() || request.isPreview()
 				|| request.isCalendar()) {
 
 			String uri = uri(type, lang, view) + refParam + searchParam;
@@ -3300,7 +3303,7 @@ public class HTMLView extends View {
 	}
 
 	public void typeMenu(String type, String id, String lang, String view, FieldReference ref,
-			String search, boolean component) {
+			String search, Component component) {
 		if (type != null) {
 			Element typeMenu = document.getElementById(TYPE_MENU);
 

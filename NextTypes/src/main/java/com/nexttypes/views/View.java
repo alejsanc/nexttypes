@@ -26,6 +26,7 @@ import com.nexttypes.datatypes.Filter;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.enums.Order;
+import com.nexttypes.enums.Component;
 import com.nexttypes.exceptions.NotFoundException;
 import com.nexttypes.exceptions.NotImplementedException;
 import com.nexttypes.exceptions.UnauthorizedActionException;
@@ -218,7 +219,7 @@ public abstract class View implements Module, AutoCloseable {
 
 	public Content selectComponent(String type, String lang, String view, FieldReference ref,
 			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset,
-			Long limit) {
+			Long limit, Component component) {
 		
 		throw new NotImplementedException();
 	}

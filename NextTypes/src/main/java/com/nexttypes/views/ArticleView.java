@@ -32,6 +32,7 @@ import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Tuples;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.Order;
+import com.nexttypes.enums.Component;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.system.Constants;
 
@@ -163,7 +164,7 @@ public class ArticleView extends HTMLView {
 
 			main.appendElement(selectTableIndex(type, lang, view, ref, filters, search, order,
 					tuples.getCount(), tuples.getOffset(), tuples.getLimit(), tuples.getMinLimit(),
-					tuples.getMaxLimit(), tuples.getLimitIncrement(), false));
+					tuples.getMaxLimit(), tuples.getLimitIncrement(), Component.TYPE));
 		} else {
 			main.appendElement(HTML.P).appendText(strings.gts(Constants.NO_OBJECTS_FOUND));
 		}

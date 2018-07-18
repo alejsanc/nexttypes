@@ -403,14 +403,9 @@ function submitForm(event){
 					case ACTION.DELETE:
 						message = request.responseText;
 						
-						callback = function(){
-							if (button.getAttribute("data-component")) {
-								loadSelectTable(button, form.getAttribute("data-uri"));
-							} else {
-								window.location.reload(true);
-							}
-						}
-						
+						loadSelectTable(button, form.getAttribute("data-uri"),
+								button.getAttribute("data-component"));
+												
 						break;
 					
 					case ACTION.DROP:
@@ -673,10 +668,11 @@ function setFormInput(form, name, value){
 
 function selectTableIndexAnchor(event){
 	var anchor = event.currentTarget;
+	var component = anchor.getAttribute("data-component");
 	
-	if (anchor.getAttribute("data-component")) {
+	if (component == "reference") {
 		event.preventDefault();
-		loadSelectTable(anchor, anchor.href);
+		loadSelectTable(anchor, anchor.href, component);
 	}
 }
 
@@ -695,20 +691,22 @@ function selectTableHeaderAnchor(event){
 		}
 	}
 	
-	if (anchor.getAttribute("data-component")) {
-		loadSelectTable(anchor, uri);
+	var component = anchor.getAttribute("data-component");
+		
+	if (component == "reference") {
+		loadSelectTable(anchor, uri, component);
 	} else {
 		window.location = uri;
 	}
 }
 
-function loadSelectTable(element, uri){
+function loadSelectTable(element, uri, component){
 	while(!element.classList.contains("select")){
 		element = element.parentNode;
 	}
 		
 	var request = new XMLHttpRequest();
-	request.open("GET", uri+"&component", true);
+	request.open("GET", uri + "&component=" + component, true);
 	request.onload = function(e){
 		if(request.status == 200){
 			var container = document.createElement("div");
@@ -761,12 +759,13 @@ function changeMonth(event){
 
 function changeLimit(event) {
 	var select = event.currentTarget;
+	var component = select.getAttribute("data-component")
 		
-	if (select.getAttribute("data-component")) {
+	if (component == "reference") {
 		var uri = new URL(select.form.getAttribute("data-uri"));
 		var limit = select.options[select.selectedIndex].value;
 		uri.searchParams.set("limit", limit);
-		loadSelectTable(select, uri);
+		loadSelectTable(select, uri, component);
 	} else {
 		changeURIParameter(event, "limit");
 	}
