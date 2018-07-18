@@ -66,6 +66,11 @@ const ICON = {
 	X: "x"
 }
 
+const COMPONENT = {
+	TYPE: "type",
+	REFERENCE: "reference"
+}
+
 var fieldCount = 0;
 var indexCount = 0;
 var filterCount = 0;
@@ -670,7 +675,7 @@ function selectTableIndexAnchor(event){
 	var anchor = event.currentTarget;
 	var component = anchor.getAttribute("data-component");
 	
-	if (component == "reference") {
+	if (component == COMPONENT.REFERENCE) {
 		event.preventDefault();
 		loadSelectTable(anchor, anchor.href, component);
 	}
@@ -693,7 +698,7 @@ function selectTableHeaderAnchor(event){
 	
 	var component = anchor.getAttribute("data-component");
 		
-	if (component == "reference") {
+	if (component == COMPONENT.REFERENCE) {
 		loadSelectTable(anchor, uri, component);
 	} else {
 		window.location = uri;
@@ -761,7 +766,7 @@ function changeLimit(event) {
 	var select = event.currentTarget;
 	var component = select.getAttribute("data-component")
 		
-	if (component == "reference") {
+	if (component == COMPONENT.REFERENCE) {
 		var uri = new URL(select.form.getAttribute("data-uri"));
 		var limit = select.options[select.selectedIndex].value;
 		uri.searchParams.set("limit", limit);
