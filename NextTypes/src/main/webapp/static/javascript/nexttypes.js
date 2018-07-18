@@ -675,7 +675,7 @@ function selectTableIndexAnchor(event){
 	var anchor = event.currentTarget;
 	var component = anchor.getAttribute("data-component");
 	
-	if (component == COMPONENT.REFERENCE) {
+	if (component) {
 		event.preventDefault();
 		loadSelectTable(anchor, anchor.href, component);
 	}
@@ -698,7 +698,7 @@ function selectTableHeaderAnchor(event){
 	
 	var component = anchor.getAttribute("data-component");
 		
-	if (component == COMPONENT.REFERENCE) {
+	if (component) {
 		loadSelectTable(anchor, uri, component);
 	} else {
 		window.location = uri;
@@ -766,7 +766,7 @@ function changeLimit(event) {
 	var select = event.currentTarget;
 	var component = select.getAttribute("data-component")
 		
-	if (component == COMPONENT.REFERENCE) {
+	if (component) {
 		var uri = new URL(select.form.getAttribute("data-uri"));
 		var limit = select.options[select.selectedIndex].value;
 		uri.searchParams.set("limit", limit);

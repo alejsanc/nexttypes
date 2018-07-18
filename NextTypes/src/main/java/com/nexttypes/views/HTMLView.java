@@ -2497,7 +2497,7 @@ public class HTMLView extends View {
 			Long limitIncrement, Component component) {
 		Element select = document.createElement(HTML.SELECT).setClass(Constants.LIMIT);
 
-		if (component != null) {
+		if (Component.REFERENCE.equals(component)) {
 			select.setAttribute(DATA_COMPONENT, component.toString());
 		}
 
@@ -2520,7 +2520,7 @@ public class HTMLView extends View {
 						order, offset, limit))
 				.appendText(text);
 
-		if (component != null) {
+		if (Component.REFERENCE.equals(component)) {
 			anchor.setAttribute(DATA_COMPONENT, component.toString());
 		}
 
