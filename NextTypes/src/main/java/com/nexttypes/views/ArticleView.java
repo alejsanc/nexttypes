@@ -40,6 +40,8 @@ public class ArticleView extends HTMLView {
 
 	public static final String CATEGORY = "category";
 	public static final String CATEGORIES = "categories";
+	
+	protected String categoryParam;
 
 	public ArticleView(HTMLView view) {
 		super(view);
@@ -130,13 +132,17 @@ public class ArticleView extends HTMLView {
 		parameters.add(lang);
 		parameters.add(lang);
 
-		if (ref != null && ref.getField().equals(CATEGORY)) {
+		String category = request.getParameters().getString(CATEGORY);
+				
+		if (category != null) {
 			setTitle(nextNode.getString("select name from category_language where category = ?"
-					+ " and language = ?", ref.getId(), lang));
+					+ " and language = ?", category, lang));
 			
 			sql.append(" join article_category ac on (a.id = ac.article and ac.category = ?)");
-			parameters.add(ref.getId());
-		}
+			parameters.add(category);
+			
+			categoryParam = "&category=" + category;
+		} 
 		
 		if (search != null) {
 			main.appendElement(searchOutput(type, lang, view, ref, filters, search, order));
@@ -170,6 +176,19 @@ public class ArticleView extends HTMLView {
 		}
 
 		return render(type);
+	}
+	
+	@Override
+	public String selectTableURI(String type, String lang, String view, FieldReference ref, 
+			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
+
+		String uri = super.selectTableURI(type, lang, view, ref, filters, search, order, offset, limit);
+		
+		if (categoryParam != null) {
+			uri += categoryParam;
+		}
+		
+		return uri;
 	}
 
 	public void external(String type) {

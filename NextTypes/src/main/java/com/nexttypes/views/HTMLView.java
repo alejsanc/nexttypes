@@ -2550,7 +2550,8 @@ public class HTMLView extends View {
 			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
 		return uri(type, lang, view) + refParam(ref) + filtersParams(filters) + searchParam(search)
-			+ orderParam(order) + param(Constants.OFFSET, offset) + param(Constants.LIMIT, limit);
+			+ orderParam(order) + param(Constants.OFFSET, offset) + param(Constants.LIMIT, limit)
+			+ previewParam();
 	}
 
 	public String param(String name, Object value) {
