@@ -841,8 +841,12 @@ public class HTMLView extends View {
 			main.appendElement(searchOutput(type, lang, view, ref, filters, search, order));
 		}
 		
-		Element select = selectElement(type, lang, view, ref, filters, search, order, offset, limit,
-				Component.TYPE);
+		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type);
+		
+		main.appendElement(filters(type, filters, typeFields, lang));	
+		
+		Element select = selectElement(type, typeFields, lang, view, ref, filters, search, order,
+				offset, limit, Component.TYPE);
 
 		main.appendElement(select);
 		
@@ -1171,10 +1175,18 @@ public class HTMLView extends View {
 		main.appendElement(HTML.H1).appendText(title);
 		document.getTitle().appendText(title);
 	}
-
+	
 	public Element selectElement(String type, String lang, String view, FieldReference ref,
 			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset,
 			Long limit, Component component) {
+	
+		return selectElement(type, nextNode.getTypeFields(type), lang, view, ref, filters, search,
+				order, offset, limit, component);
+	}
+
+	public Element selectElement(String type, LinkedHashMap<String, TypeField> typeFields, String lang,
+			String view, FieldReference ref, Filter[] filters, String search,
+			LinkedHashMap<String, Order> order, Long offset, Long limit, Component component) {
 
 		Filter[] refAndFilters = null;
 		
@@ -1200,8 +1212,6 @@ public class HTMLView extends View {
 		offset = result.getOffset();
 		limit = result.getLimit();
 		
-		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type);
-
 		HTMLView htmlView = null;
 
 		if (Component.REFERENCE.equals(component)) {
@@ -1209,19 +1219,12 @@ public class HTMLView extends View {
 			if (ref != null) {
 				ref.setType(typeFields.get(ref.getField()).getType());
 			}
-			String title = strings.getReferenceName(type, ref);
-			Element selectHeader = select.appendElement(HTML.DIV);
-			selectHeader.setClass(SELECT_HEADER);
-			selectHeader.appendElement(HTML.STRONG).appendText(title);
-			selectHeader.appendText(" " + count + " " + strings.gts(type, Constants.OBJECTS));
-			selectHeader.appendElement(HTML.NAV).setClass(SELECT_MENU)
-					.appendElements(htmlView.typeMenuElements(type, null, lang, view, ref, search, component));
+			
+			select.appendElement(htmlView.referenceSelectHeader(type, lang, view, ref, search, count, 
+					component));
 		} else {
 			htmlView = this;
-			
-			select.appendElement(HTML.P).appendText(" " + count + " " + strings.gts(type, Constants.OBJECTS));
-			
-			select.appendElement(filters(type, filters, typeFields, lang));		
+			select.appendElement(HTML.P).appendText(" " + count + " " + strings.gts(type, Constants.OBJECTS));		
 		}
 
 		if (objects != null && objects.length > 0) {
@@ -1231,6 +1234,22 @@ public class HTMLView extends View {
 		}
 
 		return select;
+	}
+	
+	public Element referenceSelectHeader(String type, String lang, String view, FieldReference ref,
+			String search, Long count, Component component) {
+		
+		Element selectHeader = document.createElement(HTML.DIV)
+				.setClass(SELECT_HEADER);
+		
+		String title = strings.getReferenceName(type, ref);
+		
+		selectHeader.appendElement(HTML.STRONG).appendText(title);
+		selectHeader.appendText(" " + count + " " + strings.gts(type, Constants.OBJECTS));
+		selectHeader.appendElement(HTML.NAV).setClass(SELECT_MENU)
+				.appendElements(typeMenuElements(type, null, lang, view, ref, search, component));
+		
+		return selectHeader;
 	}
 	
 	@Override
