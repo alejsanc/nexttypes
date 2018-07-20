@@ -28,11 +28,13 @@ import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTML;
 import com.nexttypes.datatypes.HTMLFragment;
+import com.nexttypes.datatypes.RSS;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Tuples;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.Order;
 import com.nexttypes.enums.Component;
+import com.nexttypes.enums.Format;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.system.Constants;
 
@@ -41,6 +43,7 @@ public class ArticleView extends HTMLView {
 	public static final String CATEGORY = "category";
 	public static final String CATEGORIES = "categories";
 	
+	protected String category;
 	protected String categoryParam;
 
 	public ArticleView(HTMLView view) {
@@ -92,19 +95,62 @@ public class ArticleView extends HTMLView {
 		if (text != null) {
 			article.appendFragment(text);
 
-			external("external_standard");
-			external("external_document");
+			externalAnchor("external_standard");
+			externalAnchor("external_document");
 		}
 
 		main.appendElement(dates(type, tuple.getUTCDatetime(Constants.CDATE), tuple.getUTCDatetime(Constants.UDATE)));
 
 		return render(type);
 	}
+	
+	@Override
+	public Content select(String type, String lang, String view, FieldReference ref, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
+
+		Content content = null;
+		
+		if (Constants.RSS.equals(view)) {
+			StringBuilder sql = new StringBuilder(typeSettings.gts(type, Constants.RSS_SELECT));
+					
+			String category = request.getParameters().getString(CATEGORY);
+			String typeFilters = typeSettings.gts(type, Constants.FILTERS);
+			ArrayList<Object> parameters = new ArrayList<>();
+			parameters.add(lang);
+			
+			if (category != null) {
+				sql.append(" join article_category ac on (a.id = ac.article and ac.category = ?)");
+				parameters.add(category);
+			}
+			
+			if (typeFilters != null) {
+				sql.append(" where " + typeFilters);
+			}
+			
+			sql.append(" order by a.cdate desc");
+				
+			Tuple[] tuples = nextNode.query(sql.toString(), parameters.toArray());
+			RSS rss = new RSS("article::" + category, "article::" + category, type, lang,
+						request.getURIRoot(), tuples);
+			content = new Content(rss.toString(), Format.RSS);
+			
+		} else {
+			content = super.select(type, lang, view, ref, filters, search, order, offset, limit);
+		}
+		
+		return content;
+	}
 
 	@Override
 	public Content preview(String type, String lang, String view, FieldReference ref, Filter[] filters,
 			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
+		category = request.getParameters().getString(CATEGORY);
+		
+		if (category != null) {
+			categoryParam = "&category=" + category;
+		}
+		
 		loadTemplate(type, lang, view);
 			
 		StringBuilder sql = new StringBuilder(
@@ -132,25 +178,20 @@ public class ArticleView extends HTMLView {
 		parameters.add(lang);
 		parameters.add(lang);
 
-		String category = request.getParameters().getString(CATEGORY);
-				
 		if (category != null) {
 			setTitle(nextNode.getString("select name from category_language where category = ?"
 					+ " and language = ?", category, lang));
 			
 			sql.append(" join article_category ac on (a.id = ac.article and ac.category = ?)");
 			parameters.add(category);
-			
-			categoryParam = "&category=" + category;
 		} 
 		
 		if (search != null) {
 			main.appendElement(searchOutput(type, lang, view, ref, filters, search, order));
 		}
 
-
-		Tuples tuples = nextNode.select(type, sql, parameters, null, search, new String[] { "al.title", "al.text" },
-				"cdate desc", offset, limit);
+		Tuples tuples = nextNode.select(type, sql, parameters, null, search,
+				new String[] { "al.title", "al.text" }, "cdate desc", offset, limit);
 
 		if (tuples.getCount() > 0) {
 		
@@ -179,10 +220,8 @@ public class ArticleView extends HTMLView {
 	}
 	
 	@Override
-	public String selectTableURI(String type, String lang, String view, FieldReference ref, 
-			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
-
-		String uri = super.selectTableURI(type, lang, view, ref, filters, search, order, offset, limit);
+	public String uri(String type, String id, String field, String lang, String view) {
+		String uri = super.uri(type, id, field, lang, view);
 		
 		if (categoryParam != null) {
 			uri += categoryParam;
@@ -190,8 +229,8 @@ public class ArticleView extends HTMLView {
 		
 		return uri;
 	}
-
-	public void external(String type) {
+	
+	public void externalAnchor(String type) {
 		Element[] anchors = document.getElementsByClassName(type);
 
 		if (anchors.length > 0) {
