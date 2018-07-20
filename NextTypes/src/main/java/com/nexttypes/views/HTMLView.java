@@ -302,7 +302,7 @@ public class HTMLView extends View {
 		if (type != null) {
 			typeForm.appendText(type);
 			typeForm.appendElement(iconAnchor(strings.getActionName(type, Action.RENAME),
-					uri(type, lang, view) + formParam(Action.RENAME), Icon.PENCIL));
+					uri(type, lang, view) + formParameter(Action.RENAME), Icon.PENCIL));
 		} else {
 			typeForm.appendElement(input(HTML.TEXT, Constants.TYPE, typeName)
 					.setAttribute(HTML.SIZE, Type.MAX_TYPE_NAME_LENGTH)
@@ -871,8 +871,8 @@ public class HTMLView extends View {
 		div.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.SEARCH) + ": ");
 		div.appendText(search);
 		
-		String uri = uri(type, lang, view) + refParam(ref) + filtersParams(filters) + previewParam()
-			+ orderParam(order);
+		String uri = uri(type, lang, view) + refParameter(ref) + filtersParameters(filters)
+			+ previewParameter() + orderParameter(order);
 				
 		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_SEARCH), uri, Icon.DELETE));
 		return div;
@@ -1002,9 +1002,9 @@ public class HTMLView extends View {
 			row.appendElement(HTML.TD).appendText(typeInfo.getObjects() + "");
 			row.appendElement(HTML.TD).appendText(humanReadableBytes(typeInfo.getSize(), lang));
 			row.appendElement(HTML.TD).appendElement(iconAnchor(strings.getActionName(type, Action.INSERT),
-					uri(type, lang, view) + formParam(Action.INSERT), Icon.PLUS));
+					uri(type, lang, view) + formParameter(Action.INSERT), Icon.PLUS));
 			row.appendElement(HTML.TD).appendElement(iconAnchor(strings.getActionName(type, Action.ALTER),
-					uri(type, lang, view) + formParam(Action.ALTER), Icon.PENCIL));
+					uri(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
 			row.appendElement(HTML.TD).appendElement(iconAnchor(strings.gts(type, Constants.TYPE),
 					uri(type, lang, view) + "&" + Constants.INFO, Icon.INFO));
 		}
@@ -1382,8 +1382,8 @@ public class HTMLView extends View {
 		div.appendElement(HTML.STRONG).appendText(strings.getFieldName(type, ref.getField()) + ": ");
 		div.appendElement(anchor(nextNode.getName(refType, ref.getId(), lang), uri(refType, ref.getId(), lang, view)));
 		
-		String uri = uri(type, lang, view) + filtersParams(filters) + searchParam(search)
-			+ orderParam(order);
+		String uri = uri(type, lang, view) + filtersParameters(filters) + searchParameter(search)
+			+ orderParameter(order);
 		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_REFERENCE), uri, Icon.DELETE));
 		
 		return div;
@@ -1440,8 +1440,8 @@ public class HTMLView extends View {
 		if (showId) {
 			row.appendElement(HTML.TD).appendText(strings.getIdName(type));
 			row.appendElement(HTML.TD).appendText(object.getId() + " ")
-					.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_ID),
-							uri(object.getType(), object.getId(), lang, view) + formParam(Action.UPDATE_ID),
+				.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_ID),
+					uri(object.getType(), object.getId(), lang, view) + formParameter(Action.UPDATE_ID),
 							Icon.PENCIL));
 		}
 
@@ -1560,7 +1560,7 @@ public class HTMLView extends View {
 		Element password = document.createElement(HTML.SPAN);
 		password.appendText(Security.HIDDEN_PASSWORD + " ");
 		password.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_PASSWORD),
-				uri(type, id, field, lang, view) + formParam(Action.UPDATE_PASSWORD), Icon.PENCIL));
+				uri(type, id, field, lang, view) + formParameter(Action.UPDATE_PASSWORD), Icon.PENCIL));
 		return password;
 	}
 
@@ -2317,7 +2317,8 @@ public class HTMLView extends View {
 			String actionName = strings.getActionName(object.getType(), Action.UPDATE);
 
 			tableRow.appendElement(HTML.TD).appendElement(iconAnchor(actionName,
-					uri(object.getType(), object.getId(), lang, view) + formParam(Action.UPDATE), Icon.PENCIL));
+					uri(object.getType(), object.getId(), lang, view)
+					+ formParameter(Action.UPDATE), Icon.PENCIL));
 		}
 
 		form.appendElement(indexFooter);
@@ -2549,16 +2550,16 @@ public class HTMLView extends View {
 	public String selectTableURI(String type, String lang, String view, FieldReference ref, 
 			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
-		return uri(type, lang, view) + refParam(ref) + filtersParams(filters) + searchParam(search)
-			+ orderParam(order) + param(Constants.OFFSET, offset) + param(Constants.LIMIT, limit)
-			+ previewParam();
+		return uri(type, lang, view) + refParameter(ref) + filtersParameters(filters)
+			+ searchParameter(search) + orderParameter(order) + parameter(Constants.OFFSET, offset)
+			+ parameter(Constants.LIMIT, limit) + previewParameter();
 	}
 
-	public String param(String name, Object value) {
+	public String parameter(String name, Object value) {
 		return value != null ? "&" + name + "=" + value.toString() : "";
 	}
 
-	public String refParam(FieldReference ref) {
+	public String refParameter(FieldReference ref) {
 		return ref != null ? "&" + Constants.REF + "=" + refString(ref) : "";
 	}
 	
@@ -2566,20 +2567,20 @@ public class HTMLView extends View {
 		return ref.getField() + ":" + ref.getId();
 	}
 
-	public String formParam(String action) {
-		return param(Constants.FORM, action);
+	public String formParameter(String action) {
+		return parameter(Constants.FORM, action);
 	}
 	
-	public String previewParam() {
+	public String previewParameter() {
 		return request.isPreview() ? "&" + Action.PREVIEW : "";
 	}
 	
-	public String searchParam(String search) {
-		return param(Constants.SEARCH, search);
+	public String searchParameter(String search) {
+		return parameter(Constants.SEARCH, search);
 	}
 	
-	public String orderParam(LinkedHashMap<String, Order> order) {
-		return param(Constants.ORDER, orderString(order));
+	public String orderParameter(LinkedHashMap<String, Order> order) {
+		return parameter(Constants.ORDER, orderString(order));
 	}
 
 	public String orderString(LinkedHashMap<String, Order> order) {
@@ -2597,29 +2598,29 @@ public class HTMLView extends View {
 		return orderParameter;
 	}
 	
-	public String filtersParams(Filter[] filters) {
-		StringBuilder params = new StringBuilder();
+	public String filtersParameters(Filter[] filters) {
+		StringBuilder parameters = new StringBuilder();
 		
 		if (filters != null) {
 			for (int x = 0; x < filters.length; x++) {
 				Filter filter = filters[x];
-				String paramRoot = "&" + Constants.FILTERS + ":" + x + ":";
+				String parameterRoot = "&" + Constants.FILTERS + ":" + x + ":";
 			
-				params.append(paramRoot + Constants.FIELD + "=" + filter.getField());
+				parameters.append(parameterRoot + Constants.FIELD + "=" + filter.getField());
 			
-				params.append(paramRoot + Constants.COMPARISON + "=" + filter.getComparison());
+				parameters.append(parameterRoot + Constants.COMPARISON + "=" + filter.getComparison());
 			
-				params.append(paramRoot + Constants.VALUE + "=");
+				parameters.append(parameterRoot + Constants.VALUE + "=");
 				
 				Object value = filter.getValue();
 				
 				if (value != null) {
-					params.append(value);
+					parameters.append(value);
 				}
 			}
 		}
 		
-		return params.toString();
+		return parameters.toString();
 	}
 
 	public Element fieldOutput(String label, Object... elements) {
@@ -2912,42 +2913,42 @@ public class HTMLView extends View {
 
 		ArrayList<Element> elements = new ArrayList<>();
 
-		String refParam = refParam(ref);
-		String searchParam = param(Constants.SEARCH, search);
+		String refParameter = refParameter(ref);
+		String searchParameter = parameter(Constants.SEARCH, search);
 
 		if (id != null && form != null) {
-			elements.add(iconAnchor(strings.gts(type, Constants.VIEW), uri(type, id, lang, view) + refParam,
-					Icon.MAGNIFYING_GLASS));
+			elements.add(iconAnchor(strings.gts(type, Constants.VIEW), uri(type, id, lang, view)
+					+ refParameter, Icon.MAGNIFYING_GLASS));
 		}
 
 		if (!Action.INSERT.equals(form)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.INSERT),
-					uri(type, lang, view) + formParam(Action.INSERT) + refParam, Icon.PLUS));
+					uri(type, lang, view) + formParameter(Action.INSERT) + refParameter, Icon.PLUS));
 		}
 
 		if (id != null || form != null || component != null || request.isInfo() || request.isPreview()
 				|| request.isCalendar()) {
 
-			String uri = uri(type, lang, view) + refParam + searchParam;
+			String uri = uri(type, lang, view) + refParameter + searchParameter;
 
 			elements.add(iconAnchor(strings.gts(type, Constants.LIST), uri, Icon.LIST));
 		}
 
 		if (typeSettings.getTypeBoolean(type, Constants.SHOW_PREVIEW) && !request.isPreview()) {
 			
-			String uri = uri(type, lang, view) + "&" + Action.PREVIEW + searchParam;
+			String uri = uri(type, lang, view) + "&" + Action.PREVIEW + searchParameter;
 							
 			elements.add(iconAnchor(strings.getActionName(type, Action.PREVIEW), uri, Icon.LIST_RICH));
 		}
 
 		if (id == null && !Action.ALTER.equals(form)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.ALTER),
-					uri(type, lang, view) + formParam(Action.ALTER), Icon.PENCIL));
+					uri(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
 		}
 
 		if (id != null && !Action.UPDATE.equals(form)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.UPDATE),
-					uri(type, id, lang, view) + formParam(Action.UPDATE), Icon.PENCIL));
+					uri(type, id, lang, view) + formParameter(Action.UPDATE), Icon.PENCIL));
 		}
 
 		if (!request.isInfo()) {
@@ -2958,20 +2959,20 @@ public class HTMLView extends View {
 		String rssSelect = typeSettings.gts(type, Constants.RSS_SELECT);
 
 		if (rssSelect != null) {
-			elements.add(iconAnchor(RSS, uri(type, lang, Constants.RSS) + refParam, Icon.RSS));
+			elements.add(iconAnchor(RSS, uri(type, lang, Constants.RSS) + refParameter, Icon.RSS));
 		}
 
 		String icalSelect = typeSettings.gts(type, Constants.ICAL_SELECT);
 
 		if (icalSelect != null) {
-			elements.add(iconAnchor(ICALENDAR, uri(type, lang, Constants.ICAL) + refParam, Icon.FILE));
+			elements.add(iconAnchor(ICALENDAR, uri(type, lang, Constants.ICAL) + refParameter, Icon.FILE));
 		}
 
 		if (!request.isCalendar()) {
 			String calendarSelect = typeSettings.gts(type, Constants.CALENDAR_SELECT);
 
 			if (calendarSelect != null) {
-				String uri = uri(type, lang, view) + "&" + Action.CALENDAR + refParam;
+				String uri = uri(type, lang, view) + "&" + Action.CALENDAR + refParameter;
 
 				elements.add(iconAnchor(strings.getActionName(type, Action.CALENDAR), uri, Icon.CALENDAR));
 			}
@@ -3358,11 +3359,11 @@ public class HTMLView extends View {
 
 							String actionName = strings.getActionName(type, action);
 
-							String actionParameters = formParam(Action.EXECUTE_ACTION) + "&" + Constants.TYPE_ACTION
-									+ "=" + action;
+							String actionParameters = formParameter(Action.EXECUTE_ACTION) + "&"
+									+ Constants.TYPE_ACTION + "=" + action;
 
-							actionsElement
-									.appendElement(anchor(actionName, uri(type, id, lang, view) + actionParameters));
+							actionsElement.appendElement(anchor(actionName, uri(type, id, lang, view)
+									+ actionParameters));
 						}
 
 					} else {
@@ -3619,7 +3620,8 @@ public class HTMLView extends View {
 		LocalDate after = date.plusMonths(1);
 
 		navigator.appendElement(anchor("<<", uri(type, lang, view) + "&" + Action.CALENDAR + "&" + Constants.YEAR + "="
-				+ before.getYear() + "&" + Constants.MONTH + "=" + before.getMonthValue() + refParam(ref)));
+				+ before.getYear() + "&" + Constants.MONTH + "=" + before.getMonthValue()
+					+ refParameter(ref)));
 
 		Element yearSelect = navigator.appendElement(HTML.SELECT).setClass(YEARS);
 		for (int year = date.minusYears(10).getYear(); year <= date.plusYears(10).getYear(); year++) {
@@ -3644,8 +3646,9 @@ public class HTMLView extends View {
 
 		}
 
-		navigator.appendElement(anchor(">>", uri(type, lang, view) + "&" + Action.CALENDAR + "&" + Constants.YEAR + "="
-				+ after.getYear() + "&" + Constants.MONTH + "=" + after.getMonthValue() + refParam(ref)));
+		navigator.appendElement(anchor(">>", uri(type, lang, view) + "&" + Action.CALENDAR + "&"
+				+ Constants.YEAR + "=" + after.getYear() + "&" + Constants.MONTH + "=" 
+				+ after.getMonthValue() + refParameter(ref)));
 
 		return navigator;
 	}
