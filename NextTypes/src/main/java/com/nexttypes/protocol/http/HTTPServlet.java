@@ -767,7 +767,7 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println(request.getHeader("User-Agent"));
+		
 		String lang = null;
 		Strings strings = null;
 		String user = Auth.GUEST;

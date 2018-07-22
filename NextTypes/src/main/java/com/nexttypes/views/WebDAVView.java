@@ -429,7 +429,6 @@ public class WebDAVView extends View {
 			DOMSource source = new DOMSource(xml);
 			transformer.transform(source, result);
 			String string = result.getWriter().toString();
-			System.out.println(string);
 			return new Content(string, Format.XML, HTTPStatus.MULTI_STATUS);
 		} catch (ParserConfigurationException | TransformerException e) {
 			throw new NXException(e);
