@@ -17,15 +17,15 @@
 package com.nexttypes.datatypes;
 
 public class FieldInfo {
-	protected int size;
+	protected Integer size;
 	protected String contentType;
 
-	public FieldInfo(int size, String contentType) {
+	public FieldInfo(Integer size, String contentType) {
 		this.size = size;
 		this.contentType = contentType;
 	}
 
-	public int getSize() {
+	public Integer getSize() {
 		return size;
 	}
 

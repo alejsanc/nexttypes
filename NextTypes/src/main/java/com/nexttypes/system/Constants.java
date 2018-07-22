@@ -76,8 +76,9 @@ public class Constants {
 	public static final String CREATION_DATE = "creation_date";
 	public static final String CURRENT_PASSWORD = "current_password";
 	public static final String DATA = "data";
-	public static final String DATABASE = "database";
 	public static final String DATE = "date";
+	public static final String DATABASE = "database";
+	public static final String DEBUG = "debug";
 	public static final String DEFAULT_LANG = "default_lang";
 	public static final String DEFAULT_VIEW = "default_view";
 	public static final String DELETE_REFERENCE = "delete_reference";
@@ -115,6 +116,7 @@ public class Constants {
 	public static final String EXISTING_TYPES_ACTION = "existing_types_action";
 	public static final String EXISTING_TYPES_ACTIONS = "existing_types_actions";
 	public static final String EXPORT = "export";
+	public static final String EXTRA_PARAMETERS = "extra_parameters";
 	public static final String FALSE = "false";
 	public static final String FIELD = "field";
 	public static final String FIELD_HAS_NO_ELEMENTS = "field_has_no_elements";

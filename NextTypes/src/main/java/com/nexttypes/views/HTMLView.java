@@ -189,7 +189,7 @@ public class HTMLView extends View {
 	protected Element footer;
 	protected DecimalFormat humanReadableBytesFormat;
 	protected ArrayList<String> textEditorModes;
-
+	
 	public HTMLView(HTMLView parent) {
 		document = parent.getDocument();
 		nextNode = parent.getNextNode();
@@ -2622,7 +2622,7 @@ public class HTMLView extends View {
 		
 		return parameters.toString();
 	}
-
+	
 	public Element fieldOutput(String label, Object... elements) {
 		Element div = document.createElement(HTML.DIV);
 		div.setClass(FIELD_OUTPUT);
@@ -2959,13 +2959,13 @@ public class HTMLView extends View {
 		String rssSelect = typeSettings.gts(type, Constants.RSS_SELECT);
 
 		if (rssSelect != null) {
-			elements.add(iconAnchor(RSS, uri(type, lang, Constants.RSS) + refParameter, Icon.RSS));
+			elements.add(rssIconAnchor(type, lang, ref));
 		}
 
 		String icalSelect = typeSettings.gts(type, Constants.ICAL_SELECT);
 
 		if (icalSelect != null) {
-			elements.add(iconAnchor(ICALENDAR, uri(type, lang, Constants.ICAL) + refParameter, Icon.FILE));
+			elements.add(icalIconAnchor(type, lang, ref));
 		}
 
 		if (!request.isCalendar()) {
@@ -2979,6 +2979,22 @@ public class HTMLView extends View {
 		}
 
 		return elements.toArray(new Element[] {});
+	}
+	
+	public Element rssIconAnchor(String type, String lang, FieldReference ref) {
+		return iconAnchor(RSS, rssURI(type, lang, ref), Icon.RSS);
+	}
+	
+	public String rssURI(String type, String lang, FieldReference ref) {
+		return uri(type, lang, Constants.RSS) + refParameter(ref);
+	}
+	
+	public Element icalIconAnchor(String type, String lang, FieldReference ref) {
+		return iconAnchor(ICALENDAR, icalURI(type, lang, ref), Icon.FILE);
+	}
+	
+	public String icalURI(String type, String lang, FieldReference ref) {
+		return uri(type, lang, Constants.ICAL) + refParameter(ref);
 	}
 
 	public Element booleanOutput(Object value) {

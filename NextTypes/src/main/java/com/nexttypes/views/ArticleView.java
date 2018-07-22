@@ -44,7 +44,7 @@ public class ArticleView extends HTMLView {
 	public static final String CATEGORIES = "categories";
 	
 	protected String category;
-	protected String categoryParam;
+	protected String categoryParameter;
 
 	public ArticleView(HTMLView view) {
 		super(view);
@@ -148,7 +148,7 @@ public class ArticleView extends HTMLView {
 		category = request.getParameters().getString(CATEGORY);
 		
 		if (category != null) {
-			categoryParam = "&category=" + category;
+			categoryParameter = parameter(CATEGORY, category);
 		}
 		
 		loadTemplate(type, lang, view);
@@ -220,11 +220,24 @@ public class ArticleView extends HTMLView {
 	}
 	
 	@Override
-	public String uri(String type, String id, String field, String lang, String view) {
-		String uri = super.uri(type, id, field, lang, view);
+	public String rssURI(String type, String lang, FieldReference ref) {
+		String uri = super.rssURI(type, lang, ref);
 		
-		if (categoryParam != null) {
-			uri += categoryParam;
+		if (categoryParameter != null) {
+			uri += categoryParameter;
+		}
+		
+		return uri;
+	}
+	
+	@Override
+	public String selectTableURI(String type, String lang, String view, FieldReference ref, 
+			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
+	
+		String uri = super.selectTableURI(type, lang, view, ref, filters, search, order, offset, limit);
+		
+		if (categoryParameter != null) {
+			uri += categoryParameter;
 		}
 		
 		return uri;

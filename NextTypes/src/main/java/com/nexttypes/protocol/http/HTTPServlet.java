@@ -567,7 +567,7 @@ public class HTTPServlet extends HttpServlet {
 
 	protected Content webdav(HTTPRequest req) {
 		Content content = null;
-
+		
 		try (View view = getView(req.getType(), Constants.WEBDAV, req)) {
 			try {
 				if (req.getType() == null) {
@@ -767,7 +767,7 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) {
-
+		System.out.println(request.getHeader("User-Agent"));
 		String lang = null;
 		Strings strings = null;
 		String user = Auth.GUEST;
@@ -837,7 +837,7 @@ public class HTTPServlet extends HttpServlet {
 
 	protected void writeException(Exception e, HttpServletRequest request, HttpServletResponse response,
 			Strings strings, String userName) {
-		
+		e.printStackTrace();
 		HTTPStatus status = null;
 		String message = null;
 

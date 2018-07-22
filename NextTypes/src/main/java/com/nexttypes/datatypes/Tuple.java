@@ -95,14 +95,14 @@ public class Tuple {
 
 	public static String parseString(Object value) {
 		if (value instanceof Timestamp) {
-			value = parseDatetime(value);
+			value = parseDatetime(value).toString();
 		} else if (value instanceof Date) {
-			value = parseDate(value);
+			value = parseDate(value).toString();
 		} else if (value instanceof Time) {
-			value = parseTime(value);
+			value = parseTime(value).toString();
 		} else if (value instanceof byte[]) {
 			value = bytesToString(value);
-		}
+		} 	
 
 		return (String) value;
 	}

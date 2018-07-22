@@ -23,11 +23,7 @@ import java.util.LinkedHashMap;
 
 import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.DavException;
-import org.apache.jackrabbit.webdav.DavLocatorFactory;
-import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
-import org.apache.jackrabbit.webdav.WebdavRequestImpl;
-import org.apache.jackrabbit.webdav.jcr.DavLocatorFactoryImpl;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameIterator;
 import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
@@ -163,11 +159,7 @@ public class CalDAVView extends WebDAVView {
 		ArrayList<String> objects = new ArrayList<>();
 
 		try {
-			multiStatus = new MultiStatus();
-			path = request.getURIPath();
-			DavLocatorFactory factory = new DavLocatorFactoryImpl("");
-			davRequest = new WebdavRequestImpl(request.getServletRequest(), factory);
-			depth = davRequest.getDepth();
+						
 			ReportInfo report = davRequest.getReportInfo();
 			requestProperties = report.getPropertyNameSet();
 

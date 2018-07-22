@@ -3502,9 +3502,14 @@ public class PostgreSQLNode implements Node {
 			addTypeFilters(type, whereSQL);
 
 			sql.append(whereSQL);
+			
+			count = count(sql.toString(), parameters.toArray());
+			
+			if (count > 0) { 
 
-			if (order != null) {
-				sql.append(" order by " + order);
+				if (order != null) {
+					sql.append(" order by " + order);
+				}
 			}
 		}
 

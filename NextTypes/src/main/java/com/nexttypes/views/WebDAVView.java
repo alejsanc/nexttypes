@@ -16,6 +16,7 @@
 
 package com.nexttypes.views;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -45,6 +46,7 @@ import org.apache.jackrabbit.webdav.property.DavPropertyNameIterator;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
 import org.apache.jackrabbit.webdav.property.ResourceType;
+import org.apache.tika.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -58,6 +60,7 @@ import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.NXException;
+import com.nexttypes.protocol.http.HTTPMethod;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.settings.Settings;
@@ -79,15 +82,18 @@ public class WebDAVView extends View {
 	public WebDAVView(HTTPRequest request) {
 		super(request, Settings.WEBDAV_SETTINGS);
 
+		DavLocatorFactory factory = new DavLocatorFactoryImpl("");
+		davRequest = new WebdavRequestImpl(request.getServletRequest(), factory);
+		multiStatus = new MultiStatus();
+		path = request.getURIPath();
+		response = addResponse(path);
+		depth = davRequest.getDepth();
+			
 		try {
-			DavLocatorFactory factory = new DavLocatorFactoryImpl("");
-			davRequest = new WebdavRequestImpl(request.getServletRequest(), factory);
-			requestProperties = davRequest.getPropFindProperties();
-			multiStatus = new MultiStatus();
-			path = request.getURIPath();
-			response = addResponse(path);
-			propFindType = davRequest.getPropFindType();
-			depth = davRequest.getDepth();
+			if (HTTPMethod.PROPFIND.equals(request.getRequestMethod())) {
+				propFindType = davRequest.getPropFindType();
+				requestProperties = davRequest.getPropFindProperties();
+			}
 		} catch (DavException e) {
 			throw new NXException(e);
 		}
@@ -423,6 +429,7 @@ public class WebDAVView extends View {
 			DOMSource source = new DOMSource(xml);
 			transformer.transform(source, result);
 			String string = result.getWriter().toString();
+			System.out.println(string);
 			return new Content(string, Format.XML, HTTPStatus.MULTI_STATUS);
 		} catch (ParserConfigurationException | TransformerException e) {
 			throw new NXException(e);

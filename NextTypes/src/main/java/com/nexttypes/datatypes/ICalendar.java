@@ -22,6 +22,7 @@ import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 import com.nexttypes.exceptions.NXException;
@@ -57,8 +58,10 @@ public class ICalendar {
 			for (Tuple event : events) {
 				String id = event.getString(Constants.ID); 
 				String summary = event.getString(Constants.SUMMARY);
-				String startDate = event.getString(Constants.START_DATE);
-				String endDate = event.getString(Constants.END_DATE);
+				String startDate = event.getDatetime(Constants.START_DATE)
+						.format(DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT));
+				String endDate = event.getDatetime(Constants.END_DATE)
+						.format(DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT));
 				String description = event.getString(Constants.DESCRIPTION);
 
 				DateTime startDatetime = new DateTime(startDate, Constants.DATETIME_FORMAT, null);
