@@ -158,26 +158,17 @@ public class CalDAVView extends WebDAVView {
 	protected Content report(String type) {
 		ArrayList<String> objects = new ArrayList<>();
 
-		try {
-						
-			ReportInfo report = davRequest.getReportInfo();
-			requestProperties = report.getPropertyNameSet();
-
-			switch (report.getReportName()) {
+		switch (reportInfo.getReportName()) {
 			case "{urn:ietf:params:xml:ns:caldav}calendar-query":
 				break;
 
 			case "{urn:ietf:params:xml:ns:caldav}calendar-multiget":
-				for (Element element : report.getContentElements(DavConstants.XML_HREF, DavConstants.NAMESPACE)) {
+				for (Element element : reportInfo.getContentElements(DavConstants.XML_HREF, DavConstants.NAMESPACE)) {
 					String href = element.getTextContent();
 					objects.add((href.substring(href.lastIndexOf("/") + 1, href.length())));
 				}
 				break;
-			}
-
-		} catch (DavException e) {
-			throw new NXException(e);
-		}
+		} 
 
 		if (depth == DavConstants.DEPTH_1) {
 			String sql = typeSettings.gts(type, Constants.ICAL_SELECT);

@@ -16,29 +16,21 @@
 
 package com.nexttypes.views;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.DavLocatorFactory;
 import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
-import org.apache.jackrabbit.webdav.WebdavRequest;
 import org.apache.jackrabbit.webdav.WebdavRequestImpl;
 import org.apache.jackrabbit.webdav.jcr.DavLocatorFactoryImpl;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
@@ -46,9 +38,8 @@ import org.apache.jackrabbit.webdav.property.DavPropertyNameIterator;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameSet;
 import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
 import org.apache.jackrabbit.webdav.property.ResourceType;
-import org.apache.tika.io.IOUtils;
+import org.apache.jackrabbit.webdav.version.report.ReportInfo;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.FieldInfo;
@@ -60,7 +51,6 @@ import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.protocol.http.HTTPMethod;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.settings.Settings;
@@ -72,27 +62,48 @@ public class WebDAVView extends View {
 			DavConstants.NAMESPACE);
 
 	protected WebdavRequest davRequest;
+	protected ReportInfo reportInfo;
 	protected MultiStatus multiStatus;
 	protected DavPropertyNameSet requestProperties;
 	protected MultiStatusResponse response;
 	protected int propFindType;
 	protected int depth;
 	protected String path;
+	protected boolean debug;
 
 	public WebDAVView(HTTPRequest request) {
 		super(request, Settings.WEBDAV_SETTINGS);
-
+		
 		DavLocatorFactory factory = new DavLocatorFactoryImpl("");
-		davRequest = new WebdavRequestImpl(request.getServletRequest(), factory);
+		davRequest = new WebdavRequest(request.getServletRequest(), factory);
+		
+		debug = settings.getBoolean(Constants.DEBUG);
+		
+		if (debug) {
+			try { 
+				System.out.println("--------------- WEBDAV CLIENT ---------------");
+				System.out.println(Utils.toString(davRequest.getRequestDocument()));
+				System.out.println();
+			} catch (DavException e) {
+				throw new NXException(e);
+			}
+		}
+		
 		multiStatus = new MultiStatus();
 		path = request.getURIPath();
 		response = addResponse(path);
 		depth = davRequest.getDepth();
-			
+		
 		try {
-			if (HTTPMethod.PROPFIND.equals(request.getRequestMethod())) {
+			switch (request.getRequestMethod()) {
+			case PROPFIND:
 				propFindType = davRequest.getPropFindType();
 				requestProperties = davRequest.getPropFindProperties();
+				break;
+				
+			case REPORT:
+				reportInfo = davRequest.getReportInfo();
+				requestProperties = reportInfo.getPropertyNameSet();
 			}
 		} catch (DavException e) {
 			throw new NXException(e);
@@ -422,15 +433,16 @@ public class WebDAVView extends View {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.newDocument();
-			Element xml = multiStatus.toXml(document);
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			StreamResult result = new StreamResult(new StringWriter());
-			DOMSource source = new DOMSource(xml);
-			transformer.transform(source, result);
-			String string = result.getWriter().toString();
-			return new Content(string, Format.XML, HTTPStatus.MULTI_STATUS);
-		} catch (ParserConfigurationException | TransformerException e) {
+			String text = Utils.toString(multiStatus.toXml(document));
+			
+			if (debug) {
+				System.out.println("--------------- WEBDAV SERVER ---------------");
+				System.out.println(text);
+				System.out.println();
+			}
+			
+			return new Content(text, Format.XML, HTTPStatus.MULTI_STATUS);
+		} catch (ParserConfigurationException e) {
 			throw new NXException(e);
 		}
 	}
@@ -439,5 +451,21 @@ public class WebDAVView extends View {
 		MultiStatusResponse response = new MultiStatusResponse(uri, "");
 		multiStatus.addResponse(response);
 		return response;
+	}
+	
+	protected class WebdavRequest extends WebdavRequestImpl {
+		protected Document requestDocument;
+		
+		protected WebdavRequest(HttpServletRequest httpRequest, DavLocatorFactory factory) {
+	        super(httpRequest, factory);
+		}
+		
+		public Document getRequestDocument() throws DavException {
+			if (requestDocument == null) {
+				requestDocument = super.getRequestDocument();
+			}
+			
+			return requestDocument;
+		}
 	}
 }

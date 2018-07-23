@@ -19,6 +19,7 @@ package com.nexttypes.system;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -26,9 +27,16 @@ import java.util.Base64;
 import java.util.Formatter;
 import java.util.LinkedHashMap;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.w3c.dom.Node;
 
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.NXException;
@@ -61,6 +69,20 @@ public class Utils {
 		}
 
 		return output;
+	}
+	
+	public static String toString(Node input) {
+		try {
+			input = input.cloneNode(true);
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			StreamResult result = new StreamResult(new StringWriter());
+			DOMSource source = new DOMSource(input);
+			transformer.transform(source, result);
+			return result.getWriter().toString();
+		} catch (Exception e) {
+			throw new NXException(e);
+		}
 	}
 
 	public static String etag(ZonedDateTime date) {
