@@ -65,7 +65,6 @@ public class WebDAVView extends View {
 	protected ReportInfo reportInfo;
 	protected MultiStatus multiStatus;
 	protected DavPropertyNameSet requestProperties;
-	protected MultiStatusResponse response;
 	protected int propFindType;
 	protected int depth;
 	protected String path;
@@ -91,7 +90,6 @@ public class WebDAVView extends View {
 		
 		multiStatus = new MultiStatus();
 		path = request.getURIPath();
-		response = addResponse(path);
 		depth = davRequest.getDepth();
 		
 		try {
@@ -112,6 +110,8 @@ public class WebDAVView extends View {
 
 	@Override
 	public Content getTypesName(String lang, String view) {
+		
+		MultiStatusResponse response = addResponse(path);
 
 		switch (propFindType) {
 		case DavConstants.PROPFIND_ALL_PROP:
@@ -142,7 +142,7 @@ public class WebDAVView extends View {
 			ZonedDateTime udate = null;
 
 			for (TypeInfo resource : resources) {
-				MultiStatusResponse response = addResponse(path + resource.getName());
+				response = addResponse(path + resource.getName());
 
 				switch (propFindType) {
 				case DavConstants.PROPFIND_ALL_PROP:
@@ -192,6 +192,8 @@ public class WebDAVView extends View {
 	public Content select(String type, String lang, String view, FieldReference ref, Filter[] filters,
 			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
+		MultiStatusResponse response = addResponse(path);
+		
 		switch (propFindType) {
 		case DavConstants.PROPFIND_ALL_PROP:
 			response.add(new ResourceType(ResourceType.COLLECTION));
@@ -221,7 +223,7 @@ public class WebDAVView extends View {
 			ZonedDateTime udate = null;
 
 			for (Tuple resource : resources) {
-				MultiStatusResponse response = addResponse(path + resource.getString(Constants.ID));
+				response = addResponse(path + resource.getString(Constants.ID));
 
 				switch (propFindType) {
 				case DavConstants.PROPFIND_ALL_PROP:
@@ -272,6 +274,8 @@ public class WebDAVView extends View {
 	public Content get(String type, String id, String lang, String view, String etag) {
 
 		ZonedDateTime udate = null;
+		
+		MultiStatusResponse response = addResponse(path);
 
 		switch (propFindType) {
 		case DavConstants.PROPFIND_ALL_PROP:
@@ -318,7 +322,7 @@ public class WebDAVView extends View {
 					String field = entry.getKey();
 					FieldInfo fieldInfo = entry.getValue();
 
-					MultiStatusResponse response = addResponse(path + field);
+					response = addResponse(path + field);
 					response.add(new ResourceType(ResourceType.DEFAULT_RESOURCE));
 					response.add(new DefaultDavProperty(DavPropertyName.GETCONTENTLENGTH, fieldInfo.getSize()));
 					response.add(new DefaultDavProperty(DavPropertyName.GETLASTMODIFIED,
@@ -331,7 +335,7 @@ public class WebDAVView extends View {
 				LinkedHashMap<String, TypeField> fields = nextNode.getTypeFields(type);
 
 				for (Map.Entry<String, TypeField> entry : fields.entrySet()) {
-					MultiStatusResponse response = addResponse(path + entry.getKey());
+					response = addResponse(path + entry.getKey());
 					response.add(DavPropertyName.RESOURCETYPE);
 					response.add(DavPropertyName.GETCONTENTLENGTH);
 					response.add(DavPropertyName.GETLASTMODIFIED);
@@ -345,7 +349,7 @@ public class WebDAVView extends View {
 					String field = entry.getKey();
 					FieldInfo fieldInfo = entry.getValue();
 
-					MultiStatusResponse response = addResponse(path + field);
+					response = addResponse(path + field);
 					DavPropertyNameIterator properties = requestProperties.iterator();
 
 					while (properties.hasNext()) {
@@ -377,6 +381,8 @@ public class WebDAVView extends View {
 
 		ZonedDateTime udate = null;
 		String contentType = null;
+		
+		MultiStatusResponse response = addResponse(path);
 
 		switch (propFindType) {
 		case DavConstants.PROPFIND_ALL_PROP:

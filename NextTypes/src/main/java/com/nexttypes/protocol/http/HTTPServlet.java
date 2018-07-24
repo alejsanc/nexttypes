@@ -437,6 +437,13 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected void put(HTTPRequest req) throws IOException {
+		Enumeration<String> headers = req.getServletRequest().getHeaderNames();
+		
+		while (headers.hasMoreElements()) {
+			String header = headers.nextElement();
+			System.out.println(header + ": " + req.getServletRequest().getHeader(header));
+		}
+		
 		try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), req, NodeMode.WRITE)) {
 
 			Object value = IOUtils.toByteArray(req.getServletRequest().getInputStream());

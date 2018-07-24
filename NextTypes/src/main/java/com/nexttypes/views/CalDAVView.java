@@ -22,13 +22,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import org.apache.jackrabbit.webdav.DavConstants;
-import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.property.DavPropertyName;
 import org.apache.jackrabbit.webdav.property.DavPropertyNameIterator;
 import org.apache.jackrabbit.webdav.property.DefaultDavProperty;
 import org.apache.jackrabbit.webdav.property.ResourceType;
-import org.apache.jackrabbit.webdav.version.report.ReportInfo;
 import org.apache.jackrabbit.webdav.xml.Namespace;
 import org.w3c.dom.Element;
 
@@ -39,7 +37,6 @@ import com.nexttypes.datatypes.ICalendar;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.Order;
-import com.nexttypes.exceptions.NXException;
 import com.nexttypes.protocol.http.HTTPMethod;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
@@ -69,6 +66,8 @@ public class CalDAVView extends WebDAVView {
 
 	protected Content propfind(String type) {
 
+		MultiStatusResponse response = addResponse(path);
+		
 		switch (propFindType) {
 		case DavConstants.PROPFIND_ALL_PROP:
 			response.add(new ResourceType(new int[] { ResourceType.COLLECTION, CALENDAR_RESOURCE_TYPE }));
@@ -98,7 +97,7 @@ public class CalDAVView extends WebDAVView {
 			ZonedDateTime udate = null;
 
 			for (Tuple resource : resources) {
-				MultiStatusResponse response = addResponse(path + resource.getString(Constants.ID));
+				response = addResponse(path + resource.getString(Constants.ID));
 
 				switch (propFindType) {
 				case DavConstants.PROPFIND_ALL_PROP:
