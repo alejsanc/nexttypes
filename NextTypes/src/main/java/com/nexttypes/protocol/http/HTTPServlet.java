@@ -72,6 +72,7 @@ import com.nexttypes.system.Context;
 import com.nexttypes.system.Loader;
 import com.nexttypes.system.Utils;
 import com.nexttypes.views.View;
+import com.nexttypes.views.WebDAVView;
 
 public class HTTPServlet extends HttpServlet {
 	protected static final long serialVersionUID = 1L;
@@ -83,6 +84,7 @@ public class HTTPServlet extends HttpServlet {
 	protected Logger logger;
 	protected int maxRequests;
 	protected int maxAuthErrors;
+	protected boolean debug;
 	protected ConcurrentHashMap<String, Requests> requestsMap = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, AuthErrors> authErrorsMap = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Requests> insertRequestsMap = new ConcurrentHashMap<>();
@@ -95,6 +97,7 @@ public class HTTPServlet extends HttpServlet {
 		settings = context.getSettings(Settings.HTTP_SETTINGS);
 		maxRequests = settings.getInt32(Constants.MAX_REQUESTS);
 		maxAuthErrors = settings.getInt32(Constants.MAX_AUTH_ERRORS);
+		debug = settings.getBoolean(Constants.DEBUG);
 		logger = context.getLogger();
 	}
 
@@ -437,17 +440,16 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected void put(HTTPRequest req) throws IOException {
-		Enumeration<String> headers = req.getServletRequest().getHeaderNames();
-		
-		while (headers.hasMoreElements()) {
-			String header = headers.nextElement();
-			System.out.println(header + ": " + req.getServletRequest().getHeader(header));
-		}
-		
+				
 		try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), req, NodeMode.WRITE)) {
 
 			Object value = IOUtils.toByteArray(req.getServletRequest().getInputStream());
-
+			
+			if (debug) {
+				Debug.body();
+				Debug.text(Tuple.parseText(value));
+			}
+			
 			if (req.getType() == null) {
 				throw new NXException(Constants.EMPTY_TYPE_NAME);
 			} else if (req.getId() == null) {
@@ -455,6 +457,7 @@ public class HTTPServlet extends HttpServlet {
 			} else if (req.getField() == null) {
 				nextNode.update(req.getType(), req.getId(), (byte[]) value);
 			} else {
+				
 				String fieldType = nextNode.getTypeField(req.getType(), req.getField()).getType();
 				String allowedTags = null;
 
@@ -575,7 +578,13 @@ public class HTTPServlet extends HttpServlet {
 	protected Content webdav(HTTPRequest req) {
 		Content content = null;
 		
-		try (View view = getView(req.getType(), Constants.WEBDAV, req)) {
+		try (WebDAVView view = getWebDAVView(req.getType(), Constants.WEBDAV, req)) {
+			
+			if (debug) {
+				Debug.body();
+				Debug.text(view.getRequestText());
+			}
+			
 			try {
 				if (req.getType() == null) {
 					content = view.getTypesName(req.getLang(), Constants.WEBDAV);
@@ -772,8 +781,48 @@ public class HTTPServlet extends HttpServlet {
 
 		return userName;
 	}
+	
+	protected void debug(HttpServletRequest request) {
+		
+		Debug.title("HTTP REQUEST");
+		
+		String uri = request.getRemoteAddr() + " " + request.getMethod() + " " + request.getRequestURL();
+			
+		String query = request.getQueryString();
+			
+		if (query != null && query.length() > 0) {
+			uri += "?" + query;
+		}
+		
+		Debug.text(uri);
+			
+		Debug.headers();		
+			
+		Enumeration<String> headers = request.getHeaderNames();
+			
+		while (headers.hasMoreElements()) {
+			String header = headers.nextElement();
+			Debug.text(header + ": " + request.getHeader(header));
+		}
+		
+		Debug.parameters();
+		
+		for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+			StringBuilder text = new StringBuilder(entry.getKey() + ": ");
+			
+			for (String value : entry.getValue()) {
+				text.append(value + " ");
+			}
+			
+			Debug.text(text.toString());
+		}
+	}
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) {
+		
+		if (debug) {
+			debug(request);		
+		}
 		
 		String lang = null;
 		Strings strings = null;
@@ -844,7 +893,11 @@ public class HTTPServlet extends HttpServlet {
 
 	protected void writeException(Exception e, HttpServletRequest request, HttpServletResponse response,
 			Strings strings, String userName) {
-		e.printStackTrace();
+		
+		if (debug) {
+			e.printStackTrace();
+		}
+		
 		HTTPStatus status = null;
 		String message = null;
 
@@ -904,20 +957,44 @@ public class HTTPServlet extends HttpServlet {
 			for (Map.Entry<String, String> entry : content.getHeaders().entrySet()) {
 				response.setHeader(entry.getKey(), entry.getValue());
 			}
+			
+			StringBuilder text = null;
+			
+			if (debug) {
+				Debug.title("HTTP RESPONSE");
+				
+				Debug.headers();
+				
+				for (String header : response.getHeaderNames()) {
+					Debug.text(header + ": " + response.getHeader(header));
+				}
+			}
 
 			Object value = content.getValue();
 			if (value != null) {
+				if (debug) {
+					Debug.body();
+				}
+				
 				ServletOutputStream output = response.getOutputStream();
 
 				if (value instanceof String) {
 					output.write(((String) value).getBytes());
+					
+					if (debug) {
+						Debug.text((String) value);
+					}
 				} else if (value instanceof byte[]) {
 					output.write((byte[]) value);
 				} else {
-					new Serial(value, Format.JSON).write(output);
+					Serial serial = new Serial(value, Format.JSON);
+					serial.write(output);
+					
+					if (debug) {
+						Debug.text(serial.toString());
+					}
 				}
 			}
-
 		}
 	}
 
@@ -937,7 +1014,17 @@ public class HTTPServlet extends HttpServlet {
 			throw new ViewNotFoundException(req.getType(), view);
 		}
 	}
-
+	
+	protected WebDAVView getWebDAVView(String type, String view, HTTPRequest req) {
+		String className = req.getTypeSettings().getView(type, view);
+		
+		if (className != null) {
+			return Loader.loadWebDAVView(className, req);
+		} else {
+			throw new ViewNotFoundException(req.getType(), view);
+		}
+	}
+	
 	protected void log(HttpServletRequest request, String user, URI uri) {
 		logger.info(this, user, request.getRemoteAddr(), request.getMethod() + " " + uri);
 	}
@@ -1076,6 +1163,28 @@ public class HTTPServlet extends HttpServlet {
 		protected AuthErrors() {
 			errors = 1;
 			firstErrorTime = System.currentTimeMillis();
+		}
+	}
+	
+	protected static class Debug {
+		protected static void title(String title) {
+			System.out.println("\n--------------- " + title + "---------------");
+		}
+		
+		protected static void headers() {
+			System.out.println("\n---------- Headers ----------");
+		}
+		
+		protected static void parameters() {
+			System.out.println("\n---------- Parameters ----------");
+		}
+		
+		protected static void body() {
+			System.out.println("\n---------- Body ----------");
+		}
+		
+		protected static void text(String text) {
+			System.out.println(text);
 		}
 	}
 }

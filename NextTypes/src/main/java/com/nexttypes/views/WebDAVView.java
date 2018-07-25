@@ -21,14 +21,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.DavException;
-import org.apache.jackrabbit.webdav.DavLocatorFactory;
 import org.apache.jackrabbit.webdav.MultiStatus;
 import org.apache.jackrabbit.webdav.MultiStatusResponse;
 import org.apache.jackrabbit.webdav.WebdavRequestImpl;
@@ -55,44 +53,30 @@ import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.system.Constants;
+import com.nexttypes.system.Debug;
 import com.nexttypes.system.Utils;
 
 public class WebDAVView extends View {
 	public static final DavPropertyName CHILDCOUNT_PROPERTY_NAME = DavPropertyName.create("childcount",
 			DavConstants.NAMESPACE);
 
-	protected WebdavRequest davRequest;
+	protected WebDAVRequest davRequest;
 	protected ReportInfo reportInfo;
 	protected MultiStatus multiStatus;
 	protected DavPropertyNameSet requestProperties;
 	protected int propFindType;
 	protected int depth;
 	protected String path;
-	protected boolean debug;
-
+	
 	public WebDAVView(HTTPRequest request) {
 		super(request, Settings.WEBDAV_SETTINGS);
 		
-		DavLocatorFactory factory = new DavLocatorFactoryImpl("");
-		davRequest = new WebdavRequest(request.getServletRequest(), factory);
-		
-		debug = settings.getBoolean(Constants.DEBUG);
-		
-		if (debug) {
-			try { 
-				System.out.println("--------------- WEBDAV CLIENT ---------------");
-				System.out.println(Utils.toString(davRequest.getRequestDocument()));
-				System.out.println();
-			} catch (DavException e) {
-				throw new NXException(e);
-			}
-		}
-		
-		multiStatus = new MultiStatus();
-		path = request.getURIPath();
-		depth = davRequest.getDepth();
-		
 		try {
+			davRequest = new WebDAVRequest(request);
+			multiStatus = new MultiStatus();
+			path = request.getURIPath();
+			depth = davRequest.getDepth();
+			
 			switch (request.getRequestMethod()) {
 			case PROPFIND:
 				propFindType = davRequest.getPropFindType();
@@ -103,6 +87,14 @@ public class WebDAVView extends View {
 				reportInfo = davRequest.getReportInfo();
 				requestProperties = reportInfo.getPropertyNameSet();
 			}
+		} catch (DavException e) {
+			throw new NXException(e);
+		}
+	}
+	
+	public String getRequestText() {
+		try {
+			return Utils.toString(davRequest.getRequestDocument());
 		} catch (DavException e) {
 			throw new NXException(e);
 		}
@@ -440,13 +432,6 @@ public class WebDAVView extends View {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.newDocument();
 			String text = Utils.toString(multiStatus.toXml(document));
-			
-			if (debug) {
-				System.out.println("--------------- WEBDAV SERVER ---------------");
-				System.out.println(text);
-				System.out.println();
-			}
-			
 			return new Content(text, Format.XML, HTTPStatus.MULTI_STATUS);
 		} catch (ParserConfigurationException e) {
 			throw new NXException(e);
@@ -459,13 +444,14 @@ public class WebDAVView extends View {
 		return response;
 	}
 	
-	protected class WebdavRequest extends WebdavRequestImpl {
+	protected class WebDAVRequest extends WebdavRequestImpl {
 		protected Document requestDocument;
 		
-		protected WebdavRequest(HttpServletRequest httpRequest, DavLocatorFactory factory) {
-	        super(httpRequest, factory);
+		protected WebDAVRequest(HTTPRequest request) {
+	        super(request.getServletRequest(), new DavLocatorFactoryImpl(""));
 		}
 		
+		@Override
 		public Document getRequestDocument() throws DavException {
 			if (requestDocument == null) {
 				requestDocument = super.getRequestDocument();

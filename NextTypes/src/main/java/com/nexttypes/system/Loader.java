@@ -24,6 +24,7 @@ import com.nexttypes.interfaces.Node;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.views.HTMLView;
 import com.nexttypes.views.View;
+import com.nexttypes.views.WebDAVView;
 
 public class Loader {
 	public static Object load(String className) {
@@ -64,6 +65,10 @@ public class Loader {
 
 	public static HTMLView loadHTMLView(String className, HTMLView parent) {
 		return (HTMLView) Loader.load(className, HTMLView.class, parent);
+	}
+	
+	public static WebDAVView loadWebDAVView(String className, HTTPRequest request) {
+		return (WebDAVView) Loader.load(className, HTTPRequest.class, request);
 	}
 
 	public static Controller loadController(String className, String type, String id, String user, String[] groups,
