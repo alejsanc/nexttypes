@@ -53,7 +53,6 @@ import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.system.Constants;
-import com.nexttypes.system.Debug;
 import com.nexttypes.system.Utils;
 
 public class WebDAVView extends View {
