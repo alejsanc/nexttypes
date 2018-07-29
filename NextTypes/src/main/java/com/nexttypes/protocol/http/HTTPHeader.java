@@ -19,8 +19,9 @@ package com.nexttypes.protocol.http;
 public enum HTTPHeader {
 	ALLOW("Allow"),
 	AUTHORIZATION("Authorization"),
-	CONTENT_SECURITY_POLICY("Content-Security-Policy"),
 	CONTENT_DISPOSITION("Content-Disposition"),
+	CONTENT_SECURITY_POLICY("Content-Security-Policy"),
+	CONTENT_TYPE("Content-Type"),
 	DAV("DAV"),
 	ETAG("ETag"),
 	IF_NONE_MATCH("If-None-Match"),

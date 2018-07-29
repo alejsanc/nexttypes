@@ -121,7 +121,11 @@ public class SerialView extends View {
 
 	public Content content(Object object, HTTPStatus status, String format, String rootName, String itemName) {
 		Format formatObject = Format.valueOf(format.toUpperCase());
+		
+		Serial serial = new Serial(object, formatObject, rootName, itemName);
+		
+		Object value = Format.SMILE.equals(formatObject) ? serial.getBinary() : serial.getString();
 
-		return new Content(new Serial(object, formatObject, rootName, itemName).getBinary(), formatObject, status);
+		return new Content(value, formatObject, status);
 	}
 }

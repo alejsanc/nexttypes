@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.cert.X509Certificate;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -69,6 +71,7 @@ import com.nexttypes.settings.Strings;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Context;
+import com.nexttypes.system.Debug;
 import com.nexttypes.system.Loader;
 import com.nexttypes.system.Utils;
 import com.nexttypes.views.View;
@@ -85,6 +88,8 @@ public class HTTPServlet extends HttpServlet {
 	protected int maxRequests;
 	protected int maxAuthErrors;
 	protected boolean debug;
+	protected boolean binaryDebug;
+	protected int binaryDebugLimit;
 	protected ConcurrentHashMap<String, Requests> requestsMap = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, AuthErrors> authErrorsMap = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Requests> insertRequestsMap = new ConcurrentHashMap<>();
@@ -98,6 +103,8 @@ public class HTTPServlet extends HttpServlet {
 		maxRequests = settings.getInt32(Constants.MAX_REQUESTS);
 		maxAuthErrors = settings.getInt32(Constants.MAX_AUTH_ERRORS);
 		debug = settings.getBoolean(Constants.DEBUG);
+		binaryDebug = settings.getBoolean(Constants.BINARY_DEBUG);
+		binaryDebugLimit = settings.getInt32(Constants.BINARY_DEBUG_LIMIT);
 		logger = context.getLogger();
 	}
 
@@ -447,7 +454,10 @@ public class HTTPServlet extends HttpServlet {
 			
 			if (debug) {
 				Debug.body();
-				Debug.text(Tuple.parseText(value));
+				
+				if (binaryDebug) {
+					Debug.binary((byte[]) value, binaryDebugLimit);
+				}
 			}
 			
 			if (req.getType() == null) {
@@ -784,7 +794,7 @@ public class HTTPServlet extends HttpServlet {
 	
 	protected void debug(HttpServletRequest request) {
 		
-		Debug.title("HTTP REQUEST");
+		Debug.httpRequest();
 		
 		String uri = request.getRemoteAddr() + " " + request.getMethod() + " " + request.getRequestURL();
 			
@@ -807,7 +817,9 @@ public class HTTPServlet extends HttpServlet {
 		
 		Debug.parameters();
 		
-		for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet()) {
+		Map<String, String[]> parameters = request.getParameterMap();
+		
+		for (Map.Entry<String, String[]> entry : parameters.entrySet()) {
 			StringBuilder text = new StringBuilder(entry.getKey() + ": ");
 			
 			for (String value : entry.getValue()) {
@@ -815,6 +827,61 @@ public class HTTPServlet extends HttpServlet {
 			}
 			
 			Debug.text(text.toString());
+		}
+				
+		try {
+			Collection<Part> parts = request.getParts();
+			
+			if (parts != null && parts.size() > 0) {
+				
+				for (Part part : parts) {
+					String partName = part.getName();
+					
+					if (!parameters.keySet().contains(partName)) {
+						long size = part.getSize();
+						
+						Debug.subtitle(partName + " " + part.getSubmittedFileName()
+							+ " " + size + " bytes");
+						
+						if (binaryDebug && size > 0) {
+							Debug.binary(IOUtils.toByteArray(part.getInputStream()), binaryDebugLimit);
+						}
+					}				
+				}
+			}
+		} catch (ServletException e) {
+			
+		} catch (IOException e) {
+			Debug.exception(e);
+		}
+	}
+	
+	protected void debug(HttpServletResponse response, Content content) {
+		Debug.httpResponse();
+			
+		Debug.text("Status: " + content.getStatus());
+		Debug.text(HTTPHeader.CONTENT_TYPE + ": " + content.getContentType());
+			
+		Debug.headers();
+			
+		for (String header : response.getHeaderNames()) {
+			Debug.text(header + ": " + response.getHeader(header));
+		}
+
+		Debug.body();
+		
+		Object value = content.getValue();
+		if (value != null) {
+								
+			if (value instanceof String) {
+				Debug.text((String) value);
+			} else if (value instanceof byte[]) {
+				if (binaryDebug) {
+					Debug.binary((byte[]) value, binaryDebugLimit);
+				}
+			} else {
+				Debug.text(new Serial(value, Format.JSON).toString());
+			}
 		}
 	}
 
@@ -894,10 +961,6 @@ public class HTTPServlet extends HttpServlet {
 	protected void writeException(Exception e, HttpServletRequest request, HttpServletResponse response,
 			Strings strings, String userName) {
 		
-		if (debug) {
-			e.printStackTrace();
-		}
-		
 		HTTPStatus status = null;
 		String message = null;
 
@@ -932,6 +995,10 @@ public class HTTPServlet extends HttpServlet {
 		} else {
 			message = Utils.getExceptionMessage(e);
 		}
+		
+		if (debug) {
+			Debug.exception(message, e);
+		}
 
 		String remoteAddress = request.getRemoteAddr();
 
@@ -958,46 +1025,26 @@ public class HTTPServlet extends HttpServlet {
 				response.setHeader(entry.getKey(), entry.getValue());
 			}
 			
-			StringBuilder text = null;
-			
 			if (debug) {
-				Debug.title("HTTP RESPONSE");
-				
-				Debug.headers();
-				
-				for (String header : response.getHeaderNames()) {
-					Debug.text(header + ": " + response.getHeader(header));
-				}
+				debug(response, content);
 			}
 
 			Object value = content.getValue();
 			if (value != null) {
-				if (debug) {
-					Debug.body();
-				}
-				
+						
 				ServletOutputStream output = response.getOutputStream();
 
 				if (value instanceof String) {
 					output.write(((String) value).getBytes());
-					
-					if (debug) {
-						Debug.text((String) value);
-					}
 				} else if (value instanceof byte[]) {
 					output.write((byte[]) value);
 				} else {
-					Serial serial = new Serial(value, Format.JSON);
-					serial.write(output);
-					
-					if (debug) {
-						Debug.text(serial.toString());
-					}
+					new Serial(value, Format.JSON).write(output);
 				}
 			}
 		}
 	}
-
+	
 	protected View getView(HTTPRequest request) {
 		String type = request.getType();
 		String view = request.getView();
@@ -1163,28 +1210,6 @@ public class HTTPServlet extends HttpServlet {
 		protected AuthErrors() {
 			errors = 1;
 			firstErrorTime = System.currentTimeMillis();
-		}
-	}
-	
-	protected static class Debug {
-		protected static void title(String title) {
-			System.out.println("\n--------------- " + title + "---------------");
-		}
-		
-		protected static void headers() {
-			System.out.println("\n---------- Headers ----------");
-		}
-		
-		protected static void parameters() {
-			System.out.println("\n---------- Parameters ----------");
-		}
-		
-		protected static void body() {
-			System.out.println("\n---------- Body ----------");
-		}
-		
-		protected static void text(String text) {
-			System.out.println(text);
 		}
 	}
 }

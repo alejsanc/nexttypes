@@ -54,6 +54,8 @@ public class Constants {
 	public static final String BACKUP = "backup";
 	public static final String BASIC_AUTH_REALM = "basic_auth_realm";
 	public static final String BASIC_AUTH_USER_AGENTS = "basic_auth_user_agents";
+	public static final String BINARY_DEBUG = "binary_debug";
+	public static final String BINARY_DEBUG_LIMIT = "binary_debug_limit";
 	public static final String BIND_ADDRESS = "bind_address";
 	public static final String CALENDAR = "calendar";
 	public static final String CALENDAR_TITLE = "calendar_title";

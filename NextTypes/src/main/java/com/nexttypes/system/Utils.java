@@ -16,6 +16,7 @@
 
 package com.nexttypes.system;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +43,7 @@ import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.NXException;
 
 public class Utils {
-
+	
 	public static InputStream toInputStream(String input) {
 		InputStream output = null;
 
