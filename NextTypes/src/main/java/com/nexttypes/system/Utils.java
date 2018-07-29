@@ -16,7 +16,6 @@
 
 package com.nexttypes.system;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,7 +73,6 @@ public class Utils {
 	
 	public static String toString(Node input) {
 		try {
-			input = input.cloneNode(true);
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			StreamResult result = new StreamResult(new StringWriter());
