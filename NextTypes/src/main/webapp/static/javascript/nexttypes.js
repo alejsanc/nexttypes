@@ -492,8 +492,8 @@ function submitForm(event){
 						var user = document.getElementById("user");
 						user.classList.remove("hidden");
 						
-						var logout_button = document.getElementById("logout-button");
-						logout_button.classList.remove("hidden");
+						var logoutButton = document.getElementById("logout-button");
+						logoutButton.classList.remove("hidden");
 						
 						var userName = document.getElementById("user-name");
 						userName.innerText = form.elements["login_user"].value;
