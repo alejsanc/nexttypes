@@ -758,7 +758,7 @@ function resetBinaryInputs(form) {
 		var nullInput = input.parentNode;
 		var binaryInput = nullInput.parentNode;
 									
-		if (input.checked == true) {
+		if (input.checked) {
 			input.checked = false;
 			nullInput.classList.add("hidden");
 			var size = binaryInput.querySelector("span.binary-input-size");
