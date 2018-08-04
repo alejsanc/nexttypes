@@ -401,10 +401,6 @@ public class HTTPRequest {
 	}
 
 	protected Object readField(String field, String fieldType) {
-		return readField(fields, field, fieldType);
-	}
-	
-	protected Object readField(Tuple fields, String field, String fieldType) {
 		Object value = null;
 
 		switch (fieldType) {
@@ -460,7 +456,7 @@ public class HTTPRequest {
 			value = fields.getEmail(field);
 			break;
 		case PT.BINARY:
-			value = fields.getFile(field);
+			value = fields.getBinary(field);
 			break;
 		case PT.IMAGE:
 			value = fields.getImage(field);
@@ -861,6 +857,22 @@ public class HTTPRequest {
 			if (values != null && values.length > 0) {
 				value = Utils.trim(values[0]);
 			} 
+			
+			return value;
+		}
+		
+		@Override
+		public byte[] getBinary(String field) {
+			byte[] value = null;
+			
+			try {
+				Part part = request.getPart("@" + field);
+				if (part != null && part.getSize() > 0) {
+					value = IOUtils.toByteArray(part.getInputStream());
+				}
+			} catch (IOException | ServletException e) {
+				throw new NXException(e);
+			}
 			
 			return value;
 		}

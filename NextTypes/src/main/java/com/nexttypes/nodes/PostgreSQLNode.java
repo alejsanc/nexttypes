@@ -3232,9 +3232,7 @@ public class PostgreSQLNode implements Node {
 					object = Timestamp.valueOf(((ZonedDateTime) object).toLocalDateTime());
 				} else if (object instanceof ObjectReference) {
 					object = ((ObjectReference) object).getId();
-				} else if (object instanceof File) {
-					object = ((File) object).getContent();
-				}
+				} 
 
 				statement.setObject(x + 1, object);
 			}
