@@ -460,15 +460,7 @@ function submitForm(event){
 						
 						form.elements["udate"].value = response["udate"];
 						
-						var sizes = form.querySelectorAll("span.binary-input-size");
-						for (let size of sizes) {
-							size.setAttribute("data-size", size.innerText);
-						}
-						
-						var anchors = form.querySelectorAll("a.clear-binary-input");
-						for (let anchor of anchors) {
-							anchor.classList.add("hidden");
-						}
+						resetBinaryInputs(form);
 						
 						break;			
 							
@@ -742,12 +734,46 @@ function clearBinaryInput(event) {
 	var target = event.currentTarget;
 	var binaryInput = target.parentNode;
 	
-	binaryInput.querySelector("input.binary").value = null;
+	binaryInput.querySelector("input.binary").value = "";
 	
 	var binaryInputSize = binaryInput.querySelector("span.binary-input-size");
 	binaryInputSize.innerText = binaryInputSize.getAttribute("data-size");
 	
 	target.classList.add("hidden");
+}
+
+function resetBinaryInputs(form) {
+	var sizes = form.querySelectorAll("span.binary-input-size");
+	for (let size of sizes) {
+		size.setAttribute("data-size", size.innerText);
+	}
+	
+	var anchors = form.querySelectorAll("a.clear-binary-input");
+	for (let anchor of anchors) {
+		anchor.classList.add("hidden");
+	}
+	
+	var inputs = form.querySelectorAll("input.null");
+	for (let input of inputs) {
+		var nullInput = input.parentNode;
+		var binaryInput = nullInput.parentNode;
+									
+		if (input.checked == true) {
+			input.checked = false;
+			nullInput.classList.add("hidden");
+			var size = binaryInput.querySelector("span.binary-input-size");
+			size.innerText = "0 B";
+			size.setAttribute("data-size", "0 B");
+		
+		} else if (binaryInput.querySelector("input.binary").value != "") {
+			nullInput.classList.remove("hidden");
+		}
+	}
+	
+	inputs = form.querySelectorAll("input.binary");
+	for (let input of inputs) {
+		input.value = "";
+	}
 }
 
 function changeLanguage(event){

@@ -1624,10 +1624,6 @@ public class HTMLView extends View {
 	public Element binaryFieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField, String lang) {
 		
-		return binaryFieldInput(type, action, field, title, value, typeField.getType(), lang);
-	}
-	public Element binaryFieldInput(String type, String action, String field, String title, Object value,
-			String fieldType, String lang) {
 		String allowedContentTypes = null;
 
 		if (action != null) {
@@ -1637,7 +1633,7 @@ public class HTMLView extends View {
 			allowedContentTypes = typeSettings.getFieldString(type, field, Constants.ALLOWED_CONTENT_TYPES);
 		}
 
-		if (allowedContentTypes == null && PT.IMAGE.equals(fieldType)) {
+		if (allowedContentTypes == null && PT.IMAGE.equals(typeField.getType())) {
 			allowedContentTypes = Format.IMAGES.getContentType();
 		}
 
@@ -1647,7 +1643,28 @@ public class HTMLView extends View {
 		
 		input.appendElement(clearAnchor);
 		
+		if (action == null && !typeField.isNotNull()) {
+			input.appendElement(nullFieldInput(type, field, value));
+		}
+		
 		return input;
+	}
+	
+	public Element nullFieldInput(String type, String field, Object value) {
+		Element nullInput = document.createElement(HTML.SPAN);
+		
+		String nullName = strings.gts(type, Constants.NULL);
+		
+		nullInput.appendText(" | " + nullName + ":");
+	
+		nullInput.appendElement(booleanInput("@" + field + Constants._NULL, nullName, false))
+			.setClass(Constants.NULL);
+		
+		if (value == null) {
+			nullInput.setClass(HTML.HIDDEN);
+		} 
+		
+		return nullInput;
 	}
 
 	public Element binaryInput(String name, String title, String allowedContentTypes, String lang) {
@@ -1668,7 +1685,7 @@ public class HTMLView extends View {
 
 		if (value == null) {
 			value = 0;
-		} 
+		}
 
 		String size = humanReadableBytes((Integer) value, lang);
 		
@@ -2063,11 +2080,11 @@ public class HTMLView extends View {
 		inputGroup.setClass(OBJECT_RADIO_INPUT);
 		
 		if (!notNull) {
-			String nullString = strings.gts(type, Constants.NULL);
+			String nullName = strings.gts(type, Constants.NULL);
 			
-			inputGroup.appendInput(input(HTML.RADIO, name, nullString, ""));
+			inputGroup.appendInput(input(HTML.RADIO, name, nullName, ""));
 			
-			inputGroup.appendText(nullString);
+			inputGroup.appendText(nullName);
 			
 		}
 		

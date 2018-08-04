@@ -344,11 +344,18 @@ public class HTTPRequest {
 			String fieldType = typeField.getType();
 
 			if (PT.isBinaryType(fieldType)) {
+				
+				if (fields.containsKey(field + Constants._NULL)) {
+					
+					object.put(field, null);
+					
+				} else {
 
-				Object value = readField(field, fieldType);
+					Object value = readField(field, fieldType);
 
-				if (value != null) {
-					object.put(field, value);
+					if (value != null) {
+						object.put(field, value);
+					}
 				}
 
 			} else if (fields.containsKey(field)) {

@@ -29,7 +29,9 @@ public class Constants {
 	public static final String ICAL_SELECT = "views.ical.select";
 	public static final String RSS_SELECT = "views.rss.select";
 		
+	public static final String _NULL = "_null";
 	public static final String _REPEAT = "_repeat";
+	
 	public static final String ACCEPT = "accept";
 	public static final String ACTION = "action";
 	public static final String ACTION_EXECUTION_ERROR = "action_execution_error";
