@@ -121,6 +121,7 @@ function initEventListeners(){
 	addEventListeners(document, "select.years", "change", changeYear);
 	addEventListeners(document, "select.months", "change", changeMonth);
 	addEventListeners(document, "input.binary", "change", binaryInputChange);
+	addEventListeners(document, "input.null", "change", nullInputChange);
 	addEventListeners(document, "select.filter-field", "change", changeFilterField)
 	addSelectTableEventListeners(document);
 	
@@ -717,60 +718,70 @@ function loadSelectTable(element, uri, component){
 	request.send(null);
 }
 
-function binaryInputChange(event){
+function binaryInputChange(event) {
 	var input = event.target;
 	var binaryInput = input.parentNode;
 	var file = input.files[0];
 	
-	binaryInput.querySelector("span.binary-input-size").innerText
-		= humanReadableBytes(file.size, pageLang);
+	var binaryInputSize = binaryInput.querySelector("span.binary-input-size");
+	binaryInputSize.innerText = humanReadableBytes(file.size, pageLang);
 	
-	binaryInput.querySelector("a.clear-binary-input").classList.remove("hidden");
+	var clearAnchor = binaryInput.querySelector("a.clear-binary-input");
+	clearAnchor.classList.remove("hidden");
+}
+
+function nullInputChange(event) {
+	var nullInput = event.target;
+	var binaryInput = event.target.parentNode.parentNode;
+	var input = binaryInput.querySelector("input.binary");
+	input.disabled = nullInput.checked;
 }
 
 function clearBinaryInput(event) {
 	event.preventDefault();
 	
-	var target = event.currentTarget;
-	var binaryInput = target.parentNode;
-	
-	binaryInput.querySelector("input.binary").value = "";
+	var clearAnchor = event.currentTarget;
+	var binaryInput = clearAnchor.parentNode;
+	var input = binaryInput.querySelector("input.binary");
+	input.value = "";
 	
 	var binaryInputSize = binaryInput.querySelector("span.binary-input-size");
 	binaryInputSize.innerText = binaryInputSize.getAttribute("data-size");
 	
-	target.classList.add("hidden");
+	clearAnchor.classList.add("hidden");
 }
 
 function resetBinaryInputs(form) {
-	var sizes = form.querySelectorAll("span.binary-input-size");
-	for (let size of sizes) {
-		size.setAttribute("data-size", size.innerText);
+	var binaryInputSizes = form.querySelectorAll("span.binary-input-size");
+	for (let binaryInputSize of binaryInputSizes) {
+		binaryInputSize.setAttribute("data-size", binaryInputSize.innerText);
 	}
 	
-	var anchors = form.querySelectorAll("a.clear-binary-input");
-	for (let anchor of anchors) {
-		anchor.classList.add("hidden");
+	var clearAnchors = form.querySelectorAll("a.clear-binary-input");
+	for (let clearAnchor of clearAnchors) {
+		clearAnchor.classList.add("hidden");
 	}
 	
-	var inputs = form.querySelectorAll("input.null");
-	for (let input of inputs) {
-		var nullInput = input.parentNode;
-		var binaryInput = nullInput.parentNode;
+	var nullFieldInputs = form.querySelectorAll("span.null-field-input");
+	for (let nullFieldInput of nullFieldInputs) {
+		var nullInput = nullFieldInput.querySelector("input.null");
+		var binaryInput = nullFieldInput.parentNode;
+		var input = binaryInput.querySelector("input.binary");
 									
-		if (input.checked) {
-			input.checked = false;
-			nullInput.classList.add("hidden");
-			var size = binaryInput.querySelector("span.binary-input-size");
-			size.innerText = "0 B";
-			size.setAttribute("data-size", "0 B");
+		if (nullInput.checked) {
+			nullInput.checked = false;
+			input.disabled = false;
+			nullFieldInput.classList.add("hidden");
+			var binaryInputSize = binaryInput.querySelector("span.binary-input-size");
+			binaryInputSize.innerText = "0 B";
+			binaryInputSize.setAttribute("data-size", "0 B");
 		
-		} else if (binaryInput.querySelector("input.binary").value != "") {
-			nullInput.classList.remove("hidden");
+		} else if (input.value != "") {
+			nullFieldInput.classList.remove("hidden");
 		}
 	}
 	
-	inputs = form.querySelectorAll("input.binary");
+	var inputs = form.querySelectorAll("input.binary");
 	for (let input of inputs) {
 		input.value = "";
 	}

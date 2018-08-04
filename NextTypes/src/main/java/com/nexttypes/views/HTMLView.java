@@ -157,6 +157,7 @@ public class HTMLView extends View {
 	public static final String MENU_TITLE = "menu-title";
 	public static final String REFERENCE_FIELD = "reference-field";
 	public static final String BINARY_INPUT_SIZE = "binary-input-size";
+	public static final String NULL_FIELD_INPUT = "null-field-input";
 	public static final String SMALL_TEXTAREA = "small-textarea";
 	public static final String MEDIUM_TEXTAREA = "medium-textarea";
 	public static final String ORDER_COLUMN = "order-column";
@@ -1651,20 +1652,22 @@ public class HTMLView extends View {
 	}
 	
 	public Element nullFieldInput(String type, String field, Object value) {
-		Element nullInput = document.createElement(HTML.SPAN);
+		Element nullFieldInput = document.createElement(HTML.SPAN);
 		
 		String nullName = strings.gts(type, Constants.NULL);
 		
-		nullInput.appendText(" | " + nullName + ":");
+		nullFieldInput.appendText(" | " + nullName + ":");
 	
-		nullInput.appendElement(booleanInput("@" + field + Constants._NULL, nullName, false))
+		nullFieldInput.appendElement(booleanInput("@" + field + Constants._NULL, nullName, false))
 			.setClass(Constants.NULL);
 		
 		if (value == null) {
-			nullInput.setClass(HTML.HIDDEN);
-		} 
+			nullFieldInput.setClass(NULL_FIELD_INPUT + " " + HTML.HIDDEN);
+		} else {
+			nullFieldInput.setClass(NULL_FIELD_INPUT);
+		}
 		
-		return nullInput;
+		return nullFieldInput;
 	}
 
 	public Element binaryInput(String name, String title, String allowedContentTypes, String lang) {
