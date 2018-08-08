@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.nexttypes.datatypes.Audio;
 import com.nexttypes.datatypes.Document;
+import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.ObjectReference;
@@ -233,6 +234,9 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 						break;
 					case PT.BINARY:
 						value = parser.getBinaryValue();
+						break;
+					case PT.FILE:
+						value = parser.readValueAs(new TypeReference<File>() {});
 						break;
 					case PT.IMAGE:
 						value = parser.readValueAs(new TypeReference<Image>() {});

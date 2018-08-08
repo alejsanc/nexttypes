@@ -23,6 +23,7 @@ const PRIMITIVE_TYPES = {
 	TIMEZONE: "timezone",
 	COLOR: "color",
 	BINARY: "binary",
+	FILE: "file",
 	IMAGE: "image",
 	AUDIO: "audio",
 	VIDEO: "video",
@@ -200,9 +201,14 @@ function addTypeField(event){
 		var row = body.insertRow(rowCount);
 
 		row.insertCell(0).appendChild(select(field+":type", form.getAttribute("data-strings-type"), types));
-		var fieldNameInput = input("text", field+":name", form.getAttribute("data-strings-name"));
+		
+		var name = form.getAttribute("data-strings-name");
+		var nameCell = row.insertCell(1);
+		var fieldNameInput = input("text", field+":name", name);
 		fieldNameInput.setAttribute("maxlength", MAX_FIELD_NAME_LENGTH);
-		row.insertCell(1).appendChild(fieldNameInput);
+		nameCell.appendChild(fieldNameInput);
+		nameCell.appendChild(input("hidden", field+":old_name", name));
+		
 		row.insertCell(2).appendChild(input("text", field+":parameters", form.getAttribute("data-strings-parameters")));
 		
 		var notNull = input("checkbox", field+":not_null", form.getAttribute("data-strings-not-null"));
@@ -248,9 +254,14 @@ function addTypeIndex(event){
     var row = body.insertRow(rowCount);
 
     row.insertCell(0).appendChild(select(index+":mode", form.getAttribute("data-strings-mode"), Object.values(INDEX_MODES)));
-    var indexNameInput = input("text", index+":name", form.getAttribute("data-strings-name"));
+    
+    var name = form.getAttribute("data-strings-name");
+    var nameCell = row.insertCell(1);
+    var indexNameInput = input("text", index+":name", name);
     indexNameInput.setAttribute("maxlength", MAX_INDEX_NAME_LENGTH);
-    row.insertCell(1).appendChild(indexNameInput);
+    nameCell.appendChild(indexNameInput);
+    nameCell.appendChild(input("hidden", index+":old_name", name))
+    
     row.insertCell(2).appendChild(input("text", index+":fields", form.getAttribute("data-strings-fields")));
         
     var deleteRowButton = smallImageButton(form.getAttribute("data-strings-drop-index"), "minus");

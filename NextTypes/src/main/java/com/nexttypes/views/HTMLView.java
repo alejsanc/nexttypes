@@ -750,6 +750,7 @@ public class HTMLView extends View {
 
 			switch (fieldType) {
 			case PT.BINARY:
+			case PT.FILE:
 			case PT.IMAGE:
 			case PT.DOCUMENT:
 			case PT.AUDIO:
@@ -1600,6 +1601,7 @@ public class HTMLView extends View {
 			input = textareaFieldInput(type, field, title, value, typeField);
 			break;
 		case PT.BINARY:
+		case PT.FILE:
 		case PT.IMAGE:
 		case PT.DOCUMENT:
 		case PT.AUDIO:
@@ -2708,6 +2710,7 @@ public class HTMLView extends View {
 				fieldElement = htmlOutput(value);
 				break;
 			case PT.BINARY:
+			case PT.FILE:
 				fieldElement = binaryFieldOutput(object.getType(), object.getId(), field, value, lang);
 				break;
 			case PT.IMAGE:

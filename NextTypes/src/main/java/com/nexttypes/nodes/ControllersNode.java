@@ -40,6 +40,7 @@ import com.nexttypes.datatypes.AlterResult;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
+import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
@@ -70,7 +71,6 @@ import com.nexttypes.exceptions.ActionFieldException;
 import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.interfaces.ComplexType;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
@@ -257,12 +257,12 @@ public class ControllersNode implements Node {
 	}
 
 	protected void checkComplexField(String type, String action, String field, Object value) {
-		if (value instanceof ComplexType) {
+		if (value instanceof File) {
 			String[] allowedContentTypes = typeSettings.getActionFieldStringArray(type, action, field,
 					Constants.ALLOWED_CONTENT_TYPES);
 
 			if (allowedContentTypes != null) {
-				String contentType = ((ComplexType) value).getContentType();
+				String contentType = ((File) value).getContentType();
 
 				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
 					throw new ActionFieldException(type, action, field, Constants.DISALLOWED_CONTENT_TYPE, contentType);

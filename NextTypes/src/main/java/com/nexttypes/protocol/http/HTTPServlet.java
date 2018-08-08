@@ -478,6 +478,10 @@ public class HTTPServlet extends HttpServlet {
 				case PT.BINARY:
 					break;
 
+				case PT.FILE:
+					value = Tuple.parseFile(value);
+					break;
+					
 				case PT.IMAGE:
 					value = Tuple.parseImage(value);
 					break;
@@ -887,10 +891,6 @@ public class HTTPServlet extends HttpServlet {
 
 	protected void service(HttpServletRequest request, HttpServletResponse response) {
 		
-		if (debug) {
-			debug(request);		
-		}
-		
 		String lang = null;
 		Strings strings = null;
 		String user = Auth.GUEST;
@@ -898,6 +898,10 @@ public class HTTPServlet extends HttpServlet {
 		try {
 			request.setCharacterEncoding(Constants.UTF_8_CHARSET);
 			response.setCharacterEncoding(Constants.UTF_8_CHARSET);
+			
+			if (debug) {
+				debug(request);		
+			}
 
 			Content content = maxRequestsExceeded(request);
 

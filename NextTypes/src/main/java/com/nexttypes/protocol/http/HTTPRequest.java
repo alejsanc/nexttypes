@@ -458,6 +458,9 @@ public class HTTPRequest {
 		case PT.BINARY:
 			value = fields.getBinary(field);
 			break;
+		case PT.FILE:
+			value = fields.getFile(field);
+			break;
 		case PT.IMAGE:
 			value = fields.getImage(field);
 			break;

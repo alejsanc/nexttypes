@@ -40,15 +40,16 @@ public class PT {
 	public static final String TIMEZONE = "timezone";
 	public static final String COLOR = "color";
 	public static final String BINARY = "binary";
+	public static final String FILE = "file";
 	public static final String IMAGE = "image";
+	public static final String DOCUMENT = "document";
 	public static final String AUDIO = "audio";
 	public static final String VIDEO = "video";
-	public static final String DOCUMENT = "document";
 	public static final String PASSWORD = "password";
 
 	public static final String[] PRIMITIVE_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64, NUMERIC,
 			BOOLEAN, STRING, TEXT, HTML, JSON, XML, URI, EMAIL, TEL, DATE, TIME, DATETIME, TIMEZONE, COLOR, BINARY,
-			IMAGE, AUDIO, VIDEO, DOCUMENT, PASSWORD };
+			FILE, IMAGE, AUDIO, VIDEO, DOCUMENT, PASSWORD };
 
 	public static final String[] STRING_TYPES = new String[] { STRING, URI, EMAIL, TEL };
 	
@@ -56,9 +57,9 @@ public class PT {
 
 	public static final String[] NUMERIC_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64, NUMERIC };
 
-	public static final String[] BINARY_TYPES = new String[] { BINARY, IMAGE, DOCUMENT, AUDIO, VIDEO };
+	public static final String[] BINARY_TYPES = new String[] { BINARY, FILE, IMAGE, DOCUMENT, AUDIO, VIDEO };
 
-	public static final String[] COMPLEX_TYPES = new String[] { IMAGE, DOCUMENT, AUDIO, VIDEO };
+	public static final String[] FILE_TYPES = new String[] { FILE, IMAGE, DOCUMENT, AUDIO, VIDEO };
 	
 	public static final String[] FILTER_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64,
 			NUMERIC, BOOLEAN, STRING, TEXT, HTML, JSON, XML, URI, EMAIL, TEL, DATE, TIME, DATETIME, TIMEZONE, COLOR };
@@ -83,8 +84,8 @@ public class PT {
 		return ArrayUtils.contains(BINARY_TYPES, type);
 	}
 	
-	public static boolean isComplexType(String type) {
-		return ArrayUtils.contains(COMPLEX_TYPES, type);
+	public static boolean isFileType(String type) {
+		return ArrayUtils.contains(FILE_TYPES, type);
 	}
 	
 	public static boolean isFilterType(String type) {

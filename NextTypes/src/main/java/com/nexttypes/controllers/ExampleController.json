@@ -100,6 +100,10 @@
 			"type": "binary",
 			"not_null": false
 		},
+		"file": {
+			"type": "file",
+			"not_null": false
+		},
 		"image": {
 			"type": "image",
 			"not_null": false

@@ -30,6 +30,7 @@ import com.nexttypes.datatypes.Audio;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.HTMLFragment;
+import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.JSON;
 import com.nexttypes.datatypes.Video;
@@ -51,7 +52,7 @@ public class ExampleController extends Controller {
 	public ActionResult exampleAction(Short int16, Integer int32, Long int64, Float float32, Double float64,
 			BigDecimal numeric, Boolean bool, String string, String text, HTMLFragment html, JSON json, XML xml,
 			URI uri, InternetAddress email, String tel, LocalDate date, LocalTime time, LocalDateTime datetime,
-			ZoneId timezone, Color color, byte[] binary, Image image, Audio audio, Video video, Document document,
+			ZoneId timezone, Color color, byte[] binary, File file, Image image, Audio audio, Video video, Document document,
 			String password, String articleId) {
 
 		return new ActionResult(OK);

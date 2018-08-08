@@ -16,128 +16,38 @@
 
 package com.nexttypes.datatypes;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.TikaCoreProperties;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.postgresql.util.PGobject;
-import org.xml.sax.SAXException;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.nexttypes.exceptions.NXException;
-import com.nexttypes.interfaces.ComplexType;
 import com.nexttypes.system.Constants;
-import com.nexttypes.system.Utils;
 
-@JsonPropertyOrder({ Constants.CONTENT, Constants.CONTENT_TYPE })
-public class Audio extends PGobject implements ComplexType {
+public class Audio extends File {
 	private static final long serialVersionUID = 1L;
-
-	protected BodyContentHandler handler;
-	protected Metadata metadata;
-
-	protected byte[] content;
-	protected String contentType;
-	protected String name;
 
 	public Audio() {
 		type = PT.AUDIO;
 	}
-
+	
 	public Audio(File file) {
-		this(file.getContent());
-		name = file.getName();
+		super(file);
+		
+		type = PT.AUDIO;
+	}
+	
+	public Audio(byte[] content) {
+		this(null, content);
 	}
 
-	public Audio(byte[] content) {
+	public Audio(String name, byte[] content) {
+		super(name, content);
+		
 		type = PT.AUDIO;
-
-		this.content = content;
-
-		audio();
 	}
 
 	@JsonCreator
 	public Audio(@JsonProperty(Constants.CONTENT) byte[] content,
 			@JsonProperty(Constants.CONTENT_TYPE) String contentType) {
+		super(content, contentType);
+		
 		type = PT.AUDIO;
-
-		this.content = content;
-		this.contentType = contentType;
-	}
-
-	protected void audio() {
-		try (ByteArrayInputStream input = new ByteArrayInputStream(content)) {
-			AutoDetectParser parser = new AutoDetectParser();
-			handler = new BodyContentHandler(-1);
-			metadata = new Metadata();
-			parser.parse(input, handler, metadata);
-			contentType = metadata.get(Metadata.CONTENT_TYPE);
-		} catch (IOException | TikaException | SAXException e) {
-			throw new NXException(e);
-		}
-	}
-
-	@JsonProperty(Constants.CONTENT)
-	@Override
-	public byte[] getContent() {
-		return content;
-	}
-
-	@JsonProperty(Constants.CONTENT_TYPE)
-	@Override
-	public String getContentType() {
-		return contentType;
-	}
-
-	public BodyContentHandler getHandler() {
-		if (handler == null) {
-			audio();
-		}
-		return handler;
-	}
-
-	public Metadata getMetadata() {
-		if (metadata == null) {
-			audio();
-		}
-		return metadata;
-	}
-
-	public String getTitle() {
-		return getMetadata().get(TikaCoreProperties.TITLE);
-	}
-
-	public String getDescription() {
-		return getMetadata().get(TikaCoreProperties.DESCRIPTION);
-	}
-
-	public String getCreator() {
-		return getMetadata().get(TikaCoreProperties.CREATOR);
-	}
-
-	@Override
-	public String getValue() {
-		return "(" + Utils.hexEncode(content) + "," + contentType + ")";
-	}
-
-	@Override
-	public void setValue(String value) {
-		if (value != null && value.length() > 0) {
-			int token = value.indexOf(',');
-
-			content = Utils.hexDecode(value.substring(1, token));
-			contentType = value.substring(token + 1, value.length() - 1);
-		}
-	}
-
-	public String getName() {
-		return name;
 	}
 }

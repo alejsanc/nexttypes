@@ -16,118 +16,60 @@
 
 package com.nexttypes.datatypes;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.metadata.TikaCoreProperties;
-import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.postgresql.util.PGobject;
-import org.xml.sax.SAXException;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.nexttypes.exceptions.NXException;
-import com.nexttypes.interfaces.ComplexType;
+
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Utils;
 
 @JsonPropertyOrder({ Constants.CONTENT, Constants.TEXT, Constants.CONTENT_TYPE })
-public class Document extends PGobject implements ComplexType {
+public class Document extends File {
 	private static final long serialVersionUID = 1L;
 
-	protected BodyContentHandler handler;
-	protected Metadata metadata;
-
-	protected byte[] content;
 	protected String text;
-	protected String contentType;
-	protected String name;
-
+	
 	public Document() {
 		type = PT.DOCUMENT;
 	}
-
+	
 	public Document(File file) {
-		this(file.getContent());
-		name = file.getName();
+		super(file);
+		
+		type = PT.DOCUMENT;
+		
+		text();
+	}
+	
+	public Document(byte[] content) {
+		this(null, content);
 	}
 
-	public Document(byte[] content) {
+	public Document(String name, byte[] content) {
+		super(name, content);
+		
 		type = PT.DOCUMENT;
 
-		this.content = content;
-
-		document();
+		text();
 	}
 
 	@JsonCreator
 	public Document(@JsonProperty(Constants.CONTENT) byte[] content, @JsonProperty(Constants.TEXT) String text,
 			@JsonProperty(Constants.CONTENT_TYPE) String contentType) {
+		super(content, contentType);
+		
 		type = PT.DOCUMENT;
 
-		this.content = content;
 		this.text = text;
-		this.contentType = contentType;
 	}
-
-	protected void document() {
-		try (ByteArrayInputStream input = new ByteArrayInputStream(content)) {
-			AutoDetectParser parser = new AutoDetectParser();
-			handler = new BodyContentHandler(-1);
-			metadata = new Metadata();
-			parser.parse(input, handler, metadata);
-			text = handler.toString().trim();
-			contentType = metadata.get(Metadata.CONTENT_TYPE);
-		} catch (IOException | TikaException | SAXException e) {
-			throw new NXException(e);
-		}
-	}
-
-	@JsonProperty(Constants.CONTENT)
-	@Override
-	public byte[] getContent() {
-		return content;
+	
+	protected void text() {
+		text = handler.toString().trim();
 	}
 
 	@JsonProperty(Constants.TEXT)
 	public String getText() {
 		return text;
-	}
-
-	@JsonProperty(Constants.CONTENT_TYPE)
-	@Override
-	public String getContentType() {
-		return contentType;
-	}
-
-	public BodyContentHandler getHandler() {
-		if (handler == null) {
-			document();
-		}
-		return handler;
-	}
-
-	public Metadata getMetadata() {
-		if (metadata == null) {
-			document();
-		}
-		return metadata;
-	}
-
-	public String getTitle() {
-		return getMetadata().get(TikaCoreProperties.TITLE);
-	}
-
-	public String getDescription() {
-		return getMetadata().get(TikaCoreProperties.DESCRIPTION);
-	}
-
-	public String getCreator() {
-		return getMetadata().get(TikaCoreProperties.CREATOR);
 	}
 
 	@Override
@@ -155,9 +97,5 @@ public class Document extends PGobject implements ComplexType {
 			contentType = value.substring(token2 + 1, value.length() - 1);
 
 		}
-	}
-
-	public String getName() {
-		return name;
 	}
 }

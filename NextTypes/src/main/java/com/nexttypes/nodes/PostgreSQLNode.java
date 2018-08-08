@@ -53,6 +53,7 @@ import org.postgresql.PGConnection;
 import org.postgresql.jdbc.PgArray;
 import org.postgresql.jdbc.PgSQLXML;
 import org.postgresql.util.PSQLException;
+import org.postgresql.util.ServerErrorMessage;
 
 import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.AlterFieldResult;
@@ -109,7 +110,6 @@ import com.nexttypes.exceptions.ObjectNotFoundException;
 import com.nexttypes.exceptions.StringException;
 import com.nexttypes.exceptions.TypeException;
 import com.nexttypes.exceptions.TypeNotFoundException;
-import com.nexttypes.interfaces.ComplexType;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TuplesStream;
@@ -132,6 +132,12 @@ public class PostgreSQLNode implements Node {
 	public static final String POSTGRESQL = "postgresql";
 	public static final String DRIVER = "org.postgresql.Driver";
 
+	protected static final String FILE_TYPE =
+			"create type file as ("
+					+ "content bytea,"
+					+ "content_type character varying(255)"
+			+ ")";
+	
 	protected static final String IMAGE_TYPE =
 			"create type image as ("
 					+ "content bytea,"
@@ -319,6 +325,7 @@ public class PostgreSQLNode implements Node {
 		try {
 			pgConnection = connection.unwrap(PGConnection.class);
 			pgConnection.setPrepareThreshold(0);
+			pgConnection.addDataType(PT.FILE,  File.class);
 			pgConnection.addDataType(PT.IMAGE, Image.class);
 			pgConnection.addDataType(PT.DOCUMENT, Document.class);
 			pgConnection.addDataType(PT.AUDIO, Audio.class);
@@ -338,6 +345,7 @@ public class PostgreSQLNode implements Node {
 			importTypes(getClass().getResourceAsStream("/com/nexttypes/system/system-types.json"), ImportAction.ABORT,
 					ImportAction.ABORT);
 
+			execute(FILE_TYPE);
 			execute(IMAGE_TYPE);
 			execute(DOCUMENT_TYPE);
 			execute(AUDIO_TYPE);
@@ -365,6 +373,7 @@ public class PostgreSQLNode implements Node {
 				String fieldType = getFieldType(type, field);
 
 				switch (fieldType) {
+				case PT.FILE:
 				case PT.IMAGE:
 				case PT.DOCUMENT:
 				case PT.AUDIO:
@@ -408,6 +417,7 @@ public class PostgreSQLNode implements Node {
 			case PT.DATETIME:
 				sql.append("8 as \"" + field + "\",");
 				break;
+			case PT.FILE:
 			case PT.IMAGE:
 			case PT.DOCUMENT:
 			case PT.AUDIO:
@@ -760,6 +770,9 @@ public class PostgreSQLNode implements Node {
 		case PT.BINARY:
 			sqlType = "bytea";
 			break;
+		case PT.FILE:
+			sqlType = "file";
+			break;
 		case PT.IMAGE:
 			sqlType = "image";
 			break;
@@ -1032,12 +1045,12 @@ public class PostgreSQLNode implements Node {
 	}
 
 	protected void checkComplexField(String type, String field, Object value) {
-		if (value instanceof ComplexType) {
+		if (value instanceof File) {
 			String[] allowedContentTypes = typeSettings.getFieldStringArray(type, field,
 					Constants.ALLOWED_CONTENT_TYPES);
 
 			if (allowedContentTypes != null) {
-				String contentType = ((ComplexType) value).getContentType();
+				String contentType = ((File) value).getContentType();
 
 				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
 					throw new FieldException(type, field, Constants.DISALLOWED_CONTENT_TYPE, contentType);
@@ -1566,6 +1579,7 @@ public class PostgreSQLNode implements Node {
 					}
 				}
 				break;
+			case PT.FILE:
 			case PT.IMAGE:
 			case PT.AUDIO:
 			case PT.VIDEO:
@@ -2026,6 +2040,7 @@ public class PostgreSQLNode implements Node {
 			sql.append("'" + Security.HIDDEN_PASSWORD + "' as field");
 			break;
 
+		case PT.FILE:
 		case PT.IMAGE:
 		case PT.DOCUMENT:
 		case PT.AUDIO:
@@ -2109,6 +2124,7 @@ public class PostgreSQLNode implements Node {
 				contentType = Format.BINARY.getContentType();
 				break;
 
+			case PT.FILE:
 			case PT.IMAGE:
 			case PT.DOCUMENT:
 			case PT.AUDIO:
@@ -3591,6 +3607,7 @@ public class PostgreSQLNode implements Node {
 						fieldsSQL.append(", octet_length(\"" + type + "\".\"" + field + "\") as \"" + field + "\"");
 					}
 					break;
+				case PT.FILE:
 				case PT.IMAGE:
 				case PT.AUDIO:
 				case PT.VIDEO:
@@ -3978,7 +3995,8 @@ public class PostgreSQLNode implements Node {
 		if (e instanceof PSQLException) {
 			PSQLException pe = (PSQLException) e;
 			String sqlState = pe.getSQLState();
-			String message = StringUtils.capitalize(((PSQLException) e).getServerErrorMessage().getMessage()) + ".";
+			ServerErrorMessage serverMessage = pe.getServerErrorMessage();
+			String message = StringUtils.capitalize(serverMessage.getMessage()) + ".";
 
 			switch (sqlState) {
 			case "42P01":

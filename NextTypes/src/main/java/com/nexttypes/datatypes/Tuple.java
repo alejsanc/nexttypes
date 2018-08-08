@@ -440,8 +440,19 @@ public class Tuple {
 	public static byte[] parseBinary(Object value) {
 		if (value instanceof File) {
 			value = ((File) value).getContent();
-		}
+		} 
 		return (byte[]) value;
+	}
+	
+	public File getFile(String field) {
+		return parseFile(get(field));
+	}
+	
+	public static File parseFile(Object value) {
+		if (value instanceof byte[]) {
+			value = new File((byte[]) value);
+		} 
+		return (File) value;
 	}
 
 	public Image getImage(String field) {
@@ -494,10 +505,6 @@ public class Tuple {
 			value = new Document(((File) value));
 		}
 		return (Document) value;
-	}
-
-	public File getFile(String field) {
-		return (File) get(field);
 	}
 
 	public String getTel(String field) {
