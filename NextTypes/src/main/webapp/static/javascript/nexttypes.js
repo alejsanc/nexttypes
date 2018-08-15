@@ -463,29 +463,7 @@ function submitForm(event){
 							var pathname = pageURI.pathname;
 							var newName = form.elements["new_name"].value;
 							pageURI.pathname = pathname.substr(0, pathname.lastIndexOf("/")+1)+newName;
-							pageURI.searchParams.set("form", "" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"" +
-									"");
+							pageURI.searchParams.set("form", "alter");
 							window.location = pageURI;
 						}
 						
