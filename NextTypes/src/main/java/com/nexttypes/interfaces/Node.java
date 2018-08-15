@@ -58,9 +58,12 @@ import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.Order;
+import com.nexttypes.system.Context;
 
 public interface Node extends Module, AutoCloseable {
 
+	public static void init(Context context) {};
+	
 	public String[] getGroups(String user);
 
 	public ZonedDateTime create(Type type);

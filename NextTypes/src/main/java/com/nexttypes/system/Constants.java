@@ -238,6 +238,7 @@ public class Constants {
 	public static final String NEXT_NODE = "next_node";
 	public static final String NO_OBJECTS_FOUND = "no_objects_found";
 	public static final String NO_TYPES_FOUND = "no_types_found";
+	public static final String NODES = "nodes";
 	public static final String NOT_NULL = "not_null";
 	public static final String NOT_NULL_ALTERED = "not_null_altered";
 	public static final String NULL = "null";
@@ -268,6 +269,7 @@ public class Constants {
 	public static final String PASSWORD_FIELD_UPDATE = "password_field_update";
 	public static final String PASSWORD_SUCCESSFULLY_UPDATED = "password_successfully_updated";
 	public static final String PASSWORDS_DONT_MATCH = "passwords_dont_match";
+	public static final String POOL = "pool";
 	public static final String PORT = "port";
 	public static final String PRECISION = "precision";
 	public static final String PREFIX = "prefix";

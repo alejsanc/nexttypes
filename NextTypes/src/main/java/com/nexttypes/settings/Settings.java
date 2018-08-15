@@ -40,6 +40,7 @@ public class Settings {
 	public static final String WEBDAV_SETTINGS = "webdav.properties";
 	public static final String TYPES_SETTINGS = "types.properties";
 	public static final String PERMISSIONS_SETTINGS = "permissions.properties";
+	public static final String CONTEXT_SETTINGS = "context.properties";
 
 	public static final String DEFAULT_SETTINGS = "/com/nexttypes/settings/defaults/";
 

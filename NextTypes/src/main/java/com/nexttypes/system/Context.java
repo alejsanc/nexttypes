@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -47,16 +48,21 @@ public class Context {
 
 	public static final String CONTEXT = "com.nexttypes.context";
 
+	protected Settings settings;
 	protected ServletContext context;
 	protected String directory;
 	protected Logger logger;
-	protected DatabaseConnection.DatabaseConnectionPool connectionPool;
+	protected ConcurrentHashMap<String, DBConnection.DBConnectionPool> connectionPools
+		= new ConcurrentHashMap<>();
 	protected TypesCache typesCache = new TypesCache();
 	protected ConcurrentHashMap<String, Properties> resources = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Properties> files = new ConcurrentHashMap<>();
-	protected ConcurrentHashMap<String, Properties> resourcesAndFiles[] = new ConcurrentHashMap[] { resources, files };
-	protected ConcurrentHashMap<String, LinkedHashMap<String, TypeField>> fields = new ConcurrentHashMap<>();
-	protected ConcurrentHashMap<String, LinkedHashMap<String, TypeIndex>> indexes = new ConcurrentHashMap<>();
+	protected ConcurrentHashMap<String, Properties> resourcesAndFiles[]
+		= new ConcurrentHashMap[] { resources, files };
+	protected ConcurrentHashMap<String, LinkedHashMap<String, TypeField>> fields
+		= new ConcurrentHashMap<>();
+	protected ConcurrentHashMap<String, LinkedHashMap<String, TypeIndex>> indexes
+	= new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, HTML> templates = new ConcurrentHashMap<>();
 
 	public Context(String directory) {
@@ -69,9 +75,14 @@ public class Context {
 		directory = Utils.readDirectory(context.getInitParameter(Constants.SETTINGS_DIRECTORY));
 		context.setAttribute(CONTEXT, this);
 		init();
+
+		for (String className : settings.getStringArray(Constants.NODES)) {
+			Loader.initNode(className, this);
+		}
 	}
 
 	protected void init() {
+		settings = getSettings(Settings.CONTEXT_SETTINGS);
 		logger = new Logger(this);
 	}
 
@@ -81,12 +92,15 @@ public class Context {
 
 	public static void close(ServletContext servletContext) {
 		Context context = get(servletContext);
+
 		context.logger.close();
-				
-		if (context.connectionPool != null) {
-			context.connectionPool.close();
+
+		for (Map.Entry<String, DBConnection.DBConnectionPool> entry
+				: context.connectionPools.entrySet()) {
+			
+			entry.getValue().close();
 		}
-		
+
 		context.context.removeAttribute(CONTEXT);
 	}
 
@@ -96,22 +110,29 @@ public class Context {
 		if (templates.containsKey(template)) {
 			document = templates.get(template).clone();
 		} else {
-			document = new HTML(context.getResourceAsStream(
-					"/" + Constants.TEMPLATES + "/" + template + "." + Format.XHTML.getExtension()), lang);
+			document = new HTML(context.getResourceAsStream("/" + Constants.TEMPLATES + "/" + template
+					+ "." + Format.XHTML.getExtension()), lang);
+			
 			templates.putIfAbsent(template, document.clone());
 		}
 
 		return document;
 	}
 
-	public DatabaseConnection.DatabaseConnectionPool getConnectionPool() {
-		return connectionPool;
+	public DBConnection.DBConnectionPool getDatabaseConnectionPool(String name) {
+		return connectionPools.get(name);
 	}
 
-	public void setConnectionPool(DatabaseConnection.DatabaseConnectionPool connectionPool) {
-		this.connectionPool = connectionPool;
+	public void putDBConnectionPool(String name,
+			DBConnection.DBConnectionPool connectionPool) {
+		
+		connectionPools.putIfAbsent(name, connectionPool);
 	}
-
+	
+	public void removeDBConnectionPool(String name) {
+		connectionPools.remove(name);		
+	}
+	
 	public Logger getLogger() {
 		return logger;
 	}
@@ -169,7 +190,7 @@ public class Context {
 
 					if (cache == resources) {
 						stream = getClass().getResourceAsStream(Settings.DEFAULT_SETTINGS + file);
-					} else {
+					} else if (directory != null) {
 						File filePath = new File(directory + file);
 						if (filePath.isFile()) {
 							stream = new FileInputStream(filePath);
@@ -179,7 +200,9 @@ public class Context {
 					if (stream != null) {
 
 						try (InputStream s = stream) {
-							try (InputStreamReader reader = new InputStreamReader(s, Constants.UTF_8_CHARSET)) {
+							try (InputStreamReader reader = new InputStreamReader(s,
+									Constants.UTF_8_CHARSET)) {
+								
 								properties = new Properties();
 								properties.load(reader);
 								cache.putIfAbsent(file, properties);
@@ -198,11 +221,15 @@ public class Context {
 
 	public Menu getMenu(String file) {
 		MenuSection[] sections = null;
-		File filePath = new File(directory + file);
+		File filePath = null;
 		InputStream stream = null;
+		
+		if (directory != null) {
+			filePath = new File(directory + file);
+		}		
 
 		try {
-			if (filePath.isFile()) {
+			if (filePath != null && filePath.isFile()) {
 				stream = new FileInputStream(filePath);
 			} else {
 				stream = getClass().getResourceAsStream(Settings.DEFAULT_SETTINGS + file);
@@ -210,7 +237,8 @@ public class Context {
 
 			try (InputStream s = stream) {
 				ObjectMapper mapper = new ObjectMapper();
-				sections = mapper.readValue(s, TypeFactory.defaultInstance().constructArrayType(MenuSection.class));
+				sections = mapper.readValue(s, TypeFactory.defaultInstance()
+						.constructArrayType(MenuSection.class));
 
 			}
 		} catch (IOException e) {
@@ -225,9 +253,12 @@ public class Context {
 	}
 
 	public class TypesCache {
-		protected ConcurrentHashMap<String, LinkedHashMap<String, TypeField>> fields = new ConcurrentHashMap<>();
-		protected ConcurrentHashMap<String, LinkedHashMap<String, TypeIndex>> indexes = new ConcurrentHashMap<>();
-		protected ConcurrentHashMap<String, LinkedHashMap<String, String>> contentTypes = new ConcurrentHashMap<>();
+		protected ConcurrentHashMap<String, LinkedHashMap<String, TypeField>> fields
+			= new ConcurrentHashMap<>();
+		protected ConcurrentHashMap<String, LinkedHashMap<String, TypeIndex>> indexes
+			= new ConcurrentHashMap<>();
+		protected ConcurrentHashMap<String, LinkedHashMap<String, String>> contentTypes
+			= new ConcurrentHashMap<>();
 
 		public void clear() {
 			fields.clear();

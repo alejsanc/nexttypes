@@ -66,6 +66,10 @@ public class Loader {
 		return (Node) Loader.load(className, new Class[] { HTTPRequest.class, NodeMode.class },
 				new Object[] { request, mode });
 	}
+	
+	public static void initNode(String className, Context context) {
+		Loader.load(className, Context.class, context);
+	}
 
 	public static View loadView(String className, HTTPRequest request) {
 		return (View) Loader.load(className, HTTPRequest.class, request);

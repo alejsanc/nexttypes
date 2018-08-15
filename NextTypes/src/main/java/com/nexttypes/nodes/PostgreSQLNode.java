@@ -126,7 +126,7 @@ import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Context.TypesCache;
-import com.nexttypes.system.DatabaseConnection;
+import com.nexttypes.system.DBConnection;
 
 public class PostgreSQLNode implements Node {
 	public static final String POSTGRESQL = "postgresql";
@@ -268,7 +268,7 @@ public class PostgreSQLNode implements Node {
 
 	protected static final String GET_TYPE_DATES_QUERY = "select unnest(string_to_array(obj_description(?::regclass, 'pg_class'), '|'))";
 
-	protected DatabaseConnection.DatabaseConnectionPool connectionPool;
+	protected DBConnection.DBConnectionPool connectionPool;
 	protected TypesCache cache;
 	protected boolean cacheEnabled = true;
 
@@ -284,6 +284,32 @@ public class PostgreSQLNode implements Node {
 	protected String remoteAddress;
 	protected Context context;
 	protected Logger logger;
+	
+	public PostgreSQLNode(Context context) {
+		
+		settings = context.getSettings(Settings.POSTGRESQL_SETTINGS);
+		lang = settings.getString(Constants.DEFAULT_LANG);
+		connectionPool = DBConnection.getConnectionPool(settings, POSTGRESQL, DRIVER);
+		context.putDBConnectionPool(settings.getString(Constants.POOL), connectionPool);
+		
+		try (PostgreSQLNode node = new PostgreSQLNode(Auth.ADMIN, new String[] { Auth.ADMINISTRATORS },
+				NodeMode.ADMIN, lang, URI.LOCALHOST, context, true)) {
+
+			if (node.getTypesName().length == 0) {
+				node.importTypes(node.getClass()
+						.getResourceAsStream("/com/nexttypes/system/system-types.json"),
+						ImportAction.ABORT, ImportAction.ABORT);
+
+				node.execute(FILE_TYPE);
+				node.execute(IMAGE_TYPE);
+				node.execute(DOCUMENT_TYPE);
+				node.execute(AUDIO_TYPE);
+				node.execute(VIDEO_TYPE);
+			}
+			
+			node.commit();
+		}
+	}
 
 	public PostgreSQLNode(HTTPRequest request, NodeMode mode) {
 		this(request.getUser(), request.getGroups(), mode, request.getLang(), request.getRemoteAddress(),
@@ -294,32 +320,25 @@ public class PostgreSQLNode implements Node {
 			Context context, boolean useConnectionPool) {
 		this.user = user;
 		this.groups = groups;
-		this.lang = lang;
 		this.remoteAddress = remoteAddress;
 		this.context = context;
 
-		strings = context.getStrings(lang);
 		settings = context.getSettings(Settings.POSTGRESQL_SETTINGS);
 		typeSettings = context.getTypeSettings(groups);
+		
+		if (lang == null) {
+			this.lang = settings.getString(Constants.DEFAULT_LANG);
+		} else {
+			this.lang = lang;
+		}
+		
+		strings = context.getStrings(lang);
 
 		if (useConnectionPool) {
-			connectionPool = context.getConnectionPool();
-			if (connectionPool == null) {
-				connectionPool = DatabaseConnection.getConnectionPool(settings, POSTGRESQL, DRIVER);
-				context.setConnectionPool(connectionPool);
-
-				try (PostgreSQLNode node = new PostgreSQLNode(Auth.ADMIN, new String[] { Auth.ADMINISTRATORS },
-						NodeMode.ADMIN, lang, URI.LOCALHOST, context, useConnectionPool)) {
-
-					node.init();
-					node.commit();
-				}
-			}
-
+			connectionPool = context.getDatabaseConnectionPool(settings.getString(Constants.POOL));
 			connection = connectionPool.getConnection(mode);
-
 		} else {
-			connection = DatabaseConnection.getConnection(settings, POSTGRESQL, mode);
+			connection = DBConnection.getConnection(settings, POSTGRESQL, mode);
 		}
 
 		try {
@@ -337,20 +356,6 @@ public class PostgreSQLNode implements Node {
 		cache = context.getTypesCache();
 
 		logger = context.getLogger();
-	}
-
-	protected void init() {
-
-		if (getTypesName().length == 0) {
-			importTypes(getClass().getResourceAsStream("/com/nexttypes/system/system-types.json"), ImportAction.ABORT,
-					ImportAction.ABORT);
-
-			execute(FILE_TYPE);
-			execute(IMAGE_TYPE);
-			execute(DOCUMENT_TYPE);
-			execute(AUDIO_TYPE);
-			execute(VIDEO_TYPE);
-		}
 	}
 
 	@Override

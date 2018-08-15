@@ -27,14 +27,14 @@ import com.nexttypes.enums.NodeMode;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.settings.Settings;
 
-public class DatabaseConnection {
+public class DBConnection {
 
-	public static class DatabaseConnectionPool {
+	public static class DBConnectionPool {
 		protected DataSource read;
 		protected DataSource write;
 		protected DataSource admin;
 
-		protected DatabaseConnectionPool(Settings settings, String schema, String driver) {
+		protected DBConnectionPool(Settings settings, String schema, String driver) {
 			
 			String url = url(settings, schema);
 
@@ -135,7 +135,7 @@ public class DatabaseConnection {
 		}
 	}
 
-	public static DatabaseConnectionPool getConnectionPool(Settings settings, String schema, String driver) {
-		return new DatabaseConnectionPool(settings, schema, driver);
+	public static DBConnectionPool getConnectionPool(Settings settings, String schema, String driver) {
+		return new DBConnectionPool(settings, schema, driver);
 	}
 }
