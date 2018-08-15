@@ -122,11 +122,11 @@ public class TypeSettings extends Settings {
 	}
 
 	public String[] getTypeStringArray(String type, String setting) {
-		return Utils.split(getTypeString(type, setting), ",");
+		return Utils.split(getTypeString(type, setting));
 	}
 
 	public String[] getTypeStringArray(String type, String[] settings) {
-		return Utils.split(getTypeString(type, settings), ",");
+		return Utils.split(getTypeString(type, settings));
 	}
 
 	public String[] getTypeStringArray(String type, String setting, String[] defaultValues) {
@@ -195,7 +195,7 @@ public class TypeSettings extends Settings {
 	}
 
 	public String[] getActionStringArray(String type, String action, String setting) {
-		return Utils.split(getActionString(type, action, setting), ",");
+		return Utils.split(getActionString(type, action, setting));
 	}
 
 	public Boolean getActionBoolean(String type, String action, String setting) {
@@ -215,7 +215,7 @@ public class TypeSettings extends Settings {
 	}
 
 	public String[] getFieldStringArray(String type, String field, String setting) {
-		return Utils.split(getFieldString(type, field, setting), ",");
+		return Utils.split(getFieldString(type, field, setting));
 	}
 
 	public String[] getFieldStringArray(String type, String field, String setting, String[] defaultValues) {
@@ -224,7 +224,7 @@ public class TypeSettings extends Settings {
 	}
 
 	public String[] getActionFieldStringArray(String type, String action, String field, String setting) {
-		return Utils.split(getActionFieldString(type, action, field, setting), ",");
+		return Utils.split(getActionFieldString(type, action, field, setting));
 	}
 
 	public Short getActionFieldInt16(String type, String action, String field, String setting) {

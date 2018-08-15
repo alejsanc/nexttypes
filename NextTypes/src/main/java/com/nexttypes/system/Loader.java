@@ -40,7 +40,15 @@ public class Loader {
 			ClassLoader classLoader = Loader.class.getClassLoader();
 			Class c = classLoader.loadClass(className);
 			return c.getDeclaredConstructor(parameterTypes).newInstance(parameters);
-		} catch (InvocationTargetException | ClassNotFoundException | IllegalAccessException | InstantiationException
+		} catch (InvocationTargetException e) {
+			Throwable cause = e.getCause();
+			
+			if (cause instanceof NXException) {
+				throw (NXException) cause;
+			} else {
+				throw new NXException(cause);
+			}
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException
 				| NoSuchMethodException e) {
 			throw new NXException(e);
 		}

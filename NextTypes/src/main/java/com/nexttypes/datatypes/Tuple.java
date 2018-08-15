@@ -563,7 +563,7 @@ public class Tuple {
 		if (value instanceof String) {
 			Tuple tuple = new Tuple();
 
-			for (String entry : Utils.split((String) value, ",")) {
+			for (String entry : Utils.split((String) value)) {
 				String[] keyValue = Utils.split(entry, ":");
 				tuple.put(keyValue[0].trim(), keyValue[1].trim());
 			}

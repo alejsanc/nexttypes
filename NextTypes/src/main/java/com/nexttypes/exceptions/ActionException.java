@@ -27,6 +27,11 @@ public class ActionException extends NXException {
 		super(type, setting);
 		this.action = action;
 	}
+	
+	public ActionException(String type, String action, String setting, Throwable cause) {
+		super(type, setting, cause);
+		this.action = action;
+	}
 
 	public String getAction() {
 		return action;

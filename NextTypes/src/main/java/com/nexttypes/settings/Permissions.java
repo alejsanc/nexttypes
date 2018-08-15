@@ -24,20 +24,29 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.nexttypes.exceptions.UnauthorizedActionException;
 import com.nexttypes.system.Constants;
 
-public class PermissionSettings extends TypeSettings {
-	public PermissionSettings(ArrayList<Properties> settings) {
+public class Permissions extends TypeSettings {
+	protected String user;
+	protected String[] groups;
+	public Permissions(ArrayList<Properties> settings, String user, String[] groups) {
 		super(settings);
+		
+		this.user = user;
+		this.groups = groups;
 	}
 
-	public String[] getAllowedUsers(String type, String method) {
-		return getTypeStringArray(type, new String[] { method + "." + Constants.USERS, Constants.USERS });
+	public String[] getAllowedUsers(String type, String action) {
+		return getTypeStringArray(type, new String[] { action + "." + Constants.USERS, Constants.USERS });
 	}
 
-	public String[] getAllowedGroups(String type, String method) {
-		return getTypeStringArray(type, new String[] { method + "." + Constants.GROUPS, Constants.GROUPS });
+	public String[] getAllowedGroups(String type, String action) {
+		return getTypeStringArray(type, new String[] { action + "." + Constants.GROUPS, Constants.GROUPS });
 	}
 
-	public boolean isAllowed(String type, String action, String user, String[] groups) {
+	public boolean isAllowed(String action) {
+		return isAllowed(null, action);
+	}
+	
+	public boolean isAllowed(String type, String action) {
 		boolean allowed = false;
 		String[] allowedUsers = getAllowedUsers(type, action);
 		String[] allowedGroups = null;
@@ -58,24 +67,24 @@ public class PermissionSettings extends TypeSettings {
 		return allowed;
 	}
 
-	public void checkPermissions(String action, String user, String[] groups) {
-		checkPermissions((String) null, action, user, groups);
+	public void checkPermissions(String action) {
+		checkPermissions((String) null, action);
 	}
 
-	public void checkPermissions(String type, String action, String user, String[] groups) {
+	public void checkPermissions(String type, String action) {
 
-		if (!isAllowed(type, action, user, groups)) {
+		if (!isAllowed(type, action)) {
 			throw new UnauthorizedActionException(type, action);
 		}
 
 	}
 
-	public void checkPermissions(String[] types, String action, String user, String[] groups) {
+	public void checkPermissions(String[] types, String action) {
 		if (types == null || types.length == 0) {
-			checkPermissions((String) null, action, user, groups);
+			checkPermissions((String) null, action);
 		} else {
 			for (String type : types) {
-				checkPermissions(type, action, user, groups);
+				checkPermissions(type, action);
 			}
 		}
 	}

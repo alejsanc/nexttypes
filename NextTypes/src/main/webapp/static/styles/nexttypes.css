@@ -81,6 +81,7 @@ th {
 	border-width: 1px;
 	border-style: solid;
 	background-color: #d7d7d7;
+	min-width: 20px;
 }
 
 th a {
@@ -128,6 +129,10 @@ button, select, input[type="color"] {
 button img {
 	margin-right: 5px;
 	vertical-align: middle;
+}
+
+button:disabled img {
+	opacity: 0.2;
 }
 
 video {
@@ -286,7 +291,7 @@ video {
 
 .warning-dialog {
 	background-color: yellow;
-	color: white;
+	color: black;
 }
 
 .error-dialog {

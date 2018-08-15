@@ -286,17 +286,17 @@ public class Checks {
 
 	public static void checkPermissions(String type, String action, JoinPoint joinPoint) {
 		Module auth = (Module) joinPoint.getTarget();
-		auth.getContext().getPermissionSettings().checkPermissions(type, action, auth.getUser(), auth.getGroups());
+		auth.getContext().getPermissions(auth.getUser(), auth.getGroups()).checkPermissions(type, action);
 	}
 
 	public static void checkPermissions(String[] types, String action, JoinPoint joinPoint) {
 		Module auth = (Module) joinPoint.getTarget();
-		auth.getContext().getPermissionSettings().checkPermissions(types, action, auth.getUser(), auth.getGroups());
+		auth.getContext().getPermissions(auth.getUser(), auth.getGroups()).checkPermissions(types, action);
 	}
 
 	public static void checkPermissions(String action, JoinPoint joinPoint) {
 		Module auth = (Module) joinPoint.getTarget();
-		auth.getContext().getPermissionSettings().checkPermissions(action, auth.getUser(), auth.getGroups());
+		auth.getContext().getPermissions(auth.getUser(), auth.getGroups()).checkPermissions(action);
 	}
 
 }

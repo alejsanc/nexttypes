@@ -35,6 +35,7 @@ public class DatabaseConnection {
 		protected DataSource admin;
 
 		protected DatabaseConnectionPool(Settings settings, String schema, String driver) {
+			
 			String url = url(settings, schema);
 
 			read = createDataSource(url, NodeMode.READ, settings, driver);
@@ -44,7 +45,7 @@ public class DatabaseConnection {
 
 		public Connection getConnection(NodeMode mode) {
 			Connection connection = null;
-
+    
 			try {
 				switch (mode) {
 				case READ:
@@ -64,6 +65,12 @@ public class DatabaseConnection {
 
 			return connection;
 		}
+		
+		public void close() {
+			read.close();
+			write.close();
+			admin.close();
+		}
 
 		protected DataSource createDataSource(String url, NodeMode mode, Settings settings, String driver) {
 			String user = settings.getString(mode + "_" + Constants.USER);
@@ -72,7 +79,7 @@ public class DatabaseConnection {
 			int maxTime = settings.getInt32(mode + "_" + Constants.MAX_TIME);
 
 			PoolProperties p = new PoolProperties();
-			p.setUrl(url);
+			p.setUrl(url); 
 			p.setUsername(user);
 			p.setPassword(password);
 			p.setDriverClassName(driver);
@@ -85,10 +92,11 @@ public class DatabaseConnection {
 			p.setTimeBetweenEvictionRunsMillis(30000);
 			p.setMaxActive(maxConnections);
 			p.setInitialSize(maxConnections / 10);
-			p.setMaxWait(10000);
+			p.setMaxWait(20000);
 			p.setRemoveAbandonedTimeout(maxTime * 60);
 			p.setMinEvictableIdleTimeMillis(30000);
 			p.setMinIdle(maxConnections / 10);
+			p.setMaxIdle(maxConnections / 2);
 			p.setRemoveAbandoned(true);
 			p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"
 					+ "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");

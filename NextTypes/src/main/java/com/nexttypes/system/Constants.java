@@ -75,6 +75,7 @@ public class Constants {
 	public static final String CONTENT_SECURITY_POLICY = "content_security_policy";
 	public static final String CONTENT_TYPE = "content_type";
 	public static final String CONTROLLER = "controller";
+	public static final String CONTROL_PANEL = "control_panel";
 	public static final String COUNT = "count";
 	public static final String CREATE_TYPE = "create_type";
 	public static final String CREATION_DATE = "creation_date";
@@ -152,7 +153,6 @@ public class Constants {
 	public static final String IMAGE_ID = "image_id";
 	public static final String IMAGE_TYPE = "image_type";
 	public static final String IMPORT = "import";
-	public static final String IMPORT_TYPES = "import_types";
 	public static final String IMPORTED_OBJECTS = "imported_objects";
 	public static final String IMPORTED_TYPES = "imported_types";
 	public static final String INCLUDE_OBJECTS = "include_objects";
@@ -297,6 +297,7 @@ public class Constants {
 	public static final String SESSION_TOKEN = "session_token";
 	public static final String SETTINGS = "settings";
 	public static final String SETTINGS_DIRECTORY = "settings_directory";
+	public static final String SHOW_CONTROL_PANEL = "show_control_panel";
 	public static final String SHOW_HEADER = "show_header";
 	public static final String SHOW_ID = "show_id";
 	public static final String SHOW_PREVIEW = "show_preview";
@@ -327,6 +328,7 @@ public class Constants {
 	public static final String TYPE_ALTERED = "type_altered";
 	public static final String TYPE_NAME = "type_name";
 	public static final String TYPE_NAME_TOO_LONG = "type_name_too_long";
+	public static final String TYPE_NOT_ALTERED = "type_not_altered";
 	public static final String TYPE_NOT_FOUND = "type_not_found";
 	public static final String TYPE_OR_FIELD_NAME_TOO_LONG = "type_or_field_name_too_long";
 	public static final String TYPE_RESERVED_NAME = "type_reserved_name";

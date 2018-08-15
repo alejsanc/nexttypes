@@ -23,8 +23,7 @@ public class NXException extends RuntimeException {
 
 	protected String type;
 	protected String setting;
-	protected Exception parentException;
-
+	
 	public NXException(String setting) {
 		this(null, setting);
 	}
@@ -33,9 +32,15 @@ public class NXException extends RuntimeException {
 		this.type = type;
 		this.setting = setting;
 	}
+	
+	public NXException(String type, String setting, Throwable cause) {
+		super(cause);
+		this.type = type;
+		this.setting = setting;
+	}
 
-	public NXException(Exception parentException) {
-		this.parentException = parentException;
+	public NXException(Throwable cause) {
+		super(cause);
 	}
 
 	public String getType() {
@@ -46,21 +51,47 @@ public class NXException extends RuntimeException {
 		return setting;
 	}
 
-	public Exception getParentException() {
-		return parentException;
-	}
-
 	public String getMessage(Strings strings) {
 		String message = null;
+		Throwable cause = getCause();
+		
+		if (cause == null) {
+			message = strings.gts(type, setting);
+		} else {			
+			message = getMessage(cause);
+		}
+		
+		return message;
+	}
 
-		if (parentException != null) {
-			message = parentException.getMessage();
-			if (message == null) {
-				message = parentException.getClass().getName();
+	public static String getMessage(Throwable e) {
+		String className = e.getClass().getName();
+		String message = e.getMessage();
+		
+		
+		if (message == null) {
+			message = className;
+		} else {
+			message = className + ": " + message;
+		}
+
+		/*if (message == null) {
+			Throwable cause = e.getCause();
+
+			if (cause == null) {
+				message = e.getClass().getName();
+			} else {
+				message = cause.getMessage();
+
+				if (message == null) {
+					message = cause.getClass().getName();
+				} else {
+					message = cause.getClass().getName() + ": " + message;
+				}
 			}
 		} else {
-			message = strings.gts(type, setting);
-		}
+			message = e.getClass().getName() + ": " + message;
+		}*/
 
 		return message;
 	}

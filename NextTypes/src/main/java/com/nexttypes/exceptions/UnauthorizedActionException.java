@@ -28,9 +28,14 @@ public class UnauthorizedActionException extends ActionException {
 
 	@Override
 	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
-		String actionName = strings.getActionName(type, action);
+		StringBuilder message = new StringBuilder(strings.gts(type, Constants.UNAUTHORIZED_ACTION) + ": ");
 		
-		return strings.gts(type, Constants.UNAUTHORIZED_ACTION) + ": " + typeName + "::" + actionName;
+		if (type != null) {
+			message.append(strings.getTypeName(type) + "::");
+		}
+		
+		message.append(strings.getActionName(type, action));
+		
+		return message.toString();
 	}
 }

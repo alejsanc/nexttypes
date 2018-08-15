@@ -38,7 +38,7 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.enums.Format;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.logging.Logger;
-import com.nexttypes.settings.PermissionSettings;
+import com.nexttypes.settings.Permissions;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
@@ -82,6 +82,11 @@ public class Context {
 	public static void close(ServletContext servletContext) {
 		Context context = get(servletContext);
 		context.logger.close();
+				
+		if (context.connectionPool != null) {
+			context.connectionPool.close();
+		}
+		
 		context.context.removeAttribute(CONTEXT);
 	}
 
@@ -137,8 +142,8 @@ public class Context {
 		return new Strings(getProperties(Constants.LANG + "/" + lang + ".properties"));
 	}
 
-	public PermissionSettings getPermissionSettings() {
-		return new PermissionSettings(getProperties(Settings.PERMISSIONS_SETTINGS));
+	public Permissions getPermissions(String user, String[] groups) {
+		return new Permissions(getProperties(Settings.PERMISSIONS_SETTINGS), user, groups);
 	}
 
 	public Settings getSettings(String file) {

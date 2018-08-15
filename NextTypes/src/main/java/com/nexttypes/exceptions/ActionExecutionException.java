@@ -18,14 +18,12 @@ package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.Strings;
 import com.nexttypes.system.Constants;
-import com.nexttypes.system.Utils;
 
 public class ActionExecutionException extends ActionException {
 	private static final long serialVersionUID = 1L;
 
-	public ActionExecutionException(String type, String action, Exception parentException) {
-		super(type, action, Constants.ACTION_EXECUTION_ERROR);
-		this.parentException = parentException;
+	public ActionExecutionException(String type, String action, Throwable cause) {
+		super(type, action, Constants.ACTION_EXECUTION_ERROR, cause);
 	}
 
 	@Override
@@ -33,18 +31,8 @@ public class ActionExecutionException extends ActionException {
 		String typeName = strings.getTypeName(type);
 		String actionName = strings.getActionName(type, action);
 		
-		String message = parentException.getMessage();
+		String message = getMessage(getCause());
 		
-		if (message == null) {
-			Throwable cause = parentException.getCause();
-
-			if (cause != null) {
-				message = Utils.getExceptionMessage(cause);
-			} else {
-				message = Utils.getExceptionMessage(parentException);
-			}
-		}
-
 		return strings.gts(type, Constants.ACTION_EXECUTION_ERROR) + ": "
 			+ typeName + "::" + actionName + ": " + message;
 	}

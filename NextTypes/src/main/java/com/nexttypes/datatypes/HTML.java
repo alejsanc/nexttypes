@@ -122,6 +122,7 @@ public class HTML extends XML {
 	public static final String MULTIPART_FORM_DATA = "multipart/form-data";
 	public static final String BACKGROUND_COLOR = "background-color";
 	public static final String RADIO = "radio";
+	public static final String READONLY = "readonly";
 
 	public HTML() {
 		super();

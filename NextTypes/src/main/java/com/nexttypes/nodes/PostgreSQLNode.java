@@ -309,7 +309,7 @@ public class PostgreSQLNode implements Node {
 				context.setConnectionPool(connectionPool);
 
 				try (PostgreSQLNode node = new PostgreSQLNode(Auth.ADMIN, new String[] { Auth.ADMINISTRATORS },
-						NodeMode.ADMIN, lang, com.nexttypes.datatypes.URI.LOCALHOST, context, useConnectionPool)) {
+						NodeMode.ADMIN, lang, URI.LOCALHOST, context, useConnectionPool)) {
 
 					node.init();
 					node.commit();
@@ -957,12 +957,18 @@ public class PostgreSQLNode implements Node {
 			setDeferredConstraints(false);
 		}
 
-		ZonedDateTime typeADate = type.getADate();
-		if (typeADate == null) {
-			typeADate = ZonedDateTime.now(ZoneOffset.UTC);
+		if (result.isAltered()) {
+			ZonedDateTime typeADate = type.getADate();
+			if (typeADate == null) {
+				typeADate = ZonedDateTime.now(ZoneOffset.UTC);
+			}
+			updateTypeDates(typeName, typeADate);
+			result.setADate(typeADate);
+			result.setMessage(strings.gts(typeName, Constants.TYPE_SUCCESSFULLY_ALTERED));
+		} else {
+			result.setADate(getADate(typeName));
+			result.setMessage(strings.gts(typeName, Constants.TYPE_NOT_ALTERED));
 		}
-		updateTypeDates(typeName, typeADate);
-		result.setADate(typeADate);
 
 		return result;
 	}

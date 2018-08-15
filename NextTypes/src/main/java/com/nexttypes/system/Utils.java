@@ -131,6 +131,10 @@ public class Utils {
 
 		return output;
 	}
+	
+	public static String[] split(String input) {
+		return split(input, ",");
+	}
 
 	public static String[] split(String input, String regex) {
 		String[] output = null;
@@ -220,17 +224,5 @@ public class Utils {
 			directory = directory + File.separator;
 		}
 		return directory;
-	}
-	
-	public static String getExceptionMessage(Throwable e) {
-		String message = e.getMessage();
-		
-		if (message == null) {
-			message = e.getClass().getName();
-		} else {
-			message = e.getClass().getName() + ": " + message;
-		}
-		
-		return message;
 	}
 }

@@ -307,7 +307,6 @@ public class HTTPServlet extends HttpServlet {
 
 			case Action.ALTER:
 				AlterResult alterResult = nextNode.alter(req.readType(), req.getADate());
-				alterResult.setMessage(strings.gts(req.getType(), Constants.TYPE_SUCCESSFULLY_ALTERED));
 				content = new Content(alterResult);
 				break;
 
@@ -997,7 +996,7 @@ public class HTTPServlet extends HttpServlet {
 		if (e instanceof NXException) {
 			message = ((NXException) e).getMessage(strings);
 		} else {
-			message = Utils.getExceptionMessage(e);
+			message = NXException.getMessage(e);
 		}
 		
 		if (debug) {

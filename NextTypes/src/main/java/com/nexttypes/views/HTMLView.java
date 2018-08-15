@@ -85,6 +85,7 @@ import com.nexttypes.protocol.http.HTTPHeader;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.security.Security;
+import com.nexttypes.settings.Permissions;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
@@ -132,6 +133,7 @@ public class HTMLView extends View {
 	public static final String USER_NAME = "user-name";
 	public static final String LOGOUT_BUTTON = "logout-button";
 	public static final String TYPE_MENU = "type-menu";
+	public static final String CONTROL_PANEL = "control-panel";
 	public static final String VALIDATORS = "validators";
 
 	//Classes
@@ -174,6 +176,7 @@ public class HTMLView extends View {
 	public static final String CALENDAR_TODAY = "calendar-today";
 	public static final String YEARS = "years";
 	public static final String MONTHS = "months";
+	public static final String READONLY = "readonly";
 
 	//Text Editor Modes
 	public static final String JSON = "json";
@@ -190,6 +193,7 @@ public class HTMLView extends View {
 	protected Element footer;
 	protected DecimalFormat humanReadableBytesFormat;
 	protected ArrayList<String> textEditorModes;
+	protected Permissions permissions;
 	
 	public HTMLView(HTMLView parent) {
 		document = parent.getDocument();
@@ -201,10 +205,16 @@ public class HTMLView extends View {
 		strings = parent.getStrings();
 		user = parent.getUser();
 		groups = parent.getGroups();
+		permissions = parent.getPermissions();
 	}
 
 	public HTMLView(HTTPRequest request) {
 		super(request, Settings.HTML_SETTINGS);
+		permissions = request.getContext().getPermissions(user, groups);
+	}
+	
+	public Permissions getPermissions() {
+		return permissions;
 	}
 
 	@Override
@@ -233,7 +243,6 @@ public class HTMLView extends View {
 		String title = strings.gts(type, Constants.INSERT_TITLE);
 		String typeName = strings.getTypeName(type);
 
-		String buttonText = strings.getActionName(type, Action.INSERT);
 		String[] insertFields = typeSettings.getActionStringArray(type, Action.INSERT, Constants.FIELDS);
 		boolean showType = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_TYPE);
 		boolean showId = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_ID);
@@ -245,7 +254,7 @@ public class HTMLView extends View {
 
 		textEditor();
 		main.appendElement(
-				insertForm(type, typeFields, lang, view, ref, buttonText, showType, showId, showHeader, showProgress));
+				insertForm(type, typeFields, lang, view, ref, showType, showId, showHeader, showProgress));
 
 		return render(type);
 	}
@@ -284,6 +293,9 @@ public class HTMLView extends View {
 		String mode = strings.gts(type, Constants.MODE);
 		String dropIndex = strings.getActionName(type, Action.DROP_INDEX);
 		String dropField = strings.getActionName(type, Action.DROP_FIELD);
+		
+		String action = null;
+		String icon = null;
 
 		Element typeForm = form(type, lang, view)
 				.setClass(UNLOAD_CONFIRMATION)
@@ -301,20 +313,36 @@ public class HTMLView extends View {
 		typeForm.appendElement(HTML.STRONG).appendText(typeName + ": ");
 
 		if (type != null) {
+			action = Action.ALTER;
+			icon = Icon.PENCIL;
+			
+			ZonedDateTime adate = nextNode.getADate(type);
+			typeForm.appendElement(input(HTML.HIDDEN, Constants.ADATE, Constants.ADATE, adate));
+			
 			typeForm.appendText(type);
-			typeForm.appendElement(iconAnchor(strings.getActionName(type, Action.RENAME),
+			
+			if (permissions.isAllowed(type, Action.RENAME_FORM)) {
+				typeForm.appendElement(iconAnchor(strings.getActionName(type, Action.RENAME),
 					uri(type, lang, view) + formParameter(Action.RENAME), Icon.PENCIL));
+			}
+				
 		} else {
+			action = Action.CREATE;
+			icon = Icon.PLUS;
+			
 			typeForm.appendElement(input(HTML.TEXT, Constants.TYPE, typeName)
 					.setAttribute(HTML.SIZE, Type.MAX_TYPE_NAME_LENGTH)
 					.setAttribute(HTML.MAXLENGTH, Type.MAX_TYPE_NAME_LENGTH));
 		}
-
+		
+		boolean disableAction = !permissions.isAllowed(type, action);
+		
 		String addFieldActionName = strings.getActionName(type, Action.ADD_FIELD);
 
 		typeForm.appendElement(HTML.H2).appendText(fields + ":");
-		typeForm.appendElement(HTML.P).appendElement(button(addFieldActionName, null, Icon.PLUS, ADD_FIELD));
-
+		typeForm.appendElement(HTML.P)
+				.appendElement(button(addFieldActionName, null, Icon.PLUS, ADD_FIELD));
+		
 		Element fieldsTable = typeForm.appendElement(HTML.TABLE).setAttribute(HTML.ID, Constants.FIELDS);
 
 		Element fieldsHeader = fieldsTable.appendElement(HTML.THEAD).appendElement(HTML.TR);
@@ -323,13 +351,13 @@ public class HTMLView extends View {
 		fieldsHeader.appendElement(HTML.TH).appendText(parameters);
 		fieldsHeader.appendElement(HTML.TH).appendText(notNull);
 		fieldsHeader.appendElement(HTML.TH);
-
+		
 		Element fieldsBody = fieldsTable.appendElement(HTML.TBODY);
 		
 		if (type != null) {
-			ZonedDateTime adate = nextNode.getADate(type);
-			typeForm.appendElement(input(HTML.HIDDEN, Constants.ADATE, Constants.ADATE, adate));
-
+			
+			String[] types = (String[]) ArrayUtils.addAll(PT.PRIMITIVE_TYPES, nextNode.getTypesName());
+						
 			LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type);
 			int x = 0;
 			for (Map.Entry<String, TypeField> entry : typeFields.entrySet()) {
@@ -337,24 +365,24 @@ public class HTMLView extends View {
 				String fieldName = entry.getKey();
 				TypeField typeField = entry.getValue();
 				String fieldType = typeField.getType();
-
+				
 				Element row = fieldsBody.appendElement(HTML.TR);
 
-				Element typeCell = row.appendElement(HTML.TD);
-				typeCell.appendElement(select(field + ":" + Constants.TYPE, strings.gts(type, Constants.TYPE),
-						(String[]) ArrayUtils.addAll(PT.PRIMITIVE_TYPES, nextNode.getTypesName()), fieldType));
-
+				row.appendElement(HTML.TD).appendElement(select(field + ":"
+						+ Constants.TYPE, strings.gts(type, Constants.TYPE), types, fieldType));
+												
 				Element nameCell = row.appendElement(HTML.TD);
 				nameCell.appendElement(input(HTML.TEXT, field + ":" + Constants.NAME, name, fieldName));
 				nameCell.appendElement(input(HTML.HIDDEN, field + ":" + Constants.OLD_NAME, name, fieldName));
-
+								
 				row.appendElement(HTML.TD).appendElement(
 						input(HTML.TEXT, field + ":" + Constants.PARAMETERS, parameters, typeField.getParameters()));
-
+								
 				row.appendElement(HTML.TD)
 						.appendElement(booleanInput(field + ":" + Constants.NOT_NULL, notNull, typeField.isNotNull()));
-				row.appendElement(HTML.TD).appendElement(smallImageButton(dropField, Icon.MINUS, DELETE_ROW));
-
+								
+				row.appendElement(HTML.TD).appendElement(smallButton(dropField, Icon.MINUS, DELETE_ROW));
+								
 				x++;
 			}
 		}
@@ -362,7 +390,10 @@ public class HTMLView extends View {
 		String addIndexActionName = strings.getActionName(type, Action.ADD_INDEX);
 
 		typeForm.appendElement(HTML.H2).appendText(strings.gts(type, Constants.INDEXES) + ":");
-		typeForm.appendElement(HTML.P).appendElement(button(addIndexActionName, null, Icon.PLUS, ADD_INDEX));
+		typeForm.appendElement(HTML.P)
+				.appendElement(button(addIndexActionName, null, Icon.PLUS, ADD_INDEX));
+		
+		
 
 		Element indexesTable = typeForm.appendElement(HTML.TABLE)
 				.setAttribute(HTML.ID, Constants.INDEXES);
@@ -383,35 +414,32 @@ public class HTMLView extends View {
 				String indexName = entry.getKey();
 				TypeIndex typeIndex = entry.getValue();
 				Element row = indexesBody.appendElement(HTML.TR);
+				
 				row.appendElement(HTML.TD).appendElement(select(index + ":" + Constants.MODE, mode,
 						IndexMode.getStringValues(), typeIndex.getMode().toString()));
-
+				
 				Element nameCell = row.appendElement(HTML.TD);
 				nameCell.appendElement(input(HTML.TEXT, index + ":" + Constants.NAME, name, indexName));
 				nameCell.appendElement(input(HTML.HIDDEN, index + ":" + Constants.OLD_NAME, name, indexName));
-
+								
 				row.appendElement(HTML.TD).appendElement(input(HTML.TEXT, index + ":" + Constants.FIELDS, fields,
 						String.join(",", typeIndex.getFields())));
-
-				row.appendElement(HTML.TD).appendElement(smallImageButton(dropIndex, Icon.MINUS, DELETE_ROW));
-
+				
+				row.appendElement(HTML.TD)
+						.appendElement(smallButton(dropIndex, Icon.MINUS, DELETE_ROW));
+				
 				x++;
 			}
 		}
 
-		String action = null;
-		String icon = null;
-
-		if (type == null) {
-			action = Action.CREATE;
-			icon = Icon.PLUS;
-		} else {
-			action = Action.ALTER;
-			icon = Icon.PENCIL;
-		}
+		
 		String actionName = strings.getActionName(type, action);
 
-		typeForm.appendElement(HTML.P).appendElement(button(actionName, action, icon, SUBMIT_FORM));
+		Element actionButton = typeForm.appendElement(HTML.P)
+				.appendElement(button(actionName, action, icon, SUBMIT_FORM));
+		if (disableAction) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return typeForm;
 	}
@@ -443,7 +471,11 @@ public class HTMLView extends View {
 
 		String actionName = strings.getActionName(type, Action.RENAME);
 
-		form.appendElement(button(actionName, Action.RENAME, Icon.PENCIL, SUBMIT_FORM));
+		Element actionButton = form.appendElement(button(actionName, Action.RENAME, Icon.PENCIL,
+				SUBMIT_FORM));
+		if (!permissions.isAllowed(type, Action.RENAME)) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return form;
 	}
@@ -452,6 +484,10 @@ public class HTMLView extends View {
 	public Content executeActionForm(String type, String id, String action, String lang, String view) {
 		loadTemplate(type, lang, view);
 
+		if (!permissions.isAllowed(type, action)) {
+			return unauthorized(type, lang, view, new UnauthorizedActionException(type, action));
+		}
+		
 		LinkedHashMap<String, TypeField> fields = nextNode.getActionFields(type, action);
 		if (fields == null) {
 			return notFound(type, lang, view, new ActionNotFoundException(type, action));
@@ -536,7 +572,11 @@ public class HTMLView extends View {
 			row.appendElement(HTML.TD).appendElement(fieldInput(type, action, field, fieldName, null, typeField, lang));
 		}
 
-		form.appendElement(button(actionName, action, Icon.CHEVRON_TOP, SUBMIT_FORM));
+		Element actionButton = form.appendElement(button(actionName, action, Icon.CHEVRON_TOP,
+				SUBMIT_FORM));
+		if (!permissions.isAllowed(type, action)) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return form;
 	}
@@ -545,7 +585,7 @@ public class HTMLView extends View {
 	public Content importTypesForm(String lang, String view) {
 		loadTemplate(null, lang, view);
 
-		String title = strings.gts(Constants.IMPORT_TYPES);
+		String title = strings.gts(Action.IMPORT_TYPES);
 		String existingTypesAction = strings.gts(Constants.EXISTING_TYPES_ACTION);
 		String existingObjectsAction = strings.gts(Constants.EXISTING_OBJECTS_ACTION);
 		String file = strings.gts(Constants.FILE);
@@ -578,7 +618,11 @@ public class HTMLView extends View {
 		row.appendElement(HTML.TD)
 				.appendElement(binaryInput(Constants.DATA, title, Format.JSON.getContentType(), lang));
 
-		form.appendElement(button(strings.gts(Constants.IMPORT), Action.IMPORT_TYPES, Icon.UNSHARE_BOXED, SUBMIT_FORM));
+		Element actionButton = form.appendElement(button(strings.gts(Constants.IMPORT),
+				Action.IMPORT_TYPES, Icon.UNSHARE_BOXED, SUBMIT_FORM));
+		if (!permissions.isAllowed(Action.IMPORT_TYPES)) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return render();
 	}
@@ -614,8 +658,11 @@ public class HTMLView extends View {
 		row.appendElement(HTML.TD)
 				.appendElement(binaryInput(Constants.DATA, title, Format.JSON.getContentType(), lang));
 
-		form.appendElement(
-				button(strings.gts(Constants.IMPORT), Action.IMPORT_OBJECTS, Icon.UNSHARE_BOXED, SUBMIT_FORM));
+		Element actionButton = form.appendElement(button(strings.gts(Constants.IMPORT),
+				Action.IMPORT_OBJECTS, Icon.UNSHARE_BOXED, SUBMIT_FORM));
+		if (!permissions.isAllowed(Action.IMPORT_OBJECTS)) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return render();
 	}
@@ -644,7 +691,11 @@ public class HTMLView extends View {
 
 		String actionName = strings.getActionName(null, Action.LOGIN);
 
-		form.appendElement(button(actionName, Action.LOGIN, Icon.ACCOUNT_LOGIN, SUBMIT_FORM));
+		Element actionButton = form.appendElement(button(actionName, Action.LOGIN, Icon.ACCOUNT_LOGIN,
+				SUBMIT_FORM));
+		if (!permissions.isAllowed(Action.LOGIN)) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return render();
 	}
@@ -686,10 +737,25 @@ public class HTMLView extends View {
 			String referencingFieldName = strings.getFieldName(referencingType, referencingField);
 
 			Element row = body.appendElement(HTML.TR);
-			row.appendElement(HTML.TD)
-					.appendElement(anchor(referencedTypeName, uri(referencedType, lang, view) + "&" + Constants.INFO));
-			row.appendElement(HTML.TD)
-					.appendElement(anchor(referencingTypeName, uri(referencingType, lang, view) + "&" + Constants.INFO));
+			
+			Element referencedTypeCell = row.appendElement(HTML.TD);
+			
+			if (permissions.isAllowed(referencedType, Action.GET_TYPE)) {
+				referencedTypeCell.appendElement(anchor(referencedTypeName, 
+						uri(referencedType, lang, view) + "&" + Constants.INFO));
+			} else {
+				referencedTypeCell.appendText(referencedTypeName);
+			}
+			
+			Element referencingTypeCell = row.appendElement(HTML.TD);
+			
+			if (permissions.isAllowed(referencingType, Action.GET_TYPE)) {
+				referencingTypeCell.appendElement(anchor(referencingTypeName,
+						uri(referencingType, lang, view) + "&" + Constants.INFO));
+			} else {
+				referencingTypeCell.appendText(referencingTypeName);
+			}
+			
 			row.appendElement(HTML.TD).appendText(referencingFieldName);
 		}
 
@@ -976,6 +1042,10 @@ public class HTMLView extends View {
 	}
 
 	public Element typesTable(TypeInfo[] types, String lang, String view) {
+		
+		boolean disableDropButton = true;
+		boolean disableExportButton = true;
+		
 		Element form = form(lang, view);
 		form.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF).setAttribute(DATA_STRINGS_TYPES_DROP_CONFIRMATION,
 				strings.gts(Constants.TYPES_DROP_CONFIRMATION));
@@ -984,8 +1054,8 @@ public class HTMLView extends View {
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
 		Element body = table.appendElement(HTML.TBODY);
 
-		header.appendElement(HTML.TH).appendElement(allCheckBox(null));
-
+		Element allCheckbox = header.appendElement(HTML.TH).appendElement(allCheckbox());
+		
 		header.appendElement(HTML.TH).appendText(strings.gts(Constants.NAME));
 		header.appendElement(HTML.TH).appendText(strings.gts(Constants.OBJECTS));
 		header.appendElement(HTML.TH).appendText(strings.gts(Constants.SIZE));
@@ -996,40 +1066,90 @@ public class HTMLView extends View {
 		for (TypeInfo typeInfo : types) {
 			String type = typeInfo.getName();
 			String typeName = strings.getTypeName(type);
-
+			
+			boolean disableCheckbox = true;
+			
+			if (permissions.isAllowed(type, Action.DROP)) {
+				disableDropButton = false;
+				disableCheckbox = false;
+			}
+			
+			if (permissions.isAllowed(type, Action.EXPORT_TYPES)) {
+				disableExportButton = false;
+				disableCheckbox = false;
+			}
+			
 			Element row = body.appendElement(HTML.TR);
-			row.appendElement(HTML.TD)
-					.appendElement(input(HTML.CHECKBOX, Constants.TYPES, null, type).setClass(ITEM_CHECKBOX));
-			row.appendElement(HTML.TD).appendElement(anchor(typeName, uri(type, lang, view)));
+			
+			Element checkbox = row.appendElement(HTML.TD)
+					.appendElement(input(HTML.CHECKBOX, Constants.TYPES, typeName, type)
+					.setClass(ITEM_CHECKBOX));
+			if (disableCheckbox) {
+				checkbox.setAttribute(HTML.DISABLED);
+			}
+			
+			Element selectCell = row.appendElement(HTML.TD);
+			
+			if (permissions.isAllowed(type, Action.SELECT)) {
+				selectCell.appendElement(anchor(typeName, uri(type, lang, view)));
+			} else {
+				selectCell.appendText(typeName);
+			}			
+			
 			row.appendElement(HTML.TD).appendText(typeInfo.getObjects() + "");
 			row.appendElement(HTML.TD).appendText(humanReadableBytes(typeInfo.getSize(), lang));
-			row.appendElement(HTML.TD).appendElement(iconAnchor(strings.getActionName(type, Action.INSERT),
+			
+			Element insertCell = row.appendElement(HTML.TD);
+			
+			if (permissions.isAllowed(type, Action.INSERT_FORM)) {
+				insertCell.appendElement(iconAnchor(strings.getActionName(type, Action.INSERT),
 					uri(type, lang, view) + formParameter(Action.INSERT), Icon.PLUS));
-			row.appendElement(HTML.TD).appendElement(iconAnchor(strings.getActionName(type, Action.ALTER),
-					uri(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
-			row.appendElement(HTML.TD).appendElement(iconAnchor(strings.gts(type, Constants.TYPE),
-					uri(type, lang, view) + "&" + Constants.INFO, Icon.INFO));
+			}
+			
+			Element alterCell = row.appendElement(HTML.TD);
+			
+			if (permissions.isAllowed(type, Action.ALTER_FORM)) {
+				alterCell.appendElement(iconAnchor(strings.getActionName(type, Action.ALTER),
+						uri(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
+			}
+			
+			Element infoCell = row.appendElement(HTML.TD);
+			
+			if (permissions.isAllowed(type, Action.GET_TYPE)) {
+				infoCell.appendElement(iconAnchor(strings.gts(type, Constants.TYPE),
+						uri(type, lang, view) + "&" + Constants.INFO, Icon.INFO));
+			}
+		}
+		
+		if (disableDropButton && disableExportButton) {
+			allCheckbox.setAttribute(HTML.DISABLED);
 		}
 
 		String actionName = strings.getActionName(null, Action.DROP);
 
-		Element button = button(actionName, Action.DROP, Icon.MINUS, SUBMIT_FORM);
-
-		form.appendElement(button);
-
-		form.appendElement(exportButton(null));
+		Element actionButton = form.appendElement(button(actionName, Action.DROP, Icon.MINUS,
+				SUBMIT_FORM));
+		if (disableDropButton) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
+		
+		form.appendElement(exportButton(disableExportButton));
 
 		return form;
 	}
 	
-	public Element allCheckBox(String type) {
-		return document.createElement(HTML.INPUT).setAttribute(HTML.TYPE, HTML.CHECKBOX)
+	public Element allCheckbox() {
+		return allCheckbox(null);
+	}
+	public Element allCheckbox(String type) {
+		return document.createElement(HTML.INPUT)
+				.setAttribute(HTML.TYPE, HTML.CHECKBOX)
 				.setAttribute(HTML.TITLE, strings.gts(type, Constants.CHECK_UNCHECK_ALL))
 				.setClass(ALL_CHECKBOX);
 	}
 
 	public Element insertForm(String type, LinkedHashMap<String, TypeField> typeFields, String lang, String view,
-			FieldReference ref, String buttonText, boolean showType, boolean showId, boolean showHeader,
+			FieldReference ref, boolean showType, boolean showId, boolean showHeader,
 			boolean showProgress) {
 		Element form = multipartForm(type, lang, view);
 		if (showProgress) {
@@ -1084,8 +1204,14 @@ public class HTMLView extends View {
 
 			row.appendElement(insertFormCell(type, field, fieldName, typeField, lang, ref));
 		}
+		
+		String actionName = strings.getActionName(type, Action.INSERT);
 
-		form.appendElement(button(buttonText, Action.INSERT, Icon.PLUS, SUBMIT_FORM));
+		Element actionButton = form.appendElement(button(actionName, Action.INSERT, Icon.PLUS,
+				SUBMIT_FORM));
+		if (!permissions.isAllowed(type, Action.INSERT)) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return form;
 	}
@@ -1369,7 +1495,7 @@ public class HTMLView extends View {
 		
 		String dropFilter = strings.gts(type, Constants.DROP_FILTER);
 		
-		row.appendElement(HTML.TD).appendElement(smallImageButton(dropFilter, Icon.MINUS, DELETE_ROW))
+		row.appendElement(HTML.TD).appendElement(smallButton(dropFilter, Icon.MINUS, DELETE_ROW))
 			.setAttribute(HTML.FORM, Constants.SEARCH);
 		
 		return row;
@@ -1441,11 +1567,19 @@ public class HTMLView extends View {
 
 		if (showId) {
 			row.appendElement(HTML.TD).appendText(strings.getIdName(type));
-			row.appendElement(HTML.TD).appendText(object.getId() + " ")
-				.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_ID),
-					uri(object.getType(), object.getId(), lang, view) + formParameter(Action.UPDATE_ID),
-							Icon.PENCIL));
+			
+			Element idCell = row.appendElement(HTML.TD);
+			idCell.appendText(object.getId());
+			
+			if (permissions.isAllowed(type, Action.UPDATE_ID_FORM)) {
+				idCell.appendText(" ");
+				idCell.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_ID),
+						uri(object.getType(), object.getId(), lang, view)
+							+ formParameter(Action.UPDATE_ID), Icon.PENCIL));
+			}
 		}
+		
+		boolean appendFieldAnchor = permissions.isAllowed(type, Action.GET_FIELD);
 
 		for (Map.Entry<String, Object> entry : object.getFields().entrySet()) {
 			String field = entry.getKey();
@@ -1460,14 +1594,24 @@ public class HTMLView extends View {
 				row.appendElement(HTML.TD).appendText(typeField.getType());
 			}
 
-			row.appendElement(HTML.TD)
-					.appendElement(anchor(fieldName, "/" + object.getType() + "/" + object.getId() + "/" + field));
+			Element fieldCell = row.appendElement(HTML.TD);
+			
+			if (appendFieldAnchor) {
+				fieldCell.appendElement(anchor(fieldName, "/" + object.getType() + "/" + object.getId() + "/" + field));
+			} else {
+				fieldCell.appendText(fieldName);
+			}
+			
 			row.appendElement(updateFormCell(object, field, fieldName, value, typeField, lang, view));
 		}
 
 		String actionName = strings.getActionName(object.getType(), Action.UPDATE);
 
-		form.appendElement(button(actionName, Action.UPDATE, Icon.PENCIL, SUBMIT_FORM));
+		Element actionButton = form.appendElement(button(actionName, Action.UPDATE, Icon.PENCIL,
+				SUBMIT_FORM));
+		if (!permissions.isAllowed(type, Action.UPDATE)) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return form;
 	}
@@ -1489,7 +1633,11 @@ public class HTMLView extends View {
 
 		String actionName = strings.getActionName(type, Action.UPDATE_ID);
 
-		form.appendElement(button(actionName, Action.UPDATE_ID, Icon.PENCIL, SUBMIT_FORM));
+		Element actionButton = form.appendElement(button(actionName, Action.UPDATE_ID, Icon.PENCIL,
+				SUBMIT_FORM));
+		if (!permissions.isAllowed(type, Action.UPDATE_ID)) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return form;
 	}
@@ -1522,7 +1670,11 @@ public class HTMLView extends View {
 
 		String actionName = strings.getActionName(type, Action.UPDATE_PASSWORD);
 
-		form.appendElement(button(actionName, Action.UPDATE_PASSWORD, Icon.PENCIL, SUBMIT_FORM));
+		Element actionButton = form.appendElement(button(actionName, Action.UPDATE_PASSWORD, Icon.PENCIL,
+				SUBMIT_FORM));
+		if (!permissions.isAllowed(type, Action.UPDATE_PASSWORD)) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return form;
 	}
@@ -1561,8 +1713,12 @@ public class HTMLView extends View {
 	public Element passwordFieldOutput(String type, String id, String field, String lang, String view) {
 		Element password = document.createElement(HTML.SPAN);
 		password.appendText(Security.HIDDEN_PASSWORD + " ");
-		password.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_PASSWORD),
+		
+		if (permissions.isAllowed(type, Action.UPDATE_PASSWORD_FORM)) {
+			password.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_PASSWORD),
 				uri(type, id, field, lang, view) + formParameter(Action.UPDATE_PASSWORD), Icon.PENCIL));
+		}
+		
 		return password;
 	}
 
@@ -2278,6 +2434,8 @@ public class HTMLView extends View {
 			LinkedHashMap<String, Order> order, Long count, Long offset, Long limit, Long minLimit,
 			Long maxLimit, Long limitIncrement, Component component) {
 
+		boolean appendUpdateAnchor = permissions.isAllowed(type, Action.UPDATE_FORM);
+		
 		Element form = form(type, lang, view).setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
 				.setAttribute(DATA_URI, request.getURIRoot()
 								+ selectTableURI(type, lang, view, ref, filters, search, order,
@@ -2298,7 +2456,7 @@ public class HTMLView extends View {
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
 		Element body = table.appendElement(HTML.TBODY);
 
-		header.appendElement(HTML.TH).appendElement(allCheckBox(type));
+		header.appendElement(HTML.TH).appendElement(allCheckbox(type));
 
 		header.appendElement(selectTableHeaderCell(type, Constants.ID, lang, view, ref, filters, 
 				search, order, offset, limit, component));
@@ -2308,12 +2466,14 @@ public class HTMLView extends View {
 					search, order, offset, limit, component));
 		}
 
-		header.appendElement(HTML.TH);
+		if (appendUpdateAnchor) {
+			header.appendElement(HTML.TH);
+		}
 
 		for (NXObject object : objects) {
-			Element tableRow = body.appendElement(HTML.TR);
+			Element row = body.appendElement(HTML.TR);
 
-			tableRow.appendElement(HTML.TD).appendElement(
+			row.appendElement(HTML.TD).appendElement(
 					input(HTML.CHECKBOX, Constants.OBJECTS, strings.getObjectsName(type), object.getId())
 							.setClass(ITEM_CHECKBOX));
 
@@ -2324,23 +2484,30 @@ public class HTMLView extends View {
 				idString = object.getId();
 			}
 
-			Element cell = tableRow.appendElement(HTML.TD);
-			cell.appendElement(HTML.A).appendText(idString)
-				.setAttribute(HTML.HREF, uri(object.getType(), object.getId(), lang, view));
+			Element idCell = row.appendElement(HTML.TD);
+			
+			if (permissions.isAllowed(type, Action.GET)) {
+				idCell.appendElement(HTML.A).appendText(idString)
+					.setAttribute(HTML.HREF, uri(object.getType(), object.getId(), lang, view));
+			} else {
+				idCell.appendText(idString);
+			}
 
 			for (Map.Entry<String, Object> entry : object.getFields().entrySet()) {
 				String field = entry.getKey();
 				Object value = entry.getValue();
 				TypeField typeField = typeFields.get(field);
-				tableRow.appendElement(HTML.TD)
+				row.appendElement(HTML.TD)
 						.appendElement(fieldOutput(object, field, value, typeField, lang, view, true));
 			}
 
-			String actionName = strings.getActionName(object.getType(), Action.UPDATE);
-
-			tableRow.appendElement(HTML.TD).appendElement(iconAnchor(actionName,
+			if (appendUpdateAnchor) {
+				String updateActionName = strings.getActionName(object.getType(), Action.UPDATE);
+				
+				row.appendElement(HTML.TD).appendElement(iconAnchor(updateActionName,
 					uri(object.getType(), object.getId(), lang, view)
 					+ formParameter(Action.UPDATE), Icon.PENCIL));
+			}
 		}
 
 		form.appendElement(indexFooter);
@@ -2350,35 +2517,53 @@ public class HTMLView extends View {
 
 		String actionName = strings.getActionName(type, Action.DELETE);
 
-		Element button = button(actionName, Action.DELETE, Icon.MINUS, SUBMIT_FORM);
+		Element actionButton = button(actionName, Action.DELETE, Icon.MINUS, SUBMIT_FORM);
+		if (!permissions.isAllowed(type, Action.DELETE)) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		if (component != null) {
-			button.setAttribute(DATA_COMPONENT, component.toString());
+			actionButton.setAttribute(DATA_COMPONENT, component.toString());
 		}
 		
-		div.appendElement(button);
+		div.appendElement(actionButton);
 
-		div.appendElement(exportButton(type));
+		div.appendElement(exportButton(type, !permissions.isAllowed(type, Action.EXPORT_OBJECTS)));
 
 		return form;
 	}
+	
+	public Element exportButton(boolean disabled) {
+		return exportButton(null, disabled);
+	}
 
-	public Element exportButton(String type) {
+	public Element exportButton(String type, boolean disabled) {
 		String action = null;
 		Element buttons = document.createElement(HTML.DIV);
 		buttons.setClass(EXPORT_BUTTON);
-
+		
 		if (type == null) {
 			action = Action.EXPORT_TYPES;
+			
 			String includeObjects = strings.gts(Constants.INCLUDE_OBJECTS);
 			buttons.appendText(includeObjects);
-			buttons.appendElement(booleanInput(Constants.INCLUDE_OBJECTS, includeObjects, false));
+			
+			Element includeObjectsCheckbox = buttons.appendElement(
+					booleanInput(Constants.INCLUDE_OBJECTS, includeObjects, false));
+			if (disabled) {
+				includeObjectsCheckbox.setAttribute(HTML.DISABLED);
+			}
+			
 			buttons.appendElement(HTML.BR);
 		} else {
-			action = Action.EXPORT_OBJECTS;
+			action = Action.EXPORT_OBJECTS;			
 		}
 
-		buttons.appendElement(button(strings.gts(type, Constants.EXPORT), action, Icon.SHARE_BOXED, Constants.EXPORT));
+		Element actionButton = buttons.appendElement(button(strings.gts(type, Constants.EXPORT), 
+				action, Icon.SHARE_BOXED, Constants.EXPORT));
+		if (disabled) {
+			actionButton.setAttribute(HTML.DISABLED);
+		}
 
 		return buttons;
 	}
@@ -2744,10 +2929,16 @@ public class HTMLView extends View {
 	}
 
 	public Element referenceAnchor(String fieldType, Object value, String lang, String view) {
+		Element anchor = null;
+		
 		ObjectReference reference = (ObjectReference) value;
-		Element anchor = document.createElement(HTML.A)
-				.setAttribute(HTML.HREF, uri(fieldType, reference.getId(), lang, view))
-				.appendText(reference.getName());
+		
+		if (permissions.isAllowed(fieldType, Action.GET)) {
+			anchor = anchor(reference.getName(), uri(fieldType, reference.getId(), lang, view));
+		} else {
+			anchor = document.createElement(HTML.SPAN).appendText(reference.getName());
+		}
+		
 		return anchor;
 	}
 
@@ -2872,7 +3063,7 @@ public class HTMLView extends View {
 				.setAttribute(HTML.TITLE, text);
 	}
 
-	public Element smallImageButton(String text, String image, String buttonClass) {
+	public Element smallButton(String text, String image, String buttonClass) {
 		Element button = document.createElement(HTML.BUTTON).setAttribute(HTML.TYPE, HTML.BUTTON);
 
 		button.appendElement(smallIcon(text, image));
@@ -2903,7 +3094,7 @@ public class HTMLView extends View {
 	public Element button(String text, String value, String buttonClass) {
 		return button(text, value, null, buttonClass);
 	}
-
+	
 	public Element button(String text, String value, String image, String buttonClass) {
 		Element button = document.createElement(HTML.BUTTON).setAttribute(HTML.TYPE, HTML.BUTTON);
 
@@ -2939,42 +3130,45 @@ public class HTMLView extends View {
 		String refParameter = refParameter(ref);
 		String searchParameter = parameter(Constants.SEARCH, search);
 
-		if (id != null && form != null) {
+		if (id != null && form != null && permissions.isAllowed(type, Action.GET)) {
 			elements.add(iconAnchor(strings.gts(type, Constants.VIEW), uri(type, id, lang, view)
 					+ refParameter, Icon.MAGNIFYING_GLASS));
 		}
 
-		if (!Action.INSERT.equals(form)) {
+		if (!Action.INSERT.equals(form) && permissions.isAllowed(type, Action.INSERT_FORM)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.INSERT),
 					uri(type, lang, view) + formParameter(Action.INSERT) + refParameter, Icon.PLUS));
 		}
 
-		if (id != null || form != null || component != null || request.isInfo() || request.isPreview()
-				|| request.isCalendar()) {
+		if (permissions.isAllowed(type, Action.SELECT) && (id != null || form != null
+				|| component != null || request.isInfo() || request.isPreview() 
+				|| request.isCalendar())) {
 
 			String uri = uri(type, lang, view) + refParameter + searchParameter;
 
 			elements.add(iconAnchor(strings.gts(type, Constants.LIST), uri, Icon.LIST));
 		}
 
-		if (typeSettings.getTypeBoolean(type, Constants.SHOW_PREVIEW) && !request.isPreview()) {
+		if (typeSettings.getTypeBoolean(type, Constants.SHOW_PREVIEW) && !request.isPreview()
+				&& permissions.isAllowed(type,  Action.PREVIEW)) {
 			
 			String uri = uri(type, lang, view) + "&" + Action.PREVIEW + searchParameter;
 							
 			elements.add(iconAnchor(strings.getActionName(type, Action.PREVIEW), uri, Icon.LIST_RICH));
 		}
 
-		if (id == null && !Action.ALTER.equals(form)) {
+		if (id == null && !Action.ALTER.equals(form) && permissions.isAllowed(type, Action.ALTER_FORM)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.ALTER),
 					uri(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
 		}
 
-		if (id != null && !Action.UPDATE.equals(form)) {
+		if (id != null && !Action.UPDATE.equals(form)
+				&& permissions.isAllowed(type, Action.UPDATE_FORM)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.UPDATE),
 					uri(type, id, lang, view) + formParameter(Action.UPDATE), Icon.PENCIL));
 		}
 
-		if (!request.isInfo()) {
+		if (!request.isInfo() && permissions.isAllowed(type, Action.GET_TYPE)) {
 			elements.add(iconAnchor(strings.gts(type, Constants.TYPE), uri(type, lang, view) + "&" + Constants.INFO,
 					Icon.INFO));
 		}
@@ -2991,7 +3185,7 @@ public class HTMLView extends View {
 			elements.add(icalIconAnchor(type, lang, ref));
 		}
 
-		if (!request.isCalendar()) {
+		if (!request.isCalendar() && permissions.isAllowed(type, Action.CALENDAR)) {
 			String calendarSelect = typeSettings.gts(type, Constants.CALENDAR_SELECT);
 
 			if (calendarSelect != null) {
@@ -3249,21 +3443,72 @@ public class HTMLView extends View {
 		Element menuElement = document.getElementById(Constants.MENU);
 
 		if (menuElement != null) {
-			Menu menu = context.getMenu(typeSettings.gts(type, Constants.MENU));
+			
+			String file = typeSettings.gts(type, Constants.MENU);
+			
+			if (file != null) {
+				Menu menu = context.getMenu(typeSettings.gts(type, Constants.MENU));
 
-			for (MenuSection section : menu.getSections()) {
-				menuElement.appendElement(HTML.DIV).setClass(MENU_TITLE)
-						.appendText(strings.gts(type, section.getTitle()) + ":");
+				for (MenuSection section : menu.getSections()) {
+					menuElement.appendElement(menuTitle(type, section.getTitle()));
 
-				Element ul = menuElement.appendElement(HTML.UL);
+					Element ul = menuElement.appendElement(HTML.UL);
 
-				for (Anchor anchor : section.getAnchors()) {
-					Element li = ul.appendElement(HTML.LI);
-					li.appendElement(
-							anchor(strings.gts(type, anchor.getText()), href_uri(anchor.getHref(), lang, view)));
+					for (Anchor anchor : section.getAnchors()) {
+						ul.appendElement(menuListItem(type, anchor.getText(), anchor.getHref(), lang, view));
+					}
 				}
 			}
+			
+			if (typeSettings.getTypeBoolean(type, Constants.SHOW_CONTROL_PANEL)) {
+				menuElement.appendElement(controlPanel(type, lang, view));
+			}
 		}
+	}
+	
+	public Element controlPanel(String type, String lang, String view) {
+		Element section = document.createElement(HTML.SPAN).setClass(CONTROL_PANEL);
+	
+		section.appendElement(menuTitle(type, Constants.CONTROL_PANEL));
+		
+		Element ul = section.appendElement(HTML.UL);
+		
+		if (permissions.isAllowed(type, Action.LOGIN_FORM)) {
+			ul.appendElement(menuListItem(type, Action.LOGIN, "/?form=login", lang, view));
+		}
+		
+		if (permissions.isAllowed(type, Action.GET_TYPES_INFO)) {
+			ul.appendElement(menuListItem(type, Constants.TYPES, "/?info", lang, view));
+		}
+		
+		if (permissions.isAllowed(type, Action.CREATE_FORM)) {
+			ul.appendElement(menuListItem(type, Constants.CREATE_TYPE, "/?form=create", lang, view));
+		}
+		
+		if (permissions.isAllowed(type, Action.IMPORT_TYPES_FORM)) {
+			ul.appendElement(menuListItem(type, Action.IMPORT_TYPES, "/?form=import_types", lang, view));
+		}
+		
+		if (permissions.isAllowed(type, Action.IMPORT_OBJECTS_FORM)) {
+			ul.appendElement(menuListItem(type, Action.IMPORT_OBJECTS, "/?form=import_objects", lang, view));
+		}
+		
+		if (permissions.isAllowed(type, Action.GET_REFERENCES)) {
+			ul.appendElement(menuListItem(type, Constants.REFERENCES, "/?references", lang, view));
+		}
+		
+		return section;
+	}
+	
+	public Element menuTitle(String type, String title) {
+		return document.createElement(HTML.DIV).setClass(MENU_TITLE)
+				.appendText(strings.gts(type, title) + ":");
+	}
+	
+	public Element menuListItem(String type, String text, String href, String lang, String view) {
+		Element li = document.createElement(HTML.LI);
+		li.appendElement(anchor(strings.gts(type, text), href_uri(href, lang, view)));
+		return li;
 	}
 
 	public void langs(String lang) {
@@ -3309,9 +3554,8 @@ public class HTMLView extends View {
 			userNameSpan.appendText(user);
 
 			Element button = button(strings.gts(type, Constants.LOGOUT), Action.LOGOUT, Icon.ACCOUNT_LOGOUT,
-					SUBMIT_FORM);
-			button.setId(LOGOUT_BUTTON);
-
+					SUBMIT_FORM).setId(LOGOUT_BUTTON);
+			
 			form.appendElement(button);
 
 			if (!request.isLoginUser()) {
@@ -3379,7 +3623,8 @@ public class HTMLView extends View {
 		if (actionsElement != null) {
 			String form = request.getForm();
 
-			if (type != null && !Action.INSERT.equals(form) && !Action.ALTER.equals(form)
+			if (permissions.isAllowed(type, Action.EXECUTE_ACTION_FORM) && type != null
+					&& !Action.INSERT.equals(form) && !Action.ALTER.equals(form)
 					&& !Action.RENAME.equals(form) && !request.isInfo()) {
 
 				LinkedHashMap<String, LinkedHashMap<String, TypeField>> actions = nextNode.getTypeActions(type);
@@ -3389,6 +3634,12 @@ public class HTMLView extends View {
 
 					if (requestAction != null) {
 						actions.remove(requestAction);
+					}
+					
+					for (String action : actions.keySet()) {
+						if (!permissions.isAllowed(type, action)) {
+							actions.remove(action);
+						}
 					}
 
 					if (actions.size() > 0) {

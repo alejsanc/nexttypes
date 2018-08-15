@@ -17,6 +17,7 @@
 package com.nexttypes.nodes;
 
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Savepoint;
@@ -181,14 +182,16 @@ public class ControllersNode implements Node {
 
 		try {
 			result = (ActionResult) method.invoke(controller, parameters);
-		} catch (Exception e) {
+		} catch (InvocationTargetException e) {
 			Throwable cause = e.getCause();
 
 			if (cause instanceof NXException) {
 				throw (NXException) cause;
 			} else {
-				throw new ActionExecutionException(type, action, e);
+				throw new ActionExecutionException(type, action, cause);
 			}
+		} catch (IllegalAccessException | IllegalArgumentException e) {
+			throw new ActionExecutionException(type, action, e);
 		}
 
 		return result;

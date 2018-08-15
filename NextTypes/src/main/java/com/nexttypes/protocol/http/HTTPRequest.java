@@ -615,8 +615,7 @@ public class HTTPRequest {
 				}
 
 				IndexMode indexMode = IndexMode.valueOf(value.get(Constants.MODE).toUpperCase());
-				String indexFieldsString = value.get(Constants.FIELDS);
-				String[] indexFields = indexFieldsString != null ? indexFieldsString.split(",") : null;
+				String[] indexFields = Utils.split(value.get(Constants.FIELDS));
 				String indexOldName = value.get(Constants.OLD_NAME);
 
 				typeObjectIndexes.put(indexName, new TypeIndex(indexMode, indexFields, indexOldName));

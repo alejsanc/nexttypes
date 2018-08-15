@@ -77,7 +77,7 @@ public class Settings {
 	}
 
 	public String[] getStringArray(String setting) {
-		return Utils.split(getString(setting), ",");
+		return Utils.split(getString(setting));
 	}
 
 	public Short getInt16(String setting) {

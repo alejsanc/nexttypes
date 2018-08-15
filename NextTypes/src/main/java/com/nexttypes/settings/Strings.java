@@ -43,6 +43,10 @@ public class Strings extends TypeSettings {
 	public String getFieldName(String type, String field) {
 		return getFieldString(type, field, Constants.NAME, field);
 	}
+	
+	public String getActionName(String action) {
+		return getActionName(null, action);
+	}
 
 	public String getActionName(String type, String action) {
 		return getActionString(type, action, Constants.NAME, action);

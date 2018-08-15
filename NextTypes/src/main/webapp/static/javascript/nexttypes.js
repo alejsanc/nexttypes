@@ -163,7 +163,7 @@ function uncheckAll(event){
 	var form = checkbox.form;
 	
 	if(checkbox.checked == false){
-		form.elements["all"].checked = false;
+		form.querySelector("input.all-checkbox").checked = false;
 	}
 }
 
@@ -171,11 +171,9 @@ function checkUncheckAll(event){
 	var checkbox = event.currentTarget;
 	var elements = checkbox.form.querySelectorAll("input.item-checkbox");
 	
-	if(elements != null){
-		if(elements instanceof HTMLInputElement){
-			elements.checked = checkbox.checked;
-		}else{
-			for(let element of elements){
+	if (elements != null) {
+		for (let element of elements){
+			if (!element.disabled) {
 				element.checked = checkbox.checked;
 			}
 		}
@@ -215,7 +213,7 @@ function addTypeField(event){
 		notNull.checked = true;
 		row.insertCell(3).appendChild(notNull);
     
-		var deleteRowButton = smallImageButton(form.getAttribute("data-strings-drop-field"), "minus");
+		var deleteRowButton = smallButton(form.getAttribute("data-strings-drop-field"), "minus");
 		deleteRowButton.addEventListener("click", deleteRow);
 		row.insertCell(4).appendChild(deleteRowButton);
 		
@@ -264,7 +262,7 @@ function addTypeIndex(event){
     
     row.insertCell(2).appendChild(input("text", index+":fields", form.getAttribute("data-strings-fields")));
         
-    var deleteRowButton = smallImageButton(form.getAttribute("data-strings-drop-index"), "minus");
+    var deleteRowButton = smallButton(form.getAttribute("data-strings-drop-index"), "minus");
     deleteRowButton.addEventListener("click", deleteRow);
     row.insertCell(3).appendChild(deleteRowButton);
     
@@ -331,7 +329,7 @@ function input(type, name, title){
     return input;
 }
 
-function smallImageButton(text, image){
+function smallButton(text, image){
 	var button = document.createElement("button");
 	button.setAttribute("type", "button");
 	button.appendChild(smallIcon(text, image));
@@ -443,13 +441,18 @@ function submitForm(event){
 						response = JSON.parse(request.responseText);
 						message = response["message"];
 						
-						form.elements["adate"].value = response["adate"];
+						if (response["altered"]) {
+							form.elements["adate"].value = response["adate"];
+							
+							var inputs = form.querySelectorAll("input[name$=':name']");
+							for (let input of inputs) {
+								var field = input.name.split(":");
+								form.elements[field[0] + ":" + field[1]+ ":old_name"].value = input.value;
+							}
+						} else {
+							dialogType = DIALOG.WARNING;
+						}						
 						
-						var inputs = form.querySelectorAll("input[name$=':name']");
-						for (let input of inputs) {
-							var field = input.name.split(":");
-							form.elements[field[0] + ":" + field[1]+ ":old_name"].value = input.value;
-						}
 						break;
 						
 					case ACTION.RENAME:
@@ -460,7 +463,29 @@ function submitForm(event){
 							var pathname = pageURI.pathname;
 							var newName = form.elements["new_name"].value;
 							pageURI.pathname = pathname.substr(0, pathname.lastIndexOf("/")+1)+newName;
-							pageURI.searchParams.set("form", "alter");
+							pageURI.searchParams.set("form", "" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"" +
+									"");
 							window.location = pageURI;
 						}
 						

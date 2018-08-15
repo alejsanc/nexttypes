@@ -42,12 +42,16 @@ public class FileHandler extends java.util.logging.Handler {
 
 	@Override
 	public void close() throws SecurityException {
-		logger.close();
+		if (logger != null) {
+			logger.close();
+		}
 	}
 
 	@Override
 	public void flush() {
-		logger.flush();
+		if (logger != null) {
+			logger.flush();
+		}
 	}
 
 	@Override
@@ -59,7 +63,7 @@ public class FileHandler extends java.util.logging.Handler {
 			if (!date.equals(loggerDate)) {
 				if (logger != null) {
 					logger.close();
-				}
+				} 
 
 				FileOutputStream file = new FileOutputStream(directory + prefix + date + ".log", true);
 				logger = new PrintStream(file, true, Constants.UTF_8_CHARSET);
