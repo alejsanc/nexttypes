@@ -59,18 +59,18 @@ const ACTION = {
 	IMPORT_OBJECTS: "import_objects",
 	LOGIN: "login",
 	LOGOUT: "logout"
-}
+};
 
 const ICON = {
 	CHECK: "check",
 	WARNING: "warning",
 	X: "x"
-}
+};
 
 const COMPONENT = {
 	TYPE: "type",
 	REFERENCE: "reference"
-}
+};
 
 var fieldCount = 0;
 var indexCount = 0;
@@ -79,7 +79,7 @@ var filterCount = 0;
 var pageURI = new URL(window.location);
 var pageLang = document.documentElement.getAttribute("lang");
 	
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function() {
 	initEventListeners();
 	
 	var fieldsTable = document.getElementById("fields");
@@ -99,12 +99,13 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 });
 
-window.addEventListener("beforeunload", function(event){
+window.addEventListener("beforeunload", function(event) {
 	var forms = document.querySelectorAll("form.unload-confirmation");
 	
-	for(let form of forms){
+	for (let form of forms) {
 		var changed = form.getAttribute("data-changed");
-		if(changed == "true"){
+		
+		if (changed) {
 			var confirmationMessage = "\o/";
 			event.returnValue = confirmationMessage;
 			return confirmationMessage;     
@@ -112,7 +113,7 @@ window.addEventListener("beforeunload", function(event){
 	}
 });
 
-function initEventListeners(){
+function initEventListeners() {
 	addEventListeners(document, "button.add-field", "click", addTypeField);
 	addEventListeners(document, "button.add-index", "click", addTypeIndex);
 	addEventListeners(document, "button.add-filter", "click", addFilter);
@@ -127,17 +128,17 @@ function initEventListeners(){
 	addSelectTableEventListeners(document);
 	
 	var forms = document.querySelectorAll("form.unload-confirmation");
-	for(let form of forms){
+	for (let form of forms) {
 		addFormChangeEventListeners(form);
 	}
 }
 
-function addFormChangeEventListeners(rootElement){
-	addEventListeners(rootElement, "input,textarea,select", "input", formChanged);
-	addEventListeners(rootElement, "input,textarea,select", "change", formChanged);
+function addFormChangeEventListeners(rootElement) {
+	addEventListeners(rootElement, "input,textarea,select", "input", formChange);
+	addEventListeners(rootElement, "input,textarea,select", "change", formChange);
 }
 
-function addSelectTableEventListeners(rootElement){
+function addSelectTableEventListeners(rootElement) {
 	addEventListeners(rootElement, "button.submit-form", "click", submitForm);
 	addEventListeners(rootElement, "button.export", "click", exportFunction);
 	addEventListeners(rootElement, "a.select-header-anchor", "click", selectTableHeaderAnchor);
@@ -147,32 +148,32 @@ function addSelectTableEventListeners(rootElement){
 	addEventListeners(rootElement, "select.limit", "change", changeLimit);
 }
 
-function addEventListeners(rootElement, query, event, eventFunction){
+function addEventListeners(rootElement, query, event, eventFunction) {
 	var elements = rootElement.querySelectorAll(query);
-	for(let element of elements){
+	for (let element of elements) {
 		element.addEventListener(event, eventFunction);
 	}
 }
 
-function formChanged(event){
-	event.currentTarget.form.setAttribute("data-changed", "true");
+function formChange(event) {
+	event.currentTarget.form.setAttribute("data-changed", "data-changed");
 }
 
-function uncheckAll(event){
+function uncheckAll(event) {
 	var checkbox = event.currentTarget;
 	var form = checkbox.form;
 	
-	if(checkbox.checked == false){
+	if (checkbox.checked == false) {
 		form.querySelector("input.all-checkbox").checked = false;
 	}
 }
 
-function checkUncheckAll(event){
+function checkUncheckAll(event) {
 	var checkbox = event.currentTarget;
 	var elements = checkbox.form.querySelectorAll("input.item-checkbox");
 	
 	if (elements != null) {
-		for (let element of elements){
+		for (let element of elements) {
 			if (!element.disabled) {
 				element.checked = checkbox.checked;
 			}
@@ -180,12 +181,12 @@ function checkUncheckAll(event){
 	}
 }
 
-function addTypeField(event){
-	formChanged(event);
+function addTypeField(event) {
+	formChange(event);
 	
 	var request = new XMLHttpRequest();
 	request.open("GET", "/?view=json&names", true);
-	request.onload = function(e){
+	request.onload = function(e) {
 		var types = Object.values(PRIMITIVE_TYPES).concat(JSON.parse(request.responseText));
 				
 		var table = document.getElementById("fields");
@@ -223,12 +224,12 @@ function addTypeField(event){
     request.send(null);
 }
 
-function select(name, title, values){
+function select(name, title, values) {
 	var select = document.createElement("select")
 	select.name = name;
 	select.title = title;
 	
-	for(let value of values){
+	for (let value of values) {
 		var option = document.createElement("option");
 		option.value = value;
 		option.appendChild(document.createTextNode(value));
@@ -238,8 +239,8 @@ function select(name, title, values){
 	return select;
 }
 
-function addTypeIndex(event){
-	formChanged(event);
+function addTypeIndex(event) {
+	formChange(event);
 	
 	var table = document.getElementById("indexes");
 	var body = table.tBodies[0];
@@ -291,9 +292,9 @@ function loadFilter(row, field) {
 	
 	var request = new XMLHttpRequest();
 	request.open("GET", uri, true);
-	request.onload = function(e){
+	request.onload = function(e) {
 		
-		if(request.status == 200){
+		if (request.status == 200) {
 			var container = document.createElement("div");
 			container.innerHTML = request.responseText;
 			container.querySelector("button.delete-row").addEventListener("click", deleteRow);
@@ -313,15 +314,15 @@ function changeFilterField(event) {
 	loadFilter(select.parentNode.parentNode, field);
 }
 
-function deleteRow(event){
-	formChanged(event);
+function deleteRow(event) {
+	formChange(event);
 	
 	var row = event.currentTarget.parentNode.parentNode;
 	var tableBody = row.parentNode;
 	tableBody.deleteRow(row.rowIndex - 1);
 }
 
-function input(type, name, title){
+function input(type, name, title) {
 	var input = document.createElement("input");
     input.type = type;
     input.name = name;
@@ -329,58 +330,58 @@ function input(type, name, title){
     return input;
 }
 
-function smallButton(text, image){
+function smallButton(text, image) {
 	var button = document.createElement("button");
 	button.setAttribute("type", "button");
 	button.appendChild(smallIcon(text, image));
 	return button; 
 }
 
-function smallIcon(text, image){
+function smallIcon(text, image) {
 	var iconElement = icon(text, image);
 	iconElement.classList.add("small-icon");
 	return iconElement;
 }
 
-function icon(text, imageName){
+function icon(text, imageName) {
 	return image(text, "/static/icons/"+imageName+".svg");
 }
 
-function image(text, image){
+function image(text, image) {
 	var img = document.createElement("img");
 	img.setAttribute("src", image);
 	img.setAttribute("alt", text);
 	return img;
 }
 
-function submitForm(event){
+function submitForm(event) {
 	var button = event.currentTarget;
 	var action = button.value;
-	var exec = false;
+	var execute = false;
 	var form = button.form;
 	var acceptString = form.getAttribute("data-strings-accept");
 	var cancelString = form.getAttribute("data-strings-cancel");
 	var showProgress = form.getAttribute("data-show-progress");
 	
-	switch(action){
+	switch (action) {
 		case ACTION.DELETE:
-			exec = confirm(form.getAttribute("data-strings-objects-delete-confirmation"));
+			execute = confirm(form.getAttribute("data-strings-objects-delete-confirmation"));
 			break;
 			
 		case ACTION.DROP:
-			exec = confirm(form.getAttribute("data-strings-types-drop-confirmation"));
+			execute = confirm(form.getAttribute("data-strings-types-drop-confirmation"));
 			break;
 			
 		default:
-			exec = true;
+			execute = true;
 	}
 	
-	if(exec){
+	if (execute) {
 		setFormInput(form, "type_action", action);
 		
 		var request = new XMLHttpRequest();
 		
-		if(showProgress) {
+		if (showProgress) {
 				
 			progress(request, cancelString);
 			var bar = document.getElementById("progress-bar");
@@ -388,7 +389,7 @@ function submitForm(event){
 			var start = Date.now();
 											
 			request.upload.onprogress = function(e) {			
-				if(e.lengthComputable) {
+				if (e.lengthComputable) {
 					var speed = e.loaded / ((Date.now() - start) / 1000);
 												
 					bar.max = e.total;
@@ -397,24 +398,25 @@ function submitForm(event){
 				}
 			};
 		}
-				request.onload = function(event){
+		
+		request.onload = function(event) {
 			var response = null;
 			var message = null;
 			var dialogType = null;
 			var textAlign = "center";
 			var callback = null;
 			
-			if(request.status == 200){
+			if (request.status == 200) {
 				
-				if(action == ACTION.IMPORT_TYPES || action == ACTION.IMPORT_OBJECTS){
+				if (action == ACTION.IMPORT_TYPES || action == ACTION.IMPORT_OBJECTS) {
 					textAlign = "left";
 				}
 				
-				form.setAttribute("data-changed", "false");
+				form.removeAttribute("data-changed");
 				
 				dialogType = DIALOG.SUCCESS;
 							
-				switch(action){
+				switch (action) {
 					case ACTION.DELETE:
 						message = request.responseText;
 						
@@ -483,10 +485,10 @@ function submitForm(event){
 						response = JSON.parse(request.responseText);
 						message = response["message"];
 						
-						callback = function(){
+						callback = function() {
 							var pathname = pageURI.pathname;
 							var newId = form.elements["new_id"].value;
-							pageURI.pathname = pathname.substr(0, pathname.lastIndexOf("/")+1)+newId;
+							pageURI.pathname = pathname.substr(0, pathname.lastIndexOf("/") + 1) + newId;
 							pageURI.searchParams.set("form", "update");
 							window.location = pageURI;
 						}
@@ -530,7 +532,7 @@ function submitForm(event){
 						message = response["message"]; 
 						break;
 				}
-			}else{
+			} else {
 				message = request.responseText;
 				dialogType = DIALOG.ERROR;
 			}
@@ -543,7 +545,7 @@ function submitForm(event){
 	}
 }
 
-function dialogElement() {
+function createDialog() {
 	var dialog = document.getElementById("dialog");
 	
 	if (dialog == null) {
@@ -563,7 +565,7 @@ function dialogElement() {
 }
 
 function progress(request, cancelString) {
-	var dialog = dialogElement();
+	var dialog = createDialog();
 	dialog.classList.add("progress-dialog");
 		
 	var progressBar = document.createElement("progress");
@@ -579,7 +581,7 @@ function progress(request, cancelString) {
 	cancelButton.appendChild(document.createTextNode(cancelString));
 	dialog.appendChild(cancelButton);
 	
-	cancelButton.addEventListener("click", function(){
+	cancelButton.addEventListener("click", function() {
 		request.abort();
 		removeDialog();
 	});
@@ -612,10 +614,10 @@ function langNumber(number, lang) {
 	return number.toLocaleString(lang, { maximumFractionDigits:2 })
 }
 
-function result(message, type, textAlign, callback, acceptString){
+function result(message, type, textAlign, callback, acceptString) {
 	var iconName = null;
 				
-	switch(type){
+	switch (type) {
 		case DIALOG.SUCCESS:
 			iconName = ICON.CHECK;
 			break;
@@ -629,7 +631,7 @@ function result(message, type, textAlign, callback, acceptString){
 			break;
 	}
 	
-	var dialog = dialogElement();
+	var dialog = createDialog();
 	
 	var cancelButton = document.getElementById("cancel-button");
 	if (cancelButton) {
@@ -642,23 +644,23 @@ function result(message, type, textAlign, callback, acceptString){
 	dialog.classList.remove("progress-dialog");
 	dialog.classList.add(type+"-dialog");
 				
-	var button = document.createElement("button");
-	button.appendChild(document.createTextNode(acceptString));
-	button.addEventListener("click", removeDialog);
+	var acceptButton = document.createElement("button");
+	acceptButton.appendChild(document.createTextNode(acceptString));
+	acceptButton.addEventListener("click", removeDialog);
 	
-	if(callback != null){
-		button.addEventListener("click", callback);
+	if (callback != null) {
+		acceptButton.addEventListener("click", callback);
 	}
 	
-	dialog.appendChild(button);
+	dialog.appendChild(acceptButton);
 }
 
-function removeDialog(){
+function removeDialog() {
 	var dialogBackground = document.getElementById("dialog-background");
 	dialogBackground.parentNode.removeChild(dialogBackground);
 }
 
-function exportFunction(event){
+function exportFunction(event) {
 	var button = event.currentTarget;
 	var action = button.value;
 	var form = button.form;
@@ -669,16 +671,16 @@ function exportFunction(event){
 	form.submit();
 }
 
-function setFormInput(form, name, value){
+function setFormInput(form, name, value) {
 	var formInput = form.elements[name];
-	if(formInput == null){
+	if (formInput == null) {
 		formInput = input("hidden", name);
 		form.appendChild(formInput); 
 	}
 	formInput.value = value;
 }
 
-function selectTableIndexAnchor(event){
+function selectTableIndexAnchor(event) {
 	var anchor = event.currentTarget;
 	var component = anchor.getAttribute("data-component");
 	
@@ -688,17 +690,17 @@ function selectTableIndexAnchor(event){
 	}
 }
 
-function selectTableHeaderAnchor(event){
+function selectTableHeaderAnchor(event) {
 	event.preventDefault();
 	
 	var anchor = event.currentTarget;
 	
 	var uri = anchor.href;
 		
-	if(event.ctrlKey){
+	if (event.ctrlKey) {
 		uri = new URL(uri);
 		var order = anchor.getAttribute("data-multi-order");
-		if(order != null && order.length > 0){
+		if (order != null && order.length > 0) {
 			uri.searchParams.set("order", order);
 		}
 	}
@@ -712,15 +714,15 @@ function selectTableHeaderAnchor(event){
 	}
 }
 
-function loadSelectTable(element, uri, component){
-	while(!element.classList.contains("select")){
+function loadSelectTable(element, uri, component) {
+	while (!element.classList.contains("select")) {
 		element = element.parentNode;
 	}
 		
 	var request = new XMLHttpRequest();
 	request.open("GET", uri + "&component=" + component, true);
-	request.onload = function(e){
-		if(request.status == 200){
+	request.onload = function(e) {
+		if (request.status == 200) {
 			var container = document.createElement("div");
 			container.innerHTML = request.responseText;
 			addSelectTableEventListeners(container);
@@ -801,11 +803,11 @@ function resetBinaryInputs(form) {
 	}
 }
 
-function changeLanguage(event){
+function changeLanguage(event) {
 	changeURIParameter(event, "lang");
 }
 
-function changeYear(event){
+function changeYear(event) {
 	changeURIParameter(event, "year");
 }
 
@@ -827,7 +829,7 @@ function changeLimit(event) {
 	}
 }
 
-function changeURIParameter(event, parameter){
+function changeURIParameter(event, parameter) {
 	var select = event.currentTarget;
 	var value = select.options[select.selectedIndex].value;
 	
