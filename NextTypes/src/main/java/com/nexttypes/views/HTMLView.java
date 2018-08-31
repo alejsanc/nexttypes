@@ -2227,10 +2227,6 @@ public class HTMLView extends View {
 			option.appendText(objectName);
 		}
 		
-		if (value == null) {
-			input.getFirstChildElement().setAttribute(HTML.SELECTED);
-		}
-		
 		return input;
 	}
 	
