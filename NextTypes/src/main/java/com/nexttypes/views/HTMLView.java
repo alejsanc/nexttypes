@@ -298,7 +298,7 @@ public class HTMLView extends View {
 		String icon = null;
 
 		Element typeForm = form(type, lang, view)
-				.setClass(UNLOAD_CONFIRMATION)
+				.addClass(UNLOAD_CONFIRMATION)
 				.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
 				.setAttribute(DATA_STRINGS_FIELDS, fields)
 				.setAttribute(DATA_STRINGS_TYPE, typeString)
@@ -935,7 +935,7 @@ public class HTMLView extends View {
 	
 	public Element searchOutput(String type, String lang, String view, FieldReference ref,
 			Filter[] filters, String search, LinkedHashMap<String, Order> order) {
-		Element div = document.createElement(HTML.DIV).setClass(SEARCH_OUTPUT);
+		Element div = document.createElement(HTML.DIV).addClass(SEARCH_OUTPUT);
 		div.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.SEARCH) + ": ");
 		div.appendText(search);
 		
@@ -1083,7 +1083,7 @@ public class HTMLView extends View {
 			
 			Element checkbox = row.appendElement(HTML.TD)
 					.appendElement(input(HTML.CHECKBOX, Constants.TYPES, typeName, type)
-					.setClass(ITEM_CHECKBOX));
+					.addClass(ITEM_CHECKBOX));
 			if (disableCheckbox) {
 				checkbox.setAttribute(HTML.DISABLED);
 			}
@@ -1145,7 +1145,7 @@ public class HTMLView extends View {
 		return document.createElement(HTML.INPUT)
 				.setAttribute(HTML.TYPE, HTML.CHECKBOX)
 				.setAttribute(HTML.TITLE, strings.gts(type, Constants.CHECK_UNCHECK_ALL))
-				.setClass(ALL_CHECKBOX);
+				.addClass(ALL_CHECKBOX);
 	}
 
 	public Element insertForm(String type, LinkedHashMap<String, TypeField> typeFields, String lang, String view,
@@ -1331,7 +1331,7 @@ public class HTMLView extends View {
 		}
 		
 		Element select = document.createElement(HTML.DIV);
-		select.setClass(HTML.SELECT);
+		select.addClass(HTML.SELECT);
 
 		String[] fields = typeSettings.getActionStringArray(type, Action.SELECT, Constants.FIELDS);
 		Objects result = nextNode.select(type, fields, lang, refAndFilters, search, order, offset, limit);
@@ -1368,13 +1368,13 @@ public class HTMLView extends View {
 			String search, Long count, Component component) {
 		
 		Element selectHeader = document.createElement(HTML.DIV)
-				.setClass(SELECT_HEADER);
+				.addClass(SELECT_HEADER);
 		
 		String title = strings.getReferenceName(type, ref);
 		
 		selectHeader.appendElement(HTML.STRONG).appendText(title);
 		selectHeader.appendText(" " + count + " " + strings.gts(type, Constants.OBJECTS));
-		selectHeader.appendElement(HTML.NAV).setClass(SELECT_MENU)
+		selectHeader.appendElement(HTML.NAV).addClass(SELECT_MENU)
 				.appendElements(typeMenuElements(type, null, lang, view, ref, search, component));
 		
 		return selectHeader;
@@ -1506,7 +1506,7 @@ public class HTMLView extends View {
 		
 		String refType = nextNode.getTypeField(type, ref.getField()).getType();
 
-		Element div = document.createElement(HTML.DIV).setClass(REFERENCE_OUTPUT);
+		Element div = document.createElement(HTML.DIV).addClass(REFERENCE_OUTPUT);
 		div.appendElement(HTML.STRONG).appendText(strings.getFieldName(type, ref.getField()) + ": ");
 		div.appendElement(anchor(nextNode.getName(refType, ref.getId(), lang), uri(refType, ref.getId(), lang, view)));
 		
@@ -1532,7 +1532,7 @@ public class HTMLView extends View {
 	public Element updateForm(NXObject object, LinkedHashMap<String, TypeField> typeFields, String lang, String view,
 			boolean showType, boolean showId, boolean showHeader, boolean showProgress) {
 		String type = object.getType();
-		Element form = multipartForm(type, object.getId(), lang, view).setClass(UNLOAD_CONFIRMATION)
+		Element form = multipartForm(type, object.getId(), lang, view).addClass(UNLOAD_CONFIRMATION)
 				.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF);
 
 		if (showProgress) {
@@ -1687,7 +1687,7 @@ public class HTMLView extends View {
 		if (ref != null && field.equals(ref.getField())) {
 			input = document.createElement(HTML.DIV)
 					.appendElement(input(HTML.HIDDEN, "@" + ref.getField(), title, ref.getId()));
-			cell.setClass(REFERENCE_FIELD);
+			cell.addClass(REFERENCE_FIELD);
 			cell.appendText(nextNode.getName(typeField.getType(), ref.getId(), lang));
 		} else {
 			input = fieldInput(type, field, title, null, typeField, lang);
@@ -1798,7 +1798,7 @@ public class HTMLView extends View {
 
 		Element input = binaryInput("@" + field, title, value, allowedContentTypes, lang);
 		Element clearAnchor = iconAnchor(strings.gts(type, Constants.CLEAR), null, Icon.DELETE)
-				.setClass(ICON + " " + CLEAR_BINARY_INPUT + " " + HTML.HIDDEN);
+				.addClasses(CLEAR_BINARY_INPUT, HTML.HIDDEN);
 		
 		input.appendElement(clearAnchor);
 		
@@ -1810,20 +1810,18 @@ public class HTMLView extends View {
 	}
 	
 	public Element nullFieldInput(String type, String field, Object value) {
-		Element nullFieldInput = document.createElement(HTML.SPAN);
+		Element nullFieldInput = document.createElement(HTML.SPAN).addClass(NULL_FIELD_INPUT);
 		
 		String nullName = strings.gts(type, Constants.NULL);
 		
 		nullFieldInput.appendText(" | " + nullName + ":");
 	
 		nullFieldInput.appendElement(booleanInput("@" + field + Constants._NULL, nullName, false))
-			.setClass(Constants.NULL);
+			.addClass(Constants.NULL);
 		
 		if (value == null) {
-			nullFieldInput.setClass(NULL_FIELD_INPUT + " " + HTML.HIDDEN);
-		} else {
-			nullFieldInput.setClass(NULL_FIELD_INPUT);
-		}
+			nullFieldInput.addClass(HTML.HIDDEN);
+		} 
 		
 		return nullFieldInput;
 	}
@@ -1836,13 +1834,13 @@ public class HTMLView extends View {
 			String lang) {
 		Element binaryInput = document.createElement(HTML.SPAN);
 
-		Element input = binaryInput.appendElement(input(HTML.FILE, name, title)).setClass(PT.BINARY);
+		Element input = binaryInput.appendElement(input(HTML.FILE, name, title)).addClass(PT.BINARY);
 
 		if (allowedContentTypes != null) {
 			input.setAttribute(HTML.ACCEPT, allowedContentTypes);
 		}
 
-		Element binaryInputSize = binaryInput.appendElement(HTML.SPAN).setClass(BINARY_INPUT_SIZE);
+		Element binaryInputSize = binaryInput.appendElement(HTML.SPAN).addClass(BINARY_INPUT_SIZE);
 
 		if (value == null) {
 			value = 0;
@@ -2015,7 +2013,7 @@ public class HTMLView extends View {
 
 		Element textarea = document.createElement(HTML.TEXTAREA);
 		textarea.appendText(value.toString());
-		textarea.setClass(textareaClass);
+		textarea.addClass(textareaClass);
 		return textarea;
 	}
 
@@ -2045,7 +2043,7 @@ public class HTMLView extends View {
 		}
 
 		if (fieldType != null) {
-			textarea.setClass(fieldType);
+			textarea.addClass(fieldType);
 		}
 
 		String[] modes = typeSettings.getFieldStringArray(type, field, Constants.EDITOR);
@@ -2180,7 +2178,7 @@ public class HTMLView extends View {
 		return document.createElement(HTML.TEXTAREA)
 				.setAttribute(HTML.NAME, name)
 				.setAttribute(HTML.TITLE, title)
-				.setClass(OBJECTS_TEXTAREA_INPUT);
+				.addClass(OBJECTS_TEXTAREA_INPUT);
 	}
 	
 	public Element objectsMultipleSelectInput(String name, String title, Integer size, 
@@ -2234,7 +2232,7 @@ public class HTMLView extends View {
 			boolean notNull, String lang) {
 		
 		InputGroup inputGroup = document.createInputGroup();
-		inputGroup.setClass(OBJECT_RADIO_INPUT);
+		inputGroup.addClass(OBJECT_RADIO_INPUT);
 		
 		if (!notNull) {
 			String nullName = strings.gts(type, Constants.NULL);
@@ -2387,7 +2385,7 @@ public class HTMLView extends View {
 						orderLinkString = " " + orderLinkString;
 					}
 
-					cell.setClass(ORDER_COLUMN);
+					cell.addClass(ORDER_COLUMN);
 				}
 
 				if (value != null) {
@@ -2411,7 +2409,7 @@ public class HTMLView extends View {
 		}
 
 		cell.appendElement(selectTableAnchor(fieldName + orderLinkString, type, lang, view, ref, filters,
-				search, fieldOrder, offset, limit, component).setClass(SELECT_HEADER_ANCHOR)
+				search, fieldOrder, offset, limit, component).addClass(SELECT_HEADER_ANCHOR)
 					.setAttribute(DATA_MULTI_ORDER,	multiOrderParameter.toString()));
 
 		return cell;
@@ -2471,7 +2469,7 @@ public class HTMLView extends View {
 
 			row.appendElement(HTML.TD).appendElement(
 					input(HTML.CHECKBOX, Constants.OBJECTS, strings.getObjectsName(type), object.getId())
-							.setClass(ITEM_CHECKBOX));
+							.addClass(ITEM_CHECKBOX));
 
 			String idString = null;
 			if (object.getId().length() >= 25) {
@@ -2509,7 +2507,7 @@ public class HTMLView extends View {
 		form.appendElement(indexFooter);
 
 		Element div = form.appendElement(HTML.DIV);
-		div.setClass(SELECT_BUTTONS);
+		div.addClass(SELECT_BUTTONS);
 
 		String actionName = strings.getActionName(type, Action.DELETE);
 
@@ -2536,7 +2534,7 @@ public class HTMLView extends View {
 	public Element exportButton(String type, boolean disabled) {
 		String action = null;
 		Element buttons = document.createElement(HTML.DIV);
-		buttons.setClass(EXPORT_BUTTON);
+		buttons.addClass(EXPORT_BUTTON);
 		
 		if (type == null) {
 			action = Action.EXPORT_TYPES;
@@ -2577,7 +2575,7 @@ public class HTMLView extends View {
 			Long selectedOffset, Long limit, Long minLimit, Long maxLimit, Long limitIncrement,
 			Component component) {
 
-		Element index = document.createElement(HTML.DIV).setClass(SELECT_INDEX);
+		Element index = document.createElement(HTML.DIV).addClass(SELECT_INDEX);
 
 		if (selectedOffset == null) {
 			selectedOffset = 0L;
@@ -2618,9 +2616,9 @@ public class HTMLView extends View {
 
 			if (offset != selectedOffset) {
 				index.add(selectTableAnchor(text, type, lang, view, ref, filters, search, order, offset,
-						limit, component).setClass(Constants.OFFSET));
+						limit, component).addClass(Constants.OFFSET));
 			} else {
-				index.add(document.createElement(HTML.SPAN).setClass(SELECTED_OFFSET).appendText(text));
+				index.add(document.createElement(HTML.SPAN).addClass(SELECTED_OFFSET).appendText(text));
 			}
 		}
 
@@ -2642,7 +2640,7 @@ public class HTMLView extends View {
 
 		String text = selectTableIndexOffsetText(offsetTextMode, count, selectedOffset, limit);
 
-		index.add(document.createElement(HTML.SPAN).setClass(SELECTED_OFFSET).appendText(text));
+		index.add(document.createElement(HTML.SPAN).addClass(SELECTED_OFFSET).appendText(text));
 
 		for (int x = 1; x <= 3; x++) {
 			rightOffset = selectedOffset + (limit * x);
@@ -2652,14 +2650,14 @@ public class HTMLView extends View {
 				text = selectTableIndexOffsetText(offsetTextMode, count, rightOffset, limit);
 
 				index.add(selectTableAnchor(text, type, lang, view, ref, filters, search, order,
-						rightOffset, limit, component).setClass(NEAR_SELECTED_OFFSET));
+						rightOffset, limit, component).addClass(NEAR_SELECTED_OFFSET));
 			}
 
 			if (leftOffset >= 0) {
 				text = selectTableIndexOffsetText(offsetTextMode, count, leftOffset, limit);
 
 				index.add(0, selectTableAnchor(text, type, lang, view, ref, filters, search, order,
-						leftOffset, limit, component).setClass(NEAR_SELECTED_OFFSET));
+						leftOffset, limit, component).addClass(NEAR_SELECTED_OFFSET));
 			}
 		}
 
@@ -2673,7 +2671,7 @@ public class HTMLView extends View {
 			text = selectTableIndexOffsetText(offsetTextMode, count, rightOffset, limit);
 
 			index.add(selectTableAnchor(text, type, lang, view, ref, filters, search, order,
-					rightOffset, limit, component).setClass(Constants.OFFSET));
+					rightOffset, limit, component).addClass(Constants.OFFSET));
 		}
 
 		for (int x = 1; leftOffset > 0; x *= 2) {
@@ -2686,7 +2684,7 @@ public class HTMLView extends View {
 			text = selectTableIndexOffsetText(offsetTextMode, count, leftOffset, limit);
 
 			index.add(0, selectTableAnchor(text, type, lang, view, ref, filters, search, order,
-					leftOffset, limit, component).setClass(Constants.OFFSET));
+					leftOffset, limit, component).addClass(Constants.OFFSET));
 		}
 
 		return index.toArray(new Element[] {});
@@ -2718,7 +2716,7 @@ public class HTMLView extends View {
 
 	public Element selectTableLimitSelect(String type, Long count, Long limit, Long minLimit, Long maxLimit,
 			Long limitIncrement, Component component) {
-		Element select = document.createElement(HTML.SELECT).setClass(Constants.LIMIT);
+		Element select = document.createElement(HTML.SELECT).addClass(Constants.LIMIT);
 
 		if (Component.REFERENCE.equals(component)) {
 			select.setAttribute(DATA_COMPONENT, component.toString());
@@ -2828,7 +2826,7 @@ public class HTMLView extends View {
 	
 	public Element fieldOutput(String label, Object... elements) {
 		Element div = document.createElement(HTML.DIV);
-		div.setClass(FIELD_OUTPUT);
+		div.addClass(FIELD_OUTPUT);
 		div.appendElement(HTML.STRONG).appendText(label + ": ");
 
 		for (Object element : elements) {
@@ -2847,7 +2845,7 @@ public class HTMLView extends View {
 	public Element fieldOutput(NXObject object, String field, Object value, TypeField typeField, String lang,
 			String view) {
 		Element output = document.createElement(HTML.DIV);
-		output.setClass(FIELD_OUTPUT);
+		output.addClass(FIELD_OUTPUT);
 		String fieldName = strings.getFieldName(object.getType(), field);
 		output.appendElement(HTML.STRONG).appendText(fieldName + ": ");
 		output.appendElement(fieldOutput(object, field, value, typeField, lang, view, false));
@@ -3041,7 +3039,7 @@ public class HTMLView extends View {
 	}
 
 	public Element iconAnchor(String text, String href, String icon) {
-		return imageAnchor(text, href, "/static/icons/" + icon + ".svg").setClass(ICON);
+		return imageAnchor(text, href, "/static/icons/" + icon + ".svg").addClass(ICON);
 	}
 
 	public Element logoAnchor(String type, String lang, String view) {
@@ -3065,18 +3063,18 @@ public class HTMLView extends View {
 		button.appendElement(smallIcon(text, image));
 
 		if (buttonClass != null) {
-			button.setClass(buttonClass);
+			button.addClass(buttonClass);
 		}
 
 		return button;
 	}
 
 	public Element smallIcon(String text, String image) {
-		return icon(text, image).setClass(SMALL_ICON);
+		return icon(text, image).addClass(SMALL_ICON);
 	}
 
 	public Element normalIcon(String text, String image) {
-		return icon(text, image).setClass(ICON);
+		return icon(text, image).addClass(ICON);
 	}
 
 	public Element icon(String text, String image) {
@@ -3095,7 +3093,7 @@ public class HTMLView extends View {
 		Element button = document.createElement(HTML.BUTTON).setAttribute(HTML.TYPE, HTML.BUTTON);
 
 		if (buttonClass != null) {
-			button.setClass(buttonClass);
+			button.addClass(buttonClass);
 		}
 
 		if (value != null) {
@@ -3249,12 +3247,12 @@ public class HTMLView extends View {
 	public Element dates(String type, ZonedDateTime cdate, ZonedDateTime udate) {
 		Element dates = document.createElement(HTML.DIV);
 		Element creation = dates.appendElement(HTML.P);
-		creation.setClass(Constants.DATE);
+		creation.addClass(Constants.DATE);
 		creation.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.CREATION_DATE) + ": ");
 		creation.appendElement(time(cdate));
 
 		Element updating = dates.appendElement(HTML.P);
-		updating.setClass(Constants.DATE);
+		updating.addClass(Constants.DATE);
 		updating.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.UPDATING_DATE) + ": ");
 		updating.appendElement(time(udate));
 
@@ -3273,7 +3271,7 @@ public class HTMLView extends View {
 
 		if (document != null) {
 			document.getTitle().appendText(message);
-			main.appendElement(HTML.P).setClass(Constants.MESSAGE).appendText(message);
+			main.appendElement(HTML.P).addClass(Constants.MESSAGE).appendText(message);
 			content = render(type);
 			content.setStatus(HTTPStatus.NOT_FOUND);
 		} else {
@@ -3296,7 +3294,7 @@ public class HTMLView extends View {
 			}
 
 			document.getTitle().appendText(message);
-			main.appendElement(HTML.P).setClass(Constants.MESSAGE).appendText(message);
+			main.appendElement(HTML.P).addClass(Constants.MESSAGE).appendText(message);
 			content = render(type);
 			content.setStatus(HTTPStatus.UNAUTHORIZED);
 		} else {
@@ -3463,7 +3461,7 @@ public class HTMLView extends View {
 	}
 	
 	public Element controlPanel(String type, String lang, String view) {
-		Element section = document.createElement(HTML.SPAN).setClass(CONTROL_PANEL);
+		Element section = document.createElement(HTML.SPAN).addClass(CONTROL_PANEL);
 	
 		section.appendElement(menuTitle(type, Constants.CONTROL_PANEL));
 		
@@ -3497,7 +3495,7 @@ public class HTMLView extends View {
 	}
 	
 	public Element menuTitle(String type, String title) {
-		return document.createElement(HTML.DIV).setClass(MENU_TITLE)
+		return document.createElement(HTML.DIV).addClass(MENU_TITLE)
 				.appendText(strings.gts(type, title) + ":");
 	}
 	
@@ -3514,7 +3512,7 @@ public class HTMLView extends View {
 			Tuple langs = settings.getTuple(Constants.LANGS);
 
 			if (langs != null) {
-				Element select = langsElement.appendElement(HTML.SELECT).setClass(Constants.LANGS);
+				Element select = langsElement.appendElement(HTML.SELECT).addClass(Constants.LANGS);
 
 				for (Map.Entry<String, Object> entry : langs.getFields().entrySet()) {
 					String id = entry.getKey();
@@ -3539,7 +3537,7 @@ public class HTMLView extends View {
 			String user = request.getUser();
 
 			if (Auth.GUEST.equals(user)) {
-				userElement.setClass(HTML.HIDDEN);
+				userElement.addClass(HTML.HIDDEN);
 			}
 
 			Element form = userElement.appendElement(form(lang, view));
@@ -3555,7 +3553,7 @@ public class HTMLView extends View {
 			form.appendElement(button);
 
 			if (!request.isLoginUser()) {
-				button.setClass(HTML.HIDDEN + " " + SUBMIT_FORM);
+				button.addClass(HTML.HIDDEN);
 			}
 		}
 	}
@@ -3859,7 +3857,7 @@ public class HTMLView extends View {
 	public Element calendar(String type, String lang, String view, FieldReference ref, Month month, LocalDate today,
 			LocalDate date, Tuple[] events, LocalDate firstDate) {
 
-		Element calendar = document.createElement(HTML.DIV).setClass(CALENDAR);
+		Element calendar = document.createElement(HTML.DIV).addClass(CALENDAR);
 
 		Map<LocalDate, List<Tuple>> eventsByDate = Arrays.stream(events)
 				.collect(Collectors.groupingBy(event -> event.getDate(Constants.DATE)));
@@ -3873,7 +3871,7 @@ public class HTMLView extends View {
 	public Element month(String type, String lang, String view, Month month, LocalDate today, LocalDate date,
 			Map<LocalDate, List<Tuple>> eventsByDate) {
 
-		Element monthElement = document.createElement(HTML.TABLE).setClass(CALENDAR_MONTH);
+		Element monthElement = document.createElement(HTML.TABLE).addClass(CALENDAR_MONTH);
 
 		monthElement.appendElement(monthHead(lang));
 		Element tbody = monthElement.appendElement(HTML.TBODY);
@@ -3909,7 +3907,7 @@ public class HTMLView extends View {
 				+ before.getYear() + "&" + Constants.MONTH + "=" + before.getMonthValue()
 					+ refParameter(ref)));
 
-		Element yearSelect = navigator.appendElement(HTML.SELECT).setClass(YEARS);
+		Element yearSelect = navigator.appendElement(HTML.SELECT).addClass(YEARS);
 		for (int year = date.minusYears(10).getYear(); year <= date.plusYears(10).getYear(); year++) {
 			Element option = yearSelect.appendElement(HTML.OPTION)
 					.setAttribute(HTML.VALUE, year).appendText(year);
@@ -3920,7 +3918,7 @@ public class HTMLView extends View {
 
 		}
 
-		Element monthSelect = navigator.appendElement(HTML.SELECT).setClass(MONTHS);
+		Element monthSelect = navigator.appendElement(HTML.SELECT).addClass(MONTHS);
 		for (Month month : Month.values()) {
 			Element option = monthSelect.appendElement(HTML.OPTION)
 					.setAttribute(HTML.VALUE, month.getValue())
@@ -3961,9 +3959,9 @@ public class HTMLView extends View {
 		day.appendText(String.valueOf(date.getDayOfMonth()));
 
 		if (date.isEqual(today)) {
-			day.setClass(CALENDAR_TODAY);
+			day.addClass(CALENDAR_TODAY);
 		} else if (date.getMonth().equals(month)) {
-			day.setClass(CALENDAR_DAY);
+			day.addClass(CALENDAR_DAY);
 		}
 
 		if (events != null) {

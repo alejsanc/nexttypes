@@ -41,7 +41,7 @@ public aspect ArticleMenu {
 
 			if (menuElement != null) {
 
-				menuElement.appendElement(HTML.DIV).setClass(HTMLView.MENU_TITLE)
+				menuElement.appendElement(HTML.DIV).addClass(HTMLView.MENU_TITLE)
 						.appendText(target.getStrings().gts(type, ArticleView.CATEGORIES) + ":");
 
 				String sql = "select name, category from category_language where language = ? order by name";

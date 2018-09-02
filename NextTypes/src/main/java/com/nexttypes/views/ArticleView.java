@@ -193,7 +193,7 @@ public class ArticleView extends HTMLView {
 				String title = tuple.getString(Constants.TITLE);
 				String uri = uri(type, id, lang, view);
 
-				Element article = main.appendElement(HTML.DIV).setClass(Constants.PREVIEW);
+				Element article = main.appendElement(HTML.DIV).addClass(Constants.PREVIEW);
 				article.appendElement(imageAnchor(title, uri, tuple.getString(Constants.IMAGE_TYPE),
 					tuple.getString(Constants.IMAGE_ID), IMAGE));
 				article.appendElement(time(tuple.getDatetime(Constants.CDATE)));

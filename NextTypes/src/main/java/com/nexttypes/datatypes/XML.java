@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 
@@ -41,6 +42,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.postgresql.util.PGobject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -54,7 +56,6 @@ import com.nexttypes.exceptions.DisallowedAttributeException;
 import com.nexttypes.exceptions.DisallowedTagException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.StringException;
-import com.nexttypes.system.Constants;
 import com.nexttypes.system.Utils;
 
 public class XML extends PGobject {
@@ -340,6 +341,7 @@ public class XML extends PGobject {
 
 	public class Element {
 		protected org.w3c.dom.Element element;
+		protected ArrayList<String> classes = new ArrayList<>();
 
 		protected Element(org.w3c.dom.Element element) {
 			this.element = element;
@@ -592,14 +594,76 @@ public class XML extends PGobject {
 		public void removeAttribute(String name) {
 			element.removeAttribute(name);
 		}
+		
+		public Element addClass(String className) {
+			if (!classes.contains(className)) {
+				classes.add(className);
+				updateClassAttribute();
+			}
+			return this;
+		}
+		
+		public Element addClasses(String... classes) {
+			boolean updateClassAttribute = false;
+			
+			for (String className : classes) {
+				if (!this.classes.contains(className)) {
+					this.classes.add(className);
+					updateClassAttribute = true;
+				}
+			}
+			
+			if (updateClassAttribute) {
+				updateClassAttribute();
+			}
+			
+			return this;
+		}
+		
+		protected void updateClassAttribute() {
+			if (classes.size() == 0) {
+				removeAttribute(CLASS);
+			} else {
+				setAttribute(CLASS, StringUtils.join(classes, " "));
+			}
+		}
 
-		public Element setClass(String className) {
-			element.setAttribute(CLASS, className);
+		public Element setClasses(String... classes) {
+			this.classes.clear();
+			this.classes.addAll(Arrays.asList(classes));
+			updateClassAttribute();
 			return this;
 		}
 
-		public void removeClass() {
-			element.removeAttribute(CLASS);
+		public Element removeClass(String className) {
+			if (classes.contains(className)) {
+				classes.remove(className);
+				updateClassAttribute();
+			}
+			return this;
+		}
+		
+		public Element removeClasses(String... classes) {
+			boolean updateClassAttribute = false;
+			
+			for (String className : classes) {
+				if (this.classes.contains(className)) {
+					this.classes.remove(className);
+					updateClassAttribute = true;
+				}
+			}
+			
+			if (updateClassAttribute) {
+				updateClassAttribute();
+			}
+			
+			return this;
+		}
+		
+		public Element removeClasses() {
+			classes.clear();
+			removeAttribute(CLASS);
+			return this;
 		}
 
 		public Element[] getChildElements() {
