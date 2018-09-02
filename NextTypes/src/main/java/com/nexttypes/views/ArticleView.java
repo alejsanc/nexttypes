@@ -18,10 +18,6 @@ package com.nexttypes.views;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.FieldReference;
@@ -94,9 +90,6 @@ public class ArticleView extends HTMLView {
 				typeSettings.getFieldString(type, Constants.TEXT, Constants.HTML_ALLOWED_TAGS));
 		if (text != null) {
 			article.appendFragment(text);
-
-			externalAnchor("external_standard");
-			externalAnchor("external_document");
 		}
 
 		main.appendElement(dates(type, tuple.getUTCDatetime(Constants.CDATE), tuple.getUTCDatetime(Constants.UDATE)));
@@ -241,23 +234,5 @@ public class ArticleView extends HTMLView {
 		}
 		
 		return uri;
-	}
-	
-	public void externalAnchor(String type) {
-		Element[] anchors = document.getElementsByClassName(type);
-
-		if (anchors.length > 0) {
-			Map<String, List<Element>> anchorsById = Stream.of(anchors)
-					.collect(Collectors.groupingBy(anchor -> anchor.getAttribute(DATA_ID)));
-
-			String sql = "select id, href from # where id in(?)";
-			Tuple[] tuples = nextNode.query(sql, type, anchorsById.keySet().toArray());
-
-			for (Tuple tuple : tuples) {
-				for (Element anchor : anchorsById.get(tuple.getString(Constants.ID))) {
-					anchor.setAttribute(HTML.HREF, tuple.getString(HTML.HREF));
-				}
-			}
-		}
 	}
 }
