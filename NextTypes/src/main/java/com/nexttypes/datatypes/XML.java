@@ -406,65 +406,101 @@ public class XML extends PGobject {
 		}
 
 		public Element appendText(String text) {
-			if (text == null) {
-				throw new NXException(Constants.NULL_TEXT);
+			if (text != null) {
+				element.appendChild(document.createTextNode(text));
 			}
-
-			element.appendChild(document.createTextNode(text));
 			return this;
 		}
 
 		public Element prependText(String text) {
-			element.insertBefore(document.createTextNode(text), element.getFirstChild());
+			if (text != null) {
+				element.insertBefore(document.createTextNode(text), element.getFirstChild());
+			}
 			return this;
 		}
 
 		public Element appendText(Short text) {
-			return appendText(text.toString());
+			if (text != null) {
+				appendText(text.toString());
+			}
+			return this;
 		}
 
 		public Element appendText(Integer text) {
-			return appendText(text.toString());
+			if (text != null) {
+				appendText(text.toString());
+			}
+			return this;
 		}
 
 		public Element appendText(Long text) {
-			return appendText(text.toString());
+			if (text != null) {
+				appendText(text.toString());
+			}
+			return this;
 		}
 
 		public Element appendText(Float text) {
-			return appendText(text.toString());
+			if (text != null) {
+				appendText(text.toString());
+			}
+			return this;
 		}
 
 		public Element appendText(Double text) {
-			return appendText(text.toString());
+			if (text != null) {
+				appendText(text.toString());
+			}
+			return this;
 		}
 
 		public Element appendText(BigDecimal text) {
-			return appendText(text.toString());
+			if (text != null) {
+				appendText(text.toString());
+			}
+			return this;
 		}
 
 		public Element prependText(Short text) {
-			return prependText(text.toString());
+			if (text != null) {
+				prependText(text.toString());
+			}
+			return this;
 		}
 
 		public Element prependText(Integer text) {
-			return prependText(text.toString());
+			if (text != null) {
+				prependText(text.toString());
+			}
+			return this;
 		}
 
 		public Element prependText(Long text) {
-			return prependText(text.toString());
+			if (text != null) {
+				prependText(text.toString());
+			}
+			return this;
 		}
 
 		public Element prependText(Float text) {
-			return appendText(text.toString());
+			if (text != null) {
+				prependText(text.toString());
+			}
+			return this;
 		}
 
 		public Element prependText(Double text) {
-			return prependText(text.toString());
+			if (text != null) {
+				prependText(text.toString());
+			}
+			return this;
 		}
 
 		public Element prependText(BigDecimal text) {
-			return prependText(text.toString());
+			if (text != null) {
+				prependText(text.toString());
+			}
+			return this;
 		}
 
 		public Element appendFragment(XMLFragment fragment) {

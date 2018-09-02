@@ -242,7 +242,6 @@ public class Constants {
 	public static final String NOT_NULL = "not_null";
 	public static final String NOT_NULL_ALTERED = "not_null_altered";
 	public static final String NULL = "null";
-	public static final String NULL_TEXT = "null_text";
 	public static final String OBJECT = "object";
 	public static final String OBJECT_ALREADY_EXISTS = "object_already_exists";
 	public static final String OBJECT_ID_SUCCESSFULLY_UPDATED = "object_id_successfully_updated";
