@@ -252,7 +252,7 @@ public class HTMLView extends View {
 
 		setTitle(Utils.format(title, typeName));
 
-		textEditor();
+		textEditors();
 		main.appendElement(
 				insertForm(type, typeFields, lang, view, ref, showType, showId, showHeader, showProgress));
 
@@ -503,7 +503,7 @@ public class HTMLView extends View {
 		String actionName = strings.getActionName(type, action);
 		setTitle(Utils.format(title, actionName, typeName));
 
-		textEditor();
+		textEditors();
 		main.appendElement(executeActionForm(type, id, action, actionName, fields, lang, view, showType, showId,
 				showHeader, showProgress));
 
@@ -966,7 +966,7 @@ public class HTMLView extends View {
 		String typeName = strings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
-		textEditor();
+		textEditors();
 		main.appendElement(updateForm(object, typeFields, lang, view, showType, showId, showHeader, showProgress));
 		main.appendElement(downReferences(type, id, lang, view));
 
@@ -3663,7 +3663,7 @@ public class HTMLView extends View {
 		}
 	}
 
-	public void textEditor() {
+	public void textEditors() {
 		if (head != null) {
 			head.appendElement(HTML.SCRIPT)
 				.setAttribute(HTML.SRC, "/static/lib/codemirror/lib/codemirror.js");
