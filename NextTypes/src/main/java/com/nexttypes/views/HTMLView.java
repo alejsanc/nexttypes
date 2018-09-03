@@ -243,18 +243,12 @@ public class HTMLView extends View {
 		String title = strings.gts(type, Constants.INSERT_TITLE);
 		String typeName = strings.getTypeName(type);
 
-		String[] insertFields = typeSettings.getActionStringArray(type, Action.INSERT, Constants.FIELDS);
-		boolean showType = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_TYPE);
-		boolean showId = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_ID);
-		boolean showHeader = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_HEADER);
-		boolean showProgress = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_PROGRESS);
-		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, insertFields);
-
+		String[] fields = typeSettings.getActionStringArray(type, Action.INSERT, Constants.FIELDS);
+		
 		setTitle(Utils.format(title, typeName));
 
 		textEditors();
-		main.appendElement(
-				insertForm(type, typeFields, lang, view, ref, showType, showId, showHeader, showProgress));
+		main.appendElement(insertForm(type, fields, lang, view, ref));
 
 		return render(type);
 	}
@@ -493,27 +487,33 @@ public class HTMLView extends View {
 			return notFound(type, lang, view, new ActionNotFoundException(type, action));
 		}
 
-		boolean showType = typeSettings.getActionBoolean(type, action, Constants.SHOW_TYPE);
-		boolean showId = typeSettings.getActionBoolean(type, action, Constants.SHOW_ID);
-		boolean showHeader = typeSettings.getActionBoolean(type, action, Constants.SHOW_HEADER);
-		boolean showProgress = typeSettings.getActionBoolean(type, action, Constants.SHOW_PROGRESS);
-
 		String title = strings.gts(type, Constants.EXECUTE_ACTION_TITLE);
 		String typeName = strings.getTypeName(type);
 		String actionName = strings.getActionName(type, action);
 		setTitle(Utils.format(title, actionName, typeName));
 
 		textEditors();
-		main.appendElement(executeActionForm(type, id, action, actionName, fields, lang, view, showType, showId,
-				showHeader, showProgress));
+		main.appendElement(executeActionForm(type, id, action, actionName, fields, lang, view));
 
 		return render();
 	}
 
 	public Element executeActionForm(String type, String id, String action, String actionName,
-			LinkedHashMap<String, TypeField> fields, String lang, String view, boolean showType, boolean showId,
-			boolean showHeader, boolean showProgress) {
-
+			LinkedHashMap<String, TypeField> fields, String lang, String view) {
+		
+		boolean showType = typeSettings.getActionBoolean(type, action, Constants.SHOW_TYPE);
+		boolean showId = typeSettings.getActionBoolean(type, action, Constants.SHOW_ID);
+		boolean showHeader = typeSettings.getActionBoolean(type, action, Constants.SHOW_HEADER);
+		boolean showProgress = typeSettings.getActionBoolean(type, action, Constants.SHOW_PROGRESS);
+		
+		return executeActionForm(type, id, action, actionName, fields, lang, view, showType,
+				showId, showHeader, showProgress);
+	}
+	
+	public Element executeActionForm(String type, String id, String action, String actionName,
+			LinkedHashMap<String, TypeField> fields, String lang, String view, boolean showType,
+			boolean showId, boolean showHeader, boolean showProgress) {
+		
 		Element form = form(type, id, lang, view);
 
 		if (showProgress) {
@@ -949,14 +949,9 @@ public class HTMLView extends View {
 	@Override
 	public Content updateForm(String type, String id, String lang, String view) {
 		loadTemplate(type, lang, view);
-		String[] updateFields = typeSettings.getActionStringArray(type, Action.UPDATE, Constants.FIELDS);
-		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, updateFields);
-		boolean showType = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_TYPE);
-		boolean showId = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_ID);
-		boolean showHeader = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_HEADER);
-		boolean showProgress = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_PROGRESS);
-
-		NXObject object = nextNode.get(type, id, updateFields, lang, true, false, false, false);
+		String[] fields = typeSettings.getActionStringArray(type, Action.UPDATE, Constants.FIELDS);
+		
+		NXObject object = nextNode.get(type, id, fields, lang, true, false, false, false);
 
 		if (object == null) {
 			return objectNotFound(type, id, lang, view);
@@ -967,7 +962,7 @@ public class HTMLView extends View {
 		setTitle(Utils.format(title, typeName));
 
 		textEditors();
-		main.appendElement(updateForm(object, typeFields, lang, view, showType, showId, showHeader, showProgress));
+		main.appendElement(updateForm(object, fields, lang, view));
 		main.appendElement(downReferences(type, id, lang, view));
 
 		return render(type);
@@ -1147,10 +1142,24 @@ public class HTMLView extends View {
 				.setAttribute(HTML.TITLE, strings.gts(type, Constants.CHECK_UNCHECK_ALL))
 				.addClass(ALL_CHECKBOX);
 	}
-
-	public Element insertForm(String type, LinkedHashMap<String, TypeField> typeFields, String lang, String view,
+	
+	public Element insertForm(String type, String[] fields, String lang, String view,
+			FieldReference ref) {
+		
+		boolean showType = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_TYPE);
+		boolean showId = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_ID);
+		boolean showHeader = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_HEADER);
+		boolean showProgress = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_PROGRESS);
+		
+		return insertForm(type, fields, lang, view, ref, showType, showId, showHeader, showProgress);
+	}
+	
+	public Element insertForm(String type, String[] fields, String lang, String view,
 			FieldReference ref, boolean showType, boolean showId, boolean showHeader,
-			boolean showProgress) {
+			boolean showProgress) {	
+		
+		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
+		
 		Element form = multipartForm(type, lang, view);
 		if (showProgress) {
 			form.setAttribute(DATA_SHOW_PROGRESS);
@@ -1529,9 +1538,24 @@ public class HTMLView extends View {
 		return references;
 	}
 	
-	public Element updateForm(NXObject object, LinkedHashMap<String, TypeField> typeFields, String lang, String view,
-			boolean showType, boolean showId, boolean showHeader, boolean showProgress) {
+	public Element updateForm(NXObject object, String[] fields, String lang, String view) {
+				
 		String type = object.getType();
+		
+		boolean showType = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_TYPE);
+		boolean showId = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_ID);
+		boolean showHeader = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_HEADER);
+		boolean showProgress = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_PROGRESS);
+		
+		return updateForm(object, fields, lang, view, showType, showId, showHeader, showProgress);
+	}
+	
+	public Element updateForm(NXObject object, String[] fields, String lang, String view,
+			boolean showType, boolean showId, boolean showHeader, boolean showProgress) {
+		
+		String type = object.getType();
+		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
+		
 		Element form = multipartForm(type, object.getId(), lang, view).addClass(UNLOAD_CONFIRMATION)
 				.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF);
 
