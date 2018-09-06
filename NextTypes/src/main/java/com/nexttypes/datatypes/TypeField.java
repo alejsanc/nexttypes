@@ -80,12 +80,13 @@ public class TypeField {
 	public TypeField(@JsonProperty(Constants.TYPE) String type, @JsonProperty(Constants.LENGTH) Long length,
 			@JsonProperty(Constants.PRECISION) Long precision, @JsonProperty(Constants.SCALE) Long scale,
 			@JsonProperty(Constants.NOT_NULL) Boolean notNull) {
+		
 		this.type = type;
 		this.length = length;
 		this.precision = precision;
 		this.scale = scale;
 		this.notNull = notNull;
-
+		
 		switch (type) {
 		case PT.STRING:
 		case PT.URI:
@@ -134,7 +135,7 @@ public class TypeField {
 	public Boolean isNotNull() {
 		return notNull;
 	}
-
+	
 	public String getParameters() {
 		return parameters;
 	}

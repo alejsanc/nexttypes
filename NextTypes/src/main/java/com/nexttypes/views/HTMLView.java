@@ -367,13 +367,14 @@ public class HTMLView extends View {
 												
 				Element nameCell = row.appendElement(HTML.TD);
 				nameCell.appendElement(input(HTML.TEXT, field + ":" + Constants.NAME, name, fieldName));
-				nameCell.appendElement(input(HTML.HIDDEN, field + ":" + Constants.OLD_NAME, name, fieldName));
+				nameCell.appendElement(input(HTML.HIDDEN, field + ":" + Constants.OLD_NAME, name,
+						fieldName));
 								
-				row.appendElement(HTML.TD).appendElement(
-						input(HTML.TEXT, field + ":" + Constants.PARAMETERS, parameters, typeField.getParameters()));
+				row.appendElement(HTML.TD).appendElement(input(HTML.TEXT, field + ":"
+						+ Constants.PARAMETERS, parameters, typeField.getParameters()));
 								
-				row.appendElement(HTML.TD)
-						.appendElement(booleanInput(field + ":" + Constants.NOT_NULL, notNull, typeField.isNotNull()));
+				row.appendElement(HTML.TD).appendElement(booleanInput(field + ":" 
+						+ Constants.NOT_NULL, notNull, typeField.isNotNull()));
 								
 				row.appendElement(HTML.TD).appendElement(smallButton(dropField, Icon.MINUS, DELETE_ROW));
 								
@@ -434,6 +435,8 @@ public class HTMLView extends View {
 		if (disableAction) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
+		
+		textEditors();
 
 		return typeForm;
 	}
@@ -1197,6 +1200,14 @@ public class HTMLView extends View {
 						.setAttribute(HTML.MAXLENGTH, Type.MAX_ID_LENGTH));
 		}
 
+		if (ref != null) {
+			String field = ref.getField();
+			
+			if (!ArrayUtils.contains(fields, field)) {
+				form.appendElement(input(HTML.HIDDEN, "@" + field, null, ref.getId()));
+			}
+		}
+		
 		for (Entry<String, TypeField> entry : typeFields.entrySet()) {
 			String field = entry.getKey();
 			TypeField typeField = entry.getValue();
@@ -1379,9 +1390,9 @@ public class HTMLView extends View {
 		Element selectHeader = document.createElement(HTML.DIV)
 				.addClass(SELECT_HEADER);
 		
-		String title = strings.getReferenceName(type, ref);
+		String referenceName = strings.getReferenceName(type, ref);
 		
-		selectHeader.appendElement(HTML.STRONG).appendText(title);
+		selectHeader.appendElement(HTML.STRONG).appendText(referenceName);
 		selectHeader.appendText(" " + count + " " + strings.gts(type, Constants.OBJECTS));
 		selectHeader.appendElement(HTML.NAV).addClass(SELECT_MENU)
 				.appendElements(typeMenuElements(type, null, lang, view, ref, search, component));
@@ -3700,9 +3711,6 @@ public class HTMLView extends View {
 			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET)
 				.setAttribute(HTML.TYPE, "text/css")
 				.setAttribute(HTML.HREF, "/static/lib/codemirror/lib/codemirror.css");
-
-			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET)
-				.setAttribute(HTML.HREF, "/static/styles/codemirror.css");
 		}
 	}
 

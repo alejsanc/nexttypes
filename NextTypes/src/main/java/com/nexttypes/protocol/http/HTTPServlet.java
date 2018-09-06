@@ -298,6 +298,7 @@ public class HTTPServlet extends HttpServlet {
 		try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), req, mode)) {
 			Strings strings = context.getStrings(req.getLang());
 			ZonedDateTime udate = null;
+			String[] fields = null;
 
 			switch (req.getAction()) {
 			case Action.CREATE:
@@ -317,13 +318,18 @@ public class HTTPServlet extends HttpServlet {
 				break;
 
 			case Action.INSERT:
-				nextNode.insert(req.readObject(nextNode.getTypeFields(req.getType())));
+				fields = req.getTypeSettings().getActionStringArray(req.getType(),
+						Action.INSERT, Constants.FIELDS);
+				nextNode.insert(req.readObject(nextNode.getTypeFields(req.getType(), fields)));
 				content = new Content(strings.gts(req.getType(), Constants.OBJECT_SUCCESSFULLY_INSERTED));
 				insertRequest(req);
 				break;
 
 			case Action.UPDATE:
-				udate = nextNode.update(req.readObject(nextNode.getTypeFields(req.getType())), req.getUDate());
+				fields = req.getTypeSettings().getActionStringArray(req.getType(),
+						Action.UPDATE, Constants.FIELDS);
+				udate = nextNode.update(req.readObject(nextNode.getTypeFields(req.getType(),fields)),
+						req.getUDate());
 				content = new Content(
 						new UpdateResponse(strings.gts(req.getType(), Constants.OBJECT_SUCCESSFULLY_UPDATED), udate));
 				break;
@@ -380,10 +386,12 @@ public class HTTPServlet extends HttpServlet {
 				String id = req.getId();
 				String[] objects = id != null ? new String[] { id } : req.getObjects();
 
-				LinkedHashMap<String, TypeField> fields = nextNode.getActionFields(req.getType(), req.getAction());
-				Object[] values = req.readActionFields(fields);
+				LinkedHashMap<String, TypeField> typeFields = nextNode.getActionFields(req.getType(),
+						req.getAction());
+				Object[] values = req.readActionFields(typeFields);
 
-				Object actionResult = nextNode.executeAction(req.getType(), objects, req.getAction(), values);
+				Object actionResult = nextNode.executeAction(req.getType(), objects, req.getAction(),
+						values);
 				content = new Content(actionResult, Format.JSON);
 				break;
 			}

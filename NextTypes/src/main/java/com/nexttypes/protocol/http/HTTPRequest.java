@@ -597,7 +597,8 @@ public class HTTPRequest {
 				boolean fieldNotNull = value.get(Constants.NOT_NULL) != null ? true : false;
 				String fieldOldName = value.get(Constants.OLD_NAME);
 
-				typeObjectFields.put(fieldName, new TypeField(fieldType, fieldParameters, fieldNotNull, fieldOldName));
+				typeObjectFields.put(fieldName, new TypeField(fieldType, fieldParameters, fieldNotNull,
+						fieldOldName));
 			}
 		}
 

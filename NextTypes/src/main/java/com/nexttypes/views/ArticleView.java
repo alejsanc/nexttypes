@@ -36,6 +36,9 @@ import com.nexttypes.system.Constants;
 
 public class ArticleView extends HTMLView {
 
+	public static final String ARTICLE = "article";
+	public static final String ARTICLE_DISCUSSION = "article_discussion";
+	public static final String[] ARTICLE_DISCUSSION_FIELDS = new String[] {"title", "href", "published"};
 	public static final String CATEGORY = "category";
 	public static final String CATEGORIES = "categories";
 	
@@ -92,8 +95,17 @@ public class ArticleView extends HTMLView {
 			article.appendFragment(text);
 		}
 
-		main.appendElement(dates(type, tuple.getUTCDatetime(Constants.CDATE), tuple.getUTCDatetime(Constants.UDATE)));
+		main.appendElement(dates(type, tuple.getUTCDatetime(Constants.CDATE),
+				tuple.getUTCDatetime(Constants.UDATE)));
+		
+		FieldReference articleReference = new FieldReference(ARTICLE, ARTICLE, id);
+		
+		main.appendElement(HTML.H2).appendText(strings.getReferenceName(ARTICLE_DISCUSSION,
+				articleReference));
 
+		main.appendElement(insertForm(ARTICLE_DISCUSSION, ARTICLE_DISCUSSION_FIELDS, lang, view,
+				articleReference, false, false, false, false));
+		
 		return render(type);
 	}
 	

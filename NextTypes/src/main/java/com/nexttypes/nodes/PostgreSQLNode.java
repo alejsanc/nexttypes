@@ -229,7 +229,8 @@ public class PostgreSQLNode implements Node {
 					+ " case"
 						+ " when co.is_nullable = 'NO' then true"
 						+ " else false"
-					+ " end as not_null"
+					+ " end as not_null,"
+					+ " co.column_default as default"
 
 			+ " from"
 				+ " information_schema.columns co join pg_class cl on co.table_name = cl.relname"
