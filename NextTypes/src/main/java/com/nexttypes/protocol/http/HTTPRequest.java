@@ -405,10 +405,12 @@ public class HTTPRequest {
 
 		switch (fieldType) {
 		case PT.HTML:
-			value = fields.getHTML(field, lang, typeSettings.getFieldString(type, field, Constants.HTML_ALLOWED_TAGS));
+			value = fields.getHTML(field, lang, typeSettings.getFieldString(type, field,
+					Constants.HTML_ALLOWED_TAGS));
 			break;
 		case PT.XML:
-			value = fields.getXML(field, lang, typeSettings.getFieldString(type, field, Constants.XML_ALLOWED_TAGS));
+			value = fields.getXML(field, lang, typeSettings.getFieldString(type, field,
+					Constants.XML_ALLOWED_TAGS));
 			break;
 		case PT.JSON:
 			value = fields.getJSON(field);
@@ -850,8 +852,8 @@ public class HTTPRequest {
 		return login_password;
 	}
 
-	public class HTTPRequestParameters extends Tuple {
-
+	protected class HTTPRequestParameters extends Tuple {
+		
 		@Override
 		public Object get(String field) {
 			String value = null;

@@ -237,7 +237,7 @@ public class HTTPServlet extends HttpServlet {
 	protected void exportTypes(HTTPRequest req, Node nextNode, HttpServletResponse response, Strings strings)
 			throws IOException {
 
-		try (Stream stream = nextNode.exportTypes(req.getTypes(), req.getLang(), req.includeObjects())) {
+		try (Stream stream = nextNode.exportTypes(req.getTypes(), req.includeObjects())) {
 			Content content = new Content(stream, Format.JSON);
 			content.setHeader(HTTPHeader.CONTENT_DISPOSITION,
 					"attachment; filename=\"types." + Format.JSON.getExtension() + "\"");
@@ -249,7 +249,7 @@ public class HTTPServlet extends HttpServlet {
 	protected void exportObjects(HTTPRequest req, Node nextNode, HttpServletResponse response, Strings strings)
 			throws IOException {
 
-		try (Stream stream = nextNode.exportObjects(req.getType(), req.getObjects(), req.getLang(), req.getOrder())) {
+		try (Stream stream = nextNode.exportObjects(req.getType(), req.getObjects(), req.getOrder())) {
 			Content content = new Content(stream, Format.JSON);
 			content.setHeader(HTTPHeader.CONTENT_DISPOSITION,
 					"attachment; filename=\"" + req.getType() + "." + Format.JSON.getExtension() + "\"");
@@ -357,13 +357,13 @@ public class HTTPServlet extends HttpServlet {
 				break;
 
 			case Action.IMPORT_OBJECTS:
-				content = new Content(nextNode.importObjects(req.getDataStream(), req.getExistingObjectsAction()),
-						Format.JSON);
+				content = new Content(nextNode.importObjects(req.getDataStream(), 
+						req.getExistingObjectsAction()), Format.JSON);
 				break;
 
 			case Action.IMPORT_TYPES:
-				content = new Content(nextNode.importTypes(req.getDataStream(), req.getExistingTypesAction(),
-						req.getExistingObjectsAction()), Format.JSON);
+				content = new Content(nextNode.importTypes(req.getDataStream(), 
+						req.getExistingTypesAction(), req.getExistingObjectsAction()), Format.JSON);
 				break;
 
 			case Action.EXPORT_TYPES:

@@ -174,44 +174,39 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.DELETE, thisJoinPoint);
     }
 
-    before(String[] types, String lang, boolean includeObjects) : execution(* Node.exportTypes(..))
-    	&& args(types, lang, includeObjects) {
+    before(String[] types, boolean includeObjects) : execution(* Node.exportTypes(..))
+    	&& args(types, includeObjects) {
     	
     	checkTypes(types);
-    	checkLang(lang);
     	checkPermissions(types, Action.EXPORT_TYPES, thisJoinPoint);
     }
 
-    before(String[] types, String lang, Filter filter) : execution(* Node.exportTypes(..))
-    	&& args(types, lang, filter, ..) {
+    before(String[] types, Filter filter) : execution(* Node.exportTypes(..))
+    	&& args(types, filter, ..) {
     	
     	checkTypes(types);
-    	checkLang(lang);
     	checkFilter(filter);
     	checkPermissions(types, Action.EXPORT_TYPES, thisJoinPoint);
     }
 
-    before(String[] types, String lang, Filter[] filters) : execution(* Node.exportTypes(..))
-    	&& args(types, lang, filters, ..) {
+    before(String[] types, Filter[] filters) : execution(* Node.exportTypes(..))
+    	&& args(types, filters, ..) {
     	
     	checkTypes(types);
-    	checkLang(lang);
     	checkFilters(filters);
     	checkPermissions(types, Action.EXPORT_TYPES, thisJoinPoint);
     }
 
-    before(String lang) : execution(* Node.backup(..)) && args(lang, ..) {
-    	checkLang(lang);
+    before() : execution(* Node.backup(..)) {
     	checkPermissions(Action.BACKUP, thisJoinPoint);
     }
 
-    before(String type, String[] objects, String lang, LinkedHashMap<String, Order> order) :
+    before(String type, String[] objects, LinkedHashMap<String, Order> order) :
     	execution(* Node.exportObjects(..))
-		&& args(type, objects, lang, order) {
+		&& args(type, objects, order) {
     	
     	checkType(type);
     	checkObjects(objects);
-    	checkLang(lang);
     	checkOrder(order);
     	checkPermissions(type, Action.EXPORT_OBJECTS, thisJoinPoint);
     }

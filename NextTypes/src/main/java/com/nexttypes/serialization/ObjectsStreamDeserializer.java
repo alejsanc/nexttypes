@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -30,7 +29,6 @@ import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.NXObject;
-import com.nexttypes.datatypes.ObjectReference;
 import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.TypeField;
@@ -105,7 +103,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 
 			if (parser.getCurrentToken().equals(JsonToken.START_OBJECT)) {
 
-				String type = null, id = null, name = null;
+				String type = null, id = null;
 				ZonedDateTime cdate = null, udate = null;
 				Boolean backup = null;
 				LinkedHashMap<String, Object> fields = null;
@@ -127,9 +125,6 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 					case Constants.ID:
 						id = parser.getText();
 						break;
-					case Constants.NAME:
-						name = parser.getText();
-						break;
 					case Constants.CDATE:
 						cdate = Tuple.parseUTCDatetime(parser.getText());
 						break;
@@ -146,7 +141,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 					}
 				}
 
-				item = new NXObject(type, id, name, cdate, udate, backup, fields);
+				item = new NXObject(type, id, null, cdate, udate, backup, fields);
 				return true;
 
 			} else {
@@ -173,12 +168,6 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 				if (parser.getCurrentToken() != JsonToken.VALUE_NULL) {
 
 					switch (fieldType) {
-					case PT.STRING:
-					case PT.TEXT:
-					case PT.TEL:
-					case PT.PASSWORD:
-						value = parser.getText();
-						break;
 					case PT.TIMEZONE:
 						value = Tuple.parseTimezone(parser.getText());
 						break;
@@ -251,7 +240,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 						value = parser.readValueAs(new TypeReference<Video>() {});
 						break;
 					default:
-						value = parseObjectReference();
+						value = parser.getText();
 					}
 				}
 
@@ -262,26 +251,6 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 		} catch (IOException e) {
 			throw new NXException(e);
 		}
-	}
-
-	protected ObjectReference parseObjectReference() throws JsonParseException, IOException {
-		String referenceId = null;
-		String referenceName = null;
-
-		while (parser.nextToken() != JsonToken.END_OBJECT) {
-			parser.nextToken();
-
-			switch (parser.getCurrentName()) {
-			case Constants.ID:
-				referenceId = parser.getText();
-				break;
-			case Constants.NAME:
-				referenceName = parser.getText();
-				break;
-			}
-		}
-
-		return new ObjectReference(referenceId, referenceName);
 	}
 
 	@Override

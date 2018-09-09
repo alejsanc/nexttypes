@@ -20,13 +20,16 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Utils;
 
+@JsonInclude(Include.NON_NULL)
 @JacksonXmlRootElement(localName = Constants.OBJECT)
 @JsonPropertyOrder({ Constants.TYPE, Constants.ID, Constants.NAME, Constants.CDATE, Constants.UDATE, Constants.BACKUP })
 public class NXObject extends Tuple {
@@ -55,13 +58,14 @@ public class NXObject extends Tuple {
 		this(type, id, name, null, null, null, null);
 	}
 
-	public NXObject(String type, String id, String name, ZonedDateTime cdate, ZonedDateTime udate, Boolean backup) {
+	public NXObject(String type, String id, String name, ZonedDateTime cdate, ZonedDateTime udate,
+			Boolean backup) {
 		this(type, id, name, cdate, udate, backup, null);
 	}
 
-	public NXObject(String type, String id, String name, ZonedDateTime cdate, ZonedDateTime udate, Boolean backup,
-			LinkedHashMap<String, Object> fields) {
-
+	public NXObject(String type, String id, String name, ZonedDateTime cdate, ZonedDateTime udate,
+			Boolean backup, LinkedHashMap<String, Object> fields) {
+		
 		if (cdate != null && !cdate.getOffset().equals(ZoneOffset.UTC)) {
 			throw new InvalidValueException(Constants.INVALID_TIMEZONE, cdate.getZone());
 		}
@@ -72,7 +76,7 @@ public class NXObject extends Tuple {
 
 		this.type = type;
 		this.id = id;
-		this.name = name != null ? name : id;
+		this.name = name;
 		this.cdate = cdate;
 		this.udate = udate;
 		this.backup = backup;

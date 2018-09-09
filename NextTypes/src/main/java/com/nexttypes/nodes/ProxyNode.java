@@ -160,8 +160,9 @@ public class ProxyNode implements Node {
 
 	@Override
 	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext, boolean binary,
-			boolean documentPreview, boolean password) {
-		return getNextNode(type).get(type, id, fields, lang, fulltext, binary, documentPreview, password);
+			boolean documentPreview, boolean password, boolean objectName, boolean referencesName) {
+		return getNextNode(type).get(type, id, fields, lang, fulltext, binary, documentPreview,
+				password, objectName, referencesName);
 	}
 
 	@Override
@@ -194,9 +195,9 @@ public class ProxyNode implements Node {
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit) {
+			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
 		return getNextNode(type).select(type, fields, lang, filter, search, order, fulltext, binary, documentPreview,
-				password, offset, limit);
+				password, objectsName, referencesName, offset, limit);
 	}
 
 	@Override
@@ -208,9 +209,9 @@ public class ProxyNode implements Node {
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit) {
+			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
 		return getNextNode(type).select(type, fields, lang, filters, search, order, fulltext, binary, documentPreview,
-				password, offset, limit);
+				password, objectsName, referencesName, offset, limit);
 	}
 
 	@Override
@@ -233,9 +234,9 @@ public class ProxyNode implements Node {
 	@Override
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit) {
+			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
 		return getNextNode(type).selectStream(type, fields, lang, filter, search, order, fulltext, binary,
-				documentPreview, password, offset, limit);
+				documentPreview, password, objectsName, referencesName, offset, limit);
 	}
 
 	@Override
@@ -247,9 +248,9 @@ public class ProxyNode implements Node {
 	@Override
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit) {
+			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
 		return getNextNode(type).selectStream(type, fields, lang, filters, search, order, fulltext, binary,
-				documentPreview, password, offset, limit);
+				documentPreview, password, objectsName, referencesName, offset, limit);
 	}
 
 	@Override
@@ -553,28 +554,28 @@ public class ProxyNode implements Node {
 	}
 
 	@Override
-	public TypesStream exportTypes(String[] types, String lang, boolean includeObjects) {
-		return nextNode.exportTypes(types, lang, includeObjects);
+	public TypesStream exportTypes(String[] types, boolean includeObjects) {
+		return nextNode.exportTypes(types, includeObjects);
 	}
 
 	@Override
-	public TypesStream exportTypes(String[] types, String lang, Filter filter, boolean includeObjects) {
-		return nextNode.exportTypes(types, lang, filter, includeObjects);
+	public TypesStream exportTypes(String[] types, Filter filter, boolean includeObjects) {
+		return nextNode.exportTypes(types, filter, includeObjects);
 	}
 
 	@Override
-	public TypesStream exportTypes(String[] types, String lang, Filter[] filters, boolean includeObjects) {
-		return nextNode.exportTypes(types, lang, filters, includeObjects);
+	public TypesStream exportTypes(String[] types, Filter[] filters, boolean includeObjects) {
+		return nextNode.exportTypes(types, filters, includeObjects);
 	}
 
 	@Override
-	public TypesStream backup(String lang, boolean full) {
-		return nextNode.backup(lang, full);
+	public TypesStream backup(boolean full) {
+		return nextNode.backup(full);
 	}
 
 	@Override
-	public ObjectsStream exportObjects(String type, String[] objects, String lang, LinkedHashMap<String, Order> order) {
-		return nextNode.exportObjects(type, objects, lang, order);
+	public ObjectsStream exportObjects(String type, String[] objects, LinkedHashMap<String, Order> order) {
+		return nextNode.exportObjects(type, objects, order);
 	}
 
 	@Override
@@ -720,13 +721,13 @@ public class ProxyNode implements Node {
 	}
 
 	@Override
-	public HTMLFragment getHTML(String sql, String lang, String allowedTags) {
-		return nextNode.getHTML(sql, lang, allowedTags);
+	public HTMLFragment getHTML(String sql, String allowedTags) {
+		return nextNode.getHTML(sql, allowedTags);
 	}
 
 	@Override
-	public HTMLFragment getHTML(String sql, String lang, String allowedTags, Object... parameters) {
-		return nextNode.getHTML(sql, lang, allowedTags, parameters);
+	public HTMLFragment getHTML(String sql, String allowedTags, Object... parameters) {
+		return nextNode.getHTML(sql, allowedTags, parameters);
 	}
 
 	@Override
@@ -970,13 +971,13 @@ public class ProxyNode implements Node {
 	}
 
 	@Override
-	public HTMLFragment[] getHTMLArray(String sql, String lang, String allowedTags) {
-		return nextNode.getHTMLArray(sql, lang, allowedTags);
+	public HTMLFragment[] getHTMLArray(String sql, String allowedTags) {
+		return nextNode.getHTMLArray(sql, allowedTags);
 	}
 
 	@Override
-	public HTMLFragment[] getHTMLArray(String sql, String lang, String allowedTags, Object... parameters) {
-		return nextNode.getHTMLArray(sql, lang, allowedTags, parameters);
+	public HTMLFragment[] getHTMLArray(String sql, String allowedTags, Object... parameters) {
+		return nextNode.getHTMLArray(sql, allowedTags, parameters);
 	}
 
 	@Override

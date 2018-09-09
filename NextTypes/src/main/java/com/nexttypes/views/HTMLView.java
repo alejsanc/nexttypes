@@ -772,7 +772,7 @@ public class HTMLView extends View {
 		String[] fields = typeSettings.getActionStringArray(type, Action.GET, Constants.FIELDS);
 		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
 
-		NXObject object = nextNode.get(type, id, fields, lang, true, false, true, false);
+		NXObject object = nextNode.get(type, id, fields, lang, true, false, true, false, true, true);
 
 		if (object == null) {
 			return objectNotFound(type, id, lang, view);
@@ -954,7 +954,7 @@ public class HTMLView extends View {
 		loadTemplate(type, lang, view);
 		String[] fields = typeSettings.getActionStringArray(type, Action.UPDATE, Constants.FIELDS);
 		
-		NXObject object = nextNode.get(type, id, fields, lang, true, false, false, false);
+		NXObject object = nextNode.get(type, id, fields, lang, true, false, false, false, false, false);
 
 		if (object == null) {
 			return objectNotFound(type, id, lang, view);
@@ -2146,10 +2146,6 @@ public class HTMLView extends View {
 
 		Element input = null;
 				
-		if (value instanceof ObjectReference) {
-			value = ((ObjectReference) value).getId();
-		} 
-		
 		switch(mode) {
 		case HTML.SELECT:			
 			input = objectSelectInput(name, title, value, type, notNull, lang);

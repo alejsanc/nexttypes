@@ -164,8 +164,9 @@ public class Controller {
 	}
 
 	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext, boolean binary,
-			boolean documentPreview, boolean password) {
-		return nextNode.get(type, id, fields, lang, fulltext, binary, documentPreview, password);
+			boolean documentPreview, boolean password, boolean objectName, boolean referencesName) {
+		return nextNode.get(type, id, fields, lang, fulltext, binary, documentPreview, password,
+				objectName, referencesName);
 	}
 
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
@@ -175,9 +176,9 @@ public class Controller {
 
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit) {
-		return nextNode.select(type, fields, lang, filter, search, order, fulltext, binary, documentPreview, password,
-				offset, limit);
+			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+		return nextNode.select(type, fields, lang, filter, search, order, fulltext, binary,
+				documentPreview, password, objectsName, referencesName, offset, limit);
 	}
 
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
@@ -187,9 +188,9 @@ public class Controller {
 
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit) {
-		return nextNode.select(type, fields, lang, filters, search, order, fulltext, binary, documentPreview, password,
-				offset, limit);
+			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+		return nextNode.select(type, fields, lang, filters, search, order, fulltext, binary,
+				documentPreview, password, objectsName, referencesName, offset, limit);
 	}
 
 	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
@@ -208,9 +209,9 @@ public class Controller {
 
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit) {
-		return nextNode.selectStream(type, fields, lang, filter, search, order, fulltext, binary, documentPreview,
-				password, offset, limit);
+			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+		return nextNode.selectStream(type, fields, lang, filter, search, order, fulltext, binary,
+				documentPreview, password, objectsName, referencesName, offset, limit);
 	}
 
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
@@ -220,9 +221,9 @@ public class Controller {
 
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit) {
+			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
 		return nextNode.selectStream(type, fields, lang, filters, search, order, fulltext, binary, documentPreview,
-				password, offset, limit);
+				password, objectsName, referencesName, offset, limit);
 	}
 
 	public String getName(String type, String id, String lang) {

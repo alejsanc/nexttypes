@@ -141,7 +141,7 @@ public class Console {
 				case Constants.BACKUP:
 					boolean full = command.hasOption(Constants.FULL);
 
-					try (TypesStream types = nextNode.backup(lang, full)) {
+					try (TypesStream types = nextNode.backup(full)) {
 						writeResult(types);
 					}
 
@@ -161,7 +161,7 @@ public class Console {
 					String[] types = command.getOptionValues(EXPORT_TYPES);
 					boolean includeObjects = command.hasOption(INCLUDE_OBJECTS);
 
-					try (TypesStream typesExport = nextNode.exportTypes(types, lang, includeObjects)) {
+					try (TypesStream typesExport = nextNode.exportTypes(types, includeObjects)) {
 						writeResult(typesExport);
 					}
 
@@ -179,7 +179,7 @@ public class Console {
 					LinkedHashMap<String, Order> order = Utils
 							.parserOrderString(command.getOptionValue(Constants.ORDER));
 
-					try (ObjectsStream objectsExport = nextNode.exportObjects(type, objects, lang, order)) {
+					try (ObjectsStream objectsExport = nextNode.exportObjects(type, objects, order)) {
 						writeResult(objectsExport);
 					}
 

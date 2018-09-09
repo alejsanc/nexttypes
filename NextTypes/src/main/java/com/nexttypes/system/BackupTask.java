@@ -156,7 +156,7 @@ public class BackupTask extends Task {
 
 			filePath.append("." + Format.JSON.getExtension());
 
-			try (TypesStream types = nextNode.backup(lang, full)) {
+			try (TypesStream types = nextNode.backup(full)) {
 
 				try (FileOutputStream file = new FileOutputStream(filePath.toString())) {
 					new Serial(types, Format.JSON).write(file);

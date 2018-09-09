@@ -71,7 +71,7 @@ public class SerialView extends View {
 	@Override
 	public Content get(String type, String id, String lang, String view, String etag) {
 
-		NXObject object = nextNode.get(type, id, null, lang, true, true, false, false);
+		NXObject object = nextNode.get(type, id, null, lang, true, true, false, false, true, true);
 
 		if (object == null) {
 			return notFound(type, lang, view, new ObjectNotFoundException(type, id));
@@ -105,8 +105,8 @@ public class SerialView extends View {
 			}
 		}
 
-		Objects objects = nextNode.select(type, null, lang, filters, search, order, true, true, false, false, offset,
-				limit);
+		Objects objects = nextNode.select(type, null, lang, filters, search, order, true, true,
+				false, false, true, true, offset, limit);
 
 		return content(objects, view);
 	}

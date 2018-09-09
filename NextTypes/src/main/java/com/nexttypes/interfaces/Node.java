@@ -104,21 +104,22 @@ public interface Node extends Module, AutoCloseable {
 	public boolean checkPassword(String type, String id, String field, String password);
 
 	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext,
-			boolean binary, boolean documentPreview, boolean password);
+			boolean binary, boolean documentPreview, boolean password, boolean objectName, 
+			boolean referencesName);
 
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit);
 
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit);
+			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit);
 
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit);
 
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, Long offset, Long limit);
+			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit);
 
 	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
 			String search, String[] searchFields, String order, Long offset, Long limit);
@@ -131,14 +132,16 @@ public interface Node extends Module, AutoCloseable {
 
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter,
 			String search, LinkedHashMap<String, Order> order, boolean fulltext, boolean binary,
-			boolean documentPreview, boolean password, Long offset, Long limit);
+			boolean documentPreview, boolean password, boolean objectsName, boolean referencesName,
+			Long offset, Long limit);
 
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters,
 			String search, LinkedHashMap<String, Order> order, Long offset, Long limit);
 
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters,
 			String search, LinkedHashMap<String, Order> order, boolean fulltext, boolean binary,
-			boolean documentPreview, boolean password, Long offset, Long limit);
+			boolean documentPreview, boolean password, boolean objectsName, boolean referencesName,
+			Long offset, Long limit);
 
 	public Type getType(String type);
 
@@ -260,16 +263,15 @@ public interface Node extends Module, AutoCloseable {
 
 	public int execute(String sql, boolean useSavepoint, Integer expectedRows, Object... parameters);
 
-	public TypesStream exportTypes(String[] types, String lang, boolean includeObjects);
+	public TypesStream exportTypes(String[] types, boolean includeObjects);
 
-	public TypesStream exportTypes(String[] types, String lang, Filter filter, boolean includeObjects);
+	public TypesStream exportTypes(String[] types, Filter filter, boolean includeObjects);
 
-	public TypesStream exportTypes(String[] types, String lang, Filter[] filters, boolean includeObjects);
+	public TypesStream exportTypes(String[] types, Filter[] filters, boolean includeObjects);
 
-	public TypesStream backup(String lang, boolean full);
+	public TypesStream backup(boolean full);
 
-	public ObjectsStream exportObjects(String type, String[] objects, String lang,
-			LinkedHashMap<String, Order> order);
+	public ObjectsStream exportObjects(String type, String[] objects, LinkedHashMap<String, Order> order);
 
 	public ImportTypesResult importTypes(InputStream types, ImportAction existingTypesAction,
 			ImportAction existingObjectsAction);
@@ -329,9 +331,9 @@ public interface Node extends Module, AutoCloseable {
 
 	public byte[] getBinary(String sql, Object... parameters);
 
-	public HTMLFragment getHTML(String sql, String lang, String allowedTags);
+	public HTMLFragment getHTML(String sql, String allowedTags);
 
-	public HTMLFragment getHTML(String sql, String lang, String allowedTags, Object... parameters);
+	public HTMLFragment getHTML(String sql, String allowedTags, Object... parameters);
 
 	public URI getURI(String sql);
 
@@ -429,9 +431,9 @@ public interface Node extends Module, AutoCloseable {
 
 	public byte[][] getBinaryArray(String sql, Object... parameters);
 
-	public HTMLFragment[] getHTMLArray(String sql, String lang, String allowedTags);
+	public HTMLFragment[] getHTMLArray(String sql, String allowedTags);
 
-	public HTMLFragment[] getHTMLArray(String sql, String lang, String allowedTags, Object... parameters);
+	public HTMLFragment[] getHTMLArray(String sql, String allowedTags, Object... parameters);
 
 	public URI[] getURIArray(String sql);
 
