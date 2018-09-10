@@ -565,7 +565,7 @@ public class Tuple {
 
 			for (String entry : Utils.split((String) value)) {
 				String[] keyValue = Utils.split(entry, ":");
-				tuple.put(keyValue[0].trim(), keyValue[1].trim());
+				tuple.put(keyValue[0], keyValue[1]);
 			}
 
 			value = tuple;
