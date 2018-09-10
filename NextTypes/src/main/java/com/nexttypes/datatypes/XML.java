@@ -55,7 +55,7 @@ import org.xml.sax.SAXParseException;
 import com.nexttypes.exceptions.DisallowedAttributeException;
 import com.nexttypes.exceptions.DisallowedTagException;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.exceptions.StringException;
+import com.nexttypes.exceptions.XMLException;
 import com.nexttypes.system.Utils;
 
 public class XML extends PGobject {
@@ -158,7 +158,7 @@ public class XML extends PGobject {
 	}
 
 	protected void throwException(SAXParseException e) {
-		throw new StringException(e.getLineNumber() + ": " + e.getMessage());
+		throw new XMLException(e);
 	}
 
 	public static String getText(String xml) {
