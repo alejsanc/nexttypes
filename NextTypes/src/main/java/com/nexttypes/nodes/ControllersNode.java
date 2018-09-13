@@ -268,7 +268,8 @@ public class ControllersNode implements Node {
 				String contentType = ((File) value).getContentType();
 
 				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
-					throw new ActionFieldException(type, action, field, Constants.DISALLOWED_CONTENT_TYPE, contentType);
+					throw new ActionFieldException(type, action, field,
+							Constants.DISALLOWED_CONTENT_TYPE, contentType);
 				}
 			}
 		}
@@ -282,8 +283,8 @@ public class ControllersNode implements Node {
 			BigDecimal minValue = typeSettings.getFieldNumeric(type, field, Constants.MIN_VALUE);
 			BigDecimal maxValue = typeSettings.getFieldNumeric(type, field, Constants.MAX_VALUE);
 
-			if (minValue != null && numericValue.compareTo(minValue) == -1
-					|| maxValue != null && numericValue.compareTo(maxValue) == 1) {
+			if ((minValue != null && numericValue.compareTo(minValue) == -1)
+					|| (maxValue != null && numericValue.compareTo(maxValue) == 1)) {
 				throw new FieldException(type, field, Constants.OUT_OF_RANGE_VALUE, numericValue);
 			}
 		}
@@ -674,6 +675,11 @@ public class ControllersNode implements Node {
 	@Override
 	public String getFieldContentType(String type, String id, String field) {
 		return getController(type).getFieldContentType(type, id, field);
+	}
+	
+	@Override
+	public Object getFieldDefault(String type, String field) {
+		return getController(type).getFieldDefault(type, field);
 	}
 
 	@Override

@@ -84,6 +84,8 @@ public class Constants {
 	public static final String DATE = "date";
 	public static final String DATABASE = "database";
 	public static final String DEBUG = "debug";
+	public static final String DEFAULT = "default";
+	public static final String DEFAULTS = "defaults";
 	public static final String DEFAULT_LANG = "default_lang";
 	public static final String DEFAULT_VIEW = "default_view";
 	public static final String DELETE_REFERENCE = "delete_reference";
@@ -220,6 +222,7 @@ public class Constants {
 	public static final String MAX_TIME = "max_time";
 	public static final String MAX_VALUE = "max_value";
 	public static final String MENU = "menu";
+	public static final String MENUS = "menus";
 	public static final String MESSAGE = "message";
 	public static final String METHOD_NOT_ALLOWED = "method_not_allowed";
 	public static final String MIN_LIMIT = "min_limit";
@@ -265,6 +268,7 @@ public class Constants {
 	public static final String PARAMETERS = "parameters";
 	public static final String PARAMETERS_ALTERED = "parameters_altered";
 	public static final String PASSWORD = "password";
+	public static final String PASSWORD_FIELD_DEFAULT_VALUE = "password_field_default_value";
 	public static final String PASSWORD_FIELD_UPDATE = "password_field_update";
 	public static final String PASSWORD_SUCCESSFULLY_UPDATED = "password_successfully_updated";
 	public static final String PASSWORDS_DONT_MATCH = "passwords_dont_match";

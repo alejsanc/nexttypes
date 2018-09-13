@@ -192,6 +192,8 @@ public interface Node extends Module, AutoCloseable {
 	public String getFieldContentType(String type, String field);
 
 	public String getFieldContentType(String type, String id, String field);
+	
+	public Object getFieldDefault(String type, String field);
 
 	public String getCompositeFieldContentType(String type, String id, String field);
 

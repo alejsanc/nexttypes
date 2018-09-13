@@ -383,6 +383,7 @@ public aspect NodeSecurity extends Checks {
 	    execution(* Node.getTypeField(..)) ||
 	    execution(* Node.getFieldType(..)) ||
 	    execution(* Node.getFieldContentType(..)) ||
+	    execution(* Node.getFieldDefault(..)) ||
 	    execution(* Node.hasNullValues(..))
 	    )&& args(type, field) {
     	

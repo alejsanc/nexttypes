@@ -1725,7 +1725,13 @@ public class HTMLView extends View {
 			cell.addClass(REFERENCE_FIELD);
 			cell.appendText(nextNode.getName(typeField.getType(), ref.getId(), lang));
 		} else {
-			input = fieldInput(type, field, title, null, typeField, lang);
+			Object value = null;
+						
+			if (!PT.isBinaryType(typeField.getType())) {
+				value = nextNode.getFieldDefault(type, field);
+			}
+			
+			input = fieldInput(type, field, title, value, typeField, lang);
 		}
 
 		cell.appendElement(input);

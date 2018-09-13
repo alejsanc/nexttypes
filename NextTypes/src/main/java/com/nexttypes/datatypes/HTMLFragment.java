@@ -28,4 +28,8 @@ public class HTMLFragment extends XMLFragment {
 	public HTMLFragment(String html, String lang, String allowedTags) {
 		super(html, lang, allowedTags);
 	}
+
+	public HTMLFragment(byte[] html, String lang, String allowedTags) {
+		super(html, lang, allowedTags);
+	}
 }

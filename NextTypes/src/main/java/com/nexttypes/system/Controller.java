@@ -337,6 +337,10 @@ public class Controller {
 	public String getFieldContentType(String type, String field) {
 		return nextNode.getFieldContentType(type, field);
 	}
+	
+	public Object getFieldDefault(String type, String field) {
+		return nextNode.getFieldDefault(type, field);
+	}
 
 	public String getCompositeFieldContentType(String type, String id, String field) {
 		return nextNode.getCompositeFieldContentType(type, id, field);

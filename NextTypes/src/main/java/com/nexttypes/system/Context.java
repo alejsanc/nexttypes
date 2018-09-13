@@ -29,6 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.io.IOUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.nexttypes.datatypes.HTML;
@@ -64,6 +66,8 @@ public class Context {
 	protected ConcurrentHashMap<String, LinkedHashMap<String, TypeIndex>> indexes
 	= new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, HTML> templates = new ConcurrentHashMap<>();
+	protected ConcurrentHashMap<String, byte[]> defaults = new ConcurrentHashMap<>();
+	protected ConcurrentHashMap<String, Menu> menus = new ConcurrentHashMap<>();
 
 	public Context(String directory) {
 		this.directory = Utils.readDirectory(directory);
@@ -102,21 +106,6 @@ public class Context {
 		}
 
 		context.context.removeAttribute(CONTEXT);
-	}
-
-	public HTML getTemplate(String template, String lang) {
-		HTML document = null;
-
-		if (templates.containsKey(template)) {
-			document = templates.get(template).clone();
-		} else {
-			document = new HTML(context.getResourceAsStream("/" + Constants.TEMPLATES + "/" + template
-					+ "." + Format.XHTML.getExtension()), lang);
-			
-			templates.putIfAbsent(template, document.clone());
-		}
-
-		return document;
 	}
 
 	public DBConnection.DBConnectionPool getDatabaseConnectionPool(String name) {
@@ -219,11 +208,10 @@ public class Context {
 		return propertiesList;
 	}
 
-	public Menu getMenu(String file) {
-		MenuSection[] sections = null;
+	public InputStream getFile(String file) {
 		File filePath = null;
 		InputStream stream = null;
-		
+				
 		if (directory != null) {
 			filePath = new File(directory + file);
 		}		
@@ -234,18 +222,58 @@ public class Context {
 			} else {
 				stream = getClass().getResourceAsStream(Settings.DEFAULT_SETTINGS + file);
 			}
-
-			try (InputStream s = stream) {
-				ObjectMapper mapper = new ObjectMapper();
-				sections = mapper.readValue(s, TypeFactory.defaultInstance()
-						.constructArrayType(MenuSection.class));
-
-			}
 		} catch (IOException e) {
 			throw new NXException(e);
 		}
 
-		return new Menu(sections);
+		return stream;
+	}
+	
+	public HTML getTemplate(String file, String lang) {
+		HTML document = templates.get(file);
+		
+		if (document == null) {
+			document = new HTML(getFile(Constants.TEMPLATES + "/" + file), lang);
+			templates.putIfAbsent(file, document);
+		}
+
+		return document.clone();
+	}
+	
+	public byte[] getDefault(String file) {
+		byte[] value = defaults.get(file);
+		
+		if (value == null) {
+			try {
+				value = IOUtils.toByteArray(getFile(Constants.DEFAULTS + "/" + file));
+			} catch (IOException e) {
+				throw new NXException(e);
+			}
+			
+			defaults.putIfAbsent(file, value);
+		}
+		
+		return value;
+	}
+	
+	public Menu getMenu(String file) {
+		Menu menu = menus.get(file);
+		
+		if (menu == null) {
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				MenuSection[] sections;
+				sections = mapper.readValue(getFile(Constants.MENUS + "/" + file),
+						TypeFactory.defaultInstance().constructArrayType(MenuSection.class));
+				menu = new Menu(sections);
+				
+				menus.putIfAbsent(file, menu);
+			} catch (IOException e) {
+				throw new NXException(e);
+			}
+		}
+		
+		return menu;
 	}
 
 	public TypesCache getTypesCache() {

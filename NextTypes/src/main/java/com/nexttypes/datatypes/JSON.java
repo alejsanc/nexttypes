@@ -18,11 +18,17 @@ package com.nexttypes.datatypes;
 
 import org.postgresql.util.PGobject;
 
+import com.nexttypes.system.Utils;
+
 public class JSON extends PGobject {
 	private static final long serialVersionUID = 1L;
 
 	protected static final String JSONB = "jsonb";
 
+	public JSON(byte[] value) {
+		this(Utils.toString(value));
+	}
+	
 	public JSON(String value) {
 		this.value = value;
 		type = JSONB;

@@ -467,6 +467,11 @@ public class ProxyNode implements Node {
 	public String getFieldContentType(String type, String field) {
 		return getNextNode(type).getFieldContentType(type, field);
 	}
+	
+	@Override
+	public Object getFieldDefault(String type, String field) {
+		return getNextNode(type).getFieldDefault(type, field);
+	}
 
 	@Override
 	public String getCompositeFieldContentType(String type, String id, String field) {

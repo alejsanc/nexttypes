@@ -72,6 +72,7 @@ import com.nexttypes.datatypes.IdFilter;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.ImportObjectsResult;
 import com.nexttypes.datatypes.ImportTypesResult;
+import com.nexttypes.datatypes.JSON;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.ObjectField;
 import com.nexttypes.datatypes.ObjectInfo;
@@ -127,6 +128,7 @@ import com.nexttypes.system.Constants;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Context.TypesCache;
 import com.nexttypes.system.DBConnection;
+import com.nexttypes.system.Utils;
 
 public class PostgreSQLNode implements Node {
 	public static final String POSTGRESQL = "postgresql";
@@ -1078,8 +1080,8 @@ public class PostgreSQLNode implements Node {
 			BigDecimal minValue = typeSettings.getFieldNumeric(type, field, Constants.MIN_VALUE);
 			BigDecimal maxValue = typeSettings.getFieldNumeric(type, field, Constants.MAX_VALUE);
 
-			if (minValue != null && value.compareTo(minValue) == -1
-					|| maxValue != null && value.compareTo(maxValue) == 1) {
+			if ((minValue != null && value.compareTo(minValue) == -1)
+					|| (maxValue != null && value.compareTo(maxValue) == 1)) {
 				throw new FieldException(type, field, Constants.OUT_OF_RANGE_VALUE, value);
 			}
 		}
@@ -1169,29 +1171,37 @@ public class PostgreSQLNode implements Node {
 		String type = object.getType();
 
 		checkType(type);
+		
+		if (id != null && single && existsObject(type, id)) {
+			throw new ObjectException(type, id, Constants.OBJECT_ALREADY_EXISTS);
+		}
 
 		for (Map.Entry<String, TypeField> entry : getTypeFields(type).entrySet()) {
 			String field = entry.getKey();
 			TypeField typeField = entry.getValue();
+			String fieldType = typeField.getType();
+			Object value = null;
 
-			if (typeField.isNotNull()) {
-				if (!object.containsKey(field)) {
-					throw new FieldException(type, field, Constants.MISSING_FIELD);
-				} else if (object.get(field) == null) {
+			if (object.containsKey(field)) {
+				value = object.get(field);
+
+				if (value == null && typeField.isNotNull()){
 					throw new FieldException(type, field, Constants.EMPTY_FIELD);
 				}
-			}
-
-			Object value = object.get(field);
+			} else {
+				value = getFieldDefault(type, field, fieldType);
+				
+				if (value != null) {
+					object.put(field, value);
+				} else if (typeField.isNotNull()) {
+					throw new FieldException(type, field, Constants.MISSING_FIELD);
+				}
+			}	
 
 			if (value != null) {
-				checkNumericField(object, field, typeField.getType());
+				checkNumericField(object, field, fieldType);
 				checkComplexField(type, field, value);
 			}
-		}
-
-		if (id != null && single && existsObject(type, id)) {
-			throw new ObjectException(type, id, Constants.OBJECT_ALREADY_EXISTS);
 		}
 
 		ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
@@ -2177,6 +2187,142 @@ public class PostgreSQLNode implements Node {
 		}
 
 		return contentType;
+	}
+	
+	@Override
+	public Object getFieldDefault(String type, String field) {
+		return getFieldDefault(type, field, getFieldType(type, field));
+	}
+	
+	protected Object getFieldDefault(String type, String field, String fieldType) {
+		Object value = null;
+		
+		String setting = strings.getFieldString(type, field, Constants.DEFAULT);
+		
+		if (setting == null) {
+			setting = typeSettings.getFieldString(type, field, Constants.DEFAULT);
+		}
+		
+		if (setting != null) {
+			
+			if (PT.isBinaryType(fieldType) || PT.isTextType(fieldType)) {
+			
+				byte [] content = context.getDefault(setting);
+			
+				if (content != null) {
+					
+					switch (fieldType) {
+					case PT.BINARY:
+						value = content;
+						break;
+						
+					case PT.FILE:
+						value = new File(content);
+						break;
+						
+					case PT.IMAGE:
+						value = new Image(content);
+						break;
+						
+					case PT.DOCUMENT:
+						value = new Document(content);
+						break;
+						
+					case PT.AUDIO:
+						value = new Audio(content);
+						break;
+						
+					case PT.VIDEO:
+						value = new Video(content);
+						break;	
+					
+					case PT.TEXT:
+						value = Utils.toString(content);
+						break;
+						
+					case PT.HTML:
+						value = new HTMLFragment(content, lang, typeSettings.getFieldString(type, field,
+								Constants.HTML_ALLOWED_TAGS));
+						break;
+						
+					case PT.JSON:
+						value = new JSON(content);
+						break;
+					
+					case PT.XML:
+						value = new XML(content, lang, typeSettings.getFieldString(type, field,
+								Constants.XML_ALLOWED_TAGS));
+						break;
+					}
+				}
+			} else {
+				switch (fieldType) {
+				case PT.INT16:
+					value = Tuple.parseInt16(setting);
+					break;
+					
+				case PT.INT32:
+					value = Tuple.parseInt32(setting);
+					break;
+					
+				case PT.INT64:
+					value = Tuple.parseInt64(setting);
+					break;
+					
+				case PT.FLOAT32:
+					value = Tuple.parseFloat32(setting);
+					break;
+					
+				case PT.FLOAT64:
+					value = Tuple.parseFloat64(setting);
+					break;
+					
+				case PT.NUMERIC:
+					value = Tuple.parseNumeric(setting);
+					break;
+					
+				case PT.BOOLEAN:
+					value = Tuple.parseBoolean(setting);
+					break;
+					
+				case PT.COLOR:
+					value = Tuple.parseColor(setting);
+					break;
+					
+				case PT.DATE:
+					value = Tuple.parseDate(setting);
+					break;
+					
+				case PT.TIME:
+					value = Tuple.parseTime(setting);
+					break;
+					
+				case PT.DATETIME:
+					value = Tuple.parseDatetime(setting);
+					break;
+					
+				case PT.TIMEZONE:
+					value = Tuple.parseTimezone(setting);
+					break;
+					
+				case PT.EMAIL:
+					value = Tuple.parseEmail(setting);
+					break;
+					
+				case PT.URI:
+					value = Tuple.parseURI(setting);
+					break;
+					
+				case PT.PASSWORD:
+					throw new FieldException(type, field, Constants.PASSWORD_FIELD_DEFAULT_VALUE);
+							
+				default:
+					value = setting;	
+				}
+			}
+		}
+		
+		return value;
 	}
 
 	@Override

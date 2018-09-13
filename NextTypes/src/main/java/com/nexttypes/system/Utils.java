@@ -36,6 +36,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Node;
 
 import com.nexttypes.enums.Order;
@@ -48,7 +49,7 @@ public class Utils {
 
 		if (input != null && input.length() > 0) {
 			try {
-				output = org.apache.commons.io.IOUtils.toInputStream(input, Constants.UTF_8_CHARSET);
+				output = IOUtils.toInputStream(input, Constants.UTF_8_CHARSET);
 			} catch (IOException e) {
 				throw new NXException(e);
 			}
@@ -62,12 +63,26 @@ public class Utils {
 
 		if (input != null) {
 			try {
-				output = org.apache.commons.io.IOUtils.toString(input, Constants.UTF_8_CHARSET);
+				output = IOUtils.toString(input, Constants.UTF_8_CHARSET);
 			} catch (IOException e) {
 				throw new NXException(e);
 			}
 		}
 
+		return output;
+	}
+	
+	public static String toString(byte[] input) {
+		String output = null;
+		
+		if (input != null) {
+			try {
+				output = IOUtils.toString(input, Constants.UTF_8_CHARSET);
+			} catch (IOException e) {
+				throw new NXException(e);
+			}
+		}
+		
 		return output;
 	}
 	

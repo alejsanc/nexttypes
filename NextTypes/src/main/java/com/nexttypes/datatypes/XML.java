@@ -16,6 +16,7 @@
 
 package com.nexttypes.datatypes;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -96,11 +97,19 @@ public class XML extends PGobject {
 	}
 
 	public XML(String xml, String lang) {
-		this(xml, lang, (LinkedHashMap<String, String[]>) null);
+		this(Utils.toInputStream(xml), lang, (LinkedHashMap<String, String[]>) null);
 	}
 
 	public XML(String xml, String lang, String allowedTags) {
-		this(Utils.toInputStream(xml), lang, allowedTags);
+		this(Utils.toInputStream(xml), lang, parseAllowedTags(allowedTags));
+	}
+	
+	public XML(byte[] xml, String lang) {
+		this(new ByteArrayInputStream(xml), lang, (LinkedHashMap<String, String[]>) null);
+	}
+	
+	public XML(byte[] xml, String lang, String allowedTags) {
+		this(new ByteArrayInputStream(xml), lang, parseAllowedTags(allowedTags));
 	}
 
 	public XML(InputStream xml, String lang) {
@@ -113,6 +122,10 @@ public class XML extends PGobject {
 
 	public XML(String xml, String lang, LinkedHashMap<String, String[]> allowedTags) {
 		this(Utils.toInputStream(xml), lang, allowedTags);
+	}
+	
+	public XML(byte[] xml, String lang, LinkedHashMap<String, String[]> allowedTags) {
+		this(new ByteArrayInputStream(xml), lang, allowedTags);
 	}
 
 	public XML(InputStream xml, String lang, LinkedHashMap<String, String[]> allowedTags) {

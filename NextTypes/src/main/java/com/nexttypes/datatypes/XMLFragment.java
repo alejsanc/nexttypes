@@ -20,6 +20,9 @@ import java.util.LinkedHashMap;
 
 import org.w3c.dom.NodeList;
 
+import com.nexttypes.system.Constants;
+import com.nexttypes.system.Utils;
+
 public class XMLFragment extends XML {
 	private static final long serialVersionUID = 1L;
 
@@ -32,7 +35,15 @@ public class XMLFragment extends XML {
 	public XMLFragment(String xml, String lang, String allowedTags) {
 		this(xml, lang, parseAllowedTags(allowedTags));
 	}
+	
+	public XMLFragment(byte[] xml, String lang, String allowedTags) {
+		this(Utils.toString(xml), lang, parseAllowedTags(allowedTags));
+	}
 
+	public XMLFragment(byte[] xml, String lang, LinkedHashMap<String, String[]> allowedTags) {
+		this(Utils.toString(xml), lang, allowedTags);
+	}
+	
 	public XMLFragment(String xml, String lang, LinkedHashMap<String, String[]> allowedTags) {
 		super("<" + FRAGMENT + ">" + xml + "</" + FRAGMENT + ">", lang, addFragmentTag(allowedTags));
 		setXMLDeclaration(false);
