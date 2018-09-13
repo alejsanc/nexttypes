@@ -1290,7 +1290,11 @@ public class HTMLView extends View {
 
 	public void loadTemplate(String type, String lang, String view, String template) {
 		if (template == null) {
-			template = typeSettings.gts(type, Constants.TEMPLATE);
+			template = strings.gts(type, Constants.TEMPLATE);
+			
+			if (template == null) {
+				template = typeSettings.gts(type, Constants.TEMPLATE);
+			}
 		}
 
 		document = context.getTemplate(template, lang);
