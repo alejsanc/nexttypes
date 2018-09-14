@@ -73,6 +73,8 @@ import com.nexttypes.system.Utils;
 
 public class HTTPRequest {
 
+	protected static final String DEFAULT_PARAMETER = "default_parameter";
+	
 	protected static final String[] REQUEST_PARAMETERS = new String[] { Constants.TYPE, Constants.TYPES,
 			Constants.ADATE, Constants.ID, Constants.UDATE, Constants.OBJECTS, Constants.NEW_ID,
 			Constants.NEW_NAME, Constants.EXISTING_TYPES_ACTION, Constants.EXISTING_OBJECTS_ACTION,
@@ -81,7 +83,8 @@ public class HTTPRequest {
 			Constants.VIEW, Constants.REF, Constants.FORM, Constants.YEAR, Constants.MONTH,
 			Constants.TYPE_ACTION, Constants.LOGIN_USER, Constants.LOGIN_PASSWORD, 
 			Constants.COMPONENT, Constants.INCLUDE_OBJECTS, Constants.INFO, Constants.NAMES,
-			Constants.CALENDAR, Constants.PREVIEW, Constants.REFERENCES, Action.FILTER_COMPONENT };
+			Constants.CALENDAR, Constants.PREVIEW, Constants.REFERENCES, Action.FILTER_COMPONENT,
+			Constants.DEFAULT};
 
 	protected Settings settings;
 	protected TypeSettings typeSettings;
@@ -134,6 +137,7 @@ public class HTTPRequest {
 	protected boolean references = false;
 	protected boolean preview = false;
 	protected boolean calendar = false;
+	protected boolean default_parameter = false;
 
 	protected LinkedHashMap<String, LinkedHashMap<String, HashMap<String, String>>> compositeParameters;
 
@@ -253,13 +257,21 @@ public class HTTPRequest {
 
 	protected void readParameters() {
 		Enumeration<String> parameterNames = request.getParameterNames();
+		Class thisClass = getClass();
 
 		while (parameterNames.hasMoreElements()) {
 			String parameterName = parameterNames.nextElement();
-
+			
 			if (ArrayUtils.contains(REQUEST_PARAMETERS, parameterName)) {
 				try {
-					Field field = getClass().getDeclaredField(parameterName);
+					Field field = null;
+					
+					if (Constants.DEFAULT.equals(parameterName)) {
+						field = thisClass.getDeclaredField(DEFAULT_PARAMETER);
+					} else {
+						field = thisClass.getDeclaredField(parameterName);
+					}
+					
 					Class fieldType = field.getType();
 					Object value = null;
 
@@ -714,6 +726,10 @@ public class HTTPRequest {
 
 	public boolean isCalendar() {
 		return calendar;
+	}
+	
+	public boolean isDefault() {
+		return default_parameter;
 	}
 
 	public ImportAction getExistingTypesAction() {

@@ -44,6 +44,7 @@ import com.nexttypes.datatypes.Anchor;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.DocumentPreview;
+import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.HTML;
@@ -817,20 +818,41 @@ public class HTMLView extends View {
 			String contentType = objectField.getContentType();
 			String fieldType = nextNode.getTypeField(type, field).getType();
 
-			switch (fieldType) {
-			case PT.BINARY:
-			case PT.FILE:
-			case PT.IMAGE:
-			case PT.DOCUMENT:
-			case PT.AUDIO:
-			case PT.VIDEO:
-				content = new Content((byte[]) value, contentType);
-				break;
-
-			default:
-				content = new Content(value.toString(), contentType);
+			if (!PT.isBinaryType(fieldType)) {
+				value = value.toString();
 			}
+			
+			content = new Content(value, contentType);
 			content.setHeader(HTTPHeader.ETAG, objectField.getETag());
+		}
+
+		return content;
+	}
+	
+	@Override
+	public Content getFieldDefault(String type, String field) {
+		Content content = null;
+
+		Object value = nextNode.getFieldDefault(type, field);
+
+		if (value != null) {
+			String contentType = nextNode.getFieldContentType(type, field);
+			String fieldType = nextNode.getTypeField(type, field).getType();
+
+			if (!PT.isBinaryType(fieldType)) {
+				
+				value = value.toString();
+				
+			} else if (PT.isFileType(fieldType)) {
+				
+				if (contentType == null) {
+					contentType = ((File) value).getContentType();
+				}
+				
+				value = ((File) value).getContent();
+			}
+			
+			content = new Content(value, contentType);
 		}
 
 		return content;
@@ -1208,6 +1230,8 @@ public class HTMLView extends View {
 			}
 		}
 		
+		boolean appendFieldAnchor = permissions.isAllowed(type, Action.GET_FIELD_DEFAULT);
+		
 		for (Entry<String, TypeField> entry : typeFields.entrySet()) {
 			String field = entry.getKey();
 			TypeField typeField = entry.getValue();
@@ -1219,10 +1243,25 @@ public class HTMLView extends View {
 			if (showType) {
 				row.appendElement(HTML.TD).appendText(typeField.getType());
 			}
+			
+			Object value = nextNode.getFieldDefault(type, field);
+			
+			if (value instanceof byte[]) {
+				value = ((byte[]) value).length;
+			} else if (value instanceof File) {
+				value = ((File) value).getContent().length;
+			}
 
-			row.appendElement(HTML.TD).appendText(fieldName);
+			Element fieldCell = row.appendElement(HTML.TD);
+			
+			if (appendFieldAnchor && value != null) {
+				fieldCell.appendElement(anchor(fieldName, "/" + type + "/id/" + field + "?" 
+						+ Constants.DEFAULT));
+			} else {
+				fieldCell.appendText(fieldName);
+			}
 
-			row.appendElement(insertFormCell(type, field, fieldName, typeField, lang, ref));
+			row.appendElement(insertFormCell(type, field, fieldName, value, typeField, ref, lang));
 		}
 		
 		String actionName = strings.getActionName(type, Action.INSERT);
@@ -1718,8 +1757,8 @@ public class HTMLView extends View {
 		return form;
 	}
 
-	public Element insertFormCell(String type, String field, String title, TypeField typeField, String lang,
-			FieldReference ref) {
+	public Element insertFormCell(String type, String field, String title, Object value, 
+			TypeField typeField, FieldReference ref, String lang) {
 		Element cell = document.createElement(HTML.TD);
 		Element input = null;
 
@@ -1729,12 +1768,6 @@ public class HTMLView extends View {
 			cell.addClass(REFERENCE_FIELD);
 			cell.appendText(nextNode.getName(typeField.getType(), ref.getId(), lang));
 		} else {
-			Object value = null;
-						
-			if (!PT.isBinaryType(typeField.getType())) {
-				value = nextNode.getFieldDefault(type, field);
-			}
-			
 			input = fieldInput(type, field, title, value, typeField, lang);
 		}
 

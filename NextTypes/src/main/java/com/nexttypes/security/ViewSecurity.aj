@@ -242,6 +242,14 @@ public aspect ViewSecurity extends Checks {
     	checkField(field);
     	checkPermissions(type, Action.GET_FIELD, thisJoinPoint);
     }
+    
+    before(String type, String field) : 
+		(execution(* View.getFieldDefault(..))) && args(type, field) {
+	
+    	checkType(type);
+    	checkField(field);
+    	checkPermissions(type, Action.GET_FIELD_DEFAULT, thisJoinPoint);
+    }
 
     before(String type, String id, String field, String element, String lang, String view) : 
 		(execution(* View.getElement(..))) && args(type, id, field, element, lang, view, ..) {

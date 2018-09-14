@@ -207,6 +207,8 @@ public class HTTPServlet extends HttpServlet {
 					} else if (Action.UPDATE_PASSWORD.equals(form)) {
 						content = view.updatePasswordForm(req.getType(), req.getId(), req.getField(), req.getLang(),
 								req.getView());
+					} else if (req.isDefault()) {
+						content = view.getFieldDefault(req.getType(), req.getField());
 					} else {
 						content = view.getField(req.getType(), req.getId(), req.getField(), req.getETag());
 					}

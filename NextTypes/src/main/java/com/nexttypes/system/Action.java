@@ -46,6 +46,7 @@ public @interface Action {
 	public static final String GET = "get";
 	public static final String GET_ELEMENT = "get_element";
 	public static final String GET_FIELD = "get_field";
+	public static final String GET_FIELD_DEFAULT = "get_field_default";
 	public static final String GET_REFERENCES = "get_references";
 	public static final String GET_TYPE = "get_type";
 	public static final String GET_TYPES_INFO = "get_types_info";
@@ -73,6 +74,6 @@ public @interface Action {
 	public static final String UPDATE_ID_FORM = "update_id_form";
 	public static final String UPDATE_PASSWORD = "update_password";
 	public static final String UPDATE_PASSWORD_FORM = "update_password_form";
-
+	
 	public String value();
 }

@@ -183,6 +183,10 @@ public abstract class View implements Module, AutoCloseable {
 	public Content getField(String type, String id, String field, String etag) {
 		throw new NotImplementedException();
 	}
+	
+	public Content getFieldDefault(String type, String field) {
+		throw new NotImplementedException();
+	}
 
 	public Content getElement(String type, String id, String field, String element, String lang, String view,
 			String etag) {
