@@ -101,11 +101,6 @@ pre {
 	word-break: break-all;
 }
 
-textarea {
-	width: 700px;
-	height: 400px;
-}
-
 figure {
 	display: table;
 	margin: 0px;
@@ -137,6 +132,11 @@ button:disabled img {
 
 video {
 	width: 320px;
+}
+
+textarea {
+	width: 60vw;
+	height: 60vh;
 }
 
 #menu {
@@ -478,6 +478,7 @@ video {
 }
 
 .object-radio-input {
+	width: 60vw;
 	display: block;
 	text-align: left;
 }
@@ -511,9 +512,13 @@ video {
 	margin-right: 5px;
 }
 
-.CodeMirror{
+.CodeMirror {
 	width: 60vw;
-	height: 40vh;
+	height: 60vh !important;
+}
+
+.mce-tinymce {
+	width: 60vw !important;
 }
 
 @media screen and (max-width: 900px) {
@@ -524,6 +529,10 @@ video {
 	main {
 		float: none;
 		width: 100%;
+	}
+	
+	textarea {
+		width: 75vw;
 	}
 	
 	#user {
@@ -547,6 +556,18 @@ video {
 		float: none;
 		width: 100%;
 	}	
+	
+	.object-radio-input {
+		width: 75vw;
+	}
+	
+	.CodeMirror {
+		width: 75vw;
+	}
+
+	.mce-tinymce {
+		width: 75vw !important;
+	}
 }
 
 @media print {

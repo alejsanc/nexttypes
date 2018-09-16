@@ -42,9 +42,7 @@ function codemirrorEditor(textarea, editorMode) {
 function tinymceEditor(textarea) {
 	tinymce.init({
 	    target: textarea,
-	    width: 700,
-		height: 400,
-		browser_spellcheck: true,
+	   	browser_spellcheck: true,
 		entity_encoding: "raw",
 	    setup : function(editor){
 	    	 editor.on("change", function(e){

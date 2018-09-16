@@ -199,8 +199,12 @@ public class HTML extends XML {
 		
 		@Override
 		public Element setAttribute(String name, String value) {
-			for (Element input : inputs) {
-				input.setAttribute(name, value);
+			if (HTML.NAME.equals(name)) {
+				for (Element input : inputs) {
+					input.setAttribute(name, value);
+				}
+			} else {
+				super.setAttribute(name, value);
 			}
 			return this;
 		}
