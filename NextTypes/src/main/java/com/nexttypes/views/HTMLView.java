@@ -1215,11 +1215,11 @@ public class HTMLView extends View {
 			if (showType) {
 				row.appendElement(HTML.TD).appendText(PT.STRING);
 			}
-
-			row.appendElement(HTML.TD).appendText(strings.getIdName(type));
-			row.appendElement(HTML.TD).appendElement(
-					input(HTML.TEXT, Constants.ID, strings.getIdName(type))
-						.setAttribute(HTML.MAXLENGTH, Type.MAX_ID_LENGTH));
+			
+			String idName = strings.getIdName(type);
+			
+			row.appendElement(HTML.TD).appendText(idName);
+			row.appendElement(HTML.TD).appendElement(idInput(type, Constants.ID, idName));
 		}
 
 		if (ref != null) {
@@ -1707,7 +1707,7 @@ public class HTMLView extends View {
 
 		row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(newId + ":");
-		row.appendElement(HTML.TD).appendElement(input(HTML.TEXT, Constants.NEW_ID, newId));
+		row.appendElement(HTML.TD).appendElement(idInput(type, Constants.NEW_ID, newId));
 
 		String actionName = strings.getActionName(type, Action.UPDATE_ID);
 
@@ -1718,6 +1718,13 @@ public class HTMLView extends View {
 		}
 
 		return form;
+	}
+	
+	public Element idInput(String type, String name, String title) {
+		Integer size = typeSettings.getTypeInt32(type, Constants.ID_INPUT_SIZE);
+
+		return input(HTML.TEXT, name, title).setAttribute(HTML.MAXLENGTH, Type.MAX_ID_LENGTH)
+					.setAttribute(HTML.SIZE, size);
 	}
 
 	public Element updatePasswordFormElement(String type, String id, String field, String lang, String view) {

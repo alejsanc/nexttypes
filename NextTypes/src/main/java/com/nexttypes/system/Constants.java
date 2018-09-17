@@ -147,6 +147,7 @@ public class Constants {
 	public static final String HTTPS_PORT = "https_port";
 	public static final String ICAL = "ical";
 	public static final String ID = "id";
+	public static final String ID_INPUT_SIZE = "id_input_size";
 	public static final String ID_NAME = "id_name";
 	public static final String ID_TOO_LONG = "id_too_long";
 	public static final String IGNORED_OBJECTS = "ignored_objects";
