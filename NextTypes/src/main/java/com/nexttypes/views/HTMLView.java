@@ -571,9 +571,11 @@ public class HTMLView extends View {
 			if (showType) {
 				row.appendElement(HTML.TD).appendText(typeField.getType());
 			}
-
+			
+			
 			row.appendElement(HTML.TD).appendText(fieldName);
-			row.appendElement(HTML.TD).appendElement(fieldInput(type, action, field, fieldName, null, typeField, lang));
+			row.appendElement(HTML.TD).appendElement(actionFieldInput(type, action, field, fieldName,
+					null, typeField, lang));
 		}
 
 		Element actionButton = form.appendElement(button(actionName, action, Icon.CHEVRON_TOP,
@@ -1540,7 +1542,7 @@ public class HTMLView extends View {
 		String valueName = Constants.FILTERS + ":" + count + ":" + Constants.VALUE;
 		
 		if (Constants.ID.equals(filterField)) {
-			valueInput = objectInput(valueName, strings.getIdName(type),
+			valueInput = filterObjectInput(valueName, strings.getIdName(type),
 					filter.getValue(), type, true, lang);
 		} else {
 			if (PT.isTextType(typeField.getType())) {
@@ -1720,13 +1722,6 @@ public class HTMLView extends View {
 		return form;
 	}
 	
-	public Element idInput(String type, String name, String title) {
-		Integer size = typeSettings.getTypeInt32(type, Constants.ID_INPUT_SIZE);
-
-		return input(HTML.TEXT, name, title).setAttribute(HTML.MAXLENGTH, Type.MAX_ID_LENGTH)
-					.setAttribute(HTML.SIZE, size);
-	}
-
 	public Element updatePasswordFormElement(String type, String id, String field, String lang, String view) {
 		Element form = form(type, id, field, lang, view);
 		Element table = form.appendElement(HTML.TABLE);
@@ -1810,14 +1805,24 @@ public class HTMLView extends View {
 	public Element fieldInput(String type, String field, String title, Object value, TypeField typeField,
 			String lang) {
 		
-		return fieldInput(type, null, field, title, value, typeField, lang);
+		Integer size = typeSettings.getFieldInt32(type, field, Constants.INPUT_SIZE);
+		
+		return fieldInput(type, null, field, title, value, typeField, size, lang);
+	}
+	
+	public Element actionFieldInput(String type, String action, String field, String title, Object value,
+			TypeField typeField, String lang) {
+		
+		Integer size = typeSettings.getActionFieldInt32(type, action, field, Constants.INPUT_SIZE);
+
+		return fieldInput(type, action, field, title, value, typeField, size, lang);
 	}
 
 	public Element fieldInput(String type, String action, String field, String title, Object value,
-			TypeField typeField, String lang) {
+			TypeField typeField, Integer size, String lang) {
 
 		Element input = null;
-
+		
 		switch (typeField.getType()) {
 		case PT.STRING:
 		case PT.INT16:
@@ -1833,13 +1838,13 @@ public class HTMLView extends View {
 		case PT.TIME:
 		case PT.DATETIME:
 		case PT.COLOR:
-			input = fieldInput(field, title, value, typeField);
+			input = fieldInput(field, title, value, typeField, size);
 			break;
 		case PT.TEXT:
 		case PT.HTML:
 		case PT.JSON:
 		case PT.XML:
-			input = textareaFieldInput(type, field, title, value, typeField);
+			input = textareaFieldInput(type, action, field, title, value, typeField);
 			break;
 		case PT.BINARY:
 		case PT.FILE:
@@ -1859,7 +1864,7 @@ public class HTMLView extends View {
 			input = passwordFieldInput(type, field, title);
 			break;
 		default:
-			input = objectFieldInput(type, field, title, value, typeField, lang);
+			input = objectFieldInput(type, action, field, title, value, typeField, size, lang);
 		}
 
 		return input;
@@ -1953,7 +1958,9 @@ public class HTMLView extends View {
 		return input;
 	}
 
-	public Element fieldInput(String field, String title, Object value, TypeField typeField) {
+	public Element fieldInput(String field, String title, Object value, TypeField typeField,
+			Integer size) {
+		
 		String inputType = null;
 
 		switch (typeField.getType()) {
@@ -1991,11 +1998,11 @@ public class HTMLView extends View {
 			break;
 		}
 
-		return fieldInput(field, title, value, typeField, inputType);
+		return fieldInput(field, title, value, typeField, size, inputType);
 	}
 
 	public Element fieldInput(String field, String title, Object value, TypeField typeField,
-			String inputType) {
+			Integer size, String inputType) {
 		
 		Element input = input(inputType, "@" + field, title, value);
 
@@ -2005,6 +2012,7 @@ public class HTMLView extends View {
 
 		if (PT.isStringType(typeField.getType())) {
 			setMaxLength(input, typeField);
+			setSize(input, size);
 		}
 
 		if (!inputType.equals(HTML.COLOR)) {
@@ -2038,7 +2046,13 @@ public class HTMLView extends View {
 	public void setMaxLength(Element input, TypeField typeField) {
 		Long maxLength = typeField.getLength();
 		if (maxLength != null) {
-			input.setAttribute(HTML.MAXLENGTH, maxLength.toString());
+			input.setAttribute(HTML.MAXLENGTH, maxLength);
+		}
+	}
+	
+	public void setSize(Element input, Integer size) {
+		if (size != null) {
+			input.setAttribute(HTML.SIZE, size);
 		}
 	}
 
@@ -2113,13 +2127,13 @@ public class HTMLView extends View {
 		return span;
 	}
 	
-	public Element textareaFieldInput(String type, String field, String title, Object value,
+	public Element textareaFieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField) {
-		return textareaFieldInput(type, field, title, value, typeField.getType());
+		return textareaFieldInput(type, action, field, title, value, typeField.getType());
 	}
 
-	public Element textareaFieldInput(String type, String field, String title, Object value,
-			String fieldType) {
+	public Element textareaFieldInput(String type, String action, String field, String title,
+			Object value, String fieldType) {
 		Element textarea = document.createElement(HTML.TEXTAREA).setAttribute(HTML.NAME, "@" + field)
 				.setAttribute(HTML.TITLE, title);
 
@@ -2131,7 +2145,13 @@ public class HTMLView extends View {
 			textarea.addClass(fieldType);
 		}
 
-		String[] modes = typeSettings.getFieldStringArray(type, field, Constants.EDITOR);
+		String[] modes = null;
+		
+		if (action != null) {
+			modes = typeSettings.getActionFieldStringArray(type, action, field, Constants.EDITOR);
+		} else {
+			modes = typeSettings.getFieldStringArray(type, field, Constants.EDITOR);
+		}
 
 		if (modes == null || modes.length == 0) {
 			switch (fieldType) {
@@ -2174,35 +2194,42 @@ public class HTMLView extends View {
 		return objectsInput(Constants.OBJECTS, title, null, type, notNull, mode, size, lang);
 	}
 	
-	public Element objectFieldInput(String type, String field, String title, Object value,
-			TypeField typeField, String lang) {
+	public Element objectFieldInput(String type, String action, String field, String title, Object value,
+			TypeField typeField, Integer size, String lang) {
 		
-		String mode = typeSettings.getFieldString(type, field, Constants.OBJECT_INPUT_MODE);
+		String mode = null;
+		
+		if (action != null) {
+			mode = typeSettings.getActionFieldString(type, action, field, Constants.OBJECT_INPUT_MODE);
+		} else {
+			mode = typeSettings.getFieldString(type, field, Constants.OBJECT_INPUT_MODE);
+		}
 		
 		return objectInput("@" + field, title, value, typeField.getType(), typeField.isNotNull(), mode,
-				lang);
+				size, lang);
 	}
 	
-	public Element objectInput(String name, String title, Object value, String type,
+	public Element filterObjectInput(String name, String title, Object value, String type,
 			boolean notNull, String lang) {
 		
 		String mode = typeSettings.gts(type, Constants.OBJECT_INPUT_MODE);
+		Integer size = typeSettings.getTypeInt32(type, Constants.ID_INPUT_SIZE);
 		
-		return objectInput(name, title, value, type, notNull, mode, lang);
+		return objectInput(name, title, value, type, notNull, mode, size, lang);
 	}
 	
 	public Element objectInput(String name, String title, Object value, String type, 
-			boolean notNull, String mode, String lang) {
+			boolean notNull, String mode, Integer size, String lang) {
 
 		Element input = null;
 				
-		switch(mode) {
+		switch (mode) {
 		case HTML.SELECT:			
 			input = objectSelectInput(name, title, value, type, notNull, lang);
 			break;
 			
 		case HTML.TEXT:		
-			input = objectTextInput(name, title, value);
+			input = objectTextInput(name, title, value, size);
 			break;
 			
 		case HTML.RADIO:			
@@ -2235,7 +2262,7 @@ public class HTMLView extends View {
 			break;
 			
 		case HTML.TEXT:		
-			input = objectTextInput(name, title, value);
+			input = objectTextInput(name, title, value, size);
 			break;
 			
 		case HTML.RADIO:			
@@ -2249,9 +2276,21 @@ public class HTMLView extends View {
 		return input;
 	}
 	
-	public Element objectTextInput(String name, String title, Object value) {
+	public Element idInput(String type, String name, String title) {
+		Integer size = typeSettings.getTypeInt32(type, Constants.ID_INPUT_SIZE);
+
+		return objectTextInput(name, title, null, size);
+	}
+	
+	public Element objectTextInput(String name, String title, Object value, Integer size) {
+		Element input = input(HTML.TEXT, name, title, value)
+				.setAttribute(HTML.MAXLENGTH, Type.MAX_ID_LENGTH);
 		
-		return input(HTML.TEXT, name, title, value);
+		if (size != null) {
+			input.setAttribute(HTML.SIZE, size);
+		}
+		
+		return input;
 	}
 	
 	public Element objectsTextareaInput(String name, String title) {
@@ -2382,7 +2421,7 @@ public class HTMLView extends View {
 		return select;
 	}
 
-	public Element select(String name, String title, Tuple tuple) {
+	public Element select(String name, String title, Tuple values) {
 		Element select = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name);
 
 		if (title == null) {
@@ -2391,7 +2430,7 @@ public class HTMLView extends View {
 
 		select.setAttribute(HTML.TITLE, title);
 
-		for (Map.Entry<String, Object> entry : tuple.getFields().entrySet()) {
+		for (Map.Entry<String, Object> entry : values.getFields().entrySet()) {
 			select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, entry.getKey())
 					.appendText(entry.getValue().toString());
 

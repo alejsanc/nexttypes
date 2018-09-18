@@ -166,6 +166,7 @@ public class Constants {
 	public static final String INDEX_TYPES = "index_types";
 	public static final String INDEXES = "indexes";
 	public static final String INFO = "info";
+	public static final String INPUT_SIZE = "input_size";
 	public static final String INSERT_TITLE = "insert_title";
 	public static final String INTERVAL = "interval";
 	public static final String INVALID_ACTION_NAME = "invalid_action_name";

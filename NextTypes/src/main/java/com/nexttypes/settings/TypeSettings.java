@@ -102,9 +102,7 @@ public class TypeSettings extends Settings {
 				Constants.ACTIONS + "." + action + "." + Constants.FIELDS + "." + field + "." + setting,
 				Constants.ACTIONS + "." + action + "." + Constants.FIELDS + "." + setting,
 				Constants.ACTIONS + "." + Constants.FIELDS + "." + field + "." + setting,
-				Constants.ACTIONS + "." + Constants.FIELDS + "." + setting,
-				Constants.FIELDS + "." + field + "." + setting,
-				Constants.FIELDS + "." + setting
+				Constants.ACTIONS + "." + Constants.FIELDS + "." + setting
 		});
 	}
 

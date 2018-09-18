@@ -47,22 +47,25 @@ public class PT {
 	public static final String VIDEO = "video";
 	public static final String PASSWORD = "password";
 
-	public static final String[] PRIMITIVE_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64, NUMERIC,
-			BOOLEAN, STRING, TEXT, HTML, JSON, XML, URI, EMAIL, TEL, DATE, TIME, DATETIME, TIMEZONE, COLOR, BINARY,
-			FILE, IMAGE, AUDIO, VIDEO, DOCUMENT, PASSWORD };
+	public static final String[] PRIMITIVE_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64,
+			NUMERIC, BOOLEAN, STRING, TEXT, HTML, JSON, XML, URI, EMAIL, TEL, DATE, TIME, DATETIME,
+			TIMEZONE, COLOR, BINARY, FILE, IMAGE, AUDIO, VIDEO, DOCUMENT, PASSWORD };
 
 	public static final String[] STRING_TYPES = new String[] { STRING, URI, EMAIL, TEL };
 	
 	public static final String[] TEXT_TYPES = new String[] { TEXT, HTML, JSON, XML };
 
-	public static final String[] NUMERIC_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64, NUMERIC };
+	public static final String[] NUMERIC_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64,
+			NUMERIC };
 
-	public static final String[] BINARY_TYPES = new String[] { BINARY, FILE, IMAGE, DOCUMENT, AUDIO, VIDEO };
+	public static final String[] BINARY_TYPES = new String[] { BINARY, FILE, IMAGE, DOCUMENT, AUDIO,
+			VIDEO };
 
 	public static final String[] FILE_TYPES = new String[] { FILE, IMAGE, DOCUMENT, AUDIO, VIDEO };
 	
 	public static final String[] FILTER_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64,
-			NUMERIC, BOOLEAN, STRING, TEXT, HTML, JSON, XML, URI, EMAIL, TEL, DATE, TIME, DATETIME, TIMEZONE, COLOR };
+			NUMERIC, BOOLEAN, STRING, TEXT, HTML, JSON, XML, URI, EMAIL, TEL, DATE, TIME, DATETIME,
+			TIMEZONE, COLOR };
 	
 	public static boolean isPrimitiveType(String type) {
 		return ArrayUtils.contains(PRIMITIVE_TYPES, type);
