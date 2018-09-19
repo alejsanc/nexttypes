@@ -27,6 +27,7 @@ import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.RSS;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Tuples;
+import com.nexttypes.datatypes.URI;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.Order;
 import com.nexttypes.enums.Component;
@@ -38,7 +39,7 @@ public class ArticleView extends HTMLView {
 
 	public static final String ARTICLE = "article";
 	public static final String ARTICLE_DISCUSSION = "article_discussion";
-	public static final String[] ARTICLE_DISCUSSION_FIELDS = new String[] {"title", "href", "published"};
+	public static final String[] ARTICLE_DISCUSSION_FIELDS = new String[] {"title", "href"};
 	public static final String CATEGORY = "category";
 	public static final String CATEGORIES = "categories";
 	
@@ -102,6 +103,27 @@ public class ArticleView extends HTMLView {
 		
 		main.appendElement(HTML.H2).appendText(strings.getReferenceName(ARTICLE_DISCUSSION,
 				articleReference));
+		
+		String discussionsSQL =
+				"select"
+					+ " title,"
+					+ " href"
+					
+				+ " from"
+					+ " article_discussion"
+					
+				+ " where"
+					+ " article = ?"
+					+ " and published = true";
+		
+		Tuple[] discussions = nextNode.query(discussionsSQL, id);
+		
+		for (Tuple discussion : discussions) {
+			URI href = discussion.getURI(HTML.HREF);
+			
+			main.appendElement(HTML.P).appendElement(anchor(href.getHost() + " - "
+					+ discussion.getString(HTML.TITLE), href.toString()));
+		}
 
 		main.appendElement(insertForm(ARTICLE_DISCUSSION, ARTICLE_DISCUSSION_FIELDS, lang, view,
 				articleReference, false, false, false, false));

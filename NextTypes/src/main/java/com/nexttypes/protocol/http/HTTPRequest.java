@@ -344,9 +344,19 @@ public class HTTPRequest {
 
 		number.put(parameter[2], value);
 	}
+	
+	public void checkFields(LinkedHashMap<String, TypeField> typeFields) {
+		for (String field : fields.getFields().keySet()) {
+			if (!typeFields.containsKey(field)) {
+				throw new FieldException(type, field, Constants.INVALID_FIELD);
+			}
+		}
+	}
 
 	public NXObject readObject(LinkedHashMap<String, TypeField> typeFields) {
-
+		
+		checkFields(typeFields);
+		
 		NXObject object = new NXObject(type, id);
 
 		for (Map.Entry<String, TypeField> entry : typeFields.entrySet()) {

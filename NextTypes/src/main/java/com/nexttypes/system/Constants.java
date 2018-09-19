@@ -175,6 +175,7 @@ public class Constants {
 	public static final String INVALID_ELEMENT = "element";
 	public static final String INVALID_ELEMENT_NAME = "invalid_element_name";
 	public static final String INVALID_EMAIL = "invalid_email";
+	public static final String INVALID_FIELD = "invalid_field";
 	public static final String INVALID_FIELD_NAME = "invalid_field_name";
 	public static final String INVALID_FILTER_TYPE = "invalid_filter_type";
 	public static final String INVALID_HOST_NAME = "invalid_host_name";
