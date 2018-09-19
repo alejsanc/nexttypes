@@ -42,6 +42,7 @@ public class ArticleView extends HTMLView {
 	public static final String[] ARTICLE_DISCUSSION_FIELDS = new String[] {"title", "href"};
 	public static final String CATEGORY = "category";
 	public static final String CATEGORIES = "categories";
+	public static final String SHOW_ARTICLE_DISCUSSIONS = "show_article_discussions";
 	
 	protected String category;
 	protected String categoryParameter;
@@ -99,34 +100,39 @@ public class ArticleView extends HTMLView {
 		main.appendElement(dates(type, tuple.getUTCDatetime(Constants.CDATE),
 				tuple.getUTCDatetime(Constants.UDATE)));
 		
-		FieldReference articleReference = new FieldReference(ARTICLE, ARTICLE, id);
+		Boolean showArticleDiscussions = typeSettings.getTypeBoolean(type, SHOW_ARTICLE_DISCUSSIONS);
 		
-		main.appendElement(HTML.H2).appendText(strings.getReferenceName(ARTICLE_DISCUSSION,
-				articleReference));
-		
-		String discussionsSQL =
-				"select"
-					+ " title,"
-					+ " href"
-					
-				+ " from"
-					+ " article_discussion"
-					
-				+ " where"
-					+ " article = ?"
-					+ " and published = true";
-		
-		Tuple[] discussions = nextNode.query(discussionsSQL, id);
-		
-		for (Tuple discussion : discussions) {
-			URI href = discussion.getURI(HTML.HREF);
+		if (showArticleDiscussions) {
 			
-			main.appendElement(HTML.P).appendElement(anchor(href.getHost() + " - "
+			FieldReference articleReference = new FieldReference(ARTICLE, ARTICLE, id);
+			
+			main.appendElement(HTML.H2).appendText(strings.getReferenceName(ARTICLE_DISCUSSION,
+					articleReference));
+			
+			String discussionsSQL =
+					"select"
+						+ " title,"
+						+ " href"
+						
+					+ " from"
+						+ " article_discussion"
+						
+					+ " where"
+						+ " article = ?"
+						+ " and published = true";
+			
+			Tuple[] discussions = nextNode.query(discussionsSQL, id);
+		
+			for (Tuple discussion : discussions) {
+				URI href = discussion.getURI(HTML.HREF);
+			
+				main.appendElement(HTML.P).appendElement(anchor(href.getHost() + " - "
 					+ discussion.getString(HTML.TITLE), href.toString()));
-		}
+			}
 
-		main.appendElement(insertForm(ARTICLE_DISCUSSION, ARTICLE_DISCUSSION_FIELDS, lang, view,
+			main.appendElement(insertForm(ARTICLE_DISCUSSION, ARTICLE_DISCUSSION_FIELDS, lang, view,
 				articleReference, false, false, false, false));
+		}
 		
 		return render(type);
 	}
