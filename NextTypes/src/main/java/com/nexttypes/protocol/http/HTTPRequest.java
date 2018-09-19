@@ -73,8 +73,6 @@ import com.nexttypes.system.Utils;
 
 public class HTTPRequest {
 
-	protected static final String DEFAULT_PARAMETER = "default_parameter";
-	
 	protected static final String[] REQUEST_PARAMETERS = new String[] { Constants.TYPE, Constants.TYPES,
 			Constants.ADATE, Constants.ID, Constants.UDATE, Constants.OBJECTS, Constants.NEW_ID,
 			Constants.NEW_NAME, Constants.EXISTING_TYPES_ACTION, Constants.EXISTING_OBJECTS_ACTION,
@@ -83,8 +81,7 @@ public class HTTPRequest {
 			Constants.VIEW, Constants.REF, Constants.FORM, Constants.YEAR, Constants.MONTH,
 			Constants.TYPE_ACTION, Constants.LOGIN_USER, Constants.LOGIN_PASSWORD, 
 			Constants.COMPONENT, Constants.INCLUDE_OBJECTS, Constants.INFO, Constants.NAMES,
-			Constants.CALENDAR, Constants.PREVIEW, Constants.REFERENCES, Action.FILTER_COMPONENT,
-			Constants.DEFAULT};
+			Constants.CALENDAR, Constants.PREVIEW, Constants.REFERENCES, Action.FILTER_COMPONENT};
 
 	protected Settings settings;
 	protected TypeSettings typeSettings;
@@ -257,21 +254,15 @@ public class HTTPRequest {
 
 	protected void readParameters() {
 		Enumeration<String> parameterNames = request.getParameterNames();
-		Class thisClass = getClass();
-
+		
 		while (parameterNames.hasMoreElements()) {
 			String parameterName = parameterNames.nextElement();
 			
-			if (ArrayUtils.contains(REQUEST_PARAMETERS, parameterName)) {
+			if (Constants.DEFAULT.equals(parameterName)) {
+				default_parameter = true;
+			} else if (ArrayUtils.contains(REQUEST_PARAMETERS, parameterName)) {
 				try {
-					Field field = null;
-					
-					if (Constants.DEFAULT.equals(parameterName)) {
-						field = thisClass.getDeclaredField(DEFAULT_PARAMETER);
-					} else {
-						field = thisClass.getDeclaredField(parameterName);
-					}
-					
+					Field field = getClass().getDeclaredField(parameterName);
 					Class fieldType = field.getType();
 					Object value = null;
 
