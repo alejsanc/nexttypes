@@ -300,8 +300,8 @@ public aspect NodeSecurity extends Checks {
     }
 
     before(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
-	    String[] searchFields, String order) : (execution(* Node.select(..)))
-		&& args(type, sql, parameters, filters, search, searchFields, order, ..) {
+	    String[] searchFields, String[] groupFields, String order) : (execution(* Node.select(..)))
+		&& args(type, sql, parameters, filters, search, searchFields, groupFields, order, ..) {
     	
     	checkType(type);
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
