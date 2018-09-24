@@ -1452,11 +1452,12 @@ public class PostgreSQLNode implements Node {
 
 	@Override
 	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
-			String[] searchFields, String order, Long offset, Long limit) {
+			String[] searchFields, String[] groupFields, String order, Long offset, Long limit) {
 
 		Tuples tuples = null;
 		
-		SelectQuery query = new SelectQuery(type, sql, parameters, filters, search, searchFields, order, offset, limit);
+		SelectQuery query = new SelectQuery(type, sql, parameters, filters, search, searchFields,
+				groupFields, order, offset, limit);
 
 		if (query.getCount() > 0) {
 		
@@ -3704,7 +3705,7 @@ public class PostgreSQLNode implements Node {
 		}
 
 		protected SelectQuery(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
-				String search, String[] searchFields, String order, Long offset, Long limit) {
+				String search, String[] searchFields, String[] groupFields, String order, Long offset, Long limit) {
 
 			this.sql = sql;
 			this.parameters = parameters;
@@ -3728,6 +3729,16 @@ public class PostgreSQLNode implements Node {
 			addTypeFilters(type, whereSQL);
 
 			sql.append(whereSQL);
+			
+			if (groupFields != null && groupFields.length > 0) {
+				sql.append(" group by ");
+				
+				for (String groupField : groupFields) {
+					sql.append(groupField + ",");
+				}
+				
+				sql.deleteCharAt(sql.length() - 1);
+			}
 
 			count = count(sql.toString(), parameters.toArray());
 

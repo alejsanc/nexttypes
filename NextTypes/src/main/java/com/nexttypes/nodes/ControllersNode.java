@@ -447,9 +447,11 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
-			String[] searchFields, String order, Long offset, Long limit) {
-		return getController(type).select(type, sql, parameters, filters, search, searchFields, order, offset, limit);
+	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
+			String search, String[] searchFields, String[] groupFields, String order, Long offset,
+			Long limit) {
+		return getController(type).select(type, sql, parameters, filters, search, searchFields,
+				groupFields, order, offset, limit);
 	}
 
 	@Override

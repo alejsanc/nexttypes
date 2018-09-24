@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -2945,21 +2946,62 @@ public class HTMLView extends View {
 	}
 	
 	public Element fieldOutput(String label, Object... elements) {
-		Element div = document.createElement(HTML.DIV);
-		div.addClass(FIELD_OUTPUT);
-		div.appendElement(HTML.STRONG).appendText(label + ": ");
+		Element output = document.createElement(HTML.DIV);
+		output.addClass(FIELD_OUTPUT);
+		output.appendElement(HTML.STRONG).appendText(label + ": ");
 
 		for (Object element : elements) {
 			if (element instanceof String) {
-				div.appendText((String) element);
+				output.appendText((String) element);
 			} else if (element instanceof Element) {
-				div.appendElement((Element) element);
+				output.appendElement((Element) element);
 			} else if (element instanceof HTMLFragment) {
-				div.appendFragment((HTMLFragment) element);
+				output.appendFragment((HTMLFragment) element);
 			}
 		}
 
-		return div;
+		return output;
+	}
+	
+	public Element listFieldOutput(String type, String label, Object[] objects, String objectsType,
+			String lang, String view) {
+		return listFieldOutput(type, label, objects, id -> uri(objectsType, id, lang, view));
+	}
+	
+	public Element listFieldOutput(String type, String label, Object[] objects,
+			Function<String, String> uriFunction) {
+		
+		boolean tuple = objects instanceof Tuple[];
+		
+		Element output = document.createElement(HTML.DIV);
+		output.addClass(FIELD_OUTPUT);
+		
+		output.appendElement(HTML.STRONG).appendText(label + ": ");
+		
+		String id, name = null;
+		
+		if (objects != null && objects.length > 0) {
+			
+			int last = objects.length - 1;
+			
+			for (int x = 0; x < objects.length; x++) {
+				if (tuple) {
+					id = ((Tuple)objects[x]).getString(Constants.ID);
+					name = ((Tuple)objects[x]).getString(Constants.NAME);
+				} else {
+					id = ((String[])objects[x])[0];
+					name = ((String[])objects[x])[1];
+				}
+				
+				output.appendElement(anchor(name, uriFunction.apply(id)));
+			
+				if (x < last) {
+					output.appendText(" | ");
+				}
+			}
+		}
+				
+		return output;
 	}
 
 	public Element fieldOutput(NXObject object, String field, Object value, TypeField typeField, String lang,

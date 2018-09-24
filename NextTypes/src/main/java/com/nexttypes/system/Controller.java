@@ -193,9 +193,10 @@ public class Controller {
 				documentPreview, password, objectsName, referencesName, offset, limit);
 	}
 
-	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
-			String[] searchFields, String order, Long offset, Long limit) {
-		return nextNode.select(type, sql, parameters, filters, search, searchFields, order, offset, limit);
+	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
+			String search, String[] searchFields, String[] groupFields, String order, Long offset, Long limit) {
+		return nextNode.select(type, sql, parameters, filters, search, searchFields, groupFields, order,
+				offset, limit);
 	}
 
 	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order) {

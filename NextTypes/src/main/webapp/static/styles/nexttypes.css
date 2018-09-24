@@ -516,6 +516,10 @@ p {
 	margin-right: 5px;
 }
 
+.preview .field-output {
+	font-size: 75%
+}
+
 .CodeMirror {
 	width: 60vw;
 	height: 60vh !important;

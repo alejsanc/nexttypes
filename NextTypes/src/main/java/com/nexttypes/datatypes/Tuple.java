@@ -19,6 +19,7 @@ package com.nexttypes.datatypes;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Array;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -34,7 +35,6 @@ import java.util.LinkedHashMap;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import org.postgresql.jdbc.PgArray;
 import org.postgresql.jdbc.PgSQLXML;
 import org.postgresql.util.PGobject;
 
@@ -107,24 +107,24 @@ public class Tuple {
 		return (String) value;
 	}
 
-	public <T> T[] getArray(String field, Class<T> type) {
-		return (T[]) parseArray(get(field), type);
+	public Object getArray(String field) {
+		return parseArray(get(field));
 	}
 
-	public static <T> T[] parseArray(Object value, Class<T> type) {
-		if (value instanceof PgArray) {
+	public static Object parseArray(Object value) {
+		if (value instanceof Array) {
 			try {
-				value = (T[]) ((PgArray) value).getArray();
+				value = ((Array) value).getArray();
 			} catch (SQLException e) {
 				throw new NXException(e);
 			}
 		}
 
-		return (T[]) value;
+		return value;
 	}
 
 	public String[] getStringArray(String field) {
-		return getArray(field, String.class);
+		return (String[]) getArray(field);
 	}
 
 	public String getHTMLText(String field) {
