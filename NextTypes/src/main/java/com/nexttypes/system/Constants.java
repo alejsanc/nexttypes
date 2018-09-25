@@ -280,6 +280,7 @@ public class Constants {
 	public static final String PRECISION = "precision";
 	public static final String PREFIX = "prefix";
 	public static final String PREVIEW = "preview";
+	public static final String PREVIEW_TITLE = "preview_title";
 	public static final String PRIMITIVE_TYPE_WITH_THE_SAME_NAME = "primitive_type_with_the_same_name";
 	public static final String PUB_DATE = "pub_date";
 	public static final String QRCODE = "qrcode";

@@ -300,17 +300,24 @@ public class ArticleView extends HTMLView {
 		parameters.add(lang);
 		parameters.add(lang);
 
+		String previewTitle = strings.gts(type, Constants.PREVIEW_TITLE);
+		
 		if (category != null) {
-			setTitle(nextNode.getString("select name from category_language where category = ?"
-					+ " and language = ?", category, lang));
+			String categoryTitle = nextNode.getString("select name from category_language"
+					+ " where category = ? and language = ?", category, lang);
+			
+			previewTitle += ": " + categoryTitle;
+			main.appendElement(HTML.H1).appendText(categoryTitle);
 			
 			fromSQL.append(" join article_category ac on a.id = ac.article");
 			
 			categoryFilter = " ac.category = ?";
 			
 			parameters.add(category);
-		} 
-		
+		}
+
+		document.getTitle().appendText(previewTitle);
+				
 		if (search != null) {
 			main.appendElement(searchOutput(type, lang, view, ref, filters, search, order));
 		}

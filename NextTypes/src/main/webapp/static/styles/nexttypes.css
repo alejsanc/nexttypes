@@ -516,8 +516,13 @@ p {
 	margin-right: 5px;
 }
 
+.preview p {
+	margin: 5px;
+}
+
 .preview .field-output {
-	font-size: 75%
+	font-size: 75%;
+	margin-left: 5px;
 }
 
 .CodeMirror {
