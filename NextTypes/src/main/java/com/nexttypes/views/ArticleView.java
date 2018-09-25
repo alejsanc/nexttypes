@@ -228,17 +228,20 @@ public class ArticleView extends HTMLView {
 	public Content preview(String type, String lang, String view, FieldReference ref, Filter[] filters,
 			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
-		category = request.getParameters().getString(CATEGORY);
-		
-		if (category != null) {
-			categoryParameter = parameter(CATEGORY, category);
-		}
-		
 		Boolean showAutors = typeSettings.getTypeBoolean(type, SHOW_AUTORS);
 		Boolean showCategories = typeSettings.getTypeBoolean(type, SHOW_CATEGORIES);
 		String categoryFilter = null;
 		
 		loadTemplate(type, lang, view);
+		
+		category = request.getParameters().getString(CATEGORY);
+		
+		if (category != null) {
+			categoryParameter = parameter(CATEGORY, category);
+			
+			Element searchForm = document.getElementById(Constants.SEARCH);
+			searchForm.appendElement(input(HTML.HIDDEN, CATEGORY, CATEGORY, category));
+		}
 			
 		StringBuilder sql = new StringBuilder(
 				"select"
@@ -371,21 +374,8 @@ public class ArticleView extends HTMLView {
 	}
 	
 	@Override
-	public String rssURI(String type, String lang, FieldReference ref) {
-		String uri = super.rssURI(type, lang, ref);
-		
-		if (categoryParameter != null) {
-			uri += categoryParameter;
-		}
-		
-		return uri;
-	}
-	
-	@Override
-	public String selectTableURI(String type, String lang, String view, FieldReference ref, 
-			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
-	
-		String uri = super.selectTableURI(type, lang, view, ref, filters, search, order, offset, limit);
+	public String uri(String type, String id, String field, String lang, String view) {
+		String uri = super.uri(type, id, field, lang, view);
 		
 		if (categoryParameter != null) {
 			uri += categoryParameter;
