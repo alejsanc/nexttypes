@@ -968,7 +968,7 @@ public class HTMLView extends View {
 		div.appendText(search);
 		
 		String uri = uri(type, lang, view) + refParameter(ref) + filtersParameters(filters)
-			+ previewParameter() + orderParameter(order);
+			+ previewParameter(request.isPreview()) + orderParameter(order);
 				
 		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_SEARCH), uri, Icon.DELETE));
 		return div;
@@ -2874,7 +2874,7 @@ public class HTMLView extends View {
 
 		return uri(type, lang, view) + refParameter(ref) + filtersParameters(filters)
 			+ searchParameter(search) + orderParameter(order) + parameter(Constants.OFFSET, offset)
-			+ parameter(Constants.LIMIT, limit) + previewParameter();
+			+ parameter(Constants.LIMIT, limit) + previewParameter(request.isPreview());
 	}
 
 	public String parameter(String name, Object value) {
@@ -2893,8 +2893,12 @@ public class HTMLView extends View {
 		return parameter(Constants.FORM, action);
 	}
 	
+	public String previewParameter(boolean preview) {
+		return preview ? previewParameter() : "";
+	}
+	
 	public String previewParameter() {
-		return request.isPreview() ? "&" + Action.PREVIEW : "";
+		return "&" + Action.PREVIEW;
 	}
 	
 	public String searchParameter(String search) {
@@ -3308,7 +3312,7 @@ public class HTMLView extends View {
 		if (typeSettings.getTypeBoolean(type, Constants.SHOW_PREVIEW) && !request.isPreview()
 				&& permissions.isAllowed(type,  Action.PREVIEW)) {
 			
-			String uri = uri(type, lang, view) + "&" + Action.PREVIEW + searchParameter;
+			String uri = uri(type, lang, view) + previewParameter() + searchParameter;
 							
 			elements.add(iconAnchor(strings.getActionName(type, Action.PREVIEW), uri, Icon.LIST_RICH));
 		}
@@ -3735,11 +3739,11 @@ public class HTMLView extends View {
 				form.appendElement(input(HTML.SEARCH, Constants.SEARCH, searchName, search));
 				
 				if (request.isPreview()) {
-					form.appendElement(input(HTML.HIDDEN, Action.PREVIEW, null, Action.PREVIEW));
+					form.appendElement(input(HTML.HIDDEN, Action.PREVIEW, Action.PREVIEW, Action.PREVIEW));
 				}
 				
 				if (ref != null) {
-					form.appendElement(input(HTML.HIDDEN, Constants.REF, null, refString(ref)));
+					form.appendElement(input(HTML.HIDDEN, Constants.REF, Constants.REF, refString(ref)));
 				}
 				
 				if (order != null) {
