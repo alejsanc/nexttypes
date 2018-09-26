@@ -967,11 +967,16 @@ public class HTMLView extends View {
 		div.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.SEARCH) + ": ");
 		div.appendText(search);
 		
-		String uri = uri(type, lang, view) + refParameter(ref) + filtersParameters(filters)
-			+ previewParameter(request.isPreview()) + orderParameter(order);
-				
+		String uri = deleteSearchURI(type, lang, view, ref, filters, order);
+		
 		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_SEARCH), uri, Icon.DELETE));
 		return div;
+	}
+	
+	public String deleteSearchURI(String type, String lang, String view, FieldReference ref,
+			Filter[] filters, LinkedHashMap<String, Order> order) {
+		return uri(type, lang, view) + refParameter(ref) + filtersParameters(filters)
+			+ previewParameter(request.isPreview()) + orderParameter(order);
 	}
 
 	@Override

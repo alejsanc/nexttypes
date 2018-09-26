@@ -234,15 +234,6 @@ public class ArticleView extends HTMLView {
 		
 		loadTemplate(type, lang, view);
 		
-		category = request.getParameters().getString(CATEGORY);
-		
-		if (category != null) {
-			categoryParameter = parameter(CATEGORY, category);
-			
-			Element searchForm = document.getElementById(Constants.SEARCH);
-			searchForm.appendElement(input(HTML.HIDDEN, CATEGORY, CATEGORY, category));
-		}
-			
 		StringBuilder sql = new StringBuilder(
 				"select"
 						+ " a.id,"
@@ -305,7 +296,14 @@ public class ArticleView extends HTMLView {
 
 		String previewTitle = strings.gts(type, Constants.PREVIEW_TITLE);
 		
+		category = request.getParameters().getString(CATEGORY);
+		
 		if (category != null) {
+			categoryParameter = parameter(CATEGORY, category);
+			
+			Element searchForm = document.getElementById(Constants.SEARCH);
+			searchForm.appendElement(input(HTML.HIDDEN, CATEGORY, CATEGORY, category));
+			
 			String categoryTitle = nextNode.getString("select name from category_language"
 					+ " where category = ? and language = ?", category, lang);
 			
@@ -342,8 +340,13 @@ public class ArticleView extends HTMLView {
 					tuple.getString(Constants.IMAGE_ID), IMAGE));
 				article.appendElement(time(tuple.getDatetime(Constants.CDATE)));
 				article.appendElement(HTML.H2).appendText(title);
-				article.appendElement(HTML.P).appendText(tuple.getHTMLText(Constants.TEXT) + " ... ")
-					.appendElement(anchor(strings.gts(type, Constants.READ_MORE), uri));
+				
+				String text = tuple.getHTMLText(Constants.TEXT);
+				
+				if (text != null) {
+					article.appendElement(HTML.P).appendText(text + " ... ")
+						.appendElement(anchor(strings.gts(type, Constants.READ_MORE), uri));
+				}
 				
 				if (showAutors) {
 					String[][] autors = (String[][]) tuple.getArray(AUTORS);
@@ -374,9 +377,25 @@ public class ArticleView extends HTMLView {
 	}
 	
 	@Override
-	public String uri(String type, String id, String field, String lang, String view) {
-		String uri = super.uri(type, id, field, lang, view);
-		
+	public String rssURI(String type, String lang, FieldReference ref) {
+		return categoryParameter(super.rssURI(type, lang, ref));
+	}
+	
+	@Override
+	public String selectTableURI(String type, String lang, String view, FieldReference ref, 
+			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
+	
+		return categoryParameter(super.selectTableURI(type, lang, view, ref, filters, search, order,
+				offset, limit));
+	}
+	
+	@Override
+	public String deleteSearchURI(String type, String lang, String view, FieldReference ref,
+			Filter[] filters, LinkedHashMap<String, Order> order) {
+		return categoryParameter(super.deleteSearchURI(type, lang, view, ref, filters, order));
+	}
+	
+	public String categoryParameter(String uri) {
 		if (categoryParameter != null) {
 			uri += categoryParameter;
 		}
