@@ -40,7 +40,7 @@ public class ArticleView extends HTMLView {
 
 	public static final String ARTICLE = "article";
 	public static final String ARTICLE_DISCUSSION = "article_discussion";
-	public static final String[] ARTICLE_DISCUSSION_FIELDS = new String[] {"title", "href"};
+	public static final String[] ARTICLE_DISCUSSION_FIELDS = new String[] {"title", "link"};
 	public static final String AUTORS = "autors";
 	public static final String CATEGORY = "category";
 	public static final String CATEGORIES = "categories";
@@ -162,7 +162,7 @@ public class ArticleView extends HTMLView {
 			String discussionsSQL =
 					"select"
 						+ " title,"
-						+ " href"
+						+ " link"
 						
 					+ " from"
 						+ " article_discussion"
@@ -174,10 +174,10 @@ public class ArticleView extends HTMLView {
 			Tuple[] discussions = nextNode.query(discussionsSQL, id);
 		
 			for (Tuple discussion : discussions) {
-				URI href = discussion.getURI(HTML.HREF);
+				URI link = discussion.getURI(Constants.LINK);
 			
-				main.appendElement(HTML.P).appendElement(anchor(href.getHost() + " - "
-					+ discussion.getString(HTML.TITLE), href.toString()));
+				main.appendElement(HTML.P).appendElement(anchor(link.getHost() + " - "
+					+ discussion.getString(HTML.TITLE), link.toString()));
 			}
 
 			main.appendElement(insertForm(ARTICLE_DISCUSSION, ARTICLE_DISCUSSION_FIELDS, lang, view,

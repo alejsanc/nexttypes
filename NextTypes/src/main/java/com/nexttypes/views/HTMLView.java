@@ -3872,7 +3872,7 @@ public class HTMLView extends View {
 							+ " ill.language,"
 							+ " ill.description,"
 							+ " ill.alt,"
-							+ " coalesce(ill.href, il.href) as href,"
+							+ " coalesce(ill.link, il.link) as link,"
 							+ " coalesce(ill.title, il.title) as title,"
 							+ " case"
 								+ " when ill.image is null then 'image_link'"
@@ -3900,9 +3900,9 @@ public class HTMLView extends View {
 								+ "/" + tuple.getString(Constants.IMAGE_ID) + "/" + IMAGE)
 							.setAttribute(HTML.ALT, tuple.getString(HTML.ALT));
 
-					String href = tuple.getString(HTML.HREF);
-					if (href != null) {
-						Element anchor = document.createElement(HTML.A).setAttribute(HTML.HREF, href);
+					String link = tuple.getString(Constants.LINK);
+					if (link != null) {
+						Element anchor = document.createElement(HTML.A).setAttribute(HTML.HREF, link);
 						String title = tuple.getString(HTML.TITLE);
 						if (title != null) {
 							anchor.setAttribute(HTML.TITLE, title);
