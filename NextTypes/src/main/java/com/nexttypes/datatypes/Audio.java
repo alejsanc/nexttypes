@@ -18,6 +18,7 @@ package com.nexttypes.datatypes;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.system.Constants;
 
 public class Audio extends File {
@@ -41,6 +42,10 @@ public class Audio extends File {
 		super(name, content);
 		
 		type = PT.AUDIO;
+	}
+	
+	public Audio(JSONObject audio) {
+		this(audio.getBinary(Constants.CONTENT), audio.getString(Constants.CONTENT_TYPE));
 	}
 
 	@JsonCreator

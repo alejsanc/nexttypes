@@ -28,7 +28,7 @@ import org.imgscalr.Scalr;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
+import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Utils;
@@ -65,6 +65,11 @@ public class Image extends File {
 
 		image();
 		thumbnail();
+	}
+	
+	public Image(JSONObject image) {
+		this(image.getBinary(Constants.CONTENT), image.getBinary(Constants.THUMBNAIL),
+				image.getString(Constants.CONTENT_TYPE));
 	}
 
 	@JsonCreator

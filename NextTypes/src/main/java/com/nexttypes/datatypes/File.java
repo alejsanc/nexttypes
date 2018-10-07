@@ -30,6 +30,7 @@ import org.xml.sax.SAXException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Utils;
@@ -50,6 +51,8 @@ public class File extends PGobject{
 	}
 	
 	public File(File file) {
+		type = PT.FILE;
+		
 		this.handler = file.getHandler();
 		this.metadata = file.getMetadata();
 		
@@ -69,6 +72,10 @@ public class File extends PGobject{
 		this.content = content;
 		
 		init();
+	}
+	
+	public File(JSONObject file) {
+		this(file.getBinary(Constants.CONTENT), file.getString(Constants.CONTENT_TYPE));
 	}
 	
 	@JsonCreator

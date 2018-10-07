@@ -19,7 +19,7 @@ package com.nexttypes.datatypes;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
+import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Utils;
 
@@ -51,6 +51,11 @@ public class Document extends File {
 		type = PT.DOCUMENT;
 
 		text();
+	}
+	
+	public Document(JSONObject document) {
+		this(document.getBinary(Constants.CONTENT), document.getString(Constants.TEXT),
+				document.getString(Constants.CONTENT_TYPE));
 	}
 
 	@JsonCreator

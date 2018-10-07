@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -417,107 +416,25 @@ public class XML extends PGobject {
 		}
 
 		public Element appendElement(String tag) {
-			return appendElement(createElement(tag));
+			Element element = createElement(tag);
+			this.element.appendChild(element.getElement());
+			return element;
 		}
-
-		public Element appendText(String text) {
+		
+		public Element appendText(Object text) {
 			if (text != null) {
-				element.appendChild(document.createTextNode(text));
+				element.appendChild(document.createTextNode(text.toString()));
 			}
 			return this;
 		}
 
-		public Element prependText(String text) {
+		public Element prependText(Object text) {
 			if (text != null) {
-				element.insertBefore(document.createTextNode(text), element.getFirstChild());
+				element.insertBefore(document.createTextNode(text.toString()), element.getFirstChild());
 			}
 			return this;
 		}
-
-		public Element appendText(Short text) {
-			if (text != null) {
-				appendText(text.toString());
-			}
-			return this;
-		}
-
-		public Element appendText(Integer text) {
-			if (text != null) {
-				appendText(text.toString());
-			}
-			return this;
-		}
-
-		public Element appendText(Long text) {
-			if (text != null) {
-				appendText(text.toString());
-			}
-			return this;
-		}
-
-		public Element appendText(Float text) {
-			if (text != null) {
-				appendText(text.toString());
-			}
-			return this;
-		}
-
-		public Element appendText(Double text) {
-			if (text != null) {
-				appendText(text.toString());
-			}
-			return this;
-		}
-
-		public Element appendText(BigDecimal text) {
-			if (text != null) {
-				appendText(text.toString());
-			}
-			return this;
-		}
-
-		public Element prependText(Short text) {
-			if (text != null) {
-				prependText(text.toString());
-			}
-			return this;
-		}
-
-		public Element prependText(Integer text) {
-			if (text != null) {
-				prependText(text.toString());
-			}
-			return this;
-		}
-
-		public Element prependText(Long text) {
-			if (text != null) {
-				prependText(text.toString());
-			}
-			return this;
-		}
-
-		public Element prependText(Float text) {
-			if (text != null) {
-				prependText(text.toString());
-			}
-			return this;
-		}
-
-		public Element prependText(Double text) {
-			if (text != null) {
-				prependText(text.toString());
-			}
-			return this;
-		}
-
-		public Element prependText(BigDecimal text) {
-			if (text != null) {
-				prependText(text.toString());
-			}
-			return this;
-		}
-
+		
 		public Element appendFragment(XMLFragment fragment) {
 			NodeList nodes = fragment.getDocumentElement().getElement().getChildNodes();
 			for (int x = 0; x < nodes.getLength(); x++) {
@@ -563,9 +480,9 @@ public class XML extends PGobject {
 			return this;
 		}
 
-		public Element setAttribute(String name, String value) {
+		public Element setAttribute(String name, Object value) {
 			checkAttribute(element.getTagName(), name);
-			element.setAttribute(name, value);
+			element.setAttribute(name, value.toString());
 			if (name.equals(ID)) {
 				element.setIdAttribute(ID, true);
 			}
@@ -574,30 +491,6 @@ public class XML extends PGobject {
 
 		public Element setAttribute(String name) {
 			return setAttribute(name, name);
-		}
-
-		public Element setAttribute(String name, Short value) {
-			return setAttribute(name, value.toString());
-		}
-
-		public Element setAttribute(String name, Integer value) {
-			return setAttribute(name, value.toString());
-		}
-
-		public Element setAttribute(String name, Long value) {
-			return setAttribute(name, value.toString());
-		}
-
-		public Element setAttribute(String name, Float value) {
-			return setAttribute(name, value.toString());
-		}
-
-		public Element setAttribute(String name, Double value) {
-			return setAttribute(name, value.toString());
-		}
-
-		public Element setAttribute(String name, BigDecimal value) {
-			return setAttribute(name, value.toString());
 		}
 
 		public String getAttribute(String name) {

@@ -160,9 +160,9 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 			while (parser.nextToken() != JsonToken.END_OBJECT) {
 				parser.nextToken();
 
-				String fieldName = parser.getCurrentName();
-				TypeField field = typeFields.get(fieldName);
-				String fieldType = field.getType();
+				String field = parser.getCurrentName();
+				TypeField typeField = typeFields.get(field);
+				String fieldType = typeField.getType();
 				Object value = null;
 
 				if (parser.getCurrentToken() != JsonToken.VALUE_NULL) {
@@ -173,11 +173,11 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 						break;
 					case PT.HTML:
 						value = Tuple.parseHTML(parser.getText(), lang,
-								typeSettings.getFieldString(type, fieldName, Constants.HTML_ALLOWED_TAGS));
+								typeSettings.getFieldString(type, field, Constants.HTML_ALLOWED_TAGS));
 						break;
 					case PT.XML:
 						value = Tuple.parseXML(parser.getText(), lang,
-								typeSettings.getFieldString(type, fieldName, Constants.XML_ALLOWED_TAGS));
+								typeSettings.getFieldString(type, field, Constants.XML_ALLOWED_TAGS));
 						break;
 					case PT.JSON:
 						value = Tuple.parseJSON(parser.getText());
@@ -244,7 +244,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 					}
 				}
 
-				fields.put(fieldName, value);
+				fields.put(field, value);
 			}
 
 			return fields;

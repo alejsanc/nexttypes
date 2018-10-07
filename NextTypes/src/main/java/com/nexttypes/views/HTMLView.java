@@ -67,6 +67,7 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.datatypes.TypeReference;
+import com.nexttypes.datatypes.URI;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.Comparison;
 import com.nexttypes.enums.Format;
@@ -794,7 +795,7 @@ public class HTMLView extends View {
 
 		String typeName = strings.getTypeName(object.getType());
 
-		article.appendElement(document.createElement(HTML.H1).appendText(typeName + ": " + object.getName()));
+		article.appendElement(HTML.H1).appendText(typeName + ": " + object.getName());
 		document.getTitle().appendText(typeName + ": " + object.getName());
 
 		for (Entry<String, Object> entry : object.getFields().entrySet()) {
@@ -1473,7 +1474,7 @@ public class HTMLView extends View {
 		
 		div.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.FILTERS) + ": ");
 		div.appendElement(button(strings.gts(type, Constants.ADD_FILTER), ADD_FILTER));
-		div.appendElement(document.createElement(HTML.BUTTON))
+		div.appendElement(HTML.BUTTON)
 			.setAttribute(HTML.TYPE, HTML.SUBMIT)
 			.setAttribute(HTML.FORM, Constants.SEARCH)
 			.appendText(strings.gts(type, Constants.SEARCH));
@@ -1535,7 +1536,7 @@ public class HTMLView extends View {
 	
 		for (Comparison comparison : Comparison.values()) {
 			option = comparisonSelect.appendElement(HTML.OPTION)
-				.setAttribute(HTML.VALUE, comparison.toString())
+				.setAttribute(HTML.VALUE, comparison)
 				.appendText(strings.getComparisonName(type, comparison.toString()));
 			
 			if (comparison.equals(filter.getComparison())) {
@@ -2043,7 +2044,7 @@ public class HTMLView extends View {
 		input.setAttribute(HTML.TITLE, title);
 
 		if (value != null) {
-			input.setAttribute(HTML.VALUE, value.toString());
+			input.setAttribute(HTML.VALUE, value);
 		}
 
 		return input;
@@ -2096,8 +2097,8 @@ public class HTMLView extends View {
 			break;
 		}
 
-		input.setAttribute(HTML.MIN, min.toString());
-		input.setAttribute(HTML.MAX, max.toString());
+		input.setAttribute(HTML.MIN, min);
+		input.setAttribute(HTML.MAX, max);
 		input.setAttribute(HTML.STEP, HTML.ANY);
 	}
 
@@ -2117,7 +2118,7 @@ public class HTMLView extends View {
 		}
 
 		Element textarea = document.createElement(HTML.TEXTAREA);
-		textarea.appendText(value.toString());
+		textarea.appendText(value);
 		textarea.addClass(textareaClass);
 		return textarea;
 	}
@@ -2144,7 +2145,7 @@ public class HTMLView extends View {
 				.setAttribute(HTML.TITLE, title);
 
 		if (value != null) {
-			textarea.appendText(value.toString());
+			textarea.appendText(value);
 		}
 
 		if (fieldType != null) {
@@ -2438,7 +2439,7 @@ public class HTMLView extends View {
 
 		for (Map.Entry<String, Object> entry : values.getFields().entrySet()) {
 			select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, entry.getKey())
-					.appendText(entry.getValue().toString());
+					.appendText(entry.getValue());
 
 		}
 		return select;
@@ -2468,7 +2469,7 @@ public class HTMLView extends View {
 	public Element time(Object time) {
 		Element timeElement = document.createElement(HTML.TIME);
 		if (time != null) {
-			timeElement.appendText(time.toString());
+			timeElement.appendText(time);
 		}
 		return timeElement;
 	}
@@ -2476,7 +2477,7 @@ public class HTMLView extends View {
 	public Element colorOutput(Object color) {
 		return document.createElement(HTML.SPAN)
 				.setAttribute(HTML.STYLE, HTML.BACKGROUND_COLOR + ": " + color)
-				.appendText(color.toString());
+				.appendText(color);
 	}
 
 	public Element selectTableHeaderCell(String type, String field, String lang, String view,
@@ -2536,7 +2537,7 @@ public class HTMLView extends View {
 
 		cell.appendElement(selectTableAnchor(fieldName + orderLinkString, type, lang, view, ref, filters,
 				search, fieldOrder, offset, limit, component).addClass(SELECT_HEADER_ANCHOR)
-					.setAttribute(DATA_MULTI_ORDER,	multiOrderParameter.toString()));
+					.setAttribute(DATA_MULTI_ORDER,	multiOrderParameter));
 
 		return cell;
 	}
@@ -2643,7 +2644,7 @@ public class HTMLView extends View {
 		}
 
 		if (component != null) {
-			actionButton.setAttribute(DATA_COMPONENT, component.toString());
+			actionButton.setAttribute(DATA_COMPONENT, component);
 		}
 		
 		div.appendElement(actionButton);
@@ -2845,7 +2846,7 @@ public class HTMLView extends View {
 		Element select = document.createElement(HTML.SELECT).addClass(Constants.LIMIT);
 
 		if (Component.REFERENCE.equals(component)) {
-			select.setAttribute(DATA_COMPONENT, component.toString());
+			select.setAttribute(DATA_COMPONENT, component);
 		}
 
 		for (Long x = minLimit; x <= maxLimit; x += limitIncrement) {
@@ -2868,7 +2869,7 @@ public class HTMLView extends View {
 				.appendText(text);
 
 		if (Component.REFERENCE.equals(component)) {
-			anchor.setAttribute(DATA_COMPONENT, component.toString());
+			anchor.setAttribute(DATA_COMPONENT, component);
 		}
 
 		return anchor;
@@ -2883,7 +2884,7 @@ public class HTMLView extends View {
 	}
 
 	public String parameter(String name, Object value) {
-		return value != null ? "&" + name + "=" + value.toString() : "";
+		return value != null ? "&" + name + "=" + value : "";
 	}
 
 	public String refParameter(FieldReference ref) {
@@ -3159,9 +3160,7 @@ public class HTMLView extends View {
 	}
 
 	public Element textOutput(Object value) {
-		Element textElement = document.createElement(HTML.SPAN);
-		textElement.appendText(value.toString());
-		return textElement;
+		return document.createElement(HTML.SPAN).appendText(value);
 	}
 
 	public Element passwordOutput() {
@@ -3184,6 +3183,10 @@ public class HTMLView extends View {
 
 		return anchor(value.toString(), href);
 	}
+	
+	public Element anchor(String text, URI uri) {
+		return anchor(text, uri.toString());
+	}
 
 	public Element anchor(String text, URIBuilder href) {
 		return anchor(text, href.toString());
@@ -3204,7 +3207,12 @@ public class HTMLView extends View {
 	}
 
 	public Element imageAnchor(String text, String href, String src) {
-		Element anchor = document.createElement(HTML.A).setAttribute(HTML.HREF, href);
+		Element anchor = document.createElement(HTML.A);
+		
+		if (href != null) {
+			anchor.setAttribute(HTML.HREF, href);
+		}
+		
 		anchor.appendElement(image(text, src));
 		return anchor;
 	}
@@ -3215,7 +3223,7 @@ public class HTMLView extends View {
 
 	public Element logoAnchor(String type, String lang, String view) {
 		return imageAnchor(strings.gts(type, Constants.LOGO_TEXT),
-				href_uri(typeSettings.gts(type, Constants.LOGO_URI), lang, view),
+				hrefURI(typeSettings.gts(type, Constants.LOGO_URI), lang, view),
 				typeSettings.gts(type, Constants.LOGO));
 	}
 
@@ -3492,10 +3500,10 @@ public class HTMLView extends View {
 		String idParameter = id != null ? "/" + id : "";
 		String fieldParameter = field != null ? "/" + field : "";
 
-		return href_uri("/" + typeParameter + idParameter + fieldParameter, lang, view);
+		return hrefURI("/" + typeParameter + idParameter + fieldParameter, lang, view);
 	}
 
-	public String href_uri(String href, String lang, String view) {
+	public String hrefURI(String href, String lang, String view) {
 		try {
 			URIBuilder uri = new URIBuilder(href);
 
@@ -3511,6 +3519,11 @@ public class HTMLView extends View {
 		} catch (URISyntaxException e) {
 			throw new NXException(e);
 		}
+	}
+	
+	public String imageURI(Tuple image) {
+		return "/" + image.getString(Constants.IMAGE_TYPE) + "/" 
+				+ image.getString(Constants.IMAGE_ID) + "/" + Constants.IMAGE;
 	}
 
 	public Content render() {
@@ -3672,7 +3685,7 @@ public class HTMLView extends View {
 	
 	public Element menuListItem(String type, String text, String href, String lang, String view) {
 		Element li = document.createElement(HTML.LI);
-		li.appendElement(anchor(strings.gts(type, text), href_uri(href, lang, view)));
+		li.appendElement(anchor(strings.gts(type, text), hrefURI(href, lang, view)));
 		return li;
 	}
 
@@ -3863,7 +3876,7 @@ public class HTMLView extends View {
 		Element[] images = document.getElementsByClassName(IMAGE);
 
 		if (images.length > 0) {
-			Map<String, List<Element>> imagesById = java.util.stream.Stream.of(images).collect(
+			Map<String, List<Element>> imagesById = Arrays.stream(images).collect(
 					Collectors.groupingBy(div -> div.getAttribute(DATA_ID) + ":" + div.getAttribute(DATA_LANG)));
 
 			String sql =
@@ -3896,8 +3909,7 @@ public class HTMLView extends View {
 					Element container = div;
 
 					Element image = document.createElement(HTML.IMG)
-							.setAttribute(HTML.SRC, "/" + tuple.getString(Constants.IMAGE_TYPE)
-								+ "/" + tuple.getString(Constants.IMAGE_ID) + "/" + IMAGE)
+							.setAttribute(HTML.SRC, imageURI(tuple))
 							.setAttribute(HTML.ALT, tuple.getString(HTML.ALT));
 
 					String link = tuple.getString(Constants.LINK);

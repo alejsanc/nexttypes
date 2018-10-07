@@ -16,6 +16,7 @@
 
 package com.nexttypes.views;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -29,6 +30,7 @@ import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Tuples;
 import com.nexttypes.datatypes.URI;
 import com.nexttypes.datatypes.XML.Element;
+import com.nexttypes.datatypes.JSONLD;
 import com.nexttypes.enums.Order;
 import com.nexttypes.enums.Component;
 import com.nexttypes.enums.Format;
@@ -41,12 +43,13 @@ public class ArticleView extends HTMLView {
 	public static final String ARTICLE = "article";
 	public static final String ARTICLE_DISCUSSION = "article_discussion";
 	public static final String[] ARTICLE_DISCUSSION_FIELDS = new String[] {"title", "link"};
-	public static final String AUTORS = "autors";
+	public static final String AUTHORS = "authors";
 	public static final String CATEGORY = "category";
 	public static final String CATEGORIES = "categories";
 	public static final String SHOW_ARTICLE_DISCUSSIONS = "show_article_discussions";
 	public static final String SHOW_CATEGORIES = "show_categories";
-	public static final String SHOW_AUTORS = "show_autors";
+	public static final String SHOW_AUTHORS = "show_authors";
+	public static final String PUBLISHER = "publisher";
 	
 	protected String category;
 	protected String categoryParameter;
@@ -68,10 +71,20 @@ public class ArticleView extends HTMLView {
 						+ " a.cdate,"
 						+ " coalesce(al.udate, a.udate) as udate,"
 						+ " coalesce(al.title, a.id) as title,"
-						+ " al.text"
+						+ " al.text,"
+						+ " case"
+							+ " when ill.image is null then 'image_link'"
+							+ " else 'image_link_language'"
+						+ " end as image_type,"
+						+ " case"
+							+ " when ill.image is null then a.image_link"
+							+ " else ill.id"
+						+ " end as image_id"
 
 				+ " from"
-					+ " article a left join article_language al on (a.id = al.article and al.language = ?)"
+					+ " article a"
+					+ " left join article_language al on (a.id = al.article and al.language = ?)"
+					+ " left join image_link_language ill on (a.image_link = ill.image_link and ill.language = ?)"
 
 				+ " where"
 					+ " a.id = ?");
@@ -81,10 +94,10 @@ public class ArticleView extends HTMLView {
 			sql.append(" and " + typeFilters);
 		}
 
-		Tuple tuple = nextNode.getTuple(sql.toString(), lang, id);
+		Tuple tuple = nextNode.getTuple(sql.toString(), lang, lang, id);
 
 		loadTemplate(type, lang, view);
-
+		
 		if (tuple == null) {
 			return objectNotFound(type, id, lang, view);
 		}
@@ -94,37 +107,37 @@ public class ArticleView extends HTMLView {
 		String title = tuple.getString(Constants.TITLE);
 		document.getTitle().appendText(title);
 		article.appendElement(HTML.H1).appendText(title);
-
+		
 		HTMLFragment text = tuple.getHTML(Constants.TEXT, lang,
 				typeSettings.getFieldString(type, Constants.TEXT, Constants.HTML_ALLOWED_TAGS));
 		if (text != null) {
 			article.appendFragment(text);
 		}
 
-		main.appendElement(dates(type, tuple.getUTCDatetime(Constants.CDATE),
-				tuple.getUTCDatetime(Constants.UDATE)));
+		ZonedDateTime cdate = tuple.getUTCDatetime(Constants.CDATE);
+		ZonedDateTime udate = tuple.getUTCDatetime(Constants.UDATE);
 		
-		Boolean showAutors = typeSettings.getTypeBoolean(type, SHOW_AUTORS);
+		main.appendElement(dates(type, cdate, udate));
 		
-		if (showAutors) {
-			String autorsSQL =
-					"select"
-							+ " u.id,"
-							+ " u.first_name || ' ' || u.second_name as name"
-							
-					+ " from"
-						+ " \"user\" u"
-						+ " join article_autor aa on u.id = aa.autor"
+		Boolean showAuthors = typeSettings.getTypeBoolean(type, SHOW_AUTHORS);
+				
+		String authorsSQL =
+				"select"
+						+ " u.id,"
+						+ " u.first_name || ' ' || u.second_name as name"
 						
-					+ " where"
-						+ " aa.article = ?";
-			
-			Tuple[] autors = nextNode.query(autorsSQL, id);
-			
-			if (autors != null && autors.length > 0) {
-				main.appendElement(listFieldOutput(type, strings.gts(type, AUTORS), autors,
-						Constants.USER, lang, view));
-			}
+				+ " from"
+					+ " \"user\" u"
+					+ " join article_author aa on u.id = aa.author"
+					
+				+ " where"
+					+ " aa.article = ?";
+		
+		Tuple[] authors = nextNode.query(authorsSQL, id);
+		
+		if (showAuthors && authors != null && authors.length > 0) {
+			main.appendElement(listFieldOutput(type, strings.gts(type, AUTHORS), authors,
+					Constants.USER, lang, view));
 		}
 		
 		Boolean showCategories = typeSettings.getTypeBoolean(type, SHOW_CATEGORIES);
@@ -177,12 +190,20 @@ public class ArticleView extends HTMLView {
 				URI link = discussion.getURI(Constants.LINK);
 			
 				main.appendElement(HTML.P).appendElement(anchor(link.getHost() + " - "
-					+ discussion.getString(HTML.TITLE), link.toString()));
+					+ discussion.getString(HTML.TITLE), link));
 			}
 
 			main.appendElement(insertForm(ARTICLE_DISCUSSION, ARTICLE_DISCUSSION_FIELDS, lang, view,
 				articleReference, false, false, false, false));
 		}
+		
+		String image = request.getURIRoot() + imageURI(tuple);
+				
+		String publisherLogo = request.getURIRoot() + typeSettings.gts(type, Constants.LOGO);
+		
+		head.appendElement(HTML.SCRIPT).setAttribute(HTML.TYPE, Format.JSON_LD.getContentType())
+			.appendText(new JSONLD().article(title, image, authors, strings.gts(type, PUBLISHER),
+					publisherLogo, cdate, udate));
 		
 		return render(type);
 	}
@@ -198,10 +219,12 @@ public class ArticleView extends HTMLView {
 					
 			String category = request.getParameters().getString(CATEGORY);
 			String typeFilters = typeSettings.gts(type, Constants.FILTERS);
+			String title = strings.getTypeName(ARTICLE);
 			ArrayList<Object> parameters = new ArrayList<>();
 			parameters.add(lang);
 			
 			if (category != null) {
+				title += "::" + categoryName(category, lang);
 				sql.append(" left join article_category ac on (a.id = ac.article and ac.category = ?)");
 				parameters.add(category);
 			}
@@ -210,11 +233,11 @@ public class ArticleView extends HTMLView {
 				sql.append(" where " + typeFilters);
 			}
 			
-			sql.append(" order by a.cdate desc");
+			sql.append(" order by a.cdate desc limit 10");
 				
 			Tuple[] tuples = nextNode.query(sql.toString(), parameters.toArray());
-			RSS rss = new RSS("article::" + category, "article::" + category, type, lang,
-						request.getURIRoot(), tuples);
+			RSS rss = new RSS(title, strings.gts(type, Constants.DESCRIPTION), type, lang,
+					request.getURIRoot(), tuples);
 			content = new Content(rss.toString(), Format.RSS);
 			
 		} else {
@@ -228,16 +251,13 @@ public class ArticleView extends HTMLView {
 	public Content preview(String type, String lang, String view, FieldReference ref, Filter[] filters,
 			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
-		Boolean showAutors = typeSettings.getTypeBoolean(type, SHOW_AUTORS);
+		Boolean showAuthors = typeSettings.getTypeBoolean(type, SHOW_AUTHORS);
 		Boolean showCategories = typeSettings.getTypeBoolean(type, SHOW_CATEGORIES);
 		String categoryFilter = null;
-		
-		loadTemplate(type, lang, view);
 		
 		StringBuilder sql = new StringBuilder(
 				"select"
 						+ " a.id,"
-						+ " a.image_link,"
 						+ " a.cdate,"
 						+ " coalesce(al.title, a.id) as title,"
 						+ " left(al.text, 300) as text,"
@@ -256,18 +276,18 @@ public class ArticleView extends HTMLView {
 					+ " left join article_language al on (a.id = al.article and al.language = ?)"
 					+ " left join image_link_language ill on (a.image_link = ill.image_link and ill.language = ?)");
 		
-		if (showAutors) {
-			sql.append(", aas.autors");
+		if (showAuthors) {
+			sql.append(", aas.authors");
 			
 			fromSQL.append(" left join ("
 					+ "select"
 						+ " aa.article,"
 						+ " array_agg(array[u.id, u.first_name || ' ' || u.second_name])"
-							+ " filter (where u.id is not null) as autors"
+							+ " filter (where u.id is not null) as authors"
 					
 					+ " from"
 						+ " \"user\" u"
-						+ " join article_autor aa on u.id = aa.autor"
+						+ " join article_author aa on u.id = aa.author"
 						
 					+ " group by aa.article) aas on a.id = aas.article");
 					
@@ -301,20 +321,23 @@ public class ArticleView extends HTMLView {
 		if (category != null) {
 			categoryParameter = parameter(CATEGORY, category);
 			
+			loadTemplate(type, lang, view);
+			
 			Element searchForm = document.getElementById(Constants.SEARCH);
 			searchForm.appendElement(input(HTML.HIDDEN, CATEGORY, CATEGORY, category));
 			
-			String categoryTitle = nextNode.getString("select name from category_language"
-					+ " where category = ? and language = ?", category, lang);
+			String categoryName = categoryName(category, lang);
 			
-			previewTitle += ": " + categoryTitle;
-			main.appendElement(HTML.H1).appendText(categoryTitle);
+			previewTitle += ": " + categoryName;
+			main.appendElement(HTML.H1).appendText(categoryName);
 			
 			fromSQL.append(" join article_category ac on a.id = ac.article");
 			
 			categoryFilter = " ac.category = ?";
 			
 			parameters.add(category);
+		} else {
+			loadTemplate(type, lang, view);
 		}
 
 		document.getTitle().appendText(previewTitle);
@@ -348,11 +371,11 @@ public class ArticleView extends HTMLView {
 						.appendElement(anchor(strings.gts(type, Constants.READ_MORE), uri));
 				}
 				
-				if (showAutors) {
-					String[][] autors = (String[][]) tuple.getArray(AUTORS);
+				if (showAuthors) {
+					String[][] authors = (String[][]) tuple.getArray(AUTHORS);
 					
-					if (autors != null) {
-						article.appendElement(listFieldOutput(type, strings.gts(type, AUTORS), autors,
+					if (authors != null) {
+						article.appendElement(listFieldOutput(type, strings.gts(type, AUTHORS), authors,
 								Constants.USER, lang, view));
 					}
 				}
@@ -406,5 +429,10 @@ public class ArticleView extends HTMLView {
 	public Element categoriesListOutput(String type, Object[] categories, String lang, String view) {
 		return listFieldOutput(type, strings.gts(type, CATEGORIES), categories,
 				category -> uri(type, lang, view) + "&" + Action.PREVIEW + parameter(CATEGORY, category));
+	}
+	
+	public String categoryName(String category, String lang) {
+		return nextNode.getString("select name from category_language"
+				+ " where category = ? and language = ?", category, lang);
 	}
 }

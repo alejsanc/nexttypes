@@ -39,6 +39,7 @@ import org.postgresql.jdbc.PgSQLXML;
 import org.postgresql.util.PGobject;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.Constants;
@@ -266,15 +267,15 @@ public class Tuple {
 
 	public static BigDecimal parseNumeric(Object value) {
 		if (value instanceof Short) {
-			value = new BigDecimal(((Short) value));
+			value = new BigDecimal((Short) value);
 		} else if (value instanceof Integer) {
-			value = new BigDecimal(((Integer) value));
+			value = new BigDecimal((Integer) value);
 		} else if (value instanceof Long) {
-			value = new BigDecimal(((Long) value));
+			value = new BigDecimal((Long) value);
 		} else if (value instanceof Float) {
-			value = new BigDecimal(((Float) value));
+			value = new BigDecimal((Float) value);
 		} else if (value instanceof Double) {
-			value = new BigDecimal(((Double) value));
+			value = new BigDecimal((Double) value);
 		} else if (value instanceof String) {
 			value = new BigDecimal((String) value);
 		} else if (value instanceof byte[]) {
@@ -451,7 +452,9 @@ public class Tuple {
 	public static File parseFile(Object value) {
 		if (value instanceof byte[]) {
 			value = new File((byte[]) value);
-		} 
+		} else if(value instanceof JSONObject) {
+			value = new File((JSONObject) value);
+		}
 		return (File) value;
 	}
 
@@ -463,7 +466,9 @@ public class Tuple {
 		if (value instanceof byte[]) {
 			value = new Image((byte[]) value);
 		} else if (value instanceof File) {
-			value = new Image(((File) value));
+			value = new Image((File) value);
+		} else if (value instanceof JSONObject) {
+			value = new Image((JSONObject) value);
 		}
 		return (Image) value;
 	}
@@ -477,6 +482,8 @@ public class Tuple {
 			value = new Audio((byte[]) value);
 		} else if (value instanceof File) {
 			value = new Audio((File) value);
+		} else if (value instanceof JSONObject) {
+			value = new Audio((JSONObject) value);
 		}
 		return (Audio) value;
 	}
@@ -490,6 +497,8 @@ public class Tuple {
 			value = new Video((byte[]) value);
 		} else if (value instanceof File) {
 			value = new Video((File) value);
+		} else if (value instanceof JSONObject) {
+			value = new Video((JSONObject) value);
 		}
 		return (Video) value;
 	}
@@ -502,7 +511,9 @@ public class Tuple {
 		if (value instanceof byte[]) {
 			value = new Document((byte[]) value);
 		} else if (value instanceof File) {
-			value = new Document(((File) value));
+			value = new Document((File) value);
+		} else if (value instanceof JSONObject) {
+			value = new Document((JSONObject) value);
 		}
 		return (Document) value;
 	}
