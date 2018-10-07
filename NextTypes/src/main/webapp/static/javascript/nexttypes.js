@@ -14,7 +14,7 @@ const PRIMITIVE_TYPES = {
 	HTML: "html",
 	JSON: "json",
 	XML: "xml",
-	URI: "uri",
+	URL: "url",
 	EMAIL: "email",
 	TEL: "tel",
 	DATE: "date",
@@ -76,7 +76,7 @@ var fieldCount = 0;
 var indexCount = 0;
 var filterCount = 0;
 
-var pageURI = new URL(window.location);
+var pageURL = new URL(window.location);
 var pageLang = document.documentElement.getAttribute("lang");
 	
 document.addEventListener("DOMContentLoaded", function() {
@@ -283,15 +283,15 @@ function addFilter(event) {
 }
 
 function loadFilter(row, field) {
-	var uri = new URL(window.location);
-	uri.searchParams.set("filter_component", filterCount);
+	var url = new URL(window.location);
+	url.searchParams.set("filter_component", filterCount);
 	
 	if (field && field != "id") {
-		uri.pathname = uri.pathname + "/id/" + field;
+		url.pathname = url.pathname + "/id/" + field;
 	}
 	
 	var request = new XMLHttpRequest();
-	request.open("GET", uri, true);
+	request.open("GET", url, true);
 	request.onload = function(e) {
 		
 		if (request.status == 200) {
@@ -420,7 +420,7 @@ function submitForm(event) {
 					case ACTION.DELETE:
 						message = request.responseText;
 						
-						loadSelectTable(button, form.getAttribute("data-uri"),
+						loadSelectTable(button, form.getAttribute("data-url"),
 								button.getAttribute("data-component"));
 												
 						break;
@@ -462,11 +462,11 @@ function submitForm(event) {
 						message = response["message"];
 						
 						callback = function() {
-							var pathname = pageURI.pathname;
+							var pathname = pageURL.pathname;
 							var newName = form.elements["new_name"].value;
-							pageURI.pathname = pathname.substr(0, pathname.lastIndexOf("/")+1)+newName;
-							pageURI.searchParams.set("form", "alter");
-							window.location = pageURI;
+							pageURL.pathname = pathname.substr(0, pathname.lastIndexOf("/")+1)+newName;
+							pageURL.searchParams.set("form", "alter");
+							window.location = pageURL;
 						}
 						
 						break;
@@ -486,11 +486,11 @@ function submitForm(event) {
 						message = response["message"];
 						
 						callback = function() {
-							var pathname = pageURI.pathname;
+							var pathname = pageURL.pathname;
 							var newId = form.elements["new_id"].value;
-							pageURI.pathname = pathname.substr(0, pathname.lastIndexOf("/") + 1) + newId;
-							pageURI.searchParams.set("form", "update");
-							window.location = pageURI;
+							pageURL.pathname = pathname.substr(0, pathname.lastIndexOf("/") + 1) + newId;
+							pageURL.searchParams.set("form", "update");
+							window.location = pageURL;
 						}
 						
 						break;
@@ -695,32 +695,32 @@ function selectTableHeaderAnchor(event) {
 	
 	var anchor = event.currentTarget;
 	
-	var uri = anchor.href;
+	var url = anchor.href;
 		
 	if (event.ctrlKey) {
-		uri = new URL(uri);
+		url = new URL(url);
 		var order = anchor.getAttribute("data-multi-order");
 		if (order != null && order.length > 0) {
-			uri.searchParams.set("order", order);
+			url.searchParams.set("order", order);
 		}
 	}
 	
 	var component = anchor.getAttribute("data-component");
 		
 	if (component) {
-		loadSelectTable(anchor, uri, component);
+		loadSelectTable(anchor, url, component);
 	} else {
-		window.location = uri;
+		window.location = url;
 	}
 }
 
-function loadSelectTable(element, uri, component) {
+function loadSelectTable(element, url, component) {
 	while (!element.classList.contains("select")) {
 		element = element.parentNode;
 	}
 		
 	var request = new XMLHttpRequest();
-	request.open("GET", uri + "&component=" + component, true);
+	request.open("GET", url + "&component=" + component, true);
 	request.onload = function(e) {
 		if (request.status == 200) {
 			var container = document.createElement("div");
@@ -804,15 +804,15 @@ function resetBinaryInputs(form) {
 }
 
 function changeLanguage(event) {
-	changeURIParameter(event, "lang");
+	changeURLParameter(event, "lang");
 }
 
 function changeYear(event) {
-	changeURIParameter(event, "year");
+	changeURLParameter(event, "year");
 }
 
 function changeMonth(event){
-	changeURIParameter(event, "month");
+	changeURLParameter(event, "month");
 }
 
 function changeLimit(event) {
@@ -820,19 +820,19 @@ function changeLimit(event) {
 	var component = select.getAttribute("data-component")
 		
 	if (component) {
-		var uri = new URL(select.form.getAttribute("data-uri"));
+		var url = new URL(select.form.getAttribute("data-url"));
 		var limit = select.options[select.selectedIndex].value;
-		uri.searchParams.set("limit", limit);
-		loadSelectTable(select, uri, component);
+		url.searchParams.set("limit", limit);
+		loadSelectTable(select, url, component);
 	} else {
-		changeURIParameter(event, "limit");
+		changeURLParameter(event, "limit");
 	}
 }
 
-function changeURIParameter(event, parameter) {
+function changeURLParameter(event, parameter) {
 	var select = event.currentTarget;
 	var value = select.options[select.selectedIndex].value;
 	
-	pageURI.searchParams.set(parameter, value);
-	window.location = pageURI;
+	pageURL.searchParams.set(parameter, value);
+	window.location = pageURL;
 }

@@ -73,7 +73,7 @@ public class WebDAVView extends View {
 		try {
 			davRequest = new WebDAVRequest(request);
 			multiStatus = new MultiStatus();
-			path = request.getURIPath();
+			path = request.getURLPath();
 			depth = davRequest.getDepth();
 			
 			switch (request.getRequestMethod()) {
@@ -437,8 +437,8 @@ public class WebDAVView extends View {
 		}
 	}
 
-	protected MultiStatusResponse addResponse(String uri) {
-		MultiStatusResponse response = new MultiStatusResponse(uri, "");
+	protected MultiStatusResponse addResponse(String url) {
+		MultiStatusResponse response = new MultiStatusResponse(url, "");
 		multiStatus.addResponse(response);
 		return response;
 	}

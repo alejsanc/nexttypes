@@ -194,7 +194,7 @@ public class Constants {
 	public static final String INVALID_TIMEZONE = "invalid_timezone";
 	public static final String INVALID_TYPE_NAME = "invalid_type_name";
 	public static final String INVALID_TYPE_OR_FIELD_NAME = "invalid_type_or_field_name";
-	public static final String INVALID_URI = "invalid_uri";
+	public static final String INVALID_URL = "invalid_url";
 	public static final String INVALID_USER_OR_PASSWORD = "invalid_user_or_password";
 	public static final String INVALID_VIEW_NAME = "invalid_view_name";
 	public static final String ITEM = "item";
@@ -213,7 +213,7 @@ public class Constants {
 	public static final String LOGIN_USER = "login_user";
 	public static final String LOGO = "logo";
 	public static final String LOGO_TEXT = "logo_text";
-	public static final String LOGO_URI = "logo_uri";
+	public static final String LOGO_URL = "logo_url";
 	public static final String LOGOUT = "logout";
 	public static final String LONG_OBJECTS_COUNT = "long_objects_count";
 	public static final String MAX_AUTH_ERRORS = "max_auth_errors";

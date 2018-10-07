@@ -50,7 +50,7 @@ import com.nexttypes.datatypes.RenameResponse;
 import com.nexttypes.datatypes.Serial;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.TypeField;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.UpdateResponse;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
@@ -108,7 +108,8 @@ public class HTTPServlet extends HttpServlet {
 		logger = context.getLogger();
 	}
 
-	protected Content get(HTTPRequest req, HttpServletResponse response) throws IOException, URISyntaxException {
+	protected Content get(HTTPRequest req, HttpServletResponse response) throws IOException,
+		URISyntaxException {
 
 		Content content = null;
 
@@ -137,11 +138,11 @@ public class HTTPServlet extends HttpServlet {
 						} else if (req.isReferences()) {
 							content = view.getReferences(req.getLang(), req.getView());
 						} else {
-							URIBuilder newURI = new URIBuilder(settings.getString(Constants.INDEX));
-							newURI.setParameter(Constants.LANG, req.getLang());
-							newURI.setParameter(Constants.VIEW, req.getView());
+							URIBuilder newURL = new URIBuilder(settings.getString(Constants.INDEX));
+							newURL.setParameter(Constants.LANG, req.getLang());
+							newURL.setParameter(Constants.VIEW, req.getView());
 							content = new Content(HTTPStatus.FOUND);
-							content.setHeader(HTTPHeader.LOCATION, newURI.toString());
+							content.setHeader(HTTPHeader.LOCATION, newURL.toString());
 						}
 					}
 
@@ -547,8 +548,8 @@ public class HTTPServlet extends HttpServlet {
 					value = Tuple.parseBoolean(value);
 					break;
 
-				case PT.URI:
-					value = Tuple.parseURI(value);
+				case PT.URL:
+					value = Tuple.parseURL(value);
 					break;
 
 				case PT.EMAIL:
@@ -655,7 +656,7 @@ public class HTTPServlet extends HttpServlet {
 		}
 	}
 
-	protected Content checkRequest(HttpServletRequest request, URI uri) {
+	protected Content checkRequest(HttpServletRequest request, URL url) {
 		Content content = null;
 
 		boolean secure = request.isSecure();
@@ -669,16 +670,16 @@ public class HTTPServlet extends HttpServlet {
 			if ("GET".equals(method)) {
 
 				if (!secure) {
-					uri.setScheme(URI.HTTPS);
-					uri.setPort(settings.getInt32(Constants.HTTPS_PORT));
+					url.setScheme(URL.HTTPS);
+					url.setPort(settings.getInt32(Constants.HTTPS_PORT));
 				}
 
 				if (!validHost) {
-					uri.setHost(host);
+					url.setHost(host);
 				}
 
 				content = new Content(HTTPStatus.MOVED_PERMANENTLY);
-				content.setHeader(HTTPHeader.LOCATION, uri.toString());
+				content.setHeader(HTTPHeader.LOCATION, url.toString());
 
 			} else {
 
@@ -809,15 +810,15 @@ public class HTTPServlet extends HttpServlet {
 		
 		Debug.httpRequest();
 		
-		String uri = request.getRemoteAddr() + " " + request.getMethod() + " " + request.getRequestURL();
+		String url = request.getRemoteAddr() + " " + request.getMethod() + " " + request.getRequestURL();
 			
 		String query = request.getQueryString();
 			
 		if (query != null && query.length() > 0) {
-			uri += "?" + query;
+			url += "?" + query;
 		}
 		
-		Debug.text(uri);
+		Debug.text(url);
 			
 		Debug.headers();		
 			
@@ -921,19 +922,20 @@ public class HTTPServlet extends HttpServlet {
 				Auth auth = auth(request);
 				user = auth.getUser();
 
-				URI uri = new URI(request);
+				URL url = new URL(request);
 
-				log(request, user, uri);
+				log(request, user, url);
 
-				content = checkRequest(request, uri);
+				content = checkRequest(request, url);
 
 				if (content == null) {
-					if (uri.isRobots()) {
+					if (url.isRobots()) {
 						content = robots();
-					} else if (uri.isSitemap()) {
+					} else if (url.isSitemap()) {
 						content = sitemap(request, lang, auth);
 					} else {
-						HTTPRequest req = new HTTPRequest(request, settings, context, lang, strings, auth, uri);
+						HTTPRequest req = new HTTPRequest(request, settings, context, lang, 
+								strings, auth, url);
 
 						switch (req.getRequestMethod()) {
 						case GET:
@@ -1085,8 +1087,8 @@ public class HTTPServlet extends HttpServlet {
 		}
 	}
 	
-	protected void log(HttpServletRequest request, String user, URI uri) {
-		logger.info(this, user, request.getRemoteAddr(), request.getMethod() + " " + uri);
+	protected void log(HttpServletRequest request, String user, URL url) {
+		logger.info(this, user, request.getRemoteAddr(), request.getMethod() + " " + url);
 	}
 
 	protected Content maxInsertRequestsExceeded(HTTPRequest req) {

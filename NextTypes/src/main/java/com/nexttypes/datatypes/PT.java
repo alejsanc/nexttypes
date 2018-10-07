@@ -31,7 +31,7 @@ public class PT {
 	public static final String HTML = "html";
 	public static final String JSON = "json";
 	public static final String XML = "xml";
-	public static final String URI = "uri";
+	public static final String URL = "url";
 	public static final String EMAIL = "email";
 	public static final String TEL = "tel";
 	public static final String DATE = "date";
@@ -48,10 +48,10 @@ public class PT {
 	public static final String PASSWORD = "password";
 
 	public static final String[] PRIMITIVE_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64,
-			NUMERIC, BOOLEAN, STRING, TEXT, HTML, JSON, XML, URI, EMAIL, TEL, DATE, TIME, DATETIME,
+			NUMERIC, BOOLEAN, STRING, TEXT, HTML, JSON, XML, URL, EMAIL, TEL, DATE, TIME, DATETIME,
 			TIMEZONE, COLOR, BINARY, FILE, IMAGE, AUDIO, VIDEO, DOCUMENT, PASSWORD };
 
-	public static final String[] STRING_TYPES = new String[] { STRING, URI, EMAIL, TEL };
+	public static final String[] STRING_TYPES = new String[] { STRING, URL, EMAIL, TEL };
 	
 	public static final String[] TEXT_TYPES = new String[] { TEXT, HTML, JSON, XML };
 
@@ -64,7 +64,7 @@ public class PT {
 	public static final String[] FILE_TYPES = new String[] { FILE, IMAGE, DOCUMENT, AUDIO, VIDEO };
 	
 	public static final String[] FILTER_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64,
-			NUMERIC, BOOLEAN, STRING, TEXT, HTML, JSON, XML, URI, EMAIL, TEL, DATE, TIME, DATETIME,
+			NUMERIC, BOOLEAN, STRING, TEXT, HTML, JSON, XML, URL, EMAIL, TEL, DATE, TIME, DATETIME,
 			TIMEZONE, COLOR };
 	
 	public static boolean isPrimitiveType(String type) {

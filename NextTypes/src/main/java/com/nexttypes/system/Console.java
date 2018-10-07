@@ -29,7 +29,7 @@ import org.apache.commons.cli.ParseException;
 
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Serial;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.NodeMode;
@@ -131,7 +131,7 @@ public class Console {
 			}
 
 			try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), Auth.CONSOLE, null, mode,
-					lang, URI.LOCALHOST, context, false)) {
+					lang, URL.LOCALHOST, context, false)) {
 
 				Object result = null;
 

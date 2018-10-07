@@ -44,7 +44,8 @@ public class RSSView extends View {
 
 		if (sql != null) {
 			Tuple[] tuples = nextNode.query(sql, lang);
-			RSS rss = new RSS("NextTypes " + type, "NextTypes " + type, type, lang, request.getURIRoot(), tuples);
+			RSS rss = new RSS("NextTypes " + type, "NextTypes " + type, type, lang,
+					request.getURLRoot(), tuples);
 			Content content = new Content(rss.toString(), Format.RSS);
 			return content;
 		} else {

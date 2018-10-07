@@ -67,7 +67,7 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.datatypes.TypeReference;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.Comparison;
 import com.nexttypes.enums.Format;
@@ -126,7 +126,7 @@ public class HTMLView extends View {
 	public static final String DATA_EDITOR = "data-editor";
 	public static final String DATA_SHOW_PROGRESS = "data-show-progress";
 	public static final String DATA_MULTI_ORDER = "data-multi-order";
-	public static final String DATA_URI = "data-uri";
+	public static final String DATA_URL = "data-url";
 	public static final String DATA_ID = "data-id";
 	public static final String DATA_LANG = "data-lang";
 	public static final String DATA_COMPONENT = "data-component";
@@ -320,7 +320,7 @@ public class HTMLView extends View {
 			
 			if (permissions.isAllowed(type, Action.RENAME_FORM)) {
 				typeForm.appendElement(iconAnchor(strings.getActionName(type, Action.RENAME),
-					uri(type, lang, view) + formParameter(Action.RENAME), Icon.PENCIL));
+					url(type, lang, view) + formParameter(Action.RENAME), Icon.PENCIL));
 			}
 				
 		} else {
@@ -750,7 +750,7 @@ public class HTMLView extends View {
 			
 			if (permissions.isAllowed(referencedType, Action.GET_TYPE)) {
 				referencedTypeCell.appendElement(anchor(referencedTypeName, 
-						uri(referencedType, lang, view) + "&" + Constants.INFO));
+						url(referencedType, lang, view) + "&" + Constants.INFO));
 			} else {
 				referencedTypeCell.appendText(referencedTypeName);
 			}
@@ -759,7 +759,7 @@ public class HTMLView extends View {
 			
 			if (permissions.isAllowed(referencingType, Action.GET_TYPE)) {
 				referencingTypeCell.appendElement(anchor(referencingTypeName,
-						uri(referencingType, lang, view) + "&" + Constants.INFO));
+						url(referencingType, lang, view) + "&" + Constants.INFO));
 			} else {
 				referencingTypeCell.appendText(referencingTypeName);
 			}
@@ -968,15 +968,15 @@ public class HTMLView extends View {
 		div.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.SEARCH) + ": ");
 		div.appendText(search);
 		
-		String uri = deleteSearchURI(type, lang, view, ref, filters, order);
+		String url = deleteSearchURL(type, lang, view, ref, filters, order);
 		
-		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_SEARCH), uri, Icon.DELETE));
+		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_SEARCH), url, Icon.DELETE));
 		return div;
 	}
 	
-	public String deleteSearchURI(String type, String lang, String view, FieldReference ref,
+	public String deleteSearchURL(String type, String lang, String view, FieldReference ref,
 			Filter[] filters, LinkedHashMap<String, Order> order) {
-		return uri(type, lang, view) + refParameter(ref) + filtersParameters(filters)
+		return url(type, lang, view) + refParameter(ref) + filtersParameters(filters)
 			+ previewParameter(request.isPreview()) + orderParameter(order);
 	}
 
@@ -1120,7 +1120,7 @@ public class HTMLView extends View {
 			Element selectCell = row.appendElement(HTML.TD);
 			
 			if (permissions.isAllowed(type, Action.SELECT)) {
-				selectCell.appendElement(anchor(typeName, uri(type, lang, view)));
+				selectCell.appendElement(anchor(typeName, url(type, lang, view)));
 			} else {
 				selectCell.appendText(typeName);
 			}			
@@ -1132,21 +1132,21 @@ public class HTMLView extends View {
 			
 			if (permissions.isAllowed(type, Action.INSERT_FORM)) {
 				insertCell.appendElement(iconAnchor(strings.getActionName(type, Action.INSERT),
-					uri(type, lang, view) + formParameter(Action.INSERT), Icon.PLUS));
+					url(type, lang, view) + formParameter(Action.INSERT), Icon.PLUS));
 			}
 			
 			Element alterCell = row.appendElement(HTML.TD);
 			
 			if (permissions.isAllowed(type, Action.ALTER_FORM)) {
 				alterCell.appendElement(iconAnchor(strings.getActionName(type, Action.ALTER),
-						uri(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
+						url(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
 			}
 			
 			Element infoCell = row.appendElement(HTML.TD);
 			
 			if (permissions.isAllowed(type, Action.GET_TYPE)) {
 				infoCell.appendElement(iconAnchor(strings.gts(type, Constants.TYPE),
-						uri(type, lang, view) + "&" + Constants.INFO, Icon.INFO));
+						url(type, lang, view) + "&" + Constants.INFO, Icon.INFO));
 			}
 		}
 		
@@ -1313,7 +1313,7 @@ public class HTMLView extends View {
 	}
 
 	public Element form(String type, String id, String field, String lang, String view) {
-		return form(uri(type, id, field, lang, view))
+		return form(url(type, id, field, lang, view))
 				.setAttribute(DATA_STRINGS_ACCEPT, strings.gts(type, Constants.ACCEPT))
 				.setAttribute(DATA_STRINGS_CANCEL, strings.gts(type, Constants.CANCEL));
 	}
@@ -1580,11 +1580,11 @@ public class HTMLView extends View {
 
 		Element div = document.createElement(HTML.DIV).addClass(REFERENCE_OUTPUT);
 		div.appendElement(HTML.STRONG).appendText(strings.getFieldName(type, ref.getField()) + ": ");
-		div.appendElement(anchor(nextNode.getName(refType, ref.getId(), lang), uri(refType, ref.getId(), lang, view)));
+		div.appendElement(anchor(nextNode.getName(refType, ref.getId(), lang), url(refType, ref.getId(), lang, view)));
 		
-		String uri = uri(type, lang, view) + filtersParameters(filters) + searchParameter(search)
+		String url = url(type, lang, view) + filtersParameters(filters) + searchParameter(search)
 			+ orderParameter(order);
-		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_REFERENCE), uri, Icon.DELETE));
+		div.appendElement(iconAnchor(strings.gts(type, Constants.DELETE_REFERENCE), url, Icon.DELETE));
 		
 		return div;
 	}
@@ -1661,7 +1661,7 @@ public class HTMLView extends View {
 			if (permissions.isAllowed(type, Action.UPDATE_ID_FORM)) {
 				idCell.appendText(" ");
 				idCell.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_ID),
-						uri(object.getType(), object.getId(), lang, view)
+						url(object.getType(), object.getId(), lang, view)
 							+ formParameter(Action.UPDATE_ID), Icon.PENCIL));
 			}
 		}
@@ -1803,7 +1803,7 @@ public class HTMLView extends View {
 		
 		if (permissions.isAllowed(type, Action.UPDATE_PASSWORD_FORM)) {
 			password.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_PASSWORD),
-				uri(type, id, field, lang, view) + formParameter(Action.UPDATE_PASSWORD), Icon.PENCIL));
+				url(type, id, field, lang, view) + formParameter(Action.UPDATE_PASSWORD), Icon.PENCIL));
 		}
 		
 		return password;
@@ -1838,7 +1838,7 @@ public class HTMLView extends View {
 		case PT.FLOAT32:
 		case PT.FLOAT64:
 		case PT.NUMERIC:
-		case PT.URI:
+		case PT.URL:
 		case PT.EMAIL:
 		case PT.DATE:
 		case PT.TEL:
@@ -1974,7 +1974,7 @@ public class HTMLView extends View {
 		case PT.STRING:
 			inputType = HTML.TEXT;
 			break;
-		case PT.URI:
+		case PT.URL:
 			inputType = HTML.URL;
 			break;
 		case PT.EMAIL:
@@ -2558,8 +2558,8 @@ public class HTMLView extends View {
 		boolean appendUpdateAnchor = permissions.isAllowed(type, Action.UPDATE_FORM);
 		
 		Element form = form(type, lang, view).setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
-				.setAttribute(DATA_URI, request.getURIRoot()
-								+ selectTableURI(type, lang, view, ref, filters, search, order,
+				.setAttribute(DATA_URL, request.getURLRoot()
+								+ selectTableURL(type, lang, view, ref, filters, search, order,
 										offset, limit))
 				.setAttribute(DATA_STRINGS_OBJECTS_DELETE_CONFIRMATION,
 						strings.gts(type, Constants.OBJECTS_DELETE_CONFIRMATION));
@@ -2609,7 +2609,7 @@ public class HTMLView extends View {
 			
 			if (permissions.isAllowed(type, Action.GET)) {
 				idCell.appendElement(HTML.A).appendText(idString)
-					.setAttribute(HTML.HREF, uri(object.getType(), object.getId(), lang, view));
+					.setAttribute(HTML.HREF, url(object.getType(), object.getId(), lang, view));
 			} else {
 				idCell.appendText(idString);
 			}
@@ -2626,7 +2626,7 @@ public class HTMLView extends View {
 				String updateActionName = strings.getActionName(object.getType(), Action.UPDATE);
 				
 				row.appendElement(HTML.TD).appendElement(iconAnchor(updateActionName,
-					uri(object.getType(), object.getId(), lang, view)
+					url(object.getType(), object.getId(), lang, view)
 					+ formParameter(Action.UPDATE), Icon.PENCIL));
 			}
 		}
@@ -2864,7 +2864,7 @@ public class HTMLView extends View {
 			Long offset, Long limit, Component component) {
 
 		Element anchor = document.createElement(HTML.A)
-				.setAttribute(HTML.HREF, selectTableURI(type, lang, view, ref, filters, search,
+				.setAttribute(HTML.HREF, selectTableURL(type, lang, view, ref, filters, search,
 						order, offset, limit))
 				.appendText(text);
 
@@ -2875,10 +2875,10 @@ public class HTMLView extends View {
 		return anchor;
 	}
 
-	public String selectTableURI(String type, String lang, String view, FieldReference ref, 
+	public String selectTableURL(String type, String lang, String view, FieldReference ref, 
 			Filter[] filters, String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
-		return uri(type, lang, view) + refParameter(ref) + filtersParameters(filters)
+		return url(type, lang, view) + refParameter(ref) + filtersParameters(filters)
 			+ searchParameter(search) + orderParameter(order) + parameter(Constants.OFFSET, offset)
 			+ parameter(Constants.LIMIT, limit) + previewParameter(request.isPreview());
 	}
@@ -2975,11 +2975,11 @@ public class HTMLView extends View {
 	
 	public Element listFieldOutput(String type, String label, Object[] objects, String objectsType,
 			String lang, String view) {
-		return listFieldOutput(type, label, objects, id -> uri(objectsType, id, lang, view));
+		return listFieldOutput(type, label, objects, id -> url(objectsType, id, lang, view));
 	}
 	
 	public Element listFieldOutput(String type, String label, Object[] objects,
-			Function<String, String> uriFunction) {
+			Function<String, String> urlFunction) {
 		
 		boolean tuple = objects instanceof Tuple[];
 		
@@ -3003,7 +3003,7 @@ public class HTMLView extends View {
 					name = ((String[])objects[x])[1];
 				}
 				
-				output.appendElement(anchor(name, uriFunction.apply(id)));
+				output.appendElement(anchor(name, urlFunction.apply(id)));
 			
 				if (x < last) {
 					output.appendText(" | ");
@@ -3052,7 +3052,7 @@ public class HTMLView extends View {
 			case PT.COLOR:
 				fieldElement = colorOutput(value);
 				break;
-			case PT.URI:
+			case PT.URL:
 			case PT.EMAIL:
 			case PT.TEL:
 				fieldElement = fieldAnchor(value, typeField);
@@ -3100,7 +3100,7 @@ public class HTMLView extends View {
 		ObjectReference reference = (ObjectReference) value;
 		
 		if (permissions.isAllowed(fieldType, Action.GET)) {
-			anchor = anchor(reference.getName(), uri(fieldType, reference.getId(), lang, view));
+			anchor = anchor(reference.getName(), url(fieldType, reference.getId(), lang, view));
 		} else {
 			anchor = document.createElement(HTML.SPAN).appendText(reference.getName());
 		}
@@ -3121,7 +3121,8 @@ public class HTMLView extends View {
 
 	public Element binaryFieldOutput(String type, String id, String field, Object value, String lang) {
 		Element binary = document.createElement(HTML.SPAN);
-		binary.appendElement(anchor(humanReadableBytes((Integer) value, lang), uri(type, id, field, null, null)));
+		binary.appendElement(anchor(humanReadableBytes((Integer) value, lang),
+				url(type, id, field, null, null)));
 		return binary;
 	}
 
@@ -3184,12 +3185,8 @@ public class HTMLView extends View {
 		return anchor(value.toString(), href);
 	}
 	
-	public Element anchor(String text, URI uri) {
-		return anchor(text, uri.toString());
-	}
-
-	public Element anchor(String text, URIBuilder href) {
-		return anchor(text, href.toString());
+	public Element anchor(String text, URL url) {
+		return anchor(text, url.toString());
 	}
 
 	public Element anchor(String href) {
@@ -3223,7 +3220,7 @@ public class HTMLView extends View {
 
 	public Element logoAnchor(String type, String lang, String view) {
 		return imageAnchor(strings.gts(type, Constants.LOGO_TEXT),
-				hrefURI(typeSettings.gts(type, Constants.LOGO_URI), lang, view),
+				hrefURL(typeSettings.gts(type, Constants.LOGO_URL), lang, view),
 				typeSettings.gts(type, Constants.LOGO));
 	}
 
@@ -3304,46 +3301,46 @@ public class HTMLView extends View {
 		String searchParameter = parameter(Constants.SEARCH, search);
 
 		if (id != null && form != null && permissions.isAllowed(type, Action.GET)) {
-			elements.add(iconAnchor(strings.gts(type, Constants.VIEW), uri(type, id, lang, view)
+			elements.add(iconAnchor(strings.gts(type, Constants.VIEW), url(type, id, lang, view)
 					+ refParameter, Icon.MAGNIFYING_GLASS));
 		}
 
 		if (!Action.INSERT.equals(form) && permissions.isAllowed(type, Action.INSERT_FORM)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.INSERT),
-					uri(type, lang, view) + formParameter(Action.INSERT) + refParameter, Icon.PLUS));
+					url(type, lang, view) + formParameter(Action.INSERT) + refParameter, Icon.PLUS));
 		}
 
 		if (permissions.isAllowed(type, Action.SELECT) && (id != null || form != null
 				|| component != null || request.isInfo() || request.isPreview() 
 				|| request.isCalendar())) {
 
-			String uri = uri(type, lang, view) + refParameter + searchParameter;
+			String url = url(type, lang, view) + refParameter + searchParameter;
 
-			elements.add(iconAnchor(strings.gts(type, Constants.LIST), uri, Icon.LIST));
+			elements.add(iconAnchor(strings.gts(type, Constants.LIST), url, Icon.LIST));
 		}
 
 		if (typeSettings.getTypeBoolean(type, Constants.SHOW_PREVIEW) && !request.isPreview()
 				&& permissions.isAllowed(type,  Action.PREVIEW)) {
 			
-			String uri = uri(type, lang, view) + previewParameter() + searchParameter;
+			String url = url(type, lang, view) + previewParameter() + searchParameter;
 							
-			elements.add(iconAnchor(strings.getActionName(type, Action.PREVIEW), uri, Icon.LIST_RICH));
+			elements.add(iconAnchor(strings.getActionName(type, Action.PREVIEW), url, Icon.LIST_RICH));
 		}
 
 		if (id == null && !Action.ALTER.equals(form) && permissions.isAllowed(type, Action.ALTER_FORM)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.ALTER),
-					uri(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
+					url(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
 		}
 
 		if (id != null && !Action.UPDATE.equals(form)
 				&& permissions.isAllowed(type, Action.UPDATE_FORM)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.UPDATE),
-					uri(type, id, lang, view) + formParameter(Action.UPDATE), Icon.PENCIL));
+					url(type, id, lang, view) + formParameter(Action.UPDATE), Icon.PENCIL));
 		}
 
 		if (!request.isInfo() && permissions.isAllowed(type, Action.GET_TYPE)) {
-			elements.add(iconAnchor(strings.gts(type, Constants.TYPE), uri(type, lang, view) + "&" + Constants.INFO,
-					Icon.INFO));
+			elements.add(iconAnchor(strings.gts(type, Constants.TYPE), url(type, lang, view)
+					+ "&" + Constants.INFO, Icon.INFO));
 		}
 
 		String rssSelect = typeSettings.gts(type, Constants.RSS_SELECT);
@@ -3362,9 +3359,9 @@ public class HTMLView extends View {
 			String calendarSelect = typeSettings.gts(type, Constants.CALENDAR_SELECT);
 
 			if (calendarSelect != null) {
-				String uri = uri(type, lang, view) + "&" + Action.CALENDAR + refParameter;
+				String url = url(type, lang, view) + "&" + Action.CALENDAR + refParameter;
 
-				elements.add(iconAnchor(strings.getActionName(type, Action.CALENDAR), uri, Icon.CALENDAR));
+				elements.add(iconAnchor(strings.getActionName(type, Action.CALENDAR), url, Icon.CALENDAR));
 			}
 		}
 
@@ -3372,19 +3369,19 @@ public class HTMLView extends View {
 	}
 	
 	public Element rssIconAnchor(String type, String lang, FieldReference ref) {
-		return iconAnchor(RSS, rssURI(type, lang, ref), Icon.RSS);
+		return iconAnchor(RSS, rssURL(type, lang, ref), Icon.RSS);
 	}
 	
-	public String rssURI(String type, String lang, FieldReference ref) {
-		return uri(type, lang, Constants.RSS) + refParameter(ref);
+	public String rssURL(String type, String lang, FieldReference ref) {
+		return url(type, lang, Constants.RSS) + refParameter(ref);
 	}
 	
 	public Element icalIconAnchor(String type, String lang, FieldReference ref) {
-		return iconAnchor(ICALENDAR, icalURI(type, lang, ref), Icon.FILE);
+		return iconAnchor(ICALENDAR, icalURL(type, lang, ref), Icon.FILE);
 	}
 	
-	public String icalURI(String type, String lang, FieldReference ref) {
-		return uri(type, lang, Constants.ICAL) + refParameter(ref);
+	public String icalURL(String type, String lang, FieldReference ref) {
+		return url(type, lang, Constants.ICAL) + refParameter(ref);
 	}
 
 	public Element booleanOutput(Object value) {
@@ -3483,45 +3480,45 @@ public class HTMLView extends View {
 		return content;
 	}
 
-	public String uri(String lang, String view) {
-		return uri(null, null, null, lang, view);
+	public String url(String lang, String view) {
+		return url(null, null, null, lang, view);
 	}
 
-	public String uri(String type, String lang, String view) {
-		return uri(type, null, null, lang, view);
+	public String url(String type, String lang, String view) {
+		return url(type, null, null, lang, view);
 	}
 
-	public String uri(String type, String id, String lang, String view) {
-		return uri(type, id, null, lang, view);
+	public String url(String type, String id, String lang, String view) {
+		return url(type, id, null, lang, view);
 	}
 
-	public String uri(String type, String id, String field, String lang, String view) {
+	public String url(String type, String id, String field, String lang, String view) {
 		String typeParameter = type != null ? type : "";
 		String idParameter = id != null ? "/" + id : "";
 		String fieldParameter = field != null ? "/" + field : "";
 
-		return hrefURI("/" + typeParameter + idParameter + fieldParameter, lang, view);
+		return hrefURL("/" + typeParameter + idParameter + fieldParameter, lang, view);
 	}
 
-	public String hrefURI(String href, String lang, String view) {
+	public String hrefURL(String href, String lang, String view) {
 		try {
-			URIBuilder uri = new URIBuilder(href);
+			URIBuilder url = new URIBuilder(href);
 
 			if (lang != null) {
-				uri.addParameter(Constants.LANG, lang);
+				url.addParameter(Constants.LANG, lang);
 			}
 
 			if (view != null) {
-				uri.addParameter(Constants.VIEW, view);
+				url.addParameter(Constants.VIEW, view);
 			}
 
-			return uri.toString();
+			return url.toString();
 		} catch (URISyntaxException e) {
 			throw new NXException(e);
 		}
 	}
 	
-	public String imageURI(Tuple image) {
+	public String imageURL(Tuple image) {
 		return "/" + image.getString(Constants.IMAGE_TYPE) + "/" 
 				+ image.getString(Constants.IMAGE_ID) + "/" + Constants.IMAGE;
 	}
@@ -3685,7 +3682,7 @@ public class HTMLView extends View {
 	
 	public Element menuListItem(String type, String text, String href, String lang, String view) {
 		Element li = document.createElement(HTML.LI);
-		li.appendElement(anchor(strings.gts(type, text), hrefURI(href, lang, view)));
+		li.appendElement(anchor(strings.gts(type, text), hrefURL(href, lang, view)));
 		return li;
 	}
 
@@ -3830,7 +3827,7 @@ public class HTMLView extends View {
 							String actionParameters = formParameter(Action.EXECUTE_ACTION) + "&"
 									+ Constants.TYPE_ACTION + "=" + action;
 
-							actionsElement.appendElement(anchor(actionName, uri(type, id, lang, view)
+							actionsElement.appendElement(anchor(actionName, url(type, id, lang, view)
 									+ actionParameters));
 						}
 
@@ -3909,7 +3906,7 @@ public class HTMLView extends View {
 					Element container = div;
 
 					Element image = document.createElement(HTML.IMG)
-							.setAttribute(HTML.SRC, imageURI(tuple))
+							.setAttribute(HTML.SRC, imageURL(tuple))
 							.setAttribute(HTML.ALT, tuple.getString(HTML.ALT));
 
 					String link = tuple.getString(Constants.LINK);
@@ -3943,10 +3940,10 @@ public class HTMLView extends View {
 			Element qrcodeElement = document.getElementById(Constants.QRCODE);
 
 			if (qrcodeElement != null) {
-				String objectURI = request.getHost() + "/" + type + "/" + id;
+				String objectURL = request.getHost() + "/" + type + "/" + id;
 
-				QRCode objectURIQrcode = new QRCode(objectURI, 80, ErrorCorrectionLevel.L);
-				qrcodeElement.appendElement(image(objectURI, objectURIQrcode.getBase64()));
+				QRCode objectURLQrcode = new QRCode(objectURL, 80, ErrorCorrectionLevel.L);
+				qrcodeElement.appendElement(image(objectURL, objectURLQrcode.getBase64()));
 			}
 		}
 	}
@@ -3958,7 +3955,7 @@ public class HTMLView extends View {
 			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.ALTERNATE)
 					.setAttribute(HTML.TYPE, Format.RSS.getContentType())
 					.setAttribute(HTML.TITLE, RSS)
-					.setAttribute(HTML.HREF, uri(type, lang, Constants.RSS));
+					.setAttribute(HTML.HREF, url(type, lang, Constants.RSS));
 		}
 	}
 
@@ -4083,7 +4080,7 @@ public class HTMLView extends View {
 		LocalDate before = date.minusMonths(1);
 		LocalDate after = date.plusMonths(1);
 
-		navigator.appendElement(anchor("<<", uri(type, lang, view) + "&" + Action.CALENDAR + "&" + Constants.YEAR + "="
+		navigator.appendElement(anchor("<<", url(type, lang, view) + "&" + Action.CALENDAR + "&" + Constants.YEAR + "="
 				+ before.getYear() + "&" + Constants.MONTH + "=" + before.getMonthValue()
 					+ refParameter(ref)));
 
@@ -4110,7 +4107,7 @@ public class HTMLView extends View {
 
 		}
 
-		navigator.appendElement(anchor(">>", uri(type, lang, view) + "&" + Action.CALENDAR + "&"
+		navigator.appendElement(anchor(">>", url(type, lang, view) + "&" + Action.CALENDAR + "&"
 				+ Constants.YEAR + "=" + after.getYear() + "&" + Constants.MONTH + "=" 
 				+ after.getMonthValue() + refParameter(ref)));
 
@@ -4158,7 +4155,7 @@ public class HTMLView extends View {
 				.setAttribute(HTML.STYLE, HTML.BACKGROUND_COLOR + ": " + event.getColor(Constants.COLOR));
 
 		div.appendElement(anchor(event.getTime(Constants.START_TIME) + " " + event.getString(Constants.SUMMARY),
-				uri(type, event.getString(Constants.ID), lang, view)));
+				url(type, event.getString(Constants.ID), lang, view)));
 
 		return div;
 	}

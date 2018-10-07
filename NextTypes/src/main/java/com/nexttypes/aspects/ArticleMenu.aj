@@ -51,7 +51,7 @@ public aspect ArticleMenu {
 
 				for (Tuple tuple : tuples) {
 					ul.appendElement("li").appendElement(target.anchor(tuple.getString(Constants.NAME),
-							target.hrefURI("/" + ArticleView.ARTICLE + "?" + Action.PREVIEW
+							target.hrefURL("/" + ArticleView.ARTICLE + "?" + Action.PREVIEW
 							+ target.parameter(ArticleView.CATEGORY, tuple.getString(ArticleView.CATEGORY)),
 							lang, view)));
 				}

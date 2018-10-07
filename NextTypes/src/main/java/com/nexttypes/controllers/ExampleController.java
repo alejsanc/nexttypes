@@ -17,7 +17,6 @@
 package com.nexttypes.controllers;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,6 +32,7 @@ import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.JSON;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.Video;
 import com.nexttypes.datatypes.XML;
 import com.nexttypes.interfaces.Node;
@@ -51,7 +51,7 @@ public class ExampleController extends Controller {
 	@Action(TRY)
 	public ActionResult exampleAction(Short int16, Integer int32, Long int64, Float float32, Double float64,
 			BigDecimal numeric, Boolean bool, String string, String text, HTMLFragment html, JSON json, XML xml,
-			URI uri, InternetAddress email, String tel, LocalDate date, LocalTime time, LocalDateTime datetime,
+			URL url, InternetAddress email, String tel, LocalDate date, LocalTime time, LocalDateTime datetime,
 			ZoneId timezone, Color color, byte[] binary, File file, Image image, Audio audio, Video video, Document document,
 			String password, String articleId) {
 

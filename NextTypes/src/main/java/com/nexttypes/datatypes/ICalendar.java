@@ -46,7 +46,7 @@ public class ICalendar {
 
 	protected Calendar calendar;
 
-	public ICalendar(String uri, Tuple... events) {
+	public ICalendar(String url, Tuple... events) {
 		calendar = new Calendar();
 		calendar.getProperties().add(new ProdId(Constants.NEXTTYPES));
 		calendar.getProperties().add(Version.VERSION_2_0);
@@ -79,7 +79,7 @@ public class ICalendar {
 					vevent.getProperties().add(new Description(description));
 				}
 
-				vevent.getProperties().add(new Attach(new URI(uri + id)));
+				vevent.getProperties().add(new Attach(new URI(url + id)));
 
 				UidGenerator ug = new UidGenerator(String.valueOf(random.nextInt()));
 				vevent.getProperties().add(ug.generateUid());

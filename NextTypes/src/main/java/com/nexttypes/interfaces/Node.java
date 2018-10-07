@@ -53,7 +53,7 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.datatypes.TypeReference;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.ImportAction;
@@ -338,9 +338,9 @@ public interface Node extends Module, AutoCloseable {
 
 	public HTMLFragment getHTML(String sql, String allowedTags, Object... parameters);
 
-	public URI getURI(String sql);
+	public URL getURL(String sql);
 
-	public URI getURI(String sql, Object... parameters);
+	public URL getURL(String sql, Object... parameters);
 
 	public InternetAddress getEmail(String sql);
 
@@ -438,9 +438,9 @@ public interface Node extends Module, AutoCloseable {
 
 	public HTMLFragment[] getHTMLArray(String sql, String allowedTags, Object... parameters);
 
-	public URI[] getURIArray(String sql);
+	public URL[] getURLArray(String sql);
 
-	public URI[] getURIArray(String sql, Object... parameters);
+	public URL[] getURLArray(String sql, Object... parameters);
 
 	public InternetAddress[] getEmailArray(String sql);
 

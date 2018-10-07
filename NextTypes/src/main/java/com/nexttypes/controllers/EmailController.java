@@ -26,7 +26,7 @@ import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 
 import com.nexttypes.datatypes.NXObject;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.enums.Format;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.Node;
@@ -47,7 +47,7 @@ public class EmailController extends Controller {
 	@Override
 	public ZonedDateTime insert(NXObject object) {
 		Properties properties = System.getProperties();
-		properties.setProperty(MAIL_SMTP_HOST, URI.LOCALHOST);
+		properties.setProperty(MAIL_SMTP_HOST, URL.LOCALHOST);
 		Session session = Session.getDefaultInstance(properties);
 
 		ZonedDateTime udate = nextNode.insert(object);

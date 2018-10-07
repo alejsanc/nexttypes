@@ -53,7 +53,7 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.datatypes.TypeReference;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.ImportAction;
@@ -738,13 +738,13 @@ public class ProxyNode implements Node {
 	}
 
 	@Override
-	public URI getURI(String sql) {
-		return nextNode.getURI(sql);
+	public URL getURL(String sql) {
+		return nextNode.getURL(sql);
 	}
 
 	@Override
-	public URI getURI(String sql, Object... parameters) {
-		return nextNode.getURI(sql, parameters);
+	public URL getURL(String sql, Object... parameters) {
+		return nextNode.getURL(sql, parameters);
 	}
 
 	@Override
@@ -988,13 +988,13 @@ public class ProxyNode implements Node {
 	}
 
 	@Override
-	public URI[] getURIArray(String sql) {
-		return nextNode.getURIArray(sql);
+	public URL[] getURLArray(String sql) {
+		return nextNode.getURLArray(sql);
 	}
 
 	@Override
-	public URI[] getURIArray(String sql, Object... parameters) {
-		return nextNode.getURIArray(sql, parameters);
+	public URL[] getURLArray(String sql, Object... parameters) {
+		return nextNode.getURLArray(sql, parameters);
 	}
 
 	@Override

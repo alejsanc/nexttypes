@@ -180,11 +180,11 @@ public class CalDAVView extends WebDAVView {
 
 			Tuple[] resources = nextNode.query(sql, parameters);
 			ZonedDateTime udate = null;
-			String calendarURI = request.getURIRoot() + "/" + type + "/";
+			String calendarURL = request.getURLRoot() + "/" + type + "/";
 
 			for (Tuple resource : resources) {
 				MultiStatusResponse response = addResponse(path + resource.getString(Constants.ID));
-				ICalendar calendar = new ICalendar(calendarURI, resource);
+				ICalendar calendar = new ICalendar(calendarURL, resource);
 
 				if (requestProperties.getContentSize() == 0) {
 					udate = resource.getUTCDatetime(Constants.UDATE);

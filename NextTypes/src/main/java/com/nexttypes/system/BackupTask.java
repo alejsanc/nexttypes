@@ -30,7 +30,7 @@ import java.util.Collections;
 
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Serial;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.exceptions.NXException;
@@ -127,7 +127,7 @@ public class BackupTask extends Task {
 			}
 		} catch (InterruptedException e) {
 			if (!finished) {
-				logger.severe(Auth.BACKUP, URI.LOCALHOST, e);
+				logger.severe(Auth.BACKUP, URL.LOCALHOST, e);
 			}
 		}
 	}
@@ -136,7 +136,7 @@ public class BackupTask extends Task {
 		running = true;
 
 		try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), Auth.BACKUP, null, NodeMode.WRITE,
-				lang, URI.LOCALHOST, context, true)) {
+				lang, URL.LOCALHOST, context, true)) {
 
 			ZonedDateTime datetime = ZonedDateTime.now(ZoneOffset.UTC);
 
@@ -166,7 +166,7 @@ public class BackupTask extends Task {
 			nextNode.commit();
 
 		} catch (Exception e) {
-			logger.severe(Auth.BACKUP, URI.LOCALHOST, e);
+			logger.severe(Auth.BACKUP, URL.LOCALHOST, e);
 		}
 
 		running = false;

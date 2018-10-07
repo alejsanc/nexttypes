@@ -50,7 +50,7 @@ public class ICalendarView extends View {
 			}
 
 			Tuple[] events = nextNode.query(sql, parameters);
-			ICalendar calendar = new ICalendar(request.getURIRoot() + "/" + type + "/", events);
+			ICalendar calendar = new ICalendar(request.getURLRoot() + "/" + type + "/", events);
 			return new Content(calendar.toString(), Format.ICALENDAR);
 		} else {
 			throw new NXException(type, Constants.SELECT_STRING_NOT_FOUND);

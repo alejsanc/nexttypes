@@ -88,7 +88,7 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.datatypes.TypeReference;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.Video;
 import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
@@ -295,7 +295,7 @@ public class PostgreSQLNode implements Node {
 		context.putDBConnectionPool(settings.getString(Constants.POOL), connectionPool);
 		
 		try (PostgreSQLNode node = new PostgreSQLNode(Auth.ADMIN, new String[] { Auth.ADMINISTRATORS },
-				NodeMode.ADMIN, lang, URI.LOCALHOST, context, true)) {
+				NodeMode.ADMIN, lang, URL.LOCALHOST, context, true)) {
 
 			if (node.getTypesName().length == 0) {
 				node.importTypes(node.getClass()
@@ -769,7 +769,7 @@ public class PostgreSQLNode implements Node {
 
 		switch (fieldType) {
 		case PT.STRING:
-		case PT.URI:
+		case PT.URL:
 		case PT.EMAIL:
 		case PT.TEL:
 			sqlType = "character varying" + sqlParameters;
@@ -1572,8 +1572,8 @@ public class PostgreSQLNode implements Node {
 					value = tuple.getString(field);
 				}
 				break;
-			case PT.URI:
-				value = tuple.getURI(field);
+			case PT.URL:
+				value = tuple.getURL(field);
 				break;
 			case PT.EMAIL:
 				value = tuple.getEmail(field);
@@ -2310,8 +2310,8 @@ public class PostgreSQLNode implements Node {
 					value = Tuple.parseEmail(setting);
 					break;
 					
-				case PT.URI:
-					value = Tuple.parseURI(setting);
+				case PT.URL:
+					value = Tuple.parseURL(setting);
 					break;
 					
 				case PT.PASSWORD:
@@ -2767,13 +2767,13 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public URI getURI(String sql) {
-		return getURI(sql, (Object[]) null);
+	public URL getURL(String sql) {
+		return getURL(sql, (Object[]) null);
 	}
 
 	@Override
-	public URI getURI(String sql, Object... parameters) {
-		return Tuple.parseURI(getObject(sql, parameters));
+	public URL getURL(String sql, Object... parameters) {
+		return Tuple.parseURL(getObject(sql, parameters));
 	}
 
 	@Override
@@ -3014,14 +3014,14 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public URI[] getURIArray(String sql) {
-		return getURIArray(sql, (Object[]) null);
+	public URL[] getURLArray(String sql) {
+		return getURLArray(sql, (Object[]) null);
 	}
 
 	@Override
-	public URI[] getURIArray(String sql, Object... parameters) {
-		return Arrays.stream(getArray(sql, Object.class, parameters)).map(uri -> Tuple.parseURI(uri))
-				.toArray(URI[]::new);
+	public URL[] getURLArray(String sql, Object... parameters) {
+		return Arrays.stream(getArray(sql, Object.class, parameters)).map(url -> Tuple.parseURL(url))
+				.toArray(URL[]::new);
 	}
 
 	@Override
@@ -3408,7 +3408,7 @@ public class PostgreSQLNode implements Node {
 			for (int x = 0; x < parameters.length; x++) {
 				Object object = parameters[x];
 
-				if (object instanceof URI || object instanceof InternetAddress || object instanceof HTMLFragment
+				if (object instanceof URL || object instanceof InternetAddress || object instanceof HTMLFragment
 						|| object instanceof Color || object instanceof ZoneId) {
 					object = object.toString();
 				} else if (object instanceof LocalTime) {
@@ -3851,7 +3851,7 @@ public class PostgreSQLNode implements Node {
 				case PT.BOOLEAN:
 				case PT.STRING:
 				case PT.TEL:
-				case PT.URI:
+				case PT.URL:
 				case PT.EMAIL:
 				case PT.DATE:
 				case PT.TIME:

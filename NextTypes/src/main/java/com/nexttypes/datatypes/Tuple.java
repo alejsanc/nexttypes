@@ -306,19 +306,19 @@ public class Tuple {
 		return (Boolean) value;
 	}
 
-	public URI getURI(String field) {
-		return parseURI(get(field));
+	public URL getURL(String field) {
+		return parseURL(get(field));
 	}
 
-	public static URI parseURI(Object value) {
+	public static URL parseURL(Object value) {
 
 		if (value instanceof String) {
-			value = new URI((String) value);
+			value = new URL((String) value);
 		} else if (value instanceof byte[]) {
-			value = new URI(bytesToString(value));
+			value = new URL(bytesToString(value));
 		}
 
-		return (URI) value;
+		return (URL) value;
 	}
 
 	public InternetAddress getEmail(String field) {

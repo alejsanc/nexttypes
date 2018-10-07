@@ -88,14 +88,14 @@ public class SoftwareView extends HTMLView {
 		article.appendElement(HTML.H1).appendText(title);
 
 		article.appendElement(fieldOutput(strings.getString(LICENSE), anchor(tuple.getString("license_name"),
-				uri("software_license", tuple.getString("license_id"), lang, view))));
+				url("software_license", tuple.getString("license_id"), lang, view))));
 
 		String version = tuple.getString("version");
 		String lastRelease = strings.getString(LAST_RELEASE);
 		if (version != null) {
 			article.appendElement(fieldOutput(lastRelease, anchor(version, tuple.getString("link")), " ",
 					anchor(strings.getString(ALL_RELEASES),
-							uri("software_release", lang, view) + "&ref=software:" + id + "&order=version:desc")));
+							url("software_release", lang, view) + "&ref=software:" + id + "&order=version:desc")));
 		} else {
 			article.appendElement(fieldOutput(lastRelease, strings.getString(NOT_RELEASED)));
 		}

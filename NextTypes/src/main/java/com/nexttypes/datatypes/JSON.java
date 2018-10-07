@@ -208,8 +208,8 @@ public class JSON extends PGobject {
 			return Tuple.parseXML(get(fieldIndex), lang, allowedTags);
 		}
 
-		protected URI getURI(Object fieldIndex) {
-			return Tuple.parseURI(get(fieldIndex));
+		protected URL getURL(Object fieldIndex) {
+			return Tuple.parseURL(get(fieldIndex));
 		}
 
 		protected InternetAddress getEmail(Object fieldIndex) {
@@ -382,8 +382,8 @@ public class JSON extends PGobject {
 			return super.getXML(field, lang, allowedTags);
 		}
 
-		public URI getURI(String field) {
-			return super.getURI(field);
+		public URL getURL(String field) {
+			return super.getURL(field);
 		}
 
 		public InternetAddress getEmail(String field) {
@@ -587,8 +587,8 @@ public class JSON extends PGobject {
 			return super.getXML(index, lang, allowedTags);
 		}
 
-		public URI getURI(int index) {
-			return super.getURI(index);
+		public URL getURL(int index) {
+			return super.getURL(index);
 		}
 
 		public InternetAddress getEmail(int index) {

@@ -20,7 +20,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 
 import com.nexttypes.datatypes.Auth;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.logging.Logger;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
@@ -45,7 +45,7 @@ public class SMTPServer extends Thread {
 					InetAddress.getByName((settings.getString(Constants.BIND_ADDRESS))));
 			open = true;
 		} catch (Exception e) {
-			logger.severe(Auth.SMTP, URI.LOCALHOST, e);
+			logger.severe(Auth.SMTP, URL.LOCALHOST, e);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class SMTPServer extends Thread {
 				connection.start();
 			} catch (Exception e) {
 				if (open) {
-					logger.severe(Auth.SMTP, URI.LOCALHOST, e);
+					logger.severe(Auth.SMTP, URL.LOCALHOST, e);
 				}
 			}
 		}
@@ -69,7 +69,7 @@ public class SMTPServer extends Thread {
 		try {
 			socket.close();
 		} catch (Exception e) {
-			logger.severe(Auth.SMTP, URI.LOCALHOST, e);
+			logger.severe(Auth.SMTP, URL.LOCALHOST, e);
 		}
 	}
 }

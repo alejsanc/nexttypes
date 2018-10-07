@@ -49,7 +49,7 @@ public class TypeField {
 
 		switch (type) {
 		case PT.STRING:
-		case PT.URI:
+		case PT.URL:
 		case PT.EMAIL:
 		case PT.TEL:
 			if (parameters == null) {
@@ -89,7 +89,7 @@ public class TypeField {
 		
 		switch (type) {
 		case PT.STRING:
-		case PT.URI:
+		case PT.URL:
 		case PT.EMAIL:
 		case PT.TEL:
 			if (length == null) {

@@ -19,14 +19,14 @@ package com.nexttypes.protocol.http;
 import java.util.LinkedHashMap;
 
 import com.nexttypes.datatypes.ObjectInfo;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.PT;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.XML;
 
 public class HTTPSitemap extends XML {
 	private static final long serialVersionUID = 1L;
 
 	public static final String URLSET = "urlset";
-	public static final String URL = "url";
 	public static final String LOC = "loc";
 	public static final String LASTMOD = "lastmod";
 
@@ -40,9 +40,9 @@ public class HTTPSitemap extends XML {
 
 		for (String type : objectsInfo.keySet()) {
 			for (ObjectInfo info : objectsInfo.get(type)) {
-				Element url = urlSet.appendElement(URL);
-				url.appendElement(LOC)
-						.appendText(URI.HTTPS + "://" + host + portString + "/" + type + "/" + info.getId());
+				Element url = urlSet.appendElement(PT.URL);
+				url.appendElement(LOC).appendText(URL.HTTPS + "://" + host
+						+ portString + "/" + type + "/" + info.getId());
 				url.appendElement(LASTMOD).appendText(info.getUDate().toString());
 			}
 		}

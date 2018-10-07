@@ -23,7 +23,7 @@ public class RSS extends XML {
 
 	public static final String PUBDATE = "pubDate";
 
-	public RSS(String title, String description, String type, String lang, String uriRoot, Tuple[] tuples) {
+	public RSS(String title, String description, String type, String lang, String urlRoot, Tuple[] tuples) {
 		Element rss = setDocumentElement(Constants.RSS).setAttribute(Constants.VERSION, "2.0");
 
 		Element channel = rss.appendElement(Constants.CHANNEL);
@@ -37,7 +37,7 @@ public class RSS extends XML {
 			item.appendElement(Constants.TITLE).appendText(tuple.getString(Constants.TITLE));
 			item.appendElement(Constants.DESCRIPTION).appendText(tuple.getHTMLText(Constants.DESCRIPTION));
 			item.appendElement(Constants.LINK).appendText(
-					uriRoot + "/" + type + "/" + tuple.getString(Constants.ID) + "?" + Constants.LANG + "=" + lang);
+					urlRoot + "/" + type + "/" + tuple.getString(Constants.ID) + "?" + Constants.LANG + "=" + lang);
 			item.appendElement(PUBDATE).appendText(tuple.getUTCDatetime(Constants.PUB_DATE).toString());
 		}
 	}

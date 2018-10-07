@@ -215,8 +215,8 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 					case PT.COLOR:
 						value = Tuple.parseColor(parser.getText());
 						break;
-					case PT.URI:
-						value = Tuple.parseURI(parser.getText());
+					case PT.URL:
+						value = Tuple.parseURL(parser.getText());
 						break;
 					case PT.EMAIL:
 						value = Tuple.parseEmail(parser.getText());

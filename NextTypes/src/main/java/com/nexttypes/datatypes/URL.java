@@ -27,53 +27,53 @@ import org.apache.http.client.utils.URIBuilder;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.system.Constants;
 
-public class URI {
+public class URL {
 	public static final String LOCALHOST = "127.0.0.1";
 	public static final String HTTPS = "https";
 	public static final String ROBOTS_FILE = "robots.txt";
 	public static final String SITEMAP_FILE = "sitemap.xml";
 
-	protected URIBuilder uri;
+	protected URIBuilder url;
 
-	public URI(HttpServletRequest request) {
-		String uriString = request.getRequestURL().toString();
+	public URL(HttpServletRequest request) {
+		String urlString = request.getRequestURL().toString();
 		String queryString = request.getQueryString();
 
 		if (queryString != null && queryString.length() > 0) {
-			uriString += "?" + queryString;
+			urlString += "?" + queryString;
 		}
 
-		setURI(uriString);
+		setURL(urlString);
 	}
 
-	public URI(String uri) {
-		setURI(uri);
+	public URL(String url) {
+		setURL(url);
 	}
 
-	protected void setURI(String uri) {
+	protected void setURL(String url) {
 		try {
-			this.uri = new URIBuilder(uri);
+			this.url = new URIBuilder(url);
 		} catch (URISyntaxException e) {
-			throw new InvalidValueException(Constants.INVALID_URI, uri);
+			throw new InvalidValueException(Constants.INVALID_URL, url);
 		}
 	}
 
 	public String getScheme() {
-		return uri.getScheme();
+		return url.getScheme();
 	}
 
 	public String getPath() {
-		return uri.getPath();
+		return url.getPath();
 	}
 
 	public String getHost() {
-		return uri.getHost();
+		return url.getHost();
 	}
 
 	public String getParameter(String name) {
 		String value = null;
 
-		for (NameValuePair parameter : uri.getQueryParams()) {
+		for (NameValuePair parameter : url.getQueryParams()) {
 			if (parameter.getName().equals(name)) {
 				value = parameter.getValue();
 				break;
@@ -84,55 +84,55 @@ public class URI {
 	}
 
 	public List<NameValuePair> getParameters() {
-		return uri.getQueryParams();
+		return url.getQueryParams();
 	}
 
 	public int getPort() {
-		return uri.getPort();
+		return url.getPort();
 	}
 
 	public void setScheme(String scheme) {
-		uri.setScheme(scheme);
+		url.setScheme(scheme);
 	}
 
 	public void setPath(String path) {
-		uri.setPath(path);
+		url.setPath(path);
 	}
 
 	public void setHost(String host) {
-		uri.setHost(host);
+		url.setHost(host);
 	}
 
 	public void setPort(int port) {
-		uri.setPort(port);
+		url.setPort(port);
 	}
 
 	public void setParameter(String parameter, String value) {
-		uri.setParameter(parameter, value);
+		url.setParameter(parameter, value);
 	}
 
 	public void setParameters(List<NameValuePair> parameters) {
-		uri.setParameters(parameters);
+		url.setParameters(parameters);
 	}
 
 	public String getRoot() {
 		URIBuilder root = new URIBuilder();
-		root.setScheme(uri.getScheme());
-		root.setHost(uri.getHost());
-		root.setPort(uri.getPort());
+		root.setScheme(url.getScheme());
+		root.setHost(url.getHost());
+		root.setPort(url.getPort());
 		return root.toString();
 	}
 
 	public boolean isRobots() {
-		return uri.getPath().equals("/" + ROBOTS_FILE);
+		return url.getPath().equals("/" + ROBOTS_FILE);
 	}
 
 	public boolean isSitemap() {
-		return uri.getPath().equals("/" + SITEMAP_FILE);
+		return url.getPath().equals("/" + SITEMAP_FILE);
 	}
 
 	@Override
 	public String toString() {
-		return uri.toString();
+		return url.toString();
 	}
 }

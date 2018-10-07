@@ -16,7 +16,7 @@
 
 package com.nexttypes.protocol.http;
 
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 
 public class HTTPRobots {
 
@@ -38,13 +38,13 @@ public class HTTPRobots {
 			}
 		}
 
-		robots.append(SITEMAP + ": " + URI.HTTPS + "://" + host);
+		robots.append(SITEMAP + ": " + URL.HTTPS + "://" + host);
 
 		if (port != null && port != 443) {
 			robots.append(":" + port);
 		}
 
-		robots.append("/" + URI.SITEMAP_FILE);
+		robots.append("/" + URL.SITEMAP_FILE);
 	}
 
 	@Override

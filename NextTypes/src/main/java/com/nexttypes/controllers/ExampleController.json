@@ -59,8 +59,8 @@
 			"type": "xml",
 			"not_null": false
 		},
-		"uri": {
-			"type": "uri",
+		"url": {
+			"type": "url",
 			"length": 250,
 			"not_null": false
 		},

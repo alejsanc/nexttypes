@@ -49,7 +49,7 @@ import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Type;
 import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
-import com.nexttypes.datatypes.URI;
+import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.Video;
 import com.nexttypes.enums.Comparison;
 import com.nexttypes.enums.Component;
@@ -87,7 +87,7 @@ public class HTTPRequest {
 	protected TypeSettings typeSettings;
 	protected Strings strings;
 	protected HttpServletRequest request;
-	protected URI uri;
+	protected URL url;
 	protected Auth user;
 	protected HTTPMethod requestMethod;
 	protected String remoteAddress;
@@ -139,14 +139,14 @@ public class HTTPRequest {
 	protected LinkedHashMap<String, LinkedHashMap<String, HashMap<String, String>>> compositeParameters;
 
 	public HTTPRequest(HttpServletRequest request, Settings settings, Context context, String lang, Strings strings,
-			Auth user, URI uri) {
+			Auth user, URL url) {
 		this.request = request;
 		this.settings = settings;
 		this.context = context;
 		this.strings = strings;
 		this.lang = lang;
 		this.user = user;
-		this.uri = uri;
+		this.url = url;
 
 		remoteAddress = request.getRemoteAddr();
 		session = request.getSession();
@@ -176,7 +176,7 @@ public class HTTPRequest {
 			limit = null;
 		}
 
-		parseURIPath();
+		parseURLPath();
 		
 		if (objects != null && objects.length == 1 && objects[0].contains("\n")) {
 			objects = objects[0].split("\\r\\n|\\n");
@@ -233,8 +233,8 @@ public class HTTPRequest {
 		return (String) session.getAttribute(Constants.SESSION_TOKEN);
 	}
 
-	protected void parseURIPath() {
-		String path = uri.getPath();
+	protected void parseURLPath() {
+		String path = url.getPath();
 
 		String[] parameters = path.substring(1, path.length()).split("/");
 
@@ -464,8 +464,8 @@ public class HTTPRequest {
 		case PT.COLOR:
 			value = fields.getColor(field);
 			break;
-		case PT.URI:
-			value = fields.getURI(field);
+		case PT.URL:
+			value = fields.getURL(field);
 			break;
 		case PT.EMAIL:
 			value = fields.getEmail(field);
@@ -576,8 +576,8 @@ public class HTTPRequest {
 						value = Tuple.parseEmail(value);
 						break;
 					
-					case PT.URI:
-						value = Tuple.parseURI(value);
+					case PT.URL:
+						value = Tuple.parseURL(value);
 						break;					
 					}
 				}
@@ -641,28 +641,28 @@ public class HTTPRequest {
 		return typeObject;
 	}
 
-	public URI getURI() {
-		return uri;
+	public URL getURL() {
+		return url;
 	}
 
-	public String getURIRoot() {
-		return uri.getRoot();
+	public String getURLRoot() {
+		return url.getRoot();
 	}
 
-	public String getURIPath() {
-		return uri.getPath();
+	public String getURLPath() {
+		return url.getPath();
 	}
 
 	public String getHost() {
-		return uri.getHost();
+		return url.getHost();
 	}
 
 	public boolean isSitemap() {
-		return uri.isSitemap();
+		return url.isSitemap();
 	}
 
 	public boolean isRobots() {
-		return uri.isRobots();
+		return url.isRobots();
 	}
 
 	public String getUser() {
