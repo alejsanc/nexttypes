@@ -38,7 +38,7 @@ public class RSS extends XML {
 			item.appendElement(Constants.DESCRIPTION).appendText(tuple.getHTMLText(Constants.DESCRIPTION));
 			item.appendElement(Constants.LINK).appendText(
 					urlRoot + "/" + type + "/" + tuple.getString(Constants.ID) + "?" + Constants.LANG + "=" + lang);
-			item.appendElement(PUBDATE).appendText(tuple.getUTCDatetime(Constants.PUB_DATE).toString());
+			item.appendElement(PUBDATE).appendText(tuple.getUTCDateTime(Constants.PUB_DATE).toString());
 		}
 	}
 }

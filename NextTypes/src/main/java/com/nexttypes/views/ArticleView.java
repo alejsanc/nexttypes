@@ -114,8 +114,8 @@ public class ArticleView extends HTMLView {
 			article.appendFragment(text);
 		}
 
-		ZonedDateTime cdate = tuple.getUTCDatetime(Constants.CDATE);
-		ZonedDateTime udate = tuple.getUTCDatetime(Constants.UDATE);
+		ZonedDateTime cdate = tuple.getUTCDateTime(Constants.CDATE);
+		ZonedDateTime udate = tuple.getUTCDateTime(Constants.UDATE);
 		
 		main.appendElement(dates(type, cdate, udate));
 		
@@ -361,7 +361,7 @@ public class ArticleView extends HTMLView {
 				Element article = main.appendElement(HTML.DIV).addClass(Constants.PREVIEW);
 				article.appendElement(imageAnchor(title, url, tuple.getString(Constants.IMAGE_TYPE),
 					tuple.getString(Constants.IMAGE_ID), IMAGE));
-				article.appendElement(time(tuple.getDatetime(Constants.CDATE)));
+				article.appendElement(time(tuple.getDateTime(Constants.CDATE)));
 				article.appendElement(HTML.H2).appendText(title);
 				
 				String text = tuple.getHTMLText(Constants.TEXT);

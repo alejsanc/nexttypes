@@ -757,7 +757,7 @@ public class PostgreSQLNode implements Node {
 	}
 
 	protected ZonedDateTime[] getTypeDates(String type) {
-		return getUTCDatetimeArray(GET_TYPE_DATES_QUERY, type);
+		return getUTCDateTimeArray(GET_TYPE_DATES_QUERY, type);
 	}
 
 	protected void setFieldType(String type, String field, String fieldType) {
@@ -1546,7 +1546,7 @@ public class PostgreSQLNode implements Node {
 		String name = objectName ? tuple.getString("@name") : null;
 		
 		NXObject object = new NXObject(type, tuple.getString(Constants.ID), name,
-				tuple.getUTCDatetime(Constants.CDATE), tuple.getUTCDatetime(Constants.UDATE),
+				tuple.getUTCDateTime(Constants.CDATE), tuple.getUTCDateTime(Constants.UDATE),
 				tuple.getBoolean(Constants.BACKUP));
 
 		for (Entry<String, TypeField> entry : typeFields.entrySet()) {
@@ -1579,7 +1579,7 @@ public class PostgreSQLNode implements Node {
 				value = tuple.getEmail(field);
 				break;
 			case PT.TIMEZONE:
-				value = tuple.getTimezone(field);
+				value = tuple.getTimeZone(field);
 				break;
 			case PT.COLOR:
 				value = tuple.getColor(field);
@@ -1591,7 +1591,7 @@ public class PostgreSQLNode implements Node {
 				value = tuple.getTime(field);
 				break;
 			case PT.DATETIME:
-				value = tuple.getDatetime(field);
+				value = tuple.getDateTime(field);
 				break;
 			case PT.JSON:
 				value = tuple.getJSON(field);
@@ -1676,7 +1676,7 @@ public class PostgreSQLNode implements Node {
 			Tuple objectsUDate = getTuple(
 					"select count(*) as objects, max(udate) as udate from \"" + type.getName() + "\"");
 			type.setObjects(objectsUDate.getInt64(Constants.OBJECTS));
-			type.setUDate(objectsUDate.getUTCDatetime(Constants.UDATE));
+			type.setUDate(objectsUDate.getUTCDateTime(Constants.UDATE));
 		}
 		return types;
 	}
@@ -2114,7 +2114,7 @@ public class PostgreSQLNode implements Node {
 			contentType = tuple.getString(Constants.CONTENT_TYPE);
 		}
 
-		return new ObjectField(value, tuple.getUTCDatetime(Constants.UDATE), contentType);
+		return new ObjectField(value, tuple.getUTCDateTime(Constants.UDATE), contentType);
 	}
 
 	@Override
@@ -2299,11 +2299,11 @@ public class PostgreSQLNode implements Node {
 					break;
 					
 				case PT.DATETIME:
-					value = Tuple.parseDatetime(setting);
+					value = Tuple.parseDateTime(setting);
 					break;
 					
 				case PT.TIMEZONE:
-					value = Tuple.parseTimezone(setting);
+					value = Tuple.parseTimeZone(setting);
 					break;
 					
 				case PT.EMAIL:
@@ -2337,7 +2337,7 @@ public class PostgreSQLNode implements Node {
 
 		checkId(type, id);
 
-		return getUTCDatetime("select udate from \"" + type + "\" where id=?", id);
+		return getUTCDateTime("select udate from \"" + type + "\" where id=?", id);
 	}
 
 	@Override
@@ -2737,13 +2737,13 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public LocalDateTime getDatetime(String sql) {
-		return getDatetime(sql, (Object[]) null);
+	public LocalDateTime getDateTime(String sql) {
+		return getDateTime(sql, (Object[]) null);
 	}
 
 	@Override
-	public LocalDateTime getDatetime(String sql, Object... parameters) {
-		return Tuple.parseDatetime(getObject(sql, parameters));
+	public LocalDateTime getDateTime(String sql, Object... parameters) {
+		return Tuple.parseDateTime(getObject(sql, parameters));
 	}
 
 	@Override
@@ -2797,13 +2797,13 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public ZoneId getTimezone(String sql) {
-		return getTimezone(sql, (Object[]) null);
+	public ZoneId getTimeZone(String sql) {
+		return getTimeZone(sql, (Object[]) null);
 	}
 
 	@Override
-	public ZoneId getTimezone(String sql, Object... parameters) {
-		return Tuple.parseTimezone(getObject(sql, parameters));
+	public ZoneId getTimeZone(String sql, Object... parameters) {
+		return Tuple.parseTimeZone(getObject(sql, parameters));
 	}
 
 	@Override
@@ -2837,13 +2837,13 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public ZonedDateTime getUTCDatetime(String sql) {
-		return getUTCDatetime(sql, (Object[]) null);
+	public ZonedDateTime getUTCDateTime(String sql) {
+		return getUTCDateTime(sql, (Object[]) null);
 	}
 
 	@Override
-	public ZonedDateTime getUTCDatetime(String sql, Object... parameters) {
-		return Tuple.parseUTCDatetime(getObject(sql, parameters));
+	public ZonedDateTime getUTCDateTime(String sql, Object... parameters) {
+		return Tuple.parseUTCDateTime(getObject(sql, parameters));
 	}
 
 	@Override
@@ -2971,25 +2971,25 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public LocalDateTime[] getDatetimeArray(String sql) {
-		return getDatetimeArray(sql, (Object[]) null);
+	public LocalDateTime[] getDateTimeArray(String sql) {
+		return getDateTimeArray(sql, (Object[]) null);
 	}
 
 	@Override
-	public LocalDateTime[] getDatetimeArray(String sql, Object... parameters) {
-		return Arrays.stream(getArray(sql, Object.class, parameters)).map(datetime -> Tuple.parseDatetime(datetime))
+	public LocalDateTime[] getDateTimeArray(String sql, Object... parameters) {
+		return Arrays.stream(getArray(sql, Object.class, parameters)).map(dateTime -> Tuple.parseDateTime(dateTime))
 				.toArray(LocalDateTime[]::new);
 	}
 
 	@Override
-	public ZonedDateTime[] getUTCDatetimeArray(String sql) {
-		return getUTCDatetimeArray(sql, (Object[]) null);
+	public ZonedDateTime[] getUTCDateTimeArray(String sql) {
+		return getUTCDateTimeArray(sql, (Object[]) null);
 	}
 
 	@Override
-	public ZonedDateTime[] getUTCDatetimeArray(String sql, Object... parameters) {
+	public ZonedDateTime[] getUTCDateTimeArray(String sql, Object... parameters) {
 		return Arrays.stream(getArray(sql, Object.class, parameters))
-				.map(utcDatetime -> Tuple.parseUTCDatetime(utcDatetime)).toArray(ZonedDateTime[]::new);
+				.map(utcDateTime -> Tuple.parseUTCDateTime(utcDateTime)).toArray(ZonedDateTime[]::new);
 	}
 
 	@Override
@@ -3046,13 +3046,13 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public ZoneId[] getTimezoneArray(String sql) {
-		return getTimezoneArray(sql, (Object[]) null);
+	public ZoneId[] getTimeZoneArray(String sql) {
+		return getTimeZoneArray(sql, (Object[]) null);
 	}
 
 	@Override
-	public ZoneId[] getTimezoneArray(String sql, Object... parameters) {
-		return Arrays.stream(getArray(sql, Object.class, parameters)).map(timezone -> Tuple.parseTimezone(timezone))
+	public ZoneId[] getTimeZoneArray(String sql, Object... parameters) {
+		return Arrays.stream(getArray(sql, Object.class, parameters)).map(timeZone -> Tuple.parseTimeZone(timeZone))
 				.toArray(ZoneId[]::new);
 	}
 

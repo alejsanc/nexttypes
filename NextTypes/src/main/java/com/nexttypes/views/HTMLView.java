@@ -1862,7 +1862,7 @@ public class HTMLView extends View {
 			input = binaryFieldInput(type, action, field, title, value, typeField, lang);
 			break;
 		case PT.TIMEZONE:
-			input = timezoneFieldInput(field, title, value, typeField);
+			input = timeZoneFieldInput(field, title, value, typeField);
 			break;
 		case PT.BOOLEAN:
 			input = booleanFieldInput(field, title, value);
@@ -2397,11 +2397,11 @@ public class HTMLView extends View {
 		return inputGroup;
 	}
 	
-	public Element timezoneFieldInput(String field, String title, Object value, TypeField typeField) {
-		return timezoneInput("@" + field, title, value, typeField.isNotNull());
+	public Element timeZoneFieldInput(String field, String title, Object value, TypeField typeField) {
+		return timeZoneInput("@" + field, title, value, typeField.isNotNull());
 	}
 
-	public Element timezoneInput(String name, String title, Object value, boolean notNull) {
+	public Element timeZoneInput(String name, String title, Object value, boolean notNull) {
 		Element select = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name);
 		
 		if (!notNull) {
@@ -2414,13 +2414,13 @@ public class HTMLView extends View {
 
 		select.setAttribute(HTML.TITLE, title);
 
-		ZoneId.getAvailableZoneIds().stream().sorted().forEach(timezoneId -> {
-			ZoneId timezone = ZoneId.of(timezoneId);
-			ZoneOffset offset = timezone.getRules().getOffset(Instant.now());
+		ZoneId.getAvailableZoneIds().stream().sorted().forEach(timeZoneId -> {
+			ZoneId timeZone = ZoneId.of(timeZoneId);
+			ZoneOffset offset = timeZone.getRules().getOffset(Instant.now());
 
-			Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, timezoneId)
-					.appendText(offset + " - " + timezoneId);
-			if (timezone.equals(value)) {
+			Element option = select.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, timeZoneId)
+					.appendText(offset + " - " + timeZoneId);
+			if (timeZone.equals(value)) {
 				option.setAttribute(HTML.SELECTED);
 			}
 		});
@@ -3992,9 +3992,9 @@ public class HTMLView extends View {
 		String typeName = strings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
-		ZoneId timezone = nextNode.getTimezone("select timezone from \"user\" where id=?", request.getUser());
-
-		LocalDate today = timezone != null ? LocalDate.now(timezone) : LocalDate.now();
+		ZoneId timeZone = nextNode.getTimeZone("select time_zone from \"user\" where id=?", request.getUser());
+		
+		LocalDate today = timeZone != null ? LocalDate.now(timeZone) : LocalDate.now();
 
 		if (year == null) {
 			year = Year.of(today.getYear());

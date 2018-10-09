@@ -880,13 +880,13 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public LocalDateTime getDatetime(String sql) {
-		return nextNode.getDatetime(sql);
+	public LocalDateTime getDateTime(String sql) {
+		return nextNode.getDateTime(sql);
 	}
 
 	@Override
-	public LocalDateTime getDatetime(String sql, Object... parameters) {
-		return nextNode.getDatetime(sql, parameters);
+	public LocalDateTime getDateTime(String sql, Object... parameters) {
+		return nextNode.getDateTime(sql, parameters);
 	}
 
 	@Override
@@ -940,13 +940,13 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public ZoneId getTimezone(String sql) {
-		return nextNode.getTimezone(sql);
+	public ZoneId getTimeZone(String sql) {
+		return nextNode.getTimeZone(sql);
 	}
 
 	@Override
-	public ZoneId getTimezone(String sql, Object... parameters) {
-		return nextNode.getTimezone(sql, parameters);
+	public ZoneId getTimeZone(String sql, Object... parameters) {
+		return nextNode.getTimeZone(sql, parameters);
 	}
 
 	@Override
@@ -980,13 +980,13 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public ZonedDateTime getUTCDatetime(String sql) {
-		return nextNode.getUTCDatetime(sql);
+	public ZonedDateTime getUTCDateTime(String sql) {
+		return nextNode.getUTCDateTime(sql);
 	}
 
 	@Override
-	public ZonedDateTime getUTCDatetime(String sql, Object... parameters) {
-		return nextNode.getUTCDatetime(sql, parameters);
+	public ZonedDateTime getUTCDateTime(String sql, Object... parameters) {
+		return nextNode.getUTCDateTime(sql, parameters);
 	}
 
 	@Override
@@ -1100,23 +1100,23 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public LocalDateTime[] getDatetimeArray(String sql) {
-		return nextNode.getDatetimeArray(sql);
+	public LocalDateTime[] getDateTimeArray(String sql) {
+		return nextNode.getDateTimeArray(sql);
 	}
 
 	@Override
-	public LocalDateTime[] getDatetimeArray(String sql, Object... parameters) {
-		return nextNode.getDatetimeArray(sql, parameters);
+	public LocalDateTime[] getDateTimeArray(String sql, Object... parameters) {
+		return nextNode.getDateTimeArray(sql, parameters);
 	}
 
 	@Override
-	public ZonedDateTime[] getUTCDatetimeArray(String sql) {
-		return nextNode.getUTCDatetimeArray(sql);
+	public ZonedDateTime[] getUTCDateTimeArray(String sql) {
+		return nextNode.getUTCDateTimeArray(sql);
 	}
 
 	@Override
-	public ZonedDateTime[] getUTCDatetimeArray(String sql, Object... parameters) {
-		return nextNode.getUTCDatetimeArray(sql, parameters);
+	public ZonedDateTime[] getUTCDateTimeArray(String sql, Object... parameters) {
+		return nextNode.getUTCDateTimeArray(sql, parameters);
 	}
 
 	@Override
@@ -1170,13 +1170,13 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public ZoneId[] getTimezoneArray(String sql) {
-		return nextNode.getTimezoneArray(sql);
+	public ZoneId[] getTimeZoneArray(String sql) {
+		return nextNode.getTimeZoneArray(sql);
 	}
 
 	@Override
-	public ZoneId[] getTimezoneArray(String sql, Object... parameters) {
-		return nextNode.getTimezoneArray(sql, parameters);
+	public ZoneId[] getTimeZoneArray(String sql, Object... parameters) {
+		return nextNode.getTimeZoneArray(sql, parameters);
 	}
 
 	@Override

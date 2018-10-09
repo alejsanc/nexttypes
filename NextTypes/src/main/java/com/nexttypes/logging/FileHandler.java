@@ -57,8 +57,8 @@ public class FileHandler extends java.util.logging.Handler {
 	@Override
 	public synchronized void publish(LogRecord record) {
 		try {
-			ZonedDateTime datetime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(record.getMillis()), ZoneOffset.UTC);
-			LocalDate date = datetime.toLocalDate();
+			ZonedDateTime dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(record.getMillis()), ZoneOffset.UTC);
+			LocalDate date = dateTime.toLocalDate();
 
 			if (!date.equals(loggerDate)) {
 				if (logger != null) {
@@ -70,7 +70,7 @@ public class FileHandler extends java.util.logging.Handler {
 				loggerDate = date;
 			}
 
-			logger.println(datetime + " " + record.getLevel() + " " + record.getMessage());
+			logger.println(dateTime + " " + record.getLevel() + " " + record.getMessage());
 
 		} catch (IOException e) {
 			System.err.println("NextTypes Logger Error:" + e.getMessage());

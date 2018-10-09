@@ -456,10 +456,10 @@ public class HTTPRequest {
 			value = fields.getTime(field);
 			break;
 		case PT.DATETIME:
-			value = fields.getDatetime(field);
+			value = fields.getDateTime(field);
 			break;
 		case PT.TIMEZONE:
-			value = fields.getTimezone(field);
+			value = fields.getTimeZone(field);
 			break;
 		case PT.COLOR:
 			value = fields.getColor(field);
@@ -565,11 +565,11 @@ public class HTTPRequest {
 						break;
 					
 					case PT.TIMEZONE:
-						value = Tuple.parseTimezone(value);
+						value = Tuple.parseTimeZone(value);
 						break;
 					
 					case PT.DATETIME:
-						value = Tuple.parseDatetime(value);
+						value = Tuple.parseDateTime(value);
 						break;
 					
 					case PT.EMAIL:

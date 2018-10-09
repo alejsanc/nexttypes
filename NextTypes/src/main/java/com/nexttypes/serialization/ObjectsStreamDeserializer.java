@@ -126,10 +126,10 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 						id = parser.getText();
 						break;
 					case Constants.CDATE:
-						cdate = Tuple.parseUTCDatetime(parser.getText());
+						cdate = Tuple.parseUTCDateTime(parser.getText());
 						break;
 					case Constants.UDATE:
-						udate = Tuple.parseUTCDatetime(parser.getText());
+						udate = Tuple.parseUTCDateTime(parser.getText());
 						break;
 					case Constants.BACKUP:
 						backup = Tuple.parseBoolean(parser.getText());
@@ -169,7 +169,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 
 					switch (fieldType) {
 					case PT.TIMEZONE:
-						value = Tuple.parseTimezone(parser.getText());
+						value = Tuple.parseTimeZone(parser.getText());
 						break;
 					case PT.HTML:
 						value = Tuple.parseHTML(parser.getText(), lang,
@@ -210,7 +210,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 						value = Tuple.parseTime(parser.getText());
 						break;
 					case PT.DATETIME:
-						value = Tuple.parseDatetime(parser.getText());
+						value = Tuple.parseDateTime(parser.getText());
 						break;
 					case PT.COLOR:
 						value = Tuple.parseColor(parser.getText());

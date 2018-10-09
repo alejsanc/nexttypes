@@ -101,7 +101,7 @@ public class CalDAVView extends WebDAVView {
 
 				switch (propFindType) {
 				case DavConstants.PROPFIND_ALL_PROP:
-					udate = resource.getUTCDatetime(Constants.UDATE);
+					udate = resource.getUTCDateTime(Constants.UDATE);
 					response.add(new ResourceType(ResourceType.DEFAULT_RESOURCE));
 					response.add(new DefaultDavProperty(DavPropertyName.GETCONTENTLENGTH, 0));
 					response.add(new DefaultDavProperty(DavPropertyName.GETLASTMODIFIED,
@@ -127,7 +127,7 @@ public class CalDAVView extends WebDAVView {
 
 						if (DavPropertyName.GETLASTMODIFIED.equals(property)
 								|| DavPropertyName.GETETAG.equals(property)) {
-							udate = resource.getUTCDatetime(Constants.UDATE);
+							udate = resource.getUTCDateTime(Constants.UDATE);
 						}
 
 						if (DavPropertyName.RESOURCETYPE.equals(property)) {
@@ -187,7 +187,7 @@ public class CalDAVView extends WebDAVView {
 				ICalendar calendar = new ICalendar(calendarURL, resource);
 
 				if (requestProperties.getContentSize() == 0) {
-					udate = resource.getUTCDatetime(Constants.UDATE);
+					udate = resource.getUTCDateTime(Constants.UDATE);
 					response.add(new ResourceType(ResourceType.DEFAULT_RESOURCE));
 					response.add(new DefaultDavProperty(DavPropertyName.GETLASTMODIFIED,
 							udate.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
@@ -201,7 +201,7 @@ public class CalDAVView extends WebDAVView {
 
 						if (DavPropertyName.GETLASTMODIFIED.equals(property)
 								|| DavPropertyName.GETETAG.equals(property)) {
-							udate = resource.getUTCDatetime(Constants.UDATE);
+							udate = resource.getUTCDateTime(Constants.UDATE);
 						}
 
 						if (DavPropertyName.RESOURCETYPE.equals(property)) {

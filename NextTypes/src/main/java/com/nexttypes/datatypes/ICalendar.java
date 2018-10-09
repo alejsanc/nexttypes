@@ -58,21 +58,21 @@ public class ICalendar {
 			for (Tuple event : events) {
 				String id = event.getString(Constants.ID); 
 				String summary = event.getString(Constants.SUMMARY);
-				String startDate = event.getDatetime(Constants.START_DATE)
+				String startDate = event.getDateTime(Constants.START_DATE)
 						.format(DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT));
-				String endDate = event.getDatetime(Constants.END_DATE)
+				String endDate = event.getDateTime(Constants.END_DATE)
 						.format(DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT));
 				String description = event.getString(Constants.DESCRIPTION);
 
-				DateTime startDatetime = new DateTime(startDate, Constants.DATETIME_FORMAT, null);
+				DateTime startDateTime = new DateTime(startDate, Constants.DATETIME_FORMAT, null);
 
 				VEvent vevent = null;
 
 				if (endDate == null) {
-					vevent = new VEvent(startDatetime, summary);
+					vevent = new VEvent(startDateTime, summary);
 				} else {
-					DateTime endDatetime = new DateTime(endDate, Constants.DATETIME_FORMAT, null);
-					vevent = new VEvent(startDatetime, endDatetime, summary);
+					DateTime endDateTime = new DateTime(endDate, Constants.DATETIME_FORMAT, null);
+					vevent = new VEvent(startDateTime, endDateTime, summary);
 				}
 
 				if (description != null) {

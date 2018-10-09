@@ -57,7 +57,7 @@ public class TypesStreamDeserializer extends StreamDeserializer implements Types
 			parser.nextToken();
 			parser.nextToken();
 
-			date = Tuple.parseUTCDatetime(parser.getText());
+			date = Tuple.parseUTCDateTime(parser.getText());
 
 			parser.nextToken();
 			parser.nextToken();

@@ -96,7 +96,7 @@ public class Tuple {
 
 	public static String parseString(Object value) {
 		if (value instanceof Timestamp) {
-			value = parseDatetime(value).toString();
+			value = parseDateTime(value).toString();
 		} else if (value instanceof Date) {
 			value = parseDate(value).toString();
 		} else if (value instanceof Time) {
@@ -375,11 +375,11 @@ public class Tuple {
 		return (LocalTime) value;
 	}
 
-	public LocalDateTime getDatetime(String field) {
-		return parseDatetime(get(field));
+	public LocalDateTime getDateTime(String field) {
+		return parseDateTime(get(field));
 	}
 
-	public static LocalDateTime parseDatetime(Object value) {
+	public static LocalDateTime parseDateTime(Object value) {
 		if (value instanceof Timestamp) {
 			value = ((Timestamp) value).toLocalDateTime();
 		} else if (value instanceof String) {
@@ -390,11 +390,11 @@ public class Tuple {
 		return (LocalDateTime) value;
 	}
 
-	public ZonedDateTime getUTCDatetime(String field) {
-		return parseUTCDatetime(get(field));
+	public ZonedDateTime getUTCDateTime(String field) {
+		return parseUTCDateTime(get(field));
 	}
 
-	public static ZonedDateTime parseUTCDatetime(Object value) {
+	public static ZonedDateTime parseUTCDateTime(Object value) {
 		if (value instanceof Timestamp) {
 			value = ZonedDateTime.of(((Timestamp) value).toLocalDateTime(), ZoneOffset.UTC);
 		} else if (value instanceof String) {
@@ -408,11 +408,11 @@ public class Tuple {
 		return (ZonedDateTime) value;
 	}
 
-	public ZoneId getTimezone(String field) {
-		return parseTimezone(get(field));
+	public ZoneId getTimeZone(String field) {
+		return parseTimeZone(get(field));
 	}
 
-	public static ZoneId parseTimezone(Object value) {
+	public static ZoneId parseTimeZone(Object value) {
 		if (value instanceof String) {
 			value = ZoneId.of((String) value);
 		} else if (value instanceof byte[]) {
@@ -545,7 +545,7 @@ public class Tuple {
 	}
 
 	static public String parseETag(Object value) {
-		value = parseUTCDatetime(value);
+		value = parseUTCDateTime(value);
 
 		if (value instanceof ZonedDateTime) {
 			value = Utils.etag((ZonedDateTime) value);

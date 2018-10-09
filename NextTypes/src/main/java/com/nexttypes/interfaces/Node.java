@@ -326,9 +326,9 @@ public interface Node extends Module, AutoCloseable {
 
 	public LocalTime getTime(String sql, Object... parameters);
 
-	public LocalDateTime getDatetime(String sql);
+	public LocalDateTime getDateTime(String sql);
 
-	public LocalDateTime getDatetime(String sql, Object... parameters);
+	public LocalDateTime getDateTime(String sql, Object... parameters);
 
 	public byte[] getBinary(String sql);
 
@@ -354,9 +354,9 @@ public interface Node extends Module, AutoCloseable {
 
 	public Boolean getBoolean(String sql, Object... parameters);
 
-	public ZoneId getTimezone(String sql);
+	public ZoneId getTimeZone(String sql);
 
-	public ZoneId getTimezone(String sql, Object... parameters);
+	public ZoneId getTimeZone(String sql, Object... parameters);
 
 	public Color getColor(String sql);
 
@@ -370,9 +370,9 @@ public interface Node extends Module, AutoCloseable {
 
 	public Document getDocument(String sql, Object... parameters);
 
-	public ZonedDateTime getUTCDatetime(String sql);
+	public ZonedDateTime getUTCDateTime(String sql);
 
-	public ZonedDateTime getUTCDatetime(String sql, Object... parameters);
+	public ZonedDateTime getUTCDateTime(String sql, Object... parameters);
 
 	public Object getObject(String sql);
 
@@ -422,13 +422,13 @@ public interface Node extends Module, AutoCloseable {
 
 	public LocalTime[] getTimeArray(String sql, Object... parameters);
 
-	public LocalDateTime[] getDatetimeArray(String sql);
+	public LocalDateTime[] getDateTimeArray(String sql);
 
-	public LocalDateTime[] getDatetimeArray(String sql, Object... parameters);
+	public LocalDateTime[] getDateTimeArray(String sql, Object... parameters);
 
-	public ZonedDateTime[] getUTCDatetimeArray(String sql);
+	public ZonedDateTime[] getUTCDateTimeArray(String sql);
 
-	public ZonedDateTime[] getUTCDatetimeArray(String sql, Object... parameters);
+	public ZonedDateTime[] getUTCDateTimeArray(String sql, Object... parameters);
 
 	public byte[][] getBinaryArray(String sql);
 
@@ -450,9 +450,9 @@ public interface Node extends Module, AutoCloseable {
 
 	public String[] getTelArray(String sql, Object... parameters);
 
-	public ZoneId[] getTimezoneArray(String sql);
+	public ZoneId[] getTimeZoneArray(String sql);
 
-	public ZoneId[] getTimezoneArray(String sql, Object... parameters);
+	public ZoneId[] getTimeZoneArray(String sql, Object... parameters);
 
 	public Color[] getColorArray(String sql);
 

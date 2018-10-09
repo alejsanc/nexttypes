@@ -111,7 +111,7 @@ public class SoftwareView extends HTMLView {
 			article.appendElement(fieldOutput(strings.getString(DESCRIPTION), description));
 		}
 
-		main.appendElement(dates(type, tuple.getUTCDatetime(Constants.CDATE), tuple.getUTCDatetime(Constants.UDATE)));
+		main.appendElement(dates(type, tuple.getUTCDateTime(Constants.CDATE), tuple.getUTCDateTime(Constants.UDATE)));
 
 		return render(type);
 	}

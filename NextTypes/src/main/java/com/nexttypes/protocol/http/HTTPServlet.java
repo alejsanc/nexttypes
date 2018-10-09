@@ -541,7 +541,7 @@ public class HTTPServlet extends HttpServlet {
 					break;
 
 				case PT.DATETIME:
-					value = Tuple.parseDatetime(value);
+					value = Tuple.parseDateTime(value);
 					break;
 
 				case PT.BOOLEAN:
@@ -581,7 +581,7 @@ public class HTTPServlet extends HttpServlet {
 					break;
 
 				case PT.TIMEZONE:
-					value = Tuple.parseTimezone(value);
+					value = Tuple.parseTimeZone(value);
 					break;
 
 				case PT.COLOR:

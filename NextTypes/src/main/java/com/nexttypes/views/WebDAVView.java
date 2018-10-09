@@ -218,7 +218,7 @@ public class WebDAVView extends View {
 
 				switch (propFindType) {
 				case DavConstants.PROPFIND_ALL_PROP:
-					udate = resource.getUTCDatetime(Constants.UDATE);
+					udate = resource.getUTCDateTime(Constants.UDATE);
 					response.add(new ResourceType(ResourceType.COLLECTION));
 					response.add(new DefaultDavProperty(DavPropertyName.GETLASTMODIFIED,
 							udate.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
@@ -239,7 +239,7 @@ public class WebDAVView extends View {
 
 						if (DavPropertyName.GETLASTMODIFIED.equals(property)
 								|| DavPropertyName.GETETAG.equals(property)) {
-							udate = resource.getUTCDatetime(Constants.UDATE);
+							udate = resource.getUTCDateTime(Constants.UDATE);
 						}
 
 						if (DavPropertyName.RESOURCETYPE.equals(property)) {

@@ -51,7 +51,7 @@ public class ExampleController extends Controller {
 	@Action(TRY)
 	public ActionResult exampleAction(Short int16, Integer int32, Long int64, Float float32, Double float64,
 			BigDecimal numeric, Boolean bool, String string, String text, HTMLFragment html, JSON json, XML xml,
-			URL url, InternetAddress email, String tel, LocalDate date, LocalTime time, LocalDateTime datetime,
+			URL url, InternetAddress email, String tel, LocalDate date, LocalTime time, LocalDateTime dateTime,
 			ZoneId timezone, Color color, byte[] binary, File file, Image image, Audio audio, Video video, Document document,
 			String password, String articleId) {
 

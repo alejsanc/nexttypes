@@ -69,7 +69,7 @@
 					"length": 250,
 					"not_null": true
 				},
-				"timezone": {
+				"time_zone": {
 					"type": "timezone",
 					"length": 250,
 					"not_null": true
@@ -330,7 +330,7 @@
 					"fields": {
 						"first_name": "Admin",
 						"second_name": "Admin",
-						"timezone": "UTC",
+						"time_zone": "UTC",
 						"email": "admin@example.com",
 						"password": "$2y$12$TFhXz5DvNAl0/jUg7hd56eLT52bZXiuBsDrapQ1Tm8LDaB7qaO3o6"
 					}

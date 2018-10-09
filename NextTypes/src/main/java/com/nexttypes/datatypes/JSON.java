@@ -228,12 +228,12 @@ public class JSON extends PGobject {
 			return Tuple.parseTime(get(fieldIndex));
 		}
 
-		protected LocalDateTime getDatetime(Object fieldIndex) {
-			return Tuple.parseDatetime(get(fieldIndex));
+		protected LocalDateTime getDateTime(Object fieldIndex) {
+			return Tuple.parseDateTime(get(fieldIndex));
 		}
 
-		protected ZoneId getTimezone(Object fieldIndex) {
-			return Tuple.parseTimezone(get(fieldIndex));
+		protected ZoneId getTimeZone(Object fieldIndex) {
+			return Tuple.parseTimeZone(get(fieldIndex));
 		}
 
 		protected Color getColor(Object fieldIndex) {
@@ -402,12 +402,12 @@ public class JSON extends PGobject {
 			return super.getTime(field);
 		}
 
-		public LocalDateTime getDatetime(String field) {
-			return super.getDatetime(field);
+		public LocalDateTime getDateTime(String field) {
+			return super.getDateTime(field);
 		}
 
-		public ZoneId getTimezone(String field) {
-			return super.getTimezone(field);
+		public ZoneId getTimeZone(String field) {
+			return super.getTimeZone(field);
 		}
 
 		public Color getColor(String field) {
@@ -607,12 +607,12 @@ public class JSON extends PGobject {
 			return super.getTime(index);
 		}
 
-		public LocalDateTime getDatetime(int index) {
-			return super.getDatetime(index);
+		public LocalDateTime getDateTime(int index) {
+			return super.getDateTime(index);
 		}
 
-		public ZoneId getTimezone(int index) {
-			return super.getTimezone(index);
+		public ZoneId getTimeZone(int index) {
+			return super.getTimeZone(index);
 		}
 
 		public Color getColor(int index) {

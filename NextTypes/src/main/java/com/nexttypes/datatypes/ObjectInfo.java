@@ -29,7 +29,7 @@ public class ObjectInfo {
 	}
 
 	public ObjectInfo(String id, Timestamp udate) {
-		this(id, Tuple.parseUTCDatetime(udate));
+		this(id, Tuple.parseUTCDateTime(udate));
 	}
 
 	public String getId() {
