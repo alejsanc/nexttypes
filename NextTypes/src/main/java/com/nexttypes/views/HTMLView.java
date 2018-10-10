@@ -2012,16 +2012,16 @@ public class HTMLView extends View {
 		Element input = input(inputType, "@" + field, title, value);
 
 		if (inputType.equals(HTML.NUMBER)) {
-			setMaxMinValues(input, typeField);
+			setFieldMaxMinValues(input, typeField);
 		}
 
 		if (PT.isStringType(typeField.getType())) {
-			setMaxLength(input, typeField);
-			setSize(input, size);
+			setFieldMaxLength(input, typeField);
+			setFieldSize(input, size);
 		}
 
 		if (!inputType.equals(HTML.COLOR)) {
-			setRequired(input, typeField);
+			setFieldRequired(input, typeField);
 		}
 
 		return input;
@@ -2048,20 +2048,20 @@ public class HTMLView extends View {
 		return input;
 	}
 
-	public void setMaxLength(Element input, TypeField typeField) {
+	public void setFieldMaxLength(Element input, TypeField typeField) {
 		Long maxLength = typeField.getLength();
 		if (maxLength != null) {
 			input.setAttribute(HTML.MAXLENGTH, maxLength);
 		}
 	}
 	
-	public void setSize(Element input, Integer size) {
+	public void setFieldSize(Element input, Integer size) {
 		if (size != null) {
 			input.setAttribute(HTML.SIZE, size);
 		}
 	}
 
-	public void setMaxMinValues(Element input, TypeField typeField) {
+	public void setFieldMaxMinValues(Element input, TypeField typeField) {
 		Object min = null;
 		Object max = null;
 
@@ -2100,7 +2100,7 @@ public class HTMLView extends View {
 		input.setAttribute(HTML.STEP, HTML.ANY);
 	}
 
-	public void setRequired(Element input, TypeField typeField) {
+	public void setFieldRequired(Element input, TypeField typeField) {
 		if (typeField.isNotNull()) {
 			input.setAttribute(HTML.REQUIRED);
 		}
@@ -3012,8 +3012,8 @@ public class HTMLView extends View {
 		return output;
 	}
 
-	public Element fieldOutput(NXObject object, String field, Object value, TypeField typeField, String lang,
-			String view) {
+	public Element fieldOutput(NXObject object, String field, Object value, TypeField typeField,
+			String lang, String view) {
 		Element output = document.createElement(HTML.DIV);
 		output.addClass(FIELD_OUTPUT);
 		String fieldName = strings.getFieldName(object.getType(), field);
@@ -3022,8 +3022,8 @@ public class HTMLView extends View {
 		return output;
 	}
 
-	public Element fieldOutput(NXObject object, String field, Object value, TypeField typeField, String lang,
-			String view, boolean preview) {
+	public Element fieldOutput(NXObject object, String field, Object value, TypeField typeField,
+			String lang, String view, boolean preview) {
 		Element fieldElement = null;
 
 		if (value != null) {
@@ -3083,7 +3083,7 @@ public class HTMLView extends View {
 				fieldElement = passwordOutput();
 				break;
 			default:
-				fieldElement = referenceAnchor(typeField.getType(), value, lang, view);
+				fieldElement = referenceAnchor(value, typeField, lang, view);
 			}
 		} else {
 			fieldElement = document.createElement(HTML.SPAN);
@@ -3091,8 +3091,31 @@ public class HTMLView extends View {
 
 		return fieldElement;
 	}
+	
+	public Element fieldAnchor(Object value, TypeField typeField) {
+		return fieldAnchor(value, typeField.getType());
+	}
+	
+	public Element fieldAnchor(Object value, String fieldType) {
+		String href = value.toString();
 
-	public Element referenceAnchor(String fieldType, Object value, String lang, String view) {
+		switch (fieldType) {
+		case PT.EMAIL:
+			href = HTML.MAILTO + ":" + href;
+			break;
+		case PT.TEL:
+			href = HTML.TEL + ":" + href;
+			break;
+		}
+
+		return anchor(value.toString(), href);
+	}
+	
+	public Element referenceAnchor(Object value, TypeField typeField, String lang, String view) {
+		return referenceAnchor(value, typeField.getType(), lang, view);
+	}
+
+	public Element referenceAnchor(Object value, String fieldType, String lang, String view) {
 		Element anchor = null;
 		
 		ObjectReference reference = (ObjectReference) value;
@@ -3168,21 +3191,6 @@ public class HTMLView extends View {
 		return password;
 	}
 
-	public Element fieldAnchor(Object value, TypeField typeField) {
-		String href = value.toString();
-
-		switch (typeField.getType()) {
-		case PT.EMAIL:
-			href = HTML.MAILTO + ":" + href;
-			break;
-		case PT.TEL:
-			href = HTML.TEL + ":" + href;
-			break;
-		}
-
-		return anchor(value.toString(), href);
-	}
-	
 	public Element anchor(String text, URL url) {
 		return anchor(text, url.toString());
 	}
