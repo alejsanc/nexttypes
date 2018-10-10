@@ -484,7 +484,7 @@ public class HTMLView extends View {
 	public Content executeActionForm(String type, String id, String action, String lang, String view) {
 		loadTemplate(type, lang, view);
 
-		if (!permissions.isAllowed(type, action)) {
+		if (!permissions.isAllowed(type, action + "_" + Constants.FORM)) {
 			return unauthorized(type, lang, view, new UnauthorizedActionException(type, action));
 		}
 		
@@ -3803,7 +3803,7 @@ public class HTMLView extends View {
 					&& !Action.RENAME.equals(form) && !request.isInfo()) {
 
 				LinkedHashMap<String, LinkedHashMap<String, TypeField>> actions = nextNode.getTypeActions(type);
-
+								
 				if (actions != null && actions.size() > 0) {
 					String requestAction = request.getAction();
 
@@ -3812,7 +3812,7 @@ public class HTMLView extends View {
 					}
 					
 					for (String action : actions.keySet()) {
-						if (!permissions.isAllowed(type, action)) {
+						if (!permissions.isAllowed(type, action + "_" + Constants.FORM)) {
 							actions.remove(action);
 						}
 					}
