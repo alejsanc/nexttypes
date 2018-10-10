@@ -1465,7 +1465,7 @@ public class HTMLView extends View {
 				nextNode.getTypeFields(type), lang);
 		
 		return new Content(filter.toString());
-	}
+	}	
 	
 	public Element filters(String type, Filter[] filters, LinkedHashMap<String, TypeField> typeFields,
 			String lang) {
@@ -1474,10 +1474,8 @@ public class HTMLView extends View {
 		
 		div.appendElement(HTML.STRONG).appendText(strings.gts(type, Constants.FILTERS) + ": ");
 		div.appendElement(button(strings.gts(type, Constants.ADD_FILTER), ADD_FILTER));
-		div.appendElement(HTML.BUTTON)
-			.setAttribute(HTML.TYPE, HTML.SUBMIT)
-			.setAttribute(HTML.FORM, Constants.SEARCH)
-			.appendText(strings.gts(type, Constants.SEARCH));
+		div.appendElement(submitButton(strings.gts(type, Constants.SEARCH)))
+				.setAttribute(HTML.FORM, Constants.SEARCH);
 		
 		Element table = div.appendElement(HTML.TABLE).setAttribute(HTML.ID, Constants.FILTERS);
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
@@ -3256,6 +3254,12 @@ public class HTMLView extends View {
 	public Element icon(String text, String image) {
 		return image(text, "/static/icons/" + image + ".svg");
 	}
+	
+	public Element submitButton(String text) {
+		return document.createElement(HTML.BUTTON)
+			.setAttribute(HTML.TYPE, HTML.SUBMIT)
+			.appendText(text);
+	}
 
 	public Element button(String text, String buttonClass) {
 		return button(text, null, null, buttonClass);
@@ -3774,9 +3778,7 @@ public class HTMLView extends View {
 					form.appendElement(input(HTML.HIDDEN, Constants.LIMIT, Constants.LIMIT, limit));
 				}
 
-				form.appendElement(document.createElement(HTML.BUTTON)
-						.setAttribute(HTML.TYPE, HTML.SUBMIT)
-						.appendText(searchName));
+				form.appendElement(submitButton(searchName));
 			}
 		}
 	}
