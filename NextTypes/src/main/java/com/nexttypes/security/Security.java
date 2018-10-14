@@ -28,7 +28,7 @@ public class Security {
 	public static final String PASSWORD_STRENGTH_CHECK = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$";
 	protected static final String HASH = "$2y$12$TFhXz5DvNAl0/jUg7hd56eLT52bZXiuBsDrapQ1Tm8LDaB7qaO3o6";
 
-	public static String getRandomString() {
+	public static String randomString() {
 		SecureRandom random = new SecureRandom();
 		return new BigInteger(256, random).toString(32);
 	}
@@ -50,7 +50,8 @@ public class Security {
 	}
 
 	public static boolean passwordsMatch(String password, String passwordRepeat) {
-		return (password == null && passwordRepeat == null) || (password != null && password.equals(passwordRepeat));
+		return (password == null && passwordRepeat == null)
+				|| (password != null && password.equals(passwordRepeat));
 	}
 
 	public static String passwordHash(String password) {

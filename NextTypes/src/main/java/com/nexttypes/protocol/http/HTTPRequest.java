@@ -225,7 +225,7 @@ public class HTTPRequest {
 
 	protected void setSessionToken() {
 		if (session.getAttribute(Constants.SESSION_TOKEN) == null) {
-			session.setAttribute(Constants.SESSION_TOKEN, Security.getRandomString());
+			session.setAttribute(Constants.SESSION_TOKEN, Security.randomString());
 		}
 	}
 
@@ -339,7 +339,11 @@ public class HTTPRequest {
 	public void checkFields(LinkedHashMap<String, TypeField> typeFields) {
 		for (String field : fields.getFields().keySet()) {
 			if (!typeFields.containsKey(field)) {
-				throw new FieldException(type, field, Constants.INVALID_FIELD);
+				if (!((field.endsWith(Constants._REPEAT) || field.endsWith(Constants._NULL))
+						&& typeFields.containsKey(field.substring(0, field.lastIndexOf("_"))))) {
+					
+					throw new FieldException(type, field, Constants.INVALID_FIELD);
+				}
 			}
 		}
 	}
