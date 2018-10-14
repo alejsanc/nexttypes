@@ -47,6 +47,7 @@ import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.DocumentPreview;
 import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.Filter;
+import com.nexttypes.datatypes.FieldRange;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.HTML;
 import com.nexttypes.datatypes.HTML.InputGroup;
@@ -1809,22 +1810,18 @@ public class HTMLView extends View {
 
 	public Element fieldInput(String type, String field, String title, Object value, TypeField typeField,
 			String lang) {
-		
-		Integer size = typeSettings.getFieldInt32(type, field, Constants.INPUT_SIZE);
-		
-		return fieldInput(type, null, field, title, value, typeField, size, lang);
+				
+		return fieldInput(type, null, field, title, value, typeField, lang);
 	}
 	
 	public Element actionFieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField, String lang) {
-		
-		Integer size = typeSettings.getActionFieldInt32(type, action, field, Constants.INPUT_SIZE);
 
-		return fieldInput(type, action, field, title, value, typeField, size, lang);
+		return fieldInput(type, action, field, title, value, typeField, lang);
 	}
-
+	
 	public Element fieldInput(String type, String action, String field, String title, Object value,
-			TypeField typeField, Integer size, String lang) {
+			TypeField typeField, String lang) {
 
 		Element input = null;
 		
@@ -1843,7 +1840,7 @@ public class HTMLView extends View {
 		case PT.TIME:
 		case PT.DATETIME:
 		case PT.COLOR:
-			input = fieldInput(field, title, value, typeField, size);
+			input = fieldInput(type, action, field, title, value, typeField);
 			break;
 		case PT.TEXT:
 		case PT.HTML:
@@ -1869,7 +1866,7 @@ public class HTMLView extends View {
 			input = passwordFieldInput(type, field, title);
 			break;
 		default:
-			input = objectFieldInput(type, action, field, title, value, typeField, size, lang);
+			input = objectFieldInput(type, action, field, title, value, typeField, lang);
 		}
 
 		return input;
@@ -1963,67 +1960,91 @@ public class HTMLView extends View {
 		return input;
 	}
 
-	public Element fieldInput(String field, String title, Object value, TypeField typeField,
-			Integer size) {
+	public Element fieldInput(String type, String action, String field, String title, Object value,
+			TypeField typeField) {
 		
+		Element input = null;
+		
+		String fieldType = typeField.getType();
 		String inputType = null;
-
-		switch (typeField.getType()) {
-		case PT.STRING:
-			inputType = HTML.TEXT;
-			break;
-		case PT.URL:
-			inputType = HTML.URL;
-			break;
-		case PT.EMAIL:
-			inputType = HTML.EMAIL;
-			break;
-		case PT.DATE:
-			inputType = HTML.DATE;
-			break;
-		case PT.TEL:
-			inputType = HTML.TEL;
-			break;
-		case PT.TIME:
-			inputType = HTML.TIME;
-			break;
-		case PT.DATETIME:
-			inputType = HTML.DATETIME_LOCAL;
-			break;
-		case PT.COLOR:
-			inputType = HTML.COLOR;
-			break;
-		case PT.INT16:
-		case PT.INT32:
-		case PT.INT64:
-		case PT.FLOAT32:
-		case PT.FLOAT64:
-		case PT.NUMERIC:
-			inputType = HTML.NUMBER;
-			break;
-		}
-
-		return fieldInput(field, title, value, typeField, size, inputType);
-	}
-
-	public Element fieldInput(String field, String title, Object value, TypeField typeField,
-			Integer size, String inputType) {
-		
-		Element input = input(inputType, "@" + field, title, value);
-
-		if (inputType.equals(HTML.NUMBER)) {
-			setFieldMaxMinValues(input, typeField);
-		}
-
-		if (PT.isStringType(typeField.getType())) {
+						
+		if (PT.isStringType(fieldType)) {
+			Integer size = null;
+			
+			if (action != null) {
+				size = typeSettings.getActionFieldInt32(type, action, field, Constants.INPUT_SIZE);
+			} else {
+				size = typeSettings.getFieldInt32(type, field, Constants.INPUT_SIZE);
+			}
+			
+			switch (fieldType) {
+			case PT.STRING:
+				inputType = HTML.TEXT;
+				break;
+				
+			case PT.URL:
+				inputType = HTML.URL;
+				break;
+				
+			case PT.EMAIL:
+				inputType = HTML.EMAIL;
+				break;
+				
+			case PT.TEL:
+				inputType = HTML.TEL;
+				break;
+			}
+			
+			input = input(inputType, "@" + field, title, value);
+			
 			setFieldMaxLength(input, typeField);
 			setFieldSize(input, size);
-		}
-
-		if (!inputType.equals(HTML.COLOR)) {
 			setFieldRequired(input, typeField);
+			
+		} else if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
+			FieldRange range = null;
+						
+			if (action != null) {
+				range = nextNode.getActionFieldRange(type, action, field);
+			} else {
+				range = nextNode.getFieldRange(type, field);
+			}
+			
+			switch(fieldType) {
+				
+			case PT.DATE:
+				inputType = HTML.DATE;
+				break;
+				
+			case PT.TIME:
+				inputType = HTML.TIME;
+				break;
+				
+			case PT.DATETIME:
+				inputType = HTML.DATETIME_LOCAL;
+				break;
+				
+			case PT.INT16:
+			case PT.INT32:
+			case PT.INT64:
+			case PT.FLOAT32:
+			case PT.FLOAT64:
+			case PT.NUMERIC:
+				inputType = HTML.NUMBER;
+				break;
+			}
+			
+			input = input(inputType, "@" + field, title, value);
+			
+			setFieldRange(input, range);
+			setFieldRequired(input, typeField);
+			
+		} else if (PT.COLOR.equals(fieldType)) {
+			inputType = PT.COLOR;
+			
+			input = input(inputType, "@" + field, title, value);
 		}
-
+		
 		return input;
 	}
 
@@ -2047,9 +2068,27 @@ public class HTMLView extends View {
 
 		return input;
 	}
+	
+	public void setFieldRange(Element input, FieldRange range) {
+		setFieldRange(input, range.getMin(), range.getMax());
+	}
 
+	public void setFieldRange(Element input, Object min, Object max) {
+		if (min != null || max != null) {
+			input.setAttribute(HTML.STEP, HTML.ANY);
+			
+			if (min != null) {
+				input.setAttribute(HTML.MIN, min);
+			}
+			
+			if (max != null) {
+				input.setAttribute(HTML.MAX, max);
+			}
+		}
+	}
+	
 	public void setFieldMaxLength(Element input, TypeField typeField) {
-		Long maxLength = typeField.getLength();
+		Integer maxLength = typeField.getLength();
 		if (maxLength != null) {
 			input.setAttribute(HTML.MAXLENGTH, maxLength);
 		}
@@ -2060,46 +2099,7 @@ public class HTMLView extends View {
 			input.setAttribute(HTML.SIZE, size);
 		}
 	}
-
-	public void setFieldMaxMinValues(Element input, TypeField typeField) {
-		Object min = null;
-		Object max = null;
-
-		switch (typeField.getType()) {
-		case PT.INT16:
-			min = Short.MIN_VALUE;
-			max = Short.MAX_VALUE;
-			break;
-		case PT.INT32:
-			min = Integer.MIN_VALUE;
-			max = Integer.MAX_VALUE;
-			break;
-		case PT.INT64:
-			min = Long.MIN_VALUE;
-			max = Long.MAX_VALUE;
-			break;
-		case PT.FLOAT32:
-			min = Float.MIN_VALUE;
-			max = Float.MAX_VALUE;
-			break;
-		case PT.FLOAT64:
-			min = Double.MIN_VALUE;
-			max = Double.MAX_VALUE;
-			break;
-		case PT.NUMERIC:
-			Long precision = typeField.getPrecision();
-			Long scale = typeField.getScale();
-			double numericMax = Math.pow(10, precision - scale) - Math.pow(10, -scale);
-			max = numericMax;
-			min = -numericMax - 1;
-			break;
-		}
-
-		input.setAttribute(HTML.MIN, min);
-		input.setAttribute(HTML.MAX, max);
-		input.setAttribute(HTML.STEP, HTML.ANY);
-	}
-
+	
 	public void setFieldRequired(Element input, TypeField typeField) {
 		if (typeField.isNotNull()) {
 			input.setAttribute(HTML.REQUIRED);
@@ -2200,14 +2200,17 @@ public class HTMLView extends View {
 	}
 	
 	public Element objectFieldInput(String type, String action, String field, String title, Object value,
-			TypeField typeField, Integer size, String lang) {
+			TypeField typeField, String lang) {
 		
 		String mode = null;
+		Integer size = null;
 		
 		if (action != null) {
 			mode = typeSettings.getActionFieldString(type, action, field, Constants.OBJECT_INPUT_MODE);
+			size = typeSettings.getActionFieldInt32(type, action, field, Constants.INPUT_SIZE);
 		} else {
 			mode = typeSettings.getFieldString(type, field, Constants.OBJECT_INPUT_MODE);
+			size = typeSettings.getFieldInt32(type, field, Constants.INPUT_SIZE);
 		}
 		
 		return objectInput("@" + field, title, value, typeField.getType(), typeField.isNotNull(), mode,

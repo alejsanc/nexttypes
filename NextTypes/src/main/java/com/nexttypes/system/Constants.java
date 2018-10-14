@@ -184,6 +184,7 @@ public class Constants {
 	public static final String INVALID_INDEX_NAME = "invalid_index_name";
 	public static final String INVALID_INPUT = "invalid_input";
 	public static final String INVALID_LANG = "invalid_lang";
+	public static final String INVALID_NUMERIC = "invalid_numeric";
 	public static final String INVALID_OBJECT_INPUT_MODE = "invalid_object_input_mode";
 	public static final String INVALID_OBJECTS_INPUT_MODE = "invalid_objects_input_mode";
 	public static final String INVALID_PARAMETERS = "invalid_parameters";
@@ -223,13 +224,13 @@ public class Constants {
 	public static final String MAX_LIMIT = "max_limit";
 	public static final String MAX_REQUESTS = "max_requests";
 	public static final String MAX_TIME = "max_time";
-	public static final String MAX_VALUE = "max_value";
+	public static final String MAX = "max";
 	public static final String MENU = "menu";
 	public static final String MENUS = "menus";
 	public static final String MESSAGE = "message";
 	public static final String METHOD_NOT_ALLOWED = "method_not_allowed";
 	public static final String MIN_LIMIT = "min_limit";
-	public static final String MIN_VALUE = "min_value";
+	public static final String MIN = "min";
 	public static final String MISSING_FIELD = "missing_field";
 	public static final String MISSING_REFERENCES = "missing_references";
 	public static final String MODE = "mode";

@@ -36,6 +36,7 @@ import com.nexttypes.datatypes.AlterResult;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
+import com.nexttypes.datatypes.FieldRange;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
@@ -1175,5 +1176,35 @@ public class ProxyNode implements Node {
 	@Override
 	public String[] getGroups(String user) {
 		return nextNode.getGroups(user);
+	}
+
+	@Override
+	public String getActionFieldType(String type, String action, String field) {
+		return getNextNode(type).getActionFieldType(type, action, field);
+	}
+
+	@Override
+	public TypeField getActionField(String type, String action, String field) {
+		return getNextNode(type).getActionField(type, action, field);
+	}
+
+	@Override
+	public FieldRange getFieldRange(String type, String field) {
+		return getNextNode(type).getFieldRange(type, field);
+	}
+
+	@Override
+	public FieldRange getActionFieldRange(String type, String action, String field) {
+		return getNextNode(type).getActionFieldRange(type, action, field);
+	}
+
+	@Override
+	public void checkFieldRange(String type, String field, Object value) {
+		getNextNode(type).checkFieldRange(type, field, value);
+	}
+
+	@Override
+	public void checkActionFieldRange(String type, String action, String field, Object value) {
+		getNextNode(type).checkActionFieldRange(type, action, field, value);
 	}
 }

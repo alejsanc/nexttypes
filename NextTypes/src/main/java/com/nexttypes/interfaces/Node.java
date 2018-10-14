@@ -36,6 +36,7 @@ import com.nexttypes.datatypes.AlterResult;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
+import com.nexttypes.datatypes.FieldRange;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
@@ -183,6 +184,10 @@ public interface Node extends Module, AutoCloseable {
 	public LinkedHashMap<String, TypeIndex> getTypeIndexes(String type);
 
 	public String getFieldType(String type, String field);
+	
+	public String getActionFieldType(String type, String action, String field);
+	
+	public TypeField getActionField(String type, String action, String field);
 
 	public LinkedHashMap<String, TypeField> getActionFields(String type, String action);
 
@@ -195,13 +200,21 @@ public interface Node extends Module, AutoCloseable {
 	public String getFieldContentType(String type, String id, String field);
 	
 	public Object getFieldDefault(String type, String field);
+	
+	public FieldRange getFieldRange(String type, String field);
+	
+	public FieldRange getActionFieldRange(String type, String action, String field);
+	
+	public void checkFieldRange(String type, String field, Object value);
+	
+	public void checkActionFieldRange(String type, String action, String field, Object value);
 
 	public String getCompositeFieldContentType(String type, String id, String field);
 
 	public LinkedHashMap<String, String> getFieldsContentType(String type);
 
 	public LinkedHashMap<String, FieldInfo> getFieldsInfo(String type, String id);
-
+	
 	public void drop(String... types);
 
 	public ZonedDateTime dropField(String type, String field);

@@ -27,12 +27,14 @@ import com.nexttypes.datatypes.AlterFieldResult;
 import com.nexttypes.datatypes.AlterIndexResult;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
+import com.nexttypes.datatypes.FieldRange;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.ObjectField;
 import com.nexttypes.datatypes.Objects;
+import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Tuples;
 import com.nexttypes.datatypes.TypeField;
@@ -42,6 +44,7 @@ import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.Order;
+import com.nexttypes.exceptions.ActionFieldException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
@@ -73,7 +76,15 @@ public class Controller {
 	public LinkedHashMap<String, TypeField> getActionFields(String action) {
 		return getActions().get(action);
 	}
-
+	
+	public TypeField getActionField(String action, String field) {
+		return getActionFields(action).get(field);
+	}
+	
+	public String getActionFieldType(String action, String field) {
+		return getActionField(action, field).getType();
+	}
+	
 	public LinkedHashMap<String, LinkedHashMap<String, TypeField>> getActions() {
 		LinkedHashMap<String, LinkedHashMap<String, TypeField>> actions = null;
 		Class classObject = getClass();
@@ -96,6 +107,32 @@ public class Controller {
 		}
 
 		return actions;
+	}
+	
+	public void checkActionFieldRange(String type, String action, String field, Object value) {
+		
+		String fieldType = getActionFieldType(action, field);
+
+		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
+			if (!getActionFieldRange(type, action, field).isInRange(value)) {
+				throw new ActionFieldException(type, action, field, Constants.OUT_OF_RANGE_VALUE,
+						value);
+			}
+		}
+	}
+	
+	public FieldRange getActionFieldRange(String type, String action, String field) {
+		String min = typeSettings.getActionFieldString(type, action, field, Constants.MIN);
+		String max = typeSettings.getActionFieldString(type, action, field, Constants.MAX);
+		return new FieldRange(min, max, getActionField(action, field)) {};
+	}
+	
+	public FieldRange getFieldRange(String type, String field) {
+		return nextNode.getFieldRange(type, field);
+	}
+
+	public void checkFieldRange(String type, String field, Object value) {
+		nextNode.checkFieldRange(type, field, value);
 	}
 
 	public ZonedDateTime addField(String type, String field, TypeField typeField) {

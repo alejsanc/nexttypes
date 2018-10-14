@@ -66,6 +66,7 @@ import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.DocumentPreview;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.FieldInfo;
+import com.nexttypes.datatypes.FieldRange;
 import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.IdFilter;
@@ -1072,16 +1073,16 @@ public class PostgreSQLNode implements Node {
 		}
 	}
 
-	protected void checkNumericField(NXObject object, String field, String fieldType) {
-		if (PT.isNumericType(fieldType)) {
-			String type = object.getType();
-			BigDecimal value = object.getNumeric(field);
-
-			BigDecimal minValue = typeSettings.getFieldNumeric(type, field, Constants.MIN_VALUE);
-			BigDecimal maxValue = typeSettings.getFieldNumeric(type, field, Constants.MAX_VALUE);
-
-			if ((minValue != null && value.compareTo(minValue) == -1)
-					|| (maxValue != null && value.compareTo(maxValue) == 1)) {
+	@Override
+	public void checkFieldRange(String type, String field, Object value) {
+		checkFieldRange(type, field, value, getTypeField(type, field));
+	}
+	
+	protected void checkFieldRange(String type, String field, Object value, TypeField typeField) {
+		String fieldType = typeField.getType();
+		
+		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
+			if (!getFieldRange(type, field, typeField).isInRange(value)) {
 				throw new FieldException(type, field, Constants.OUT_OF_RANGE_VALUE, value);
 			}
 		}
@@ -1199,7 +1200,7 @@ public class PostgreSQLNode implements Node {
 			}	
 
 			if (value != null) {
-				checkNumericField(object, field, fieldType);
+				checkFieldRange(type, field, value, typeField);
 				checkComplexField(type, field, value);
 			}
 		}
@@ -1282,7 +1283,7 @@ public class PostgreSQLNode implements Node {
 			Object value = object.get(field);
 
 			if (value != null) {
-				checkNumericField(object, field, typeField.getType());
+				checkFieldRange(type, field, value, typeField);
 				checkComplexField(type, field, value);
 			}
 		}
@@ -1843,8 +1844,8 @@ public class PostgreSQLNode implements Node {
 
 			for (Tuple tuple : tuples) {
 				fields.put(tuple.getString(Constants.NAME),
-						new TypeField(tuple.getString(Constants.TYPE), tuple.getInt64(Constants.LENGTH),
-								tuple.getInt64(Constants.PRECISION), tuple.getInt64(Constants.SCALE),
+						new TypeField(tuple.getString(Constants.TYPE), tuple.getInt32(Constants.LENGTH),
+								tuple.getInt32(Constants.PRECISION), tuple.getInt32(Constants.SCALE),
 								tuple.getBoolean(Constants.NOT_NULL)));
 			}
 
@@ -2324,6 +2325,22 @@ public class PostgreSQLNode implements Node {
 		}
 		
 		return value;
+	}
+	
+	@Override
+	public FieldRange getFieldRange(String type, String field) {
+		return getFieldRange(type, field, getTypeField(type, field));
+	}
+	
+	protected FieldRange getFieldRange(String type, String field, TypeField typeField) {
+		String min = typeSettings.getFieldString(type, field, Constants.MIN);
+		String max = typeSettings.getFieldString(type, field, Constants.MAX);
+		return new FieldRange(min, max, typeField) {};
+	}
+	
+	@Override
+	public FieldRange getActionFieldRange(String type, String action, String field) {
+		throw new NotImplementedException();
 	}
 
 	@Override
@@ -4230,6 +4247,11 @@ public class PostgreSQLNode implements Node {
 	public LinkedHashMap<String, TypeField> getActionFields(String type, String action) {
 		throw new NotImplementedException();
 	}
+	
+	@Override
+	public TypeField getActionField(String type, String action, String field) {
+		throw new NotImplementedException();
+	}
 
 	@Override
 	public Strings getStrings() {
@@ -4239,5 +4261,15 @@ public class PostgreSQLNode implements Node {
 	@Override
 	public TypeSettings getTypeSettings() {
 		return typeSettings;
+	}
+
+	@Override
+	public String getActionFieldType(String type, String action, String field) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public void checkActionFieldRange(String type, String action, String field, Object value) {
+		throw new NotImplementedException();
 	}
 }

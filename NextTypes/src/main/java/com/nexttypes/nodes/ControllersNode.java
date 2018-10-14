@@ -41,6 +41,7 @@ import com.nexttypes.datatypes.AlterResult;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
+import com.nexttypes.datatypes.FieldRange;
 import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
@@ -51,7 +52,6 @@ import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.ObjectField;
 import com.nexttypes.datatypes.ObjectInfo;
 import com.nexttypes.datatypes.Objects;
-import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Reference;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Tuples;
@@ -70,7 +70,6 @@ import com.nexttypes.exceptions.ActionException;
 import com.nexttypes.exceptions.ActionExecutionException;
 import com.nexttypes.exceptions.ActionFieldException;
 import com.nexttypes.exceptions.ActionNotFoundException;
-import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
@@ -120,6 +119,21 @@ public class ControllersNode implements Node {
 	public LinkedHashMap<String, TypeField> getActionFields(String type, String action) {
 		return getController(type).getActionFields(action);
 	}
+	
+	@Override
+	public FieldRange getActionFieldRange(String type, String action, String field) {
+		return getController(type).getActionFieldRange(type, action, field);
+	}
+	
+	@Override
+	public TypeField getActionField(String type, String action, String field) {
+		return getController(type).getActionField(action, field);
+	}
+	
+	@Override
+	public String getActionFieldType(String type, String action, String field) {
+		return getController(type).getActionFieldType(action, field);
+	}
 
 	@Override
 	public LinkedHashMap<String, LinkedHashMap<String, TypeField>> getTypeActions(String type) {
@@ -161,7 +175,7 @@ public class ControllersNode implements Node {
 			}
 
 			if (parameters[x] != null) {
-				checkNumericField(type, action, field, typeField.getType(), parameters[x]);
+				checkActionFieldRange(type, action, field, parameters[x]);
 				checkComplexField(type, action, field, parameters[x]);
 			}
 
@@ -275,19 +289,9 @@ public class ControllersNode implements Node {
 		}
 	}
 
-	protected void checkNumericField(String type, String action, String field, String fieldType, Object value) {
-
-		if (PT.isNumericType(fieldType)) {
-			BigDecimal numericValue = Tuple.parseNumeric(value);
-
-			BigDecimal minValue = typeSettings.getFieldNumeric(type, field, Constants.MIN_VALUE);
-			BigDecimal maxValue = typeSettings.getFieldNumeric(type, field, Constants.MAX_VALUE);
-
-			if ((minValue != null && numericValue.compareTo(minValue) == -1)
-					|| (maxValue != null && numericValue.compareTo(maxValue) == 1)) {
-				throw new FieldException(type, field, Constants.OUT_OF_RANGE_VALUE, numericValue);
-			}
-		}
+	@Override
+	public void checkActionFieldRange(String type, String action, String field, Object value) {
+		getController(type).checkActionFieldRange(type, action, field, value);
 	}
 
 	@Override
@@ -712,6 +716,16 @@ public class ControllersNode implements Node {
 	@Override
 	public String getETag(String type, String id) {
 		return getController(type).getETag(type, id);
+	}
+	
+	@Override
+	public FieldRange getFieldRange(String type, String field) {
+		return getController(type).getFieldRange(type, field);
+	}
+
+	@Override
+	public void checkFieldRange(String type, String field, Object value) {
+		getController(type).checkFieldRange(type, field, value);
 	}
 
 	@Override

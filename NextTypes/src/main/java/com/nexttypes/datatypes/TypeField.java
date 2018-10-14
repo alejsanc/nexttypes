@@ -28,9 +28,9 @@ import com.nexttypes.system.Constants;
 public class TypeField {
 
 	protected String type;
-	protected Long length;
-	protected Long precision;
-	protected Long scale;
+	protected Integer length;
+	protected Integer precision;
+	protected Integer scale;
 	protected Boolean notNull;
 	protected String parameters;
 	protected String oldName;
@@ -54,10 +54,10 @@ public class TypeField {
 		case PT.TEL:
 			if (parameters == null) {
 				this.parameters = Type.DEFAULT_STRING_LENGTH + "";
-				length = Long.valueOf(Type.DEFAULT_STRING_LENGTH);
+				length = Type.DEFAULT_STRING_LENGTH;
 			} else {
 				this.parameters = parameters;
-				length = Long.valueOf(parameters);
+				length = Integer.valueOf(parameters);
 			}
 			break;
 		case PT.NUMERIC:
@@ -65,11 +65,11 @@ public class TypeField {
 				this.parameters = parameters;
 				if (parameters.contains(",")) {
 					String[] precisionScale = parameters.split(",");
-					precision = Long.valueOf(precisionScale[0]);
-					scale = Long.valueOf(precisionScale[1]);
+					precision = Integer.valueOf(precisionScale[0]);
+					scale = Integer.valueOf(precisionScale[1]);
 				} else {
-					precision = Long.valueOf(parameters);
-					scale = 0L;
+					precision = Integer.valueOf(parameters);
+					scale = 0;
 				}
 			}
 			break;
@@ -77,8 +77,10 @@ public class TypeField {
 	}
 
 	@JsonCreator
-	public TypeField(@JsonProperty(Constants.TYPE) String type, @JsonProperty(Constants.LENGTH) Long length,
-			@JsonProperty(Constants.PRECISION) Long precision, @JsonProperty(Constants.SCALE) Long scale,
+	public TypeField(@JsonProperty(Constants.TYPE) String type,
+			@JsonProperty(Constants.LENGTH) Integer length,
+			@JsonProperty(Constants.PRECISION) Integer precision,
+			@JsonProperty(Constants.SCALE) Integer scale,
 			@JsonProperty(Constants.NOT_NULL) Boolean notNull) {
 		
 		this.type = type;
@@ -93,7 +95,7 @@ public class TypeField {
 		case PT.EMAIL:
 		case PT.TEL:
 			if (length == null) {
-				this.length = Long.valueOf(Type.DEFAULT_STRING_LENGTH);
+				this.length = Type.DEFAULT_STRING_LENGTH;
 				parameters = Type.DEFAULT_STRING_LENGTH + "";
 			} else {
 				parameters = length.toString();
@@ -117,17 +119,17 @@ public class TypeField {
 	}
 
 	@JsonProperty(Constants.LENGTH)
-	public Long getLength() {
+	public Integer getLength() {
 		return length;
 	}
 
 	@JsonProperty(Constants.PRECISION)
-	public Long getPrecision() {
+	public Integer getPrecision() {
 		return precision;
 	}
 
 	@JsonProperty(Constants.SCALE)
-	public Long getScale() {
+	public Integer getScale() {
 		return scale;
 	}
 

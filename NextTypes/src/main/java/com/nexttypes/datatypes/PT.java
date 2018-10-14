@@ -16,6 +16,8 @@
 
 package com.nexttypes.datatypes;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 public class PT {
@@ -63,6 +65,8 @@ public class PT {
 
 	public static final String[] FILE_TYPES = new String[] { FILE, IMAGE, DOCUMENT, AUDIO, VIDEO };
 	
+	public static final String[] TIME_TYPES = new String[] { DATE, TIME, DATETIME };
+	
 	public static final String[] FILTER_TYPES = new String[] { INT16, INT32, INT64, FLOAT32, FLOAT64,
 			NUMERIC, BOOLEAN, STRING, TEXT, HTML, JSON, XML, URL, EMAIL, TEL, DATE, TIME, DATETIME,
 			TIMEZONE, COLOR };
@@ -91,7 +95,59 @@ public class PT {
 		return ArrayUtils.contains(FILE_TYPES, type);
 	}
 	
+	public static boolean isTimeType(String type) {
+		return ArrayUtils.contains(TIME_TYPES, type);
+	}
+	
 	public static boolean isFilterType(String type) {
 		return ArrayUtils.contains(FILTER_TYPES, type);
+	}
+	
+	public static BigDecimal numericMaxValue(TypeField typeField) {
+		return numericMaxValue(typeField.getPrecision(), typeField.getScale());
+	}
+	
+	public static BigDecimal numericMaxValue(Integer precision, Integer scale) {
+						
+		StringBuilder max = new StringBuilder();
+		int left = precision - scale;
+							
+		if (left > 0) {
+			for (int x = 0; x < left; x++) {
+				max.append("9");
+			}
+		} else {
+			max.append("0");
+		}
+		
+		if (scale > 0) {
+			max.append(".");
+							
+			for (int x = 0; x < scale; x++) {
+				max.append("9");
+			}
+		}
+		
+		return new BigDecimal(max.toString());
+	}
+	
+	public static Integer compare(Object value1, Object value2) {
+		Integer result = null;
+		
+		if (value1 instanceof Comparable) {
+			result = ((Comparable) value1).compareTo(value2);
+		} else if (value1 instanceof Short) {
+			result = ((Short) value1).compareTo((Short) value2);
+		} else if (value1 instanceof Integer) {
+			result = ((Integer) value1).compareTo((Integer) value2);
+		} else if (value1 instanceof Long) {
+			result = ((Long) value1).compareTo((Long) value2);
+		} else if (value1 instanceof Float) {
+			result = ((Float) value1).compareTo((Float) value2);
+		} else if (value1 instanceof Double) {
+			result = ((Double) value1).compareTo((Double) value2);
+		}
+		
+		return result;
 	}
 }

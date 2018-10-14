@@ -18,7 +18,6 @@ package com.nexttypes.datatypes;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Array;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -187,8 +186,8 @@ public class Tuple {
 	}
 
 	public static Short parseInt16(Object value) {
-		if (value instanceof BigInteger) {
-			value = ((BigInteger) value).shortValueExact();
+		if (value instanceof BigDecimal) {
+			value = ((BigDecimal) value).shortValueExact();
 		} else if (value instanceof String) {
 			value = Short.parseShort((String) value);
 		} else if (value instanceof byte[]) {
@@ -202,8 +201,8 @@ public class Tuple {
 	}
 
 	public static Integer parseInt32(Object value) {
-		if (value instanceof BigInteger) {
-			value = ((BigInteger) value).intValueExact();
+		if (value instanceof BigDecimal) {
+			value = ((BigDecimal) value).intValueExact();
 		} else if (value instanceof Short) {
 			value = ((Short) value).intValue();
 		} else if (value instanceof String) {
@@ -219,8 +218,8 @@ public class Tuple {
 	}
 
 	public static Long parseInt64(Object value) {
-		if (value instanceof BigInteger) {
-			value = ((BigInteger) value).longValueExact();
+		if (value instanceof BigDecimal) {
+			value = ((BigDecimal) value).longValueExact();
 		} else if (value instanceof Integer) {
 			value = ((Integer) value).longValue();
 		} else if (value instanceof Short) {
@@ -238,7 +237,9 @@ public class Tuple {
 	}
 
 	public static Float parseFloat32(Object value) {
-		if (value instanceof String) {
+		if (value instanceof BigDecimal) {
+			value = ((BigDecimal) value).floatValue();
+		} else if (value instanceof String) {
 			value = Float.parseFloat((String) value);
 		} else if (value instanceof byte[]) {
 			value = Float.parseFloat(bytesToString(value));
@@ -253,6 +254,8 @@ public class Tuple {
 	public static Double parseFloat64(Object value) {
 		if (value instanceof Float) {
 			value = ((Float) value).doubleValue();
+		} else if (value instanceof BigDecimal) {
+			value = ((BigDecimal) value).doubleValue();
 		} else if (value instanceof String) {
 			value = Double.parseDouble((String) value);
 		} else if (value instanceof byte[]) {
@@ -263,6 +266,14 @@ public class Tuple {
 
 	public BigDecimal getNumeric(String field) {
 		return parseNumeric(get(field));
+	}
+	
+	public BigDecimal getNumeric(String field, TypeField typeField) {
+		return parseNumeric(get(field), typeField);
+	}
+	
+	public BigDecimal getNumeric(String field, BigDecimal min, BigDecimal max) {
+		return parseNumeric(get(field), min, max);
 	}
 
 	public static BigDecimal parseNumeric(Object value) {
@@ -283,7 +294,22 @@ public class Tuple {
 		}
 		return (BigDecimal) value;
 	}
-
+	
+	public static BigDecimal parseNumeric(Object value, TypeField typeField) {
+		BigDecimal max = PT.numericMaxValue(typeField);
+		return parseNumeric(value, max.negate(), max);
+	}
+	
+	public static BigDecimal parseNumeric(Object value, BigDecimal min, BigDecimal max) {
+		BigDecimal numeric = parseNumeric(value);
+		
+		if (numeric != null && (numeric.compareTo(min) == -1 || numeric.compareTo(max) == 1)) {
+			throw new InvalidValueException(Constants.INVALID_NUMERIC, numeric);
+		}
+		
+		return numeric;
+	}
+	
 	public Boolean getBoolean(String field) {
 		return parseBoolean(get(field));
 	}

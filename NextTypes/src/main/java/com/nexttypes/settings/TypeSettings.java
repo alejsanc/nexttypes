@@ -17,10 +17,16 @@
 package com.nexttypes.settings;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import com.nexttypes.datatypes.FieldRange;
+import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Tuple;
+import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Utils;
 
@@ -191,6 +197,27 @@ public class TypeSettings extends Settings {
 	public BigDecimal getFieldNumeric(String type, String field, String setting) {
 		return Tuple.parseNumeric(getFieldString(type, field, setting));
 	}
+	
+	public BigDecimal getFieldNumeric(String type, String field, String setting, BigDecimal min,
+			BigDecimal max) {
+		return Tuple.parseNumeric(getFieldString(type, field, setting), min, max);
+	}
+	
+	public BigDecimal getFieldNumeric(String type, String field, String setting, TypeField typeField) {
+		return Tuple.parseNumeric(getFieldString(type, field, setting), typeField);
+	}
+	
+	public LocalDate getFieldDate(String type, String field, String setting) {
+		return Tuple.parseDate(getFieldString(type, field, setting));
+	}
+	
+	public LocalTime getFieldTime(String type, String field, String setting) {
+		return Tuple.parseTime(getFieldString(type, field, setting));
+	}
+	
+	public LocalDateTime getFieldDateTime(String type, String field, String setting) {
+		return Tuple.parseDateTime(getFieldString(type, field, setting));
+	}
 
 	public String[] getActionStringArray(String type, String action, String setting) {
 		return Utils.split(getActionString(type, action, setting));
@@ -247,5 +274,27 @@ public class TypeSettings extends Settings {
 
 	public BigDecimal getActionFieldNumeric(String type, String action, String field, String setting) {
 		return Tuple.parseNumeric(getActionFieldString(type, action, field, setting));
+	}
+	
+	public BigDecimal getActionFieldNumeric(String type, String action, String field, String setting,
+			BigDecimal min, BigDecimal max) {
+		return Tuple.parseNumeric(getActionFieldString(type, action, field, setting), min, max);
+	}
+	
+	public BigDecimal getActionFieldNumeric(String type, String action, String field, String setting,
+			TypeField typeField) {
+		return Tuple.parseNumeric(getActionFieldString(type, action, field, setting), typeField);
+	}
+	
+	public LocalDate getActionFieldDate(String type, String action, String field, String setting) {
+		return Tuple.parseDate(getActionFieldString(type, action, field, setting));
+	}
+	
+	public LocalTime getActionFieldTime(String type, String action, String field, String setting) {
+		return Tuple.parseTime(getActionFieldString(type, action, field, setting));
+	}
+	
+	public LocalDateTime getActionFieldDateTime(String type, String action, String field, String setting) {
+		return Tuple.parseDateTime(getActionFieldString(type, action, field, setting));
 	}
 }
