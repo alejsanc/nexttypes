@@ -525,6 +525,10 @@ p {
 	margin-left: 5px;
 }
 
+.field-range {
+	font-size: 70%;
+}
+
 .CodeMirror {
 	width: 60vw;
 	height: 60vh !important;

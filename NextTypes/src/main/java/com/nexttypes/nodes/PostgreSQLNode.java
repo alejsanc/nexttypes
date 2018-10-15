@@ -1075,14 +1075,11 @@ public class PostgreSQLNode implements Node {
 
 	@Override
 	public void checkFieldRange(String type, String field, Object value) {
-		checkFieldRange(type, field, value, getTypeField(type, field));
-	}
-	
-	protected void checkFieldRange(String type, String field, Object value, TypeField typeField) {
-		String fieldType = typeField.getType();
+		String fieldType = getFieldType(type, field);
 		
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
-			if (!getFieldRange(type, field).isInRange(value)) {
+			FieldRange range = getFieldRange(type, field);
+			if (range != null && !range.isInRange(value)) {
 				throw new FieldException(type, field, Constants.OUT_OF_RANGE_VALUE, value);
 			}
 		}
@@ -1200,7 +1197,7 @@ public class PostgreSQLNode implements Node {
 			}	
 
 			if (value != null) {
-				checkFieldRange(type, field, value, typeField);
+				checkFieldRange(type, field, value);
 				checkComplexField(type, field, value);
 			}
 		}
@@ -1283,7 +1280,7 @@ public class PostgreSQLNode implements Node {
 			Object value = object.get(field);
 
 			if (value != null) {
-				checkFieldRange(type, field, value, typeField);
+				checkFieldRange(type, field, value);
 				checkComplexField(type, field, value);
 			}
 		}

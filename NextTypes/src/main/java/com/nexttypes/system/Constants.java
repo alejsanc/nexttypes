@@ -310,6 +310,7 @@ public class Constants {
 	public static final String SHOW_ID = "show_id";
 	public static final String SHOW_PREVIEW = "show_preview";
 	public static final String SHOW_PROGRESS = "show_progress";
+	public static final String SHOW_RANGE = "show_range";
 	public static final String SHOW_TYPE = "show_type";
 	public static final String SHOW_VALIDATORS = "show_validators";
 	public static final String SIGNATURE = "signature";

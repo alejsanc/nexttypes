@@ -114,7 +114,8 @@ public class Controller {
 		String fieldType = getActionFieldType(action, field);
 
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
-			if (!getActionFieldRange(action, field).isInRange(value)) {
+			FieldRange range = getActionFieldRange(action, field);
+			if (range != null && !range.isInRange(value)) {
 				throw new ActionFieldException(type, action, field, Constants.OUT_OF_RANGE_VALUE,
 						value);
 			}

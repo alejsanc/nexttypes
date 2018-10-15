@@ -143,6 +143,7 @@ public class HTMLView extends View {
 	//Classes
 	public static final String ADD_FILTER = "add-filter";
 	public static final String FILTER_FIELD = "filter-field";
+	public static final String FIELD_RANGE = "field-range";
 	public static final String OBJECT_RADIO_INPUT = "object-radio-input";
 	public static final String OBJECTS_TEXTAREA_INPUT = "objects-textarea-input";
 	public static final String REFERENCE_OUTPUT = "reference-output";
@@ -512,14 +513,15 @@ public class HTMLView extends View {
 		boolean showId = typeSettings.getActionBoolean(type, action, Constants.SHOW_ID);
 		boolean showHeader = typeSettings.getActionBoolean(type, action, Constants.SHOW_HEADER);
 		boolean showProgress = typeSettings.getActionBoolean(type, action, Constants.SHOW_PROGRESS);
+		boolean showRange = typeSettings.getActionBoolean(type, action, Constants.SHOW_RANGE);
 		
 		return executeActionForm(type, id, action, actionName, fields, lang, view, showType,
-				showId, showHeader, showProgress);
+				showId, showHeader, showProgress, showRange);
 	}
 	
 	public Element executeActionForm(String type, String id, String action, String actionName,
 			LinkedHashMap<String, TypeField> fields, String lang, String view, boolean showType,
-			boolean showId, boolean showHeader, boolean showProgress) {
+			boolean showId, boolean showHeader, boolean showProgress, boolean showRange) {
 		
 		Element form = form(type, id, lang, view);
 
@@ -577,8 +579,13 @@ public class HTMLView extends View {
 			
 			
 			row.appendElement(HTML.TD).appendText(fieldName);
-			row.appendElement(HTML.TD).appendElement(actionFieldInput(type, action, field, fieldName,
+			Element inputRow = row.appendElement(HTML.TD);
+			inputRow.appendElement(actionFieldInput(type, action, field, fieldName,
 					null, typeField, lang));
+			
+			if (showRange) {
+				inputRow.appendElement(fieldRange(typeField));
+			}
 		}
 
 		Element actionButton = form.appendElement(button(actionName, action, Icon.CHEVRON_TOP,
@@ -1185,13 +1192,15 @@ public class HTMLView extends View {
 		boolean showId = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_ID);
 		boolean showHeader = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_HEADER);
 		boolean showProgress = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_PROGRESS);
+		boolean showRange = typeSettings.getActionBoolean(type, Action.INSERT, Constants.SHOW_RANGE);
 		
-		return insertForm(type, fields, lang, view, ref, showType, showId, showHeader, showProgress);
+		return insertForm(type, fields, lang, view, ref, showType, showId, showHeader, showProgress,
+				showRange);
 	}
 	
 	public Element insertForm(String type, String[] fields, String lang, String view,
 			FieldReference ref, boolean showType, boolean showId, boolean showHeader,
-			boolean showProgress) {	
+			boolean showProgress, boolean showRange) {	
 		
 		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
 		
@@ -1271,7 +1280,8 @@ public class HTMLView extends View {
 				fieldCell.appendText(fieldName);
 			}
 
-			row.appendElement(insertFormCell(type, field, fieldName, value, typeField, ref, lang));
+			row.appendElement(insertFormCell(type, field, fieldName, value, typeField, ref, lang,
+					showRange));
 		}
 		
 		String actionName = strings.getActionName(type, Action.INSERT);
@@ -1608,12 +1618,15 @@ public class HTMLView extends View {
 		boolean showId = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_ID);
 		boolean showHeader = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_HEADER);
 		boolean showProgress = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_PROGRESS);
+		boolean showRange = typeSettings.getActionBoolean(type, Action.UPDATE, Constants.SHOW_RANGE);
 		
-		return updateForm(object, fields, lang, view, showType, showId, showHeader, showProgress);
+		return updateForm(object, fields, lang, view, showType, showId, showHeader, showProgress,
+				showRange);
 	}
 	
 	public Element updateForm(NXObject object, String[] fields, String lang, String view,
-			boolean showType, boolean showId, boolean showHeader, boolean showProgress) {
+			boolean showType, boolean showId, boolean showHeader, boolean showProgress,
+			boolean showRange) {
 		
 		String type = object.getType();
 		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
@@ -1688,7 +1701,8 @@ public class HTMLView extends View {
 				fieldCell.appendText(fieldName);
 			}
 			
-			row.appendElement(updateFormCell(object, field, fieldName, value, typeField, lang, view));
+			row.appendElement(updateFormCell(object, field, fieldName, value, typeField, lang, view,
+					showRange));
 		}
 
 		String actionName = strings.getActionName(object.getType(), Action.UPDATE);
@@ -1766,7 +1780,7 @@ public class HTMLView extends View {
 	}
 
 	public Element insertFormCell(String type, String field, String title, Object value, 
-			TypeField typeField, FieldReference ref, String lang) {
+			TypeField typeField, FieldReference ref, String lang, boolean showRange) {
 		Element cell = document.createElement(HTML.TD);
 		Element input = null;
 
@@ -1780,19 +1794,31 @@ public class HTMLView extends View {
 		}
 
 		cell.appendElement(input);
+		
+		if (showRange) {
+			cell.appendElement(fieldRange(typeField));
+		}
+		
 		return cell;
 	}
 
-	public Element updateFormCell(NXObject object, String field, String title, Object value, TypeField typeField,
-			String lang, String view) {
+	public Element updateFormCell(NXObject object, String field, String title, Object value,
+			TypeField typeField, String lang, String view, boolean showRange) {
 		Element cell = document.createElement(HTML.TD);
-
+		Element input = null;
+		
 		if (typeField.getType().equals(PT.PASSWORD)) {
-			cell.appendElement(passwordFieldOutput(object.getType(), object.getId(), field, lang, view));
+			input = passwordFieldOutput(object.getType(), object.getId(), field, lang, view);
 		} else {
-			cell.appendElement(fieldInput(object.getType(), field, title, value, typeField, lang));
+			input = fieldInput(object.getType(), field, title, value, typeField, lang);
 		}
 
+		cell.appendElement(input);
+		
+		if (showRange) {
+			cell.appendElement(fieldRange(typeField));
+		}
+		
 		return cell;
 	}
 
@@ -2060,6 +2086,37 @@ public class HTMLView extends View {
 		}
 
 		return input;
+	}
+	
+	public Element fieldRange(TypeField typeField) {
+		return fieldRange(typeField.getRange());
+	}
+	
+	public Element fieldRange(FieldRange range) {
+		if (range != null) {
+			return fieldRange(range.getMin(), range.getMax());
+		} else {
+			return document.createElement(HTML.SPAN);
+		}
+	}
+	
+	public Element fieldRange(Object min, Object max) {
+		Element span = document.createElement(HTML.SPAN)
+				.addClass(FIELD_RANGE);
+		
+		if (min != null || max != null) {
+			if (min != null) {
+				span.appendText(min);
+			}
+			
+			span.appendText(" - ");
+			
+			if (max != null) {
+				span.appendText(max);
+			}
+		}
+		
+		return span;
 	}
 	
 	public void setFieldRange(Element input, TypeField typeField) {
