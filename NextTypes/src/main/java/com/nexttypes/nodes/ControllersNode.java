@@ -122,7 +122,7 @@ public class ControllersNode implements Node {
 	
 	@Override
 	public FieldRange getActionFieldRange(String type, String action, String field) {
-		return getController(type).getActionFieldRange(type, action, field);
+		return getController(type).getActionFieldRange(action, field);
 	}
 	
 	@Override

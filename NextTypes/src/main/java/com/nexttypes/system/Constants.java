@@ -29,9 +29,6 @@ public class Constants {
 	public static final String ICAL_SELECT = "views.ical.select";
 	public static final String RSS_SELECT = "views.rss.select";
 		
-	public static final String _NULL = "_null";
-	public static final String _REPEAT = "_repeat";
-	
 	public static final String ACCEPT = "accept";
 	public static final String ACTION = "action";
 	public static final String ACTION_EXECUTION_ERROR = "action_execution_error";
@@ -285,6 +282,7 @@ public class Constants {
 	public static final String PRIMITIVE_TYPE_WITH_THE_SAME_NAME = "primitive_type_with_the_same_name";
 	public static final String PUB_DATE = "pub_date";
 	public static final String QRCODE = "qrcode";
+	public static final String RANGE = "range";
 	public static final String READ_MORE = "read_more";
 	public static final String REF = "ref";
 	public static final String REFERENCE = "reference";

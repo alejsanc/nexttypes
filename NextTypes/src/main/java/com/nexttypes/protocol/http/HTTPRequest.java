@@ -339,7 +339,7 @@ public class HTTPRequest {
 	public void checkFields(LinkedHashMap<String, TypeField> typeFields) {
 		for (String field : fields.getFields().keySet()) {
 			if (!typeFields.containsKey(field)) {
-				if (!((field.endsWith(Constants._REPEAT) || field.endsWith(Constants._NULL))
+				if (!((field.endsWith("_" + Constants.REPEAT) || field.endsWith("_" + Constants.NULL))
 						&& typeFields.containsKey(field.substring(0, field.lastIndexOf("_"))))) {
 					
 					throw new FieldException(type, field, Constants.INVALID_FIELD);
@@ -362,7 +362,7 @@ public class HTTPRequest {
 
 			if (PT.isBinaryType(fieldType)) {
 				
-				if (fields.containsKey(field + Constants._NULL)) {
+				if (fields.containsKey(field + "_" + Constants.NULL)) {
 					
 					object.put(field, null);
 					
@@ -975,7 +975,7 @@ public class HTTPRequest {
 		public String getPassword(String field) {
 
 			String password = getString(field);
-			String passwordRepeat = getString(field + Constants._REPEAT);
+			String passwordRepeat = getString(field + "_" + Constants.REPEAT);
 
 			if (!Security.passwordsMatch(password, passwordRepeat)) {
 				throw new NXException(type, Constants.PASSWORDS_DONT_MATCH);

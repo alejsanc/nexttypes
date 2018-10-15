@@ -24,13 +24,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nexttypes.system.Constants;
 
 @JsonInclude(Include.NON_NULL)
-@JsonPropertyOrder({ Constants.TYPE, Constants.LENGTH, Constants.PRECISION, Constants.SCALE, Constants.NOT_NULL })
+@JsonPropertyOrder({ Constants.TYPE, Constants.LENGTH, Constants.PRECISION, Constants.SCALE,
+	Constants.RANGE, Constants.NOT_NULL })
 public class TypeField {
 
 	protected String type;
 	protected Integer length;
 	protected Integer precision;
 	protected Integer scale;
+	protected FieldRange range;
 	protected Boolean notNull;
 	protected String parameters;
 	protected String oldName;
@@ -81,14 +83,22 @@ public class TypeField {
 			@JsonProperty(Constants.LENGTH) Integer length,
 			@JsonProperty(Constants.PRECISION) Integer precision,
 			@JsonProperty(Constants.SCALE) Integer scale,
+			@JsonProperty(Constants.RANGE) FieldRange range,
 			@JsonProperty(Constants.NOT_NULL) Boolean notNull) {
+		
+		if (range != null) {
+			range.parse(type, precision, scale);
+		} else if (PT.isNumericType(type)) {
+			range = new FieldRange(type, precision, scale);
+		}
 		
 		this.type = type;
 		this.length = length;
 		this.precision = precision;
 		this.scale = scale;
+		this.range = range;
 		this.notNull = notNull;
-		
+				
 		switch (type) {
 		case PT.STRING:
 		case PT.URL:
@@ -131,6 +141,11 @@ public class TypeField {
 	@JsonProperty(Constants.SCALE)
 	public Integer getScale() {
 		return scale;
+	}
+	
+	@JsonProperty(Constants.RANGE)
+	public FieldRange getRange() {
+		return range;
 	}
 
 	@JsonProperty(Constants.NOT_NULL)

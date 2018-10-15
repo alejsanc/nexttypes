@@ -114,17 +114,15 @@ public class Controller {
 		String fieldType = getActionFieldType(action, field);
 
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
-			if (!getActionFieldRange(type, action, field).isInRange(value)) {
+			if (!getActionFieldRange(action, field).isInRange(value)) {
 				throw new ActionFieldException(type, action, field, Constants.OUT_OF_RANGE_VALUE,
 						value);
 			}
 		}
 	}
 	
-	public FieldRange getActionFieldRange(String type, String action, String field) {
-		String min = typeSettings.getActionFieldString(type, action, field, Constants.MIN);
-		String max = typeSettings.getActionFieldString(type, action, field, Constants.MAX);
-		return new FieldRange(min, max, getActionField(action, field)) {};
+	public FieldRange getActionFieldRange(String action, String field) {
+		return getActionField(action, field).getRange();
 	}
 	
 	public FieldRange getFieldRange(String type, String field) {

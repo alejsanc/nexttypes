@@ -32,6 +32,10 @@
 			"type": "numeric",
 			"precision": 10,
 			"scale": 2,
+			"range": {
+				"min": -50000000,
+				"max": 10000000
+			},
 			"not_null": false
 		},
 		"boolean": {
@@ -76,6 +80,9 @@
 		},
 		"date": {
 			"type": "date",
+			"range": {
+				"min": "1950-01-01"
+			},
 			"not_null": false
 		},
 		"time": {

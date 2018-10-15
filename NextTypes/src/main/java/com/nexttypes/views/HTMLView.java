@@ -1552,7 +1552,7 @@ public class HTMLView extends View {
 					filter.getValue(), type, true, lang);
 		} else {
 			if (PT.isTextType(typeField.getType())) {
-				typeField = new TypeField(PT.STRING, null, null, null, typeField.isNotNull());
+				typeField = new TypeField(PT.STRING, null, null, null, null, typeField.isNotNull());
 			}
 			
 			String filterFieldName = strings.getFieldName(type, filterField);
@@ -1908,7 +1908,7 @@ public class HTMLView extends View {
 		
 		nullFieldInput.appendText(" | " + nullName + ":");
 	
-		nullFieldInput.appendElement(booleanInput("@" + field + Constants._NULL, nullName, false))
+		nullFieldInput.appendElement(booleanInput("@" + field + "_" + Constants.NULL, nullName, false))
 			.addClass(Constants.NULL);
 		
 		if (value == null) {
@@ -1954,7 +1954,7 @@ public class HTMLView extends View {
 
 		input.appendText(strings.gts(type, Constants.REPEAT) + ": ");
 
-		input.appendElement(input(HTML.PASSWORD, "@" + field + Constants._REPEAT, title))
+		input.appendElement(input(HTML.PASSWORD, "@" + field + "_" + Constants.REPEAT, title))
 			.setAttribute(HTML.MAXLENGTH, Security.BCRYPT_MAX_PASSWORD_LENGTH);
 
 		return input;
@@ -2002,14 +2002,7 @@ public class HTMLView extends View {
 			setFieldRequired(input, typeField);
 			
 		} else if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
-			FieldRange range = null;
-						
-			if (action != null) {
-				range = nextNode.getActionFieldRange(type, action, field);
-			} else {
-				range = nextNode.getFieldRange(type, field);
-			}
-			
+									
 			switch(fieldType) {
 				
 			case PT.DATE:
@@ -2036,7 +2029,7 @@ public class HTMLView extends View {
 			
 			input = input(inputType, "@" + field, title, value);
 			
-			setFieldRange(input, range);
+			setFieldRange(input, typeField);
 			setFieldRequired(input, typeField);
 			
 		} else if (PT.COLOR.equals(fieldType)) {
@@ -2069,8 +2062,14 @@ public class HTMLView extends View {
 		return input;
 	}
 	
+	public void setFieldRange(Element input, TypeField typeField) {
+		setFieldRange(input, typeField.getRange());
+	}
+	
 	public void setFieldRange(Element input, FieldRange range) {
-		setFieldRange(input, range.getMin(), range.getMax());
+		if (range != null) {
+			setFieldRange(input, range.getMin(), range.getMax());
+		}
 	}
 
 	public void setFieldRange(Element input, Object min, Object max) {

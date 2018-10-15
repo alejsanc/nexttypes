@@ -1082,7 +1082,7 @@ public class PostgreSQLNode implements Node {
 		String fieldType = typeField.getType();
 		
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
-			if (!getFieldRange(type, field, typeField).isInRange(value)) {
+			if (!getFieldRange(type, field).isInRange(value)) {
 				throw new FieldException(type, field, Constants.OUT_OF_RANGE_VALUE, value);
 			}
 		}
@@ -1843,10 +1843,23 @@ public class PostgreSQLNode implements Node {
 			Tuple[] tuples = query(GET_TYPE_FIELDS_QUERY, type);
 
 			for (Tuple tuple : tuples) {
-				fields.put(tuple.getString(Constants.NAME),
-						new TypeField(tuple.getString(Constants.TYPE), tuple.getInt32(Constants.LENGTH),
-								tuple.getInt32(Constants.PRECISION), tuple.getInt32(Constants.SCALE),
-								tuple.getBoolean(Constants.NOT_NULL)));
+				String field = tuple.getString(Constants.NAME);
+				String fieldType = tuple.getString(Constants.TYPE);
+				FieldRange range = null;
+				
+				if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
+				
+					String min = typeSettings.getFieldString(type, field, Constants.MIN);
+					String max = typeSettings.getFieldString(type, field, Constants.MAX);
+					
+					if (min != null || max != null) {
+						range = new FieldRange(min, max);
+					}
+				}
+				
+				fields.put(field, new TypeField(fieldType, tuple.getInt32(Constants.LENGTH),
+						tuple.getInt32(Constants.PRECISION), tuple.getInt32(Constants.SCALE),
+							range, tuple.getBoolean(Constants.NOT_NULL)));
 			}
 
 			if (cacheEnabled) {
@@ -2329,13 +2342,7 @@ public class PostgreSQLNode implements Node {
 	
 	@Override
 	public FieldRange getFieldRange(String type, String field) {
-		return getFieldRange(type, field, getTypeField(type, field));
-	}
-	
-	protected FieldRange getFieldRange(String type, String field, TypeField typeField) {
-		String min = typeSettings.getFieldString(type, field, Constants.MIN);
-		String max = typeSettings.getFieldString(type, field, Constants.MAX);
-		return new FieldRange(min, max, typeField) {};
+		return getTypeField(type, field).getRange();
 	}
 	
 	@Override

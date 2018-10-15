@@ -18,75 +18,94 @@ package com.nexttypes.datatypes;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.nexttypes.system.Constants;
+
+@JsonInclude(Include.NON_NULL)
+@JsonPropertyOrder({ Constants.MIN, Constants.MAX })
 public class FieldRange {
 	protected Object min;
 	protected Object max;
 	
-	protected FieldRange(String min, String max, TypeField typeField) {
-		String fieldType = typeField.getType();
-				
-		switch(fieldType) {
+	public FieldRange(@JsonProperty(Constants.MIN) Object min,
+			@JsonProperty(Constants.MAX) Object max) {
+		this.min = min;
+		this.max = max;
+	}
+	
+	public FieldRange(String type, Integer precision, Integer scale) {
+		this(type, precision, scale, null, null);
+	}
+	
+	public FieldRange(String type, Integer precision, Integer scale, Object min, Object max) {
+		this(min, max);
+		parse(type, precision, scale);
+	}
+	
+	protected void parse(String type, Integer precision, Integer scale) {
+					
+		switch(type) {
 			
 		case PT.DATE:
-			this.min = Tuple.parseDate(min);
-			this.max = Tuple.parseDate(max);
+			min = Tuple.parseDate(min);
+			max = Tuple.parseDate(max);
 			break;
 			
 		case PT.TIME:
-			this.min = Tuple.parseTime(min);
-			this.max = Tuple.parseTime(max);
+			min = Tuple.parseTime(min);
+			max = Tuple.parseTime(max);
 			break;
 			
 		case PT.DATETIME:
-			this.min = Tuple.parseDateTime(min);
-			this.max = Tuple.parseDateTime(max);
+			min = Tuple.parseDateTime(min);
+			max = Tuple.parseDateTime(max);
 			break;
 			
 		case PT.INT16:
-			this.min = min == null ? Short.MIN_VALUE : Tuple.parseInt16(min);
-			this.max = max == null ? Short.MAX_VALUE : Tuple.parseInt16(max);
+			min = min == null ? Short.MIN_VALUE : Tuple.parseInt16(min);
+			max = max == null ? Short.MAX_VALUE : Tuple.parseInt16(max);
 			break;
 			
 		case PT.INT32:
-			this.min = min == null ? Integer.MIN_VALUE : Tuple.parseInt32(min);
-			this.max = max == null ? Integer.MAX_VALUE : Tuple.parseInt32(max);
+			min = min == null ? Integer.MIN_VALUE : Tuple.parseInt32(min);
+			max = max == null ? Integer.MAX_VALUE : Tuple.parseInt32(max);
 			break;
 			
 		case PT.INT64:
-			this.min = min == null ? Long.MIN_VALUE : Tuple.parseInt64(min);
-			this.max = max == null ? Long.MAX_VALUE : Tuple.parseInt64(max);
+			min = min == null ? Long.MIN_VALUE : Tuple.parseInt64(min);
+			max = max == null ? Long.MAX_VALUE : Tuple.parseInt64(max);
 			break;
 			
 		case PT.FLOAT32:
-			this.min = min == null ? Float.MIN_VALUE : Tuple.parseFloat32(min);
-			this.max = max == null ? Float.MAX_VALUE : Tuple.parseFloat32(max);
+			min = min == null ? Float.MIN_VALUE : Tuple.parseFloat32(min);
+			max = max == null ? Float.MAX_VALUE : Tuple.parseFloat32(max);
 			break;
 			
 		case PT.FLOAT64:
-			this.min = min == null ? Double.MIN_VALUE : Tuple.parseFloat64(min);
-			this.max = max == null ? Double.MAX_VALUE : Tuple.parseFloat64(max);
+			min = min == null ? Double.MIN_VALUE : Tuple.parseFloat64(min);
+			max = max == null ? Double.MAX_VALUE : Tuple.parseFloat64(max);
 			break;
 			
 		case PT.NUMERIC:
-			BigDecimal numericMax = PT.numericMaxValue(typeField);
+			BigDecimal numericMax = PT.numericMaxValue(precision, scale);
 			BigDecimal numericMin = numericMax.negate();
 							
-			this.min = min == null ? numericMin : Tuple.parseNumeric(min, numericMin, numericMax);
-			this.max = max == null ? numericMax : Tuple.parseNumeric(max, numericMin, numericMax);
+			min = min == null ? numericMin : Tuple.parseNumeric(min, numericMin, numericMax);
+			max = max == null ? numericMax : Tuple.parseNumeric(max, numericMin, numericMax);
 					
 			break;
 		}
 	}
 	
-	public FieldRange(Object min, Object max) {
-		this.min = min;
-		this.max = max;
-	}
-	
+	@JsonProperty(Constants.MIN)
 	public Object getMin() {
 		return min;
 	}
 	
+	@JsonProperty(Constants.MAX)
 	public Object getMax() {
 		return max;
 	}
