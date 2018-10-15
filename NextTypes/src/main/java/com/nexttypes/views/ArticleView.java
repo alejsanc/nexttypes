@@ -194,7 +194,7 @@ public class ArticleView extends HTMLView {
 			}
 
 			main.appendElement(insertForm(ARTICLE_DISCUSSION, ARTICLE_DISCUSSION_FIELDS, lang, view,
-				articleReference, false, false, false, false));
+				articleReference, false, false, false, false, false));
 		}
 		
 		String image = request.getURLRoot() + imageURL(tuple);
