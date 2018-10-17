@@ -87,10 +87,8 @@ import com.nexttypes.system.Loader;
 public class ControllersNode implements Node {
 	protected String user;
 	protected String[] groups;
-	protected String id;
 	protected Settings settings;
 	protected TypeSettings typeSettings;
-	protected Strings strings;
 	protected Node nextNode;
 
 	public ControllersNode(HTTPRequest request, NodeMode mode) {
@@ -106,7 +104,6 @@ public class ControllersNode implements Node {
 		nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), user, groups, mode, lang, remoteAddress,
 				context, useConnectionPool);
 		typeSettings = context.getTypeSettings(groups);
-		strings = context.getStrings(lang);
 	}
 
 	protected void setTypeActions(LinkedHashMap<String, Type> types) {
