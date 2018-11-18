@@ -118,7 +118,7 @@ public class Controller {
 
 			if (parameters[x] != null) {
 				checkActionFieldRange(action, field, parameters[x]);
-				checkComplexField(action, field, parameters[x]);
+				checkActionFileField(action, field, parameters[x]);
 			}
 
 			x++;
@@ -152,8 +152,8 @@ public class Controller {
 
 		return result;
 	}
-
-	protected void checkComplexField(String action, String field, Object value) {
+	
+	protected void checkActionFileField(String action, String field, Object value) {
 		if (value instanceof File) {
 			String[] allowedContentTypes = typeSettings.getActionFieldStringArray(type, action, field,
 					Constants.ALLOWED_CONTENT_TYPES);
@@ -219,10 +219,6 @@ public class Controller {
 						value);
 			}
 		}
-	}
-	
-	public void checkFieldRange(String field, Object value) {
-		nextNode.checkFieldRange(type, field, value);
 	}
 	
 	public ObjectsStream exportObjects(String[] objects, LinkedHashMap<String, Order> order) {

@@ -1058,7 +1058,7 @@ public class PostgreSQLNode implements Node {
 		}
 	}
 
-	protected void checkComplexField(String type, String field, Object value) {
+	protected void checkFileField(String type, String field, Object value) {
 		if (value instanceof File) {
 			String[] allowedContentTypes = typeSettings.getFieldStringArray(type, field,
 					Constants.ALLOWED_CONTENT_TYPES);
@@ -1072,9 +1072,8 @@ public class PostgreSQLNode implements Node {
 			}
 		}
 	}
-
-	@Override
-	public void checkFieldRange(String type, String field, Object value) {
+	
+	protected void checkFieldRange(String type, String field, Object value) {
 		String fieldType = getFieldType(type, field);
 		
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
@@ -1198,7 +1197,7 @@ public class PostgreSQLNode implements Node {
 
 			if (value != null) {
 				checkFieldRange(type, field, value);
-				checkComplexField(type, field, value);
+				checkFileField(type, field, value);
 			}
 		}
 
@@ -1281,7 +1280,7 @@ public class PostgreSQLNode implements Node {
 
 			if (value != null) {
 				checkFieldRange(type, field, value);
-				checkComplexField(type, field, value);
+				checkFileField(type, field, value);
 			}
 		}
 
@@ -4262,11 +4261,6 @@ public class PostgreSQLNode implements Node {
 		throw new NotImplementedException();
 	}
 
-	@Override
-	public void checkActionFieldRange(String type, String action, String field, Object value) {
-		throw new NotImplementedException();
-	}
-	
 	@Override
 	public Strings getStrings() {
 		return strings;

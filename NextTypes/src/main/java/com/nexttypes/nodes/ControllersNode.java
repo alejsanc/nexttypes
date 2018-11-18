@@ -115,18 +115,8 @@ public class ControllersNode implements Node {
 		for (Map.Entry<String, Type> entry : types.entrySet()) {
 			entry.getValue().setActions(getTypeActions(entry.getKey()));
 		}
-	}
+	}	
 	
-	@Override 
-	public void checkActionFieldRange(String type, String action, String field, Object value) {
-		getController(type).checkActionFieldRange(action, field, value);
-	}
-	
-	@Override
-	public void checkFieldRange(String type, String field, Object value) {
-		getController(type).checkFieldRange(field, value);
-	}
-
 	@Override
 	public LinkedHashMap<String, TypeField> getActionFields(String type, String action) {
 		return getController(type).getActionFields(action);

@@ -205,10 +205,6 @@ public interface Node extends Module, AutoCloseable {
 	
 	public FieldRange getActionFieldRange(String type, String action, String field);
 	
-	public void checkFieldRange(String type, String field, Object value);
-	
-	public void checkActionFieldRange(String type, String action, String field, Object value);
-
 	public String getCompositeFieldContentType(String type, String id, String field);
 
 	public LinkedHashMap<String, String> getFieldsContentType(String type);

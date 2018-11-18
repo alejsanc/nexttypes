@@ -1197,14 +1197,4 @@ public class ProxyNode implements Node {
 	public FieldRange getActionFieldRange(String type, String action, String field) {
 		return getNextNode(type).getActionFieldRange(type, action, field);
 	}
-
-	@Override
-	public void checkFieldRange(String type, String field, Object value) {
-		getNextNode(type).checkFieldRange(type, field, value);
-	}
-
-	@Override
-	public void checkActionFieldRange(String type, String action, String field, Object value) {
-		getNextNode(type).checkActionFieldRange(type, action, field, value);
-	}
 }
