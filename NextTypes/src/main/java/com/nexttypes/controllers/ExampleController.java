@@ -44,12 +44,12 @@ public class ExampleController extends Controller {
 	public static final String TRY = "try";
 	public static final String OK = "OK";
 
-	public ExampleController(String type, String[] objects, String user, String[] groups, Node nextNode) {
-		super(type, objects, user, groups, nextNode);
+	public ExampleController(String type, String user, String[] groups, Node nextNode) {
+		super(type, user, groups, nextNode);
 	}
 
 	@Action(TRY)
-	public ActionResult exampleAction(Short int16, Integer int32, Long int64, Float float32, Double float64,
+	public ActionResult exampleAction(String[] objects, Short int16, Integer int32, Long int64, Float float32, Double float64,
 			BigDecimal numeric, Boolean bool, String string, String text, HTMLFragment html, JSON json, XML xml,
 			URL url, InternetAddress email, String tel, LocalDate date, LocalTime time, LocalDateTime dateTime,
 			ZoneId timezone, Color color, byte[] binary, File file, Image image, Audio audio, Video video, Document document,

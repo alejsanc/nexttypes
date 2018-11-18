@@ -43,8 +43,8 @@ public class ProjectController extends Controller {
 	public static final String PROJECT_MEETING_PARTICIPANT = "project_meeting_participant";
 	public static final String PROJECT_TICKET_MESSAGE = "project_ticket_message";
 
-	public ProjectController(String type, String[] objects, String user, String[] groups, Node nextNode) {
-		super(type, objects, user, groups, nextNode);
+	public ProjectController(String type, String user, String[] groups, Node nextNode) {
+		super(type, user, groups, nextNode);
 	}
 
 	@Override
@@ -61,13 +61,13 @@ public class ProjectController extends Controller {
 	@Override
 	public ZonedDateTime update(NXObject object, ZonedDateTime udate) {
 		checkParentPermissions(object.getString(getParentField()), Action.UPDATE);
-		checkPermissions(object.getType(), object.getId(), Action.UPDATE);
+		checkPermissions(object.getId(), Action.UPDATE);
 		return nextNode.update(object, udate);
 	}
 
 	@Override
-	public ZonedDateTime update(String type, String id, byte[] data) {
-		checkPermissions(type, id, Action.UPDATE);
+	public ZonedDateTime update(String id, byte[] data) {
+		checkPermissions(id, Action.UPDATE);
 
 		if (type.equals(PROJECT_MEETING)) {
 			ICalendar calendar = new ICalendar(data);
@@ -99,33 +99,33 @@ public class ProjectController extends Controller {
 	}
 
 	@Override
-	public ZonedDateTime updateId(String type, String id, String newId) {
-		checkPermissions(type, id, Action.UPDATE_ID);
+	public ZonedDateTime updateId(String id, String newId) {
+		checkPermissions(id, Action.UPDATE_ID);
 		return nextNode.updateId(type, id, newId);
 	}
 
 	@Override
-	public void delete(String type, String... objects) {
-		checkPermissions(type, objects, Action.DELETE);
+	public void delete(String... objects) {
+		checkPermissions(objects, Action.DELETE);
 		nextNode.delete(type, objects);
 	}
 
 	@Override
-	public ZonedDateTime updateField(String type, String id, String field, Object value) {
+	public ZonedDateTime updateField(String id, String field, Object value) {
 		String parentField = getParentField();
 		if (parentField.equals(field)) {
 			checkParentPermissions((String) value, Action.UPDATE_FIELD);
 		}
 
-		checkPermissions(type, id, Action.UPDATE_FIELD);
+		checkPermissions(id, Action.UPDATE_FIELD);
 		return nextNode.updateField(type, id, field, value);
 	}
 
-	protected void checkPermissions(String type, String id, String method) {
-		checkPermissions(type, new String[] { id }, method);
+	protected void checkPermissions(String id, String method) {
+		checkPermissions(new String[] { id }, method);
 	}
 
-	protected void checkPermissions(String type, String[] objects, String method) {
+	protected void checkPermissions(String[] objects, String method) {
 		String sql = null;
 		Object[] parameters = null;
 

@@ -384,8 +384,10 @@ public aspect NodeSecurity extends Checks {
 	    execution(* Node.getFieldType(..)) ||
 	    execution(* Node.getFieldContentType(..)) ||
 	    execution(* Node.getFieldDefault(..)) ||
-	    execution(* Node.hasNullValues(..))
-	    )&& args(type, field) {
+	    execution(* Node.getFieldRange(..)) ||
+	    execution(* Node.checkFieldRange(..)) ||
+	    execution(* Node.hasNullValues(..)) 
+	    )&& args(type, field, ..) {
     	
     	checkType(type);
     	checkField(field);
@@ -431,5 +433,17 @@ public aspect NodeSecurity extends Checks {
     	
     	checkType(type);
     	checkAction(action);
+    }
+    
+    before(String type, String action, String field) : (
+    	execution(* Node.getActionField(..)) ||
+    	execution(* Node.getActionFieldType(..)) ||
+    	execution(* Node.getActionFieldRange(..)) ||
+    	execution(* Node.checkActionFieldRange(..))
+    	)&& args(type, action, field, ..) {
+    	
+    	checkType(type);
+    	checkAction(action);
+    	checkField(field);
     }
 }

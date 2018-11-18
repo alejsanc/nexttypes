@@ -17,8 +17,6 @@
 package com.nexttypes.nodes;
 
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Savepoint;
 import java.time.LocalDate;
@@ -32,8 +30,6 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.AlterFieldResult;
 import com.nexttypes.datatypes.AlterIndexResult;
@@ -42,7 +38,6 @@ import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
 import com.nexttypes.datatypes.FieldRange;
-import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
@@ -66,11 +61,6 @@ import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.enums.Order;
-import com.nexttypes.exceptions.ActionException;
-import com.nexttypes.exceptions.ActionExecutionException;
-import com.nexttypes.exceptions.ActionFieldException;
-import com.nexttypes.exceptions.ActionNotFoundException;
-import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
@@ -78,7 +68,6 @@ import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
-import com.nexttypes.system.Action;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Controller;
@@ -105,11 +94,37 @@ public class ControllersNode implements Node {
 				context, useConnectionPool);
 		typeSettings = context.getTypeSettings(groups);
 	}
+	
+	protected Controller getController(String type) {
+		String className = typeSettings.gts(type, Constants.CONTROLLER);
+
+		Controller controller = null;
+
+		ProxyNode proxyNode = new ProxyNode(type, nextNode, this);
+
+		if (className != null) {
+			controller = Loader.loadController(className, type, user, groups, proxyNode);
+		} else {
+			controller = new Controller(type, user, groups, proxyNode);
+		}
+
+		return controller;
+	}
 
 	protected void setTypeActions(LinkedHashMap<String, Type> types) {
 		for (Map.Entry<String, Type> entry : types.entrySet()) {
 			entry.getValue().setActions(getTypeActions(entry.getKey()));
 		}
+	}
+	
+	@Override 
+	public void checkActionFieldRange(String type, String action, String field, Object value) {
+		getController(type).checkActionFieldRange(action, field, value);
+	}
+	
+	@Override
+	public void checkFieldRange(String type, String field, Object value) {
+		getController(type).checkFieldRange(field, value);
 	}
 
 	@Override
@@ -134,105 +149,22 @@ public class ControllersNode implements Node {
 
 	@Override
 	public LinkedHashMap<String, LinkedHashMap<String, TypeField>> getTypeActions(String type) {
-		return getController(type).getActions();
+		return getController(type).getTypeActions();
 	}
 
 	@Override
 	public ActionResult executeAction(String type, String id, String action, Object... parameters) {
-		return executeAction(type, new String[] { id }, action, parameters);
+		return getController(type).executeAction(id, action, parameters);
 	}
 
 	@Override
 	public ActionResult executeAction(String type, String[] objects, String action, Object... parameters) {
-		
-		Boolean objectsInputNotNull = typeSettings.getActionBoolean(type, action,
-				Constants.OBJECTS_INPUT_NOT_NULL);
-		
-		if (objectsInputNotNull && (objects == null || objects.length == 0)) {
-			throw new ActionException(type, action, Constants.EMPTY_OBJECTS_LIST);
-		}		
-		
-		ActionResult result = null;
-		Method method = null;
-
-		Controller controller = getController(type, objects);
-		LinkedHashMap<String, TypeField> fields = controller.getActionFields(action);
-
-		if (fields == null) {
-			throw new ActionNotFoundException(type, action);
-		}
-
-		int x = 0;
-		for (Map.Entry<String, TypeField> entry : fields.entrySet()) {
-			String field = entry.getKey();
-			TypeField typeField = entry.getValue();
-
-			if (typeField.isNotNull() && parameters[x] == null) {
-				throw new ActionFieldException(type, action, field, Constants.EMPTY_FIELD);
-			}
-
-			if (parameters[x] != null) {
-				checkActionFieldRange(type, action, field, parameters[x]);
-				checkComplexField(type, action, field, parameters[x]);
-			}
-
-			x++;
-		}
-
-		for (Method m : controller.getClass().getMethods()) {
-			Action annotation = m.getAnnotation(Action.class);
-			if (annotation != null && annotation.value().equals(action)) {
-				method = m;
-				break;
-			}
-		}
-
-		if (method == null) {
-			throw new ActionNotFoundException(type, action);
-		}
-
-		try {
-			result = (ActionResult) method.invoke(controller, parameters);
-		} catch (InvocationTargetException e) {
-			Throwable cause = e.getCause();
-
-			if (cause instanceof NXException) {
-				throw (NXException) cause;
-			} else {
-				throw new ActionExecutionException(type, action, cause);
-			}
-		} catch (IllegalAccessException | IllegalArgumentException e) {
-			throw new ActionExecutionException(type, action, e);
-		}
-
-		return result;
-	}
-
-	protected Controller getController(String type) {
-		return getController(type, null);
-	}
-
-	protected Controller getController(String type, String[] objects) {
-		String className = typeSettings.gts(type, Constants.CONTROLLER);
-
-		Controller controller = null;
-
-		ProxyNode proxyNode = new ProxyNode(type, nextNode, this);
-
-		if (className != null) {
-			controller = Loader.loadController(className, type, objects, user, groups, proxyNode);
-		} else {
-			controller = new Controller(type, objects, user, groups, proxyNode);
-		}
-
-		return controller;
+		return getController(type).executeAction(objects, action, parameters);
 	}
 
 	@Override
 	public Type getType(String type) {
-		Type typeObject = nextNode.getType(type);
-		typeObject.setActions(getTypeActions(type));
-		return typeObject;
+		return getController(type).getType();
 	}
 
 	@Override
@@ -270,30 +202,9 @@ public class ControllersNode implements Node {
 		return backup;
 	}
 
-	protected void checkComplexField(String type, String action, String field, Object value) {
-		if (value instanceof File) {
-			String[] allowedContentTypes = typeSettings.getActionFieldStringArray(type, action, field,
-					Constants.ALLOWED_CONTENT_TYPES);
-
-			if (allowedContentTypes != null) {
-				String contentType = ((File) value).getContentType();
-
-				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
-					throw new ActionFieldException(type, action, field,
-							Constants.DISALLOWED_CONTENT_TYPE, contentType);
-				}
-			}
-		}
-	}
-
-	@Override
-	public void checkActionFieldRange(String type, String action, String field, Object value) {
-		getController(type).checkActionFieldRange(type, action, field, value);
-	}
-
 	@Override
 	public ObjectsStream exportObjects(String type, String[] objects, LinkedHashMap<String, Order> order) {
-		return nextNode.exportObjects(type, objects, order);
+		return getController(type).exportObjects(objects, order);
 	}
 
 	@Override
@@ -320,53 +231,52 @@ public class ControllersNode implements Node {
 
 	@Override
 	public ZonedDateTime create(Type type) {
-		return nextNode.create(type);
+		return getController(type.getName()).create(type);
 	}
 
 	@Override
 	public ZonedDateTime addField(String type, String field, TypeField typeField) {
-		Controller controller = getController(type);
-		return controller.addField(type, field, typeField);
+		return getController(type).addField(field, typeField);
 	}
 
 	@Override
 	public ZonedDateTime addIndex(String type, String index, TypeIndex typeIndex) {
-		return getController(type).addIndex(type, index, typeIndex);
+		return getController(type).addIndex(index, typeIndex);
 	}
 
 	@Override
 	public AlterResult alter(Type type) {
-		return nextNode.alter(type);
+		return getController(type.getName()).alter(type);
 	}
 
 	@Override
 	public AlterResult alter(Type type, ZonedDateTime adate) {
-		return nextNode.alter(type, adate);
+		return getController(type.getName()).alter(type, adate);
 	}
 
 	@Override
 	public ZonedDateTime rename(String type, String newName) {
-		return nextNode.rename(type, newName);
+		return getController(type).rename(newName);
 	}
 
 	@Override
 	public AlterFieldResult alterField(String type, String field, TypeField typeField) {
-		return getController(type).alterField(type, field, typeField);
+		return getController(type).alterField(field, typeField);
 	}
 
 	@Override
 	public AlterIndexResult alterIndex(String type, String index, TypeIndex typeIndex) {
-		return getController(type).alterIndex(type, index, typeIndex);
+		return getController(type).alterIndex(index, typeIndex);
 	}
 
 	@Override
 	public ZonedDateTime renameField(String type, String field, String newName) {
-		return getController(type).renameField(type, field, newName);
+		return getController(type).renameField(field, newName);
 	}
 
 	@Override
 	public ZonedDateTime renameIndex(String type, String index, String newName) {
-		return getController(type).renameIndex(type, index, newName);
+		return getController(type).renameIndex(index, newName);
 	}
 
 	@Override
@@ -386,41 +296,41 @@ public class ControllersNode implements Node {
 
 	@Override
 	public ZonedDateTime updateId(String type, String id, String newId) {
-		return getController(type).updateId(type, id, newId);
+		return getController(type).updateId(id, newId);
 	}
 
 	@Override
 	public ZonedDateTime updateField(String type, String id, String field, Object value) {
-		return getController(type).updateField(type, id, field, value);
+		return getController(type).updateField(id, field, value);
 	}
 
 	@Override
 	public ZonedDateTime updatePassword(String type, String id, String field, String currentPassword,
 			String newPassword, String newPasswordRepeat) {
-		return getController(type).updatePassword(type, id, field, currentPassword, newPassword, newPasswordRepeat);
+		return getController(type).updatePassword(id, field, currentPassword, newPassword, newPasswordRepeat);
 	}
 
 	@Override
 	public boolean checkPassword(String type, String id, String field, String password) {
-		return getController(type).checkPassword(type, id, field, password);
+		return getController(type).checkPassword(id, field, password);
 	}
 
 	@Override
 	public ZonedDateTime update(String type, String id, byte[] data) {
-		return getController(type).update(type, id, data);
+		return getController(type).update(id, data);
 	}
 
 	@Override
 	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext, boolean binary,
 			boolean documentPreview, boolean password, boolean objectName, boolean referencesName) {
-		return getController(type).get(type, id, fields, lang, fulltext, binary, documentPreview,
+		return getController(type).get(id, fields, lang, fulltext, binary, documentPreview,
 				password, objectName, referencesName);
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return getController(type).select(type, fields, lang, filter, search, order, offset, limit);
+		return getController(type).select(fields, lang, filter, search, order, offset, limit);
 
 	}
 
@@ -428,14 +338,14 @@ public class ControllersNode implements Node {
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return getController(type).select(type, fields, lang, filter, search, order, fulltext, binary, documentPreview,
+		return getController(type).select(fields, lang, filter, search, order, fulltext, binary, documentPreview,
 				password, objectsName, referencesName, offset, limit);
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return getController(type).select(type, fields, lang, filters, search, order, offset, limit);
+		return getController(type).select(fields, lang, filters, search, order, offset, limit);
 
 	}
 
@@ -443,7 +353,7 @@ public class ControllersNode implements Node {
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return getController(type).select(type, fields, lang, filters, search, order, fulltext, binary, documentPreview,
+		return getController(type).select(fields, lang, filters, search, order, fulltext, binary, documentPreview,
 				password, objectsName, referencesName, offset, limit);
 	}
 
@@ -451,19 +361,19 @@ public class ControllersNode implements Node {
 	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
 			String search, String[] searchFields, String[] groupFields, String order, Long offset,
 			Long limit) {
-		return getController(type).select(type, sql, parameters, filters, search, searchFields,
+		return getController(type).select(sql, parameters, filters, search, searchFields,
 				groupFields, order, offset, limit);
 	}
 
 	@Override
 	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order) {
-		return getController(type).select(type, sql, parameters, filters, order);
+		return getController(type).select(sql, parameters, filters, order);
 	}
 
 	@Override
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return getController(type).selectStream(type, fields, lang, filter, search, order, offset, limit);
+		return getController(type).selectStream(fields, lang, filter, search, order, offset, limit);
 
 	}
 
@@ -471,14 +381,14 @@ public class ControllersNode implements Node {
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return getController(type).selectStream(type, fields, lang, filter, search, order, fulltext, binary,
+		return getController(type).selectStream(fields, lang, filter, search, order, fulltext, binary,
 				documentPreview, password, objectsName, referencesName, offset, limit);
 	}
 
 	@Override
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return getController(type).selectStream(type, fields, lang, filters, search, order, offset, limit);
+		return getController(type).selectStream(fields, lang, filters, search, order, offset, limit);
 
 	}
 
@@ -486,7 +396,7 @@ public class ControllersNode implements Node {
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
 			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return getController(type).selectStream(type, fields, lang, filters, search, order, fulltext, binary,
+		return getController(type).selectStream(fields, lang, filters, search, order, fulltext, binary,
 				documentPreview, password, objectsName, referencesName, offset, limit);
 	}
 
@@ -502,12 +412,12 @@ public class ControllersNode implements Node {
 
 	@Override
 	public String getName(String type, String id, String lang) {
-		return getController(type).getName(type, id, lang);
+		return getController(type).getName(id, lang);
 	}
 
 	@Override
 	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
-		return getController(type).getNames(type, lang);
+		return getController(type).getNames(lang);
 	}
 
 	@Override
@@ -517,42 +427,42 @@ public class ControllersNode implements Node {
 
 	@Override
 	public TypeField getTypeField(String type, String field) {
-		return getController(type).getTypeField(type, field);
+		return getController(type).getTypeField(field);
 	}
 
 	@Override
 	public LinkedHashMap<String, TypeField> getTypeFields(String type, String... fields) {
-		return getController(type).getTypeFields(type, fields);
+		return getController(type).getTypeFields(fields);
 	}
 
 	@Override
 	public LinkedHashMap<String, TypeField> getTypeFields(String type) {
-		return getController(type).getTypeFields(type);
+		return getController(type).getTypeFields();
 	}
 
 	@Override
 	public TypeIndex getTypeIndex(String type, String index) {
-		return getController(type).getTypeIndex(type, index);
+		return getController(type).getTypeIndex(index);
 	}
 
 	@Override
 	public LinkedHashMap<String, TypeIndex> getTypeIndexes(String type, String... indexes) {
-		return getController(type).getTypeIndexes(type, indexes);
+		return getController(type).getTypeIndexes(indexes);
 	}
 
 	@Override
 	public LinkedHashMap<String, TypeIndex> getTypeIndexes(String type) {
-		return getController(type).getTypeIndexes(type);
+		return getController(type).getTypeIndexes();
 	}
 
 	@Override
 	public String getFieldType(String type, String field) {
-		return getController(type).getFieldType(type, field);
+		return getController(type).getFieldType(field);
 	}
 
 	@Override
 	public Tuple getFieldsSize(String type, String id) {
-		return getController(type).getFieldsSize(type, id);
+		return getController(type).getFieldsSize(id);
 	}
 
 	@Override
@@ -562,32 +472,32 @@ public class ControllersNode implements Node {
 
 	@Override
 	public ZonedDateTime dropField(String type, String field) {
-		return getController(type).dropField(type, field);
+		return getController(type).dropField(field);
 	}
 
 	@Override
 	public ZonedDateTime dropIndex(String type, String index) {
-		return getController(type).dropIndex(type, index);
+		return getController(type).dropIndex(index);
 	}
 
 	@Override
 	public void delete(String type, String... objects) {
-		getController(type).delete(type, objects);
+		getController(type).delete(objects);
 	}
 
 	@Override
 	public Long count(String type) {
-		return getController(type).count(type);
+		return getController(type).count();
 	}
 
 	@Override
 	public boolean hasObjects(String type) {
-		return getController(type).hasObjects(type);
+		return getController(type).hasObjects();
 	}
 
 	@Override
 	public boolean hasNullValues(String type, String field) {
-		return getController(type).hasNullValues(type, field);
+		return getController(type).hasNullValues(field);
 	}
 
 	@Override
@@ -597,77 +507,77 @@ public class ControllersNode implements Node {
 
 	@Override
 	public Object getField(String type, String id, String field) {
-		return getController(type).getField(type, id, field);
+		return getController(type).getField(id, field);
 	}
 
 	@Override
 	public String getStringField(String type, String id, String field) {
-		return getController(type).getStringField(type, id, field);
+		return getController(type).getStringField(id, field);
 	}
 
 	@Override
 	public byte[] getBinaryField(String type, String id, String field) {
-		return getController(type).getBinaryField(type, id, field);
+		return getController(type).getBinaryField(id, field);
 	}
 
 	@Override
 	public Image getImageField(String type, String id, String field) {
-		return getController(type).getImageField(type, id, field);
+		return getController(type).getImageField(id, field);
 	}
 
 	@Override
 	public byte[] getImageContent(String type, String id, String field) {
-		return getController(type).getImageContent(type, id, field);
+		return getController(type).getImageContent(id, field);
 	}
 
 	@Override
 	public byte[] getImageThumbnail(String type, String id, String field) {
-		return getController(type).getImageThumbnail(type, id, field);
+		return getController(type).getImageThumbnail(id, field);
 	}
 
 	@Override
 	public String getImageContentType(String type, String id, String field) {
-		return getController(type).getImageContentType(type, id, field);
+		return getController(type).getImageContentType(id, field);
 	}
 
 	@Override
 	public String getDocumentContentType(String type, String id, String field) {
-		return getController(type).getDocumentContentType(type, id, field);
+		return getController(type).getDocumentContentType(id, field);
 	}
 
 	@Override
 	public XML getXMLField(String type, String id, String field) {
-		return getController(type).getXMLField(type, id, field);
+		return getController(type).getXMLField(id, field);
 	}
 
 	@Override
 	public Element getHTMLElement(String type, String id, String field, String element) {
-		return getController(type).getHTMLElement(type, id, field, element);
+		return getController(type).getHTMLElement(id, field, element);
 	}
 
 	@Override
 	public Element getXMLElement(String type, String id, String field, String element) {
-		return getController(type).getXMLElement(type, id, field, element);
+		return getController(type).getXMLElement(id, field, element);
 	}
 
 	@Override
 	public HTMLFragment getHTMLField(String type, String id, String field) {
-		return getController(type).getHTMLField(type, id, field);
+		return getController(type).getHTMLField(id, field);
 	}
 
 	@Override
 	public Document getDocumentField(String type, String id, String field) {
-		return getController(type).getDocumentField(type, id, field);
+		return getController(type).getDocumentField(id, field);
 	}
 
 	@Override
 	public ObjectField getObjectField(String type, String id, String field) {
-		return getController(type).getObjectField(type, id, field);
+		return getController(type).getObjectField(id, field);
 	}
 
 	@Override
 	public String getPasswordField(String type, String id, String field) {
-		return getController(type).getPasswordField(type, id, field);
+		return getController(type).getPasswordField(id, field);
 	}
 
 	@Override
@@ -677,52 +587,47 @@ public class ControllersNode implements Node {
 
 	@Override
 	public String getFieldContentType(String type, String id, String field) {
-		return getController(type).getFieldContentType(type, id, field);
+		return getController(type).getFieldContentType(id, field);
 	}
 	
 	@Override
 	public Object getFieldDefault(String type, String field) {
-		return getController(type).getFieldDefault(type, field);
+		return getController(type).getFieldDefault(field);
 	}
 
 	@Override
 	public String getCompositeFieldContentType(String type, String id, String field) {
-		return getController(type).getCompositeFieldContentType(type, id, field);
+		return getController(type).getCompositeFieldContentType(id, field);
 	}
 
 	@Override
 	public LinkedHashMap<String, String> getFieldsContentType(String type) {
-		return getController(type).getFieldsContentType(type);
+		return getController(type).getFieldsContentType();
 	}
 
 	@Override
 	public LinkedHashMap<String, FieldInfo> getFieldsInfo(String type, String id) {
-		return getController(type).getFieldsInfo(type, id);
+		return getController(type).getFieldsInfo(id);
 	}
 
 	@Override
 	public ZonedDateTime getADate(String type) {
-		return getController(type).getADate(type);
+		return getController(type).getADate();
 	}
 
 	@Override
 	public ZonedDateTime getUDate(String type, String id) {
-		return getController(type).getUDate(type, id);
+		return getController(type).getUDate(id);
 	}
 
 	@Override
 	public String getETag(String type, String id) {
-		return getController(type).getETag(type, id);
+		return getController(type).getETag(id);
 	}
 	
 	@Override
 	public FieldRange getFieldRange(String type, String field) {
-		return getController(type).getFieldRange(type, field);
-	}
-
-	@Override
-	public void checkFieldRange(String type, String field, Object value) {
-		getController(type).checkFieldRange(type, field, value);
+		return getController(type).getFieldRange(field);
 	}
 
 	@Override
@@ -777,7 +682,7 @@ public class ControllersNode implements Node {
 
 	@Override
 	public TypeReference[] getUpReferences(String type) {
-		return getController(type).getUpReferences(type);
+		return getController(type).getUpReferences();
 	}
 
 	@Override
@@ -787,7 +692,7 @@ public class ControllersNode implements Node {
 
 	@Override
 	public TypeReference[] getDownReferences(String type) {
-		return getController(type).getDownReferences(type);
+		return getController(type).getDownReferences();
 	}
 
 	@Override
@@ -1302,12 +1207,12 @@ public class ControllersNode implements Node {
 
 	@Override
 	public Boolean existsType(String type) {
-		return nextNode.existsType(type);
+		return getController(type).existsType();
 	}
 
 	@Override
 	public Boolean existsObject(String type, String id) {
-		return nextNode.existsObject(type, id);
+		return getController(type).existsObject(id);
 	}
 
 	@Override

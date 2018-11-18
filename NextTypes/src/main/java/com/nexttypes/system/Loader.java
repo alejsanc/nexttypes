@@ -83,16 +83,11 @@ public class Loader {
 		return (WebDAVView) Loader.load(className, HTTPRequest.class, request);
 	}
 
-	public static Controller loadController(String className, String type, String id, String user, String[] groups,
-			Node nextNode) {
-		return loadController(className, type, new String[] { id }, user, groups, nextNode);
-	}
-
-	public static Controller loadController(String className, String type, String[] objects, String user, String[] groups,
+	public static Controller loadController(String className, String type, String user, String[] groups,
 			Node nextNode) {
 		return (Controller) Loader.load(className,
-				new Class[] { String.class, String[].class, String.class, String[].class, Node.class },
-				new Object[] { type, objects, user, groups, nextNode });
+				new Class[] { String.class, String.class, String[].class, Node.class },
+				new Object[] { type, user, groups, nextNode });
 	}
 
 	public static Task loadTask(String className, Context context) {

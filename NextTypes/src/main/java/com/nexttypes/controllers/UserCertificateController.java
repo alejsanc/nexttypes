@@ -30,8 +30,8 @@ import com.nexttypes.system.Controller;
 
 public class UserCertificateController extends Controller {
 
-	public UserCertificateController(String type, String[] objects, String user, String[] groups, Node nextNode) {
-		super(type, objects, user, groups, nextNode);
+	public UserCertificateController(String type, String user, String[] groups, Node nextNode) {
+		super(type, user, groups, nextNode);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class UserCertificateController extends Controller {
 		if (!object.containsKey(Constants.USER)) {
 			object.put(Constants.USER, user);
 		} else {
-			checkUser(object.getType(), object.getString(Constants.USER), Action.INSERT);
+			checkUser(object.getString(Constants.USER), Action.INSERT);
 		}
 		return nextNode.insert(object);
 	}
@@ -51,58 +51,58 @@ public class UserCertificateController extends Controller {
 
 	@Override
 	public ZonedDateTime update(NXObject object, ZonedDateTime udate) {
-		checkUser(object.getType(), object.getString(Constants.USER), Action.UPDATE);
-		checkPermissions(object.getType(), object.getId(), Action.UPDATE);
+		checkUser(object.getString(Constants.USER), Action.UPDATE);
+		checkPermissions(object.getId(), Action.UPDATE);
 		return nextNode.update(object, udate);
 	}
 
 	@Override
-	public ZonedDateTime updateField(String type, String id, String field, Object value) {
+	public ZonedDateTime updateField(String id, String field, Object value) {
 		if (Constants.USER.equals(field)) {
-			checkUser(type, (String) value, Action.UPDATE_FIELD);
+			checkUser((String) value, Action.UPDATE_FIELD);
 		}
-		checkPermissions(type, id, Action.UPDATE_FIELD);
+		checkPermissions(id, Action.UPDATE_FIELD);
 		return nextNode.updateField(type, id, field, value);
 	}
 
 	@Override
-	public ZonedDateTime updateId(String type, String id, String newId) {
-		checkPermissions(type, id, Action.UPDATE_ID);
+	public ZonedDateTime updateId(String id, String newId) {
+		checkPermissions(id, Action.UPDATE_ID);
 		return nextNode.updateId(type, id, newId);
 	}
 
 	@Override
-	public void delete(String type, String... objects) {
-		checkPermissions(type, objects, Action.DELETE);
+	public void delete(String... objects) {
+		checkPermissions(objects, Action.DELETE);
 		nextNode.delete(type, objects);
 	}
 
-	protected void checkPermissions(String type, String[] objects, String method) {
+	protected void checkPermissions(String[] objects, String method) {
 		if (!ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
 			if (nextNode.getBoolean("select count(*) != 0 from # where id in(?) and \"user\" != ?",
 					type, objects, user)) {
-				throwException(type, method);
+				throwException(method);
 			}
 		}
 	}
 
-	protected void checkPermissions(String type, String id, String method) {
+	protected void checkPermissions(String id, String method) {
 		if (!ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
-			String objectUser = getStringField(type, id, Constants.USER);
+			String objectUser = getStringField(id, Constants.USER);
 
 			if (!user.equals(objectUser)) {
-				throwException(type, method);
+				throwException(method);
 			}
 		}
 	}
 
-	protected void checkUser(String type, String objectUser, String method) {
+	protected void checkUser(String objectUser, String method) {
 		if (objectUser != null && !user.equals(objectUser) && !ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
-			throwException(type, method);
+			throwException(method);
 		}
 	}
 
-	protected void throwException(String type, String method) {
+	protected void throwException(String method) {
 		throw new UnauthorizedActionException(type, method);
 	}
 }

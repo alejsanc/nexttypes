@@ -54,6 +54,7 @@ import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.UpdateResponse;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
+import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.CertificateNotFoundException;
 import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.InvalidHostNameException;
@@ -391,6 +392,11 @@ public class HTTPServlet extends HttpServlet {
 
 				LinkedHashMap<String, TypeField> typeFields = nextNode.getActionFields(req.getType(),
 						req.getAction());
+				
+				if (typeFields == null) {
+					throw new ActionNotFoundException(req.getType(), req.getAction());
+				}
+				
 				Object[] values = req.readActionFields(typeFields);
 
 				Object actionResult = nextNode.executeAction(req.getType(), objects, req.getAction(),

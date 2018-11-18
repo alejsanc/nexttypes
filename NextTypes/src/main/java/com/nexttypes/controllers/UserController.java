@@ -29,8 +29,8 @@ import com.nexttypes.system.Controller;
 
 public class UserController extends Controller {
 
-	public UserController(String type, String[] objects, String user, String[] groups, Node nextNode) {
-		super(type, objects, user, groups, nextNode);
+	public UserController(String type, String user, String[] groups, Node nextNode) {
+		super(type, user, groups, nextNode);
 	}
 
 	@Override
@@ -40,24 +40,24 @@ public class UserController extends Controller {
 
 	@Override
 	public ZonedDateTime update(NXObject object, ZonedDateTime udate) {
-		checkPermissions(object.getType(), object.getId(), Action.UPDATE);
+		checkPermissions(object.getId(), Action.UPDATE);
 		return nextNode.update(object, udate);
 	}
 
 	@Override
-	public ZonedDateTime updateField(String type, String id, String field, Object value) {
-		checkPermissions(type, id, Action.UPDATE_FIELD);
+	public ZonedDateTime updateField(String id, String field, Object value) {
+		checkPermissions(id, Action.UPDATE_FIELD);
 		return nextNode.updateField(type, id, field, value);
 	}
 
 	@Override
-	public ZonedDateTime updatePassword(String type, String id, String field, String currentPassword,
+	public ZonedDateTime updatePassword(String id, String field, String currentPassword,
 			String newPassword, String newPasswordRepeat) {
-		checkPermissions(type, id, Action.UPDATE_PASSWORD);
+		checkPermissions(id, Action.UPDATE_PASSWORD);
 		return nextNode.updatePassword(type, id, field, currentPassword, newPassword, newPasswordRepeat);
 	}
 
-	protected void checkPermissions(String type, String id, String method) {
+	protected void checkPermissions(String id, String method) {
 		if (!user.equals(id) && !ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
 			throw new UnauthorizedActionException(type, method);
 		}

@@ -31,17 +31,17 @@ public class ImageController extends Controller {
 	public final String IMAGE_SUCCESSFULLY_RESIZED = "image_successfully_resized";
 	public final String IMAGES_SUCCESSFULLY_RESIZED = "images_successfully_resized";
 
-	public ImageController(String type, String[] objects, String user, String[] groups, Node nextNode) {
-		super(type, objects, user, groups, nextNode);
+	public ImageController(String type, String user, String[] groups, Node nextNode) {
+		super(type, user, groups, nextNode);
 	}
 
 	@Action(RESIZE)
-	public ActionResult resize(Integer width, Integer height) {
+	public ActionResult resize(String[] objects, Integer width, Integer height) {
 		
 		for (String id : objects) {
-			Image image = getImageField(type, id, Constants.IMAGE);
+			Image image = getImageField(id, Constants.IMAGE);
 			if (image != null) {
-				updateField(type, id, Constants.IMAGE, image.resize(width, height));
+				updateField(id, Constants.IMAGE, image.resize(width, height));
 			} else {
 				throw new ObjectException(type, id, IMAGE_NOT_FOUND);
 			}

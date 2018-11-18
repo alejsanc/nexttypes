@@ -278,12 +278,12 @@ public class ProxyNode implements Node {
 
 	@Override
 	public Boolean existsType(String type) {
-		return nextNode.existsType(type);
+		return getNextNode(type).existsType(type);
 	}
 
 	@Override
 	public Boolean existsObject(String type, String id) {
-		return nextNode.existsObject(type, id);
+		return getNextNode(type).existsObject(type, id);
 	}
 
 	@Override
@@ -583,7 +583,7 @@ public class ProxyNode implements Node {
 
 	@Override
 	public ObjectsStream exportObjects(String type, String[] objects, LinkedHashMap<String, Order> order) {
-		return nextNode.exportObjects(type, objects, order);
+		return getNextNode(type).exportObjects(type, objects, order);
 	}
 
 	@Override

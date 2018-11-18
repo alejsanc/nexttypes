@@ -404,10 +404,6 @@ public class HTTPRequest {
 	}
 
 	public Object[] readActionFields(LinkedHashMap<String, TypeField> typeFields) {
-		if (typeFields == null) {
-			throw new ActionNotFoundException(type, type_action);
-		}
-
 		ArrayList<Object> values = new ArrayList<>();
 
 		for (Map.Entry<String, TypeField> entry : typeFields.entrySet()) {

@@ -4258,16 +4258,6 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Strings getStrings() {
-		return strings;
-	}
-
-	@Override
-	public TypeSettings getTypeSettings() {
-		return typeSettings;
-	}
-
-	@Override
 	public String getActionFieldType(String type, String action, String field) {
 		throw new NotImplementedException();
 	}
@@ -4275,5 +4265,15 @@ public class PostgreSQLNode implements Node {
 	@Override
 	public void checkActionFieldRange(String type, String action, String field, Object value) {
 		throw new NotImplementedException();
+	}
+	
+	@Override
+	public Strings getStrings() {
+		return strings;
+	}
+
+	@Override
+	public TypeSettings getTypeSettings() {
+		return typeSettings;
 	}
 }
