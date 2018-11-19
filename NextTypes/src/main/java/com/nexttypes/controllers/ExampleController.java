@@ -46,6 +46,8 @@ public class ExampleController extends Controller {
 
 	public ExampleController(String type, String user, String[] groups, Node nextNode) {
 		super(type, user, groups, nextNode);
+		
+		actionsInfo = "/com/nexttypes/controllers/example-actions.json";
 	}
 
 	@Action(TRY)
@@ -53,7 +55,7 @@ public class ExampleController extends Controller {
 			BigDecimal numeric, Boolean bool, String string, String text, HTMLFragment html, JSON json, XML xml,
 			URL url, InternetAddress email, String tel, LocalDate date, LocalTime time, LocalDateTime dateTime,
 			ZoneId timezone, Color color, byte[] binary, File file, Image image, Audio audio, Video video, Document document,
-			String password, String articleId) {
+			String password, String article) {
 
 		return new ActionResult(OK);
 	}

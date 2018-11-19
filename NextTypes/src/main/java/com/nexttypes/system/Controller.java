@@ -63,6 +63,7 @@ import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
 
 public class Controller {
+	protected LinkedHashMap<String, LinkedHashMap<String, TypeField>> actions;
 	protected String actionsInfo;	
 	protected Node nextNode;
 	protected String type;
@@ -137,7 +138,8 @@ public class Controller {
 		}
 
 		try {
-			result = (ActionResult) method.invoke(this, ArrayUtils.insert(0, parameters), objects);
+			result = (ActionResult) method.invoke(this, ArrayUtils.insert(0, parameters,
+					(Object) objects));
 		} catch (InvocationTargetException e) {
 			Throwable cause = e.getCause();
 
@@ -188,21 +190,21 @@ public class Controller {
 	}
 	
 	public LinkedHashMap<String, LinkedHashMap<String, TypeField>> getTypeActions() {
-		LinkedHashMap<String, LinkedHashMap<String, TypeField>> actions = null;
-		
-		try (InputStream stream = getClass().getResourceAsStream(actionsInfo)) {
+		if (actions == null) {		
+			try (InputStream stream = getClass().getResourceAsStream(actionsInfo)) {
 
-			if (stream != null) {
-				ObjectMapper mapper = new ObjectMapper();
-				actions = mapper.readValue(stream, new com.fasterxml.jackson.core.type.TypeReference
+				if (stream != null) {
+					ObjectMapper mapper = new ObjectMapper();
+					actions = mapper.readValue(stream, new com.fasterxml.jackson.core.type.TypeReference
 						<LinkedHashMap<String, LinkedHashMap<String, TypeField>>>() {});
+				}
+			} catch (IOException e) {
+				throw new NXException(e);
 			}
-		} catch (IOException e) {
-			throw new NXException(e);
-		}
 
-		if (actions == null) {
-			actions = new LinkedHashMap<>();
+			if (actions == null) {
+				actions = new LinkedHashMap<>();
+			}		
 		}
 
 		return actions;

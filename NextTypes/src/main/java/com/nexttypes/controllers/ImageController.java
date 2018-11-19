@@ -33,6 +33,8 @@ public class ImageController extends Controller {
 
 	public ImageController(String type, String user, String[] groups, Node nextNode) {
 		super(type, user, groups, nextNode);
+		
+		actionsInfo = "/com/nexttypes/controllers/image-actions.json";
 	}
 
 	@Action(RESIZE)
