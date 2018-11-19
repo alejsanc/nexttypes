@@ -172,16 +172,16 @@ public interface Node extends Module, AutoCloseable {
 	public Reference[] getUpReferences(String[] types);
 
 	public TypeField getTypeField(String type, String field);
+	
+	public LinkedHashMap<String, TypeField> getTypeFields(String type);
 
 	public LinkedHashMap<String, TypeField> getTypeFields(String type, String... fields);
 
-	public LinkedHashMap<String, TypeField> getTypeFields(String type);
-
 	public TypeIndex getTypeIndex(String type, String index);
+	
+	public LinkedHashMap<String, TypeIndex> getTypeIndexes(String type);
 
 	public LinkedHashMap<String, TypeIndex> getTypeIndexes(String type, String... indexes);
-
-	public LinkedHashMap<String, TypeIndex> getTypeIndexes(String type);
 
 	public String getFieldType(String type, String field);
 	
@@ -267,8 +267,6 @@ public interface Node extends Module, AutoCloseable {
 
 	public boolean hasNullValues(String type, String field);
 
-	public int execute(String sql);
-
 	public int execute(String sql, Object... parameters);
 
 	public int execute(String sql, Integer expectedRows, Object... parameters);
@@ -295,203 +293,103 @@ public interface Node extends Module, AutoCloseable {
 
 	public ImportObjectsResult importObjects(ObjectsStream objects, ImportAction existingObjectsAction);
 
-	public Short getInt16(String sql);
-
 	public Short getInt16(String sql, Object... parameters);
-
-	public Integer getInt32(String sql);
 
 	public Integer getInt32(String sql, Object... parameters);
 
-	public Long getInt64(String sql);
-
 	public Long getInt64(String sql, Object... parameters);
-
-	public Float getFloat32(String sql);
 
 	public Float getFloat32(String sql, Object... parameters);
 
-	public Double getFloat64(String sql);
-
 	public Double getFloat64(String sql, Object... parameters);
-
-	public BigDecimal getNumeric(String sql);
 
 	public BigDecimal getNumeric(String sql, Object... parameters);
 
-	public String getString(String sql);
-
 	public String getString(String sql, Object... parameters);
-
-	public String getText(String sql);
 
 	public String getText(String sql, Object... parameters);
 
-	public LocalDate getDate(String sql);
-
 	public LocalDate getDate(String sql, Object... parameters);
-
-	public LocalTime getTime(String sql);
 
 	public LocalTime getTime(String sql, Object... parameters);
 
-	public LocalDateTime getDateTime(String sql);
-
 	public LocalDateTime getDateTime(String sql, Object... parameters);
-
-	public byte[] getBinary(String sql);
 
 	public byte[] getBinary(String sql, Object... parameters);
 
-	public HTMLFragment getHTML(String sql, String allowedTags);
-
 	public HTMLFragment getHTML(String sql, String allowedTags, Object... parameters);
-
-	public URL getURL(String sql);
 
 	public URL getURL(String sql, Object... parameters);
 
-	public InternetAddress getEmail(String sql);
-
 	public InternetAddress getEmail(String sql, Object... parameters);
-
-	public String getTel(String sql);
 
 	public String getTel(String sql, Object... parameters);
 
-	public Boolean getBoolean(String sql);
-
 	public Boolean getBoolean(String sql, Object... parameters);
-
-	public ZoneId getTimeZone(String sql);
 
 	public ZoneId getTimeZone(String sql, Object... parameters);
 
-	public Color getColor(String sql);
-
 	public Color getColor(String sql, Object... parameters);
-
-	public Image getImage(String sql);
 
 	public Image getImage(String sql, Object... parameters);
 
-	public Document getDocument(String sql);
-
 	public Document getDocument(String sql, Object... parameters);
-
-	public ZonedDateTime getUTCDateTime(String sql);
 
 	public ZonedDateTime getUTCDateTime(String sql, Object... parameters);
 
-	public Object getObject(String sql);
-
 	public Object getObject(String sql, Object... parameters);
-
-	public Short[] getInt16Array(String sql);
 
 	public Short[] getInt16Array(String sql, Object... parameters);
 
-	public Integer[] getInt32Array(String sql);
-
 	public Integer[] getInt32Array(String sql, Object... parameters);
-
-	public Long[] getInt64Array(String sql);
 
 	public Long[] getInt64Array(String sql, Object... parameters);
 
-	public Float[] getFloat32Array(String sql);
-
 	public Float[] getFloat32Array(String sql, Object... parameters);
-
-	public Double[] getFloat64Array(String sql);
 
 	public Double[] getFloat64Array(String sql, Object... parameters);
 
-	public BigDecimal[] getNumericArray(String sql);
-
 	public BigDecimal[] getNumericArray(String sql, Object... parameters);
-
-	public Boolean[] getBooleanArray(String sql);
 
 	public Boolean[] getBooleanArray(String sql, Object... parameters);
 
-	public String[] getStringArray(String sql);
-
 	public String[] getStringArray(String sql, Object... parameters);
-
-	public String[] getTextArray(String sql);
 
 	public String[] getTextArray(String sql, Object... parameters);
 
-	public LocalDate[] getDateArray(String sql);
-
 	public LocalDate[] getDateArray(String sql, Object... parameters);
-
-	public LocalTime[] getTimeArray(String sql);
 
 	public LocalTime[] getTimeArray(String sql, Object... parameters);
 
-	public LocalDateTime[] getDateTimeArray(String sql);
-
 	public LocalDateTime[] getDateTimeArray(String sql, Object... parameters);
-
-	public ZonedDateTime[] getUTCDateTimeArray(String sql);
 
 	public ZonedDateTime[] getUTCDateTimeArray(String sql, Object... parameters);
 
-	public byte[][] getBinaryArray(String sql);
-
 	public byte[][] getBinaryArray(String sql, Object... parameters);
-
-	public HTMLFragment[] getHTMLArray(String sql, String allowedTags);
 
 	public HTMLFragment[] getHTMLArray(String sql, String allowedTags, Object... parameters);
 
-	public URL[] getURLArray(String sql);
-
 	public URL[] getURLArray(String sql, Object... parameters);
-
-	public InternetAddress[] getEmailArray(String sql);
 
 	public InternetAddress[] getEmailArray(String sql, Object... parameters);
 
-	public String[] getTelArray(String sql);
-
 	public String[] getTelArray(String sql, Object... parameters);
-
-	public ZoneId[] getTimeZoneArray(String sql);
 
 	public ZoneId[] getTimeZoneArray(String sql, Object... parameters);
 
-	public Color[] getColorArray(String sql);
-
 	public Color[] getColorArray(String sql, Object... parameters);
-
-	public Image[] getImageArray(String sql);
 
 	public Image[] getImageArray(String sql, Object... parameters);
 
-	public Document[] getDocumentArray(String sql);
-
 	public Document[] getDocumentArray(String sql, Object... parameters);
-
-	public <T> T[] getArray(String sql, Class<T> type);
 
 	public <T> T[] getArray(String sql, Class<T> type, Object... parameters);
 
-	public Tuple getTuple(String sql);
-
 	public Tuple getTuple(String sql, Object... parameters);
-
-	public Tuple getMatrix(String sql, String[] axes);
 
 	public Tuple getMatrix(String sql, String[] axes, Object... parameters);
 
-	public Tuple[] query(String sql);
-
 	public Tuple[] query(String sql, Object... parameters);
-
-	public <T> T[] query(String sql, Class<T> type);
 
 	public <T> T[] query(String sql, Class<T> type, Object... parameters);
 

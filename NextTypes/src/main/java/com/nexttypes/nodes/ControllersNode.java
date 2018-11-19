@@ -621,11 +621,6 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public int execute(String sql) {
-		return nextNode.execute(sql);
-	}
-
-	@Override
 	public int execute(String sql, Object... parameters) {
 		return nextNode.execute(sql, parameters);
 	}
@@ -686,18 +681,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Short getInt16(String sql) {
-		return nextNode.getInt16(sql);
-	}
-
-	@Override
 	public Short getInt16(String sql, Object... parameters) {
 		return nextNode.getInt16(sql, parameters);
-	}
-
-	@Override
-	public Integer getInt32(String sql) {
-		return nextNode.getInt32(sql);
 	}
 
 	@Override
@@ -706,18 +691,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Long getInt64(String sql) {
-		return nextNode.getInt64(sql);
-	}
-
-	@Override
 	public Long getInt64(String sql, Object... parameters) {
 		return nextNode.getInt64(sql, parameters);
-	}
-
-	@Override
-	public Float getFloat32(String sql) {
-		return nextNode.getFloat32(sql);
 	}
 
 	@Override
@@ -726,18 +701,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Double getFloat64(String sql) {
-		return nextNode.getFloat64(sql);
-	}
-
-	@Override
 	public Double getFloat64(String sql, Object... parameters) {
 		return nextNode.getFloat64(sql, parameters);
-	}
-
-	@Override
-	public BigDecimal getNumeric(String sql) {
-		return nextNode.getNumeric(sql);
 	}
 
 	@Override
@@ -746,18 +711,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public String getString(String sql) {
-		return nextNode.getString(sql);
-	}
-
-	@Override
 	public String getString(String sql, Object... parameters) {
 		return nextNode.getString(sql, parameters);
-	}
-
-	@Override
-	public String getText(String sql) {
-		return nextNode.getText(sql);
 	}
 
 	@Override
@@ -766,18 +721,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public LocalDate getDate(String sql) {
-		return nextNode.getDate(sql);
-	}
-
-	@Override
 	public LocalDate getDate(String sql, Object... parameters) {
 		return nextNode.getDate(sql, parameters);
-	}
-
-	@Override
-	public LocalTime getTime(String sql) {
-		return nextNode.getTime(sql);
 	}
 
 	@Override
@@ -786,18 +731,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public LocalDateTime getDateTime(String sql) {
-		return nextNode.getDateTime(sql);
-	}
-
-	@Override
 	public LocalDateTime getDateTime(String sql, Object... parameters) {
 		return nextNode.getDateTime(sql, parameters);
-	}
-
-	@Override
-	public byte[] getBinary(String sql) {
-		return nextNode.getBinary(sql);
 	}
 
 	@Override
@@ -806,18 +741,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public HTMLFragment getHTML(String sql, String allowedTags) {
-		return nextNode.getHTML(sql, allowedTags);
-	}
-
-	@Override
 	public HTMLFragment getHTML(String sql, String allowedTags, Object... parameters) {
 		return nextNode.getHTML(sql, allowedTags, parameters);
-	}
-
-	@Override
-	public URL getURL(String sql) {
-		return nextNode.getURL(sql);
 	}
 
 	@Override
@@ -826,18 +751,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public InternetAddress getEmail(String sql) {
-		return nextNode.getEmail(sql);
-	}
-
-	@Override
 	public InternetAddress getEmail(String sql, Object... parameters) {
 		return nextNode.getEmail(sql, parameters);
-	}
-
-	@Override
-	public String getTel(String sql) {
-		return nextNode.getTel(sql);
 	}
 
 	@Override
@@ -846,18 +761,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public ZoneId getTimeZone(String sql) {
-		return nextNode.getTimeZone(sql);
-	}
-
-	@Override
 	public ZoneId getTimeZone(String sql, Object... parameters) {
 		return nextNode.getTimeZone(sql, parameters);
-	}
-
-	@Override
-	public Color getColor(String sql) {
-		return nextNode.getColor(sql);
 	}
 
 	@Override
@@ -866,18 +771,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Image getImage(String sql) {
-		return nextNode.getImage(sql);
-	}
-
-	@Override
 	public Image getImage(String sql, Object... parameters) {
 		return nextNode.getImage(sql, parameters);
-	}
-
-	@Override
-	public Document getDocument(String sql) {
-		return nextNode.getDocument(sql);
 	}
 
 	@Override
@@ -886,18 +781,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public ZonedDateTime getUTCDateTime(String sql) {
-		return nextNode.getUTCDateTime(sql);
-	}
-
-	@Override
 	public ZonedDateTime getUTCDateTime(String sql, Object... parameters) {
 		return nextNode.getUTCDateTime(sql, parameters);
-	}
-
-	@Override
-	public Short[] getInt16Array(String sql) {
-		return nextNode.getInt16Array(sql);
 	}
 
 	@Override
@@ -906,18 +791,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Integer[] getInt32Array(String sql) {
-		return nextNode.getInt32Array(sql);
-	}
-
-	@Override
 	public Integer[] getInt32Array(String sql, Object... parameters) {
 		return nextNode.getInt32Array(sql, parameters);
-	}
-
-	@Override
-	public Long[] getInt64Array(String sql) {
-		return nextNode.getInt64Array(sql);
 	}
 
 	@Override
@@ -926,18 +801,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Float[] getFloat32Array(String sql) {
-		return nextNode.getFloat32Array(sql);
-	}
-
-	@Override
 	public Float[] getFloat32Array(String sql, Object... parameters) {
 		return nextNode.getFloat32Array(sql, parameters);
-	}
-
-	@Override
-	public Double[] getFloat64Array(String sql) {
-		return nextNode.getFloat64Array(sql);
 	}
 
 	@Override
@@ -946,18 +811,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public BigDecimal[] getNumericArray(String sql) {
-		return nextNode.getNumericArray(sql);
-	}
-
-	@Override
 	public BigDecimal[] getNumericArray(String sql, Object... parameters) {
 		return nextNode.getNumericArray(sql, parameters);
-	}
-
-	@Override
-	public Boolean[] getBooleanArray(String sql) {
-		return nextNode.getBooleanArray(sql);
 	}
 
 	@Override
@@ -966,18 +821,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public String[] getStringArray(String sql) {
-		return nextNode.getStringArray(sql);
-	}
-
-	@Override
 	public String[] getStringArray(String sql, Object... parameters) {
 		return nextNode.getStringArray(sql, parameters);
-	}
-
-	@Override
-	public String[] getTextArray(String sql) {
-		return nextNode.getTextArray(sql);
 	}
 
 	@Override
@@ -986,18 +831,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public LocalDate[] getDateArray(String sql) {
-		return nextNode.getDateArray(sql);
-	}
-
-	@Override
 	public LocalDate[] getDateArray(String sql, Object... parameters) {
 		return nextNode.getDateArray(sql, parameters);
-	}
-
-	@Override
-	public LocalTime[] getTimeArray(String sql) {
-		return nextNode.getTimeArray(sql);
 	}
 
 	@Override
@@ -1006,18 +841,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public LocalDateTime[] getDateTimeArray(String sql) {
-		return nextNode.getDateTimeArray(sql);
-	}
-
-	@Override
 	public LocalDateTime[] getDateTimeArray(String sql, Object... parameters) {
 		return nextNode.getDateTimeArray(sql, parameters);
-	}
-
-	@Override
-	public ZonedDateTime[] getUTCDateTimeArray(String sql) {
-		return nextNode.getUTCDateTimeArray(sql);
 	}
 
 	@Override
@@ -1026,18 +851,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public byte[][] getBinaryArray(String sql) {
-		return nextNode.getBinaryArray(sql);
-	}
-
-	@Override
 	public byte[][] getBinaryArray(String sql, Object... parameters) {
 		return nextNode.getBinaryArray(sql, parameters);
-	}
-
-	@Override
-	public HTMLFragment[] getHTMLArray(String sql, String allowedTags) {
-		return nextNode.getHTMLArray(sql, allowedTags);
 	}
 
 	@Override
@@ -1046,18 +861,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public URL[] getURLArray(String sql) {
-		return nextNode.getURLArray(sql);
-	}
-
-	@Override
 	public URL[] getURLArray(String sql, Object... parameters) {
 		return nextNode.getURLArray(sql, parameters);
-	}
-
-	@Override
-	public InternetAddress[] getEmailArray(String sql) {
-		return nextNode.getEmailArray(sql);
 	}
 
 	@Override
@@ -1066,18 +871,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public String[] getTelArray(String sql) {
-		return nextNode.getTelArray(sql);
-	}
-
-	@Override
 	public String[] getTelArray(String sql, Object... parameters) {
 		return nextNode.getTelArray(sql, parameters);
-	}
-
-	@Override
-	public ZoneId[] getTimeZoneArray(String sql) {
-		return nextNode.getTimeZoneArray(sql);
 	}
 
 	@Override
@@ -1086,18 +881,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Color[] getColorArray(String sql) {
-		return nextNode.getColorArray(sql);
-	}
-
-	@Override
 	public Color[] getColorArray(String sql, Object... parameters) {
 		return nextNode.getColorArray(sql, parameters);
-	}
-
-	@Override
-	public Image[] getImageArray(String sql) {
-		return nextNode.getImageArray(sql);
 	}
 
 	@Override
@@ -1106,18 +891,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Document[] getDocumentArray(String sql) {
-		return nextNode.getDocumentArray(sql);
-	}
-
-	@Override
 	public Document[] getDocumentArray(String sql, Object... parameters) {
 		return nextNode.getDocumentArray(sql, parameters);
-	}
-
-	@Override
-	public <T> T[] getArray(String sql, Class<T> type) {
-		return nextNode.getArray(sql, type);
 	}
 
 	@Override
@@ -1126,18 +901,8 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Object getObject(String sql) {
-		return nextNode.getObject(sql);
-	}
-
-	@Override
 	public Object getObject(String sql, Object... parameters) {
 		return nextNode.getObject(sql, parameters);
-	}
-
-	@Override
-	public Tuple getMatrix(String sql, String[] axes) {
-		return nextNode.getMatrix(sql, axes);
 	}
 
 	@Override
@@ -1146,28 +911,13 @@ public class ControllersNode implements Node {
 	}
 
 	@Override
-	public Tuple getTuple(String sql) {
-		return nextNode.getTuple(sql);
-	}
-
-	@Override
 	public Tuple getTuple(String sql, Object... parameters) {
 		return nextNode.getTuple(sql, parameters);
 	}
 
 	@Override
-	public Tuple[] query(String sql) {
-		return nextNode.query(sql);
-	}
-
-	@Override
 	public Tuple[] query(String sql, Object... parameters) {
 		return nextNode.query(sql, parameters);
-	}
-
-	@Override
-	public <T> T[] query(String sql, Class<T> type) {
-		return nextNode.query(sql, type);
 	}
 
 	@Override
@@ -1203,11 +953,6 @@ public class ControllersNode implements Node {
 	@Override
 	public Boolean existsObject(String type, String id) {
 		return getController(type).existsObject(id);
-	}
-
-	@Override
-	public Boolean getBoolean(String sql) {
-		return nextNode.getBoolean(sql);
 	}
 
 	@Override

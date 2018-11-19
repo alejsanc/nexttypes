@@ -2598,11 +2598,7 @@ public class PostgreSQLNode implements Node {
 		return getBoolean("select exists(select 1 from \"" + type + "\" where \"" + field + "\" is null)");
 	}
 
-	@Override
-	public int execute(String sql) {
-		return execute(sql, false, null, (Object[]) null);
-	}
-
+	
 	@Override
 	public int execute(String sql, Object... parameters) {
 		return execute(sql, false, null, parameters);
@@ -2647,18 +2643,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Short getInt16(String sql) {
-		return (Short) getObject(sql);
-	}
-
-	@Override
 	public Short getInt16(String sql, Object... parameters) {
 		return (Short) getObject(sql, parameters);
-	}
-
-	@Override
-	public Integer getInt32(String sql) {
-		return (Integer) getObject(sql);
 	}
 
 	@Override
@@ -2667,18 +2653,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Long getInt64(String sql) {
-		return (Long) getObject(sql);
-	}
-
-	@Override
 	public Long getInt64(String sql, Object... parameters) {
 		return (Long) getObject(sql, parameters);
-	}
-
-	@Override
-	public Float getFloat32(String sql) {
-		return (Float) getObject(sql);
 	}
 
 	@Override
@@ -2687,18 +2663,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Double getFloat64(String sql) {
-		return (Double) getObject(sql);
-	}
-
-	@Override
 	public Double getFloat64(String sql, Object... parameters) {
 		return (Double) getObject(sql, parameters);
-	}
-
-	@Override
-	public BigDecimal getNumeric(String sql) {
-		return (BigDecimal) getObject(sql);
 	}
 
 	@Override
@@ -2707,18 +2673,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Boolean getBoolean(String sql) {
-		return getBoolean(sql, (Object[]) null);
-	}
-
-	@Override
 	public Boolean getBoolean(String sql, Object... parameters) {
 		return Tuple.parseBoolean(getObject(sql, parameters));
-	}
-
-	@Override
-	public String getString(String sql) {
-		return (String) getObject(sql);
 	}
 
 	@Override
@@ -2727,18 +2683,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public String getText(String sql) {
-		return (String) getObject(sql);
-	}
-
-	@Override
 	public String getText(String sql, Object... parameters) {
 		return (String) getObject(sql, parameters);
-	}
-
-	@Override
-	public LocalDate getDate(String sql) {
-		return getDate(sql, (Object[]) null);
 	}
 
 	@Override
@@ -2747,18 +2693,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public LocalTime getTime(String sql) {
-		return getTime(sql, (Object[]) null);
-	}
-
-	@Override
 	public LocalTime getTime(String sql, Object... parameters) {
 		return Tuple.parseTime(getObject(sql, parameters));
-	}
-
-	@Override
-	public LocalDateTime getDateTime(String sql) {
-		return getDateTime(sql, (Object[]) null);
 	}
 
 	@Override
@@ -2767,18 +2703,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public byte[] getBinary(String sql) {
-		return (byte[]) getObject(sql);
-	}
-
-	@Override
 	public byte[] getBinary(String sql, Object... parameters) {
 		return (byte[]) getObject(sql, parameters);
-	}
-
-	@Override
-	public HTMLFragment getHTML(String sql, String allowedTags) {
-		return getHTML(sql, allowedTags, (Object[]) null);
 	}
 
 	@Override
@@ -2787,18 +2713,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public URL getURL(String sql) {
-		return getURL(sql, (Object[]) null);
-	}
-
-	@Override
 	public URL getURL(String sql, Object... parameters) {
 		return Tuple.parseURL(getObject(sql, parameters));
-	}
-
-	@Override
-	public InternetAddress getEmail(String sql) {
-		return getEmail(sql, (Object[]) null);
 	}
 
 	@Override
@@ -2807,18 +2723,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public String getTel(String sql) {
-		return (String) getObject(sql);
-	}
-
-	@Override
 	public String getTel(String sql, Object... parameters) {
 		return (String) getObject(sql, parameters);
-	}
-
-	@Override
-	public ZoneId getTimeZone(String sql) {
-		return getTimeZone(sql, (Object[]) null);
 	}
 
 	@Override
@@ -2827,18 +2733,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Color getColor(String sql) {
-		return getColor(sql, (Object[]) null);
-	}
-
-	@Override
 	public Color getColor(String sql, Object... parameters) {
 		return Tuple.parseColor(getObject(sql, parameters));
-	}
-
-	@Override
-	public Image getImage(String sql) {
-		return getImage(sql, (Object[]) null);
 	}
 
 	@Override
@@ -2847,28 +2743,13 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Document getDocument(String sql) {
-		return getDocument(sql, (Object[]) null);
-	}
-
-	@Override
 	public Document getDocument(String sql, Object... parameters) {
 		return Tuple.parseDocument(getObject(sql, parameters));
 	}
 
 	@Override
-	public ZonedDateTime getUTCDateTime(String sql) {
-		return getUTCDateTime(sql, (Object[]) null);
-	}
-
-	@Override
 	public ZonedDateTime getUTCDateTime(String sql, Object... parameters) {
 		return Tuple.parseUTCDateTime(getObject(sql, parameters));
-	}
-
-	@Override
-	public Object getObject(String sql) {
-		return getObject(sql, (Object[]) null);
 	}
 
 	@Override
@@ -2878,18 +2759,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Short[] getInt16Array(String sql) {
-		return getInt16Array(sql, (Object[]) null);
-	}
-
-	@Override
 	public Short[] getInt16Array(String sql, Object... parameters) {
 		return getArray(sql, Short.class, parameters);
-	}
-
-	@Override
-	public Integer[] getInt32Array(String sql) {
-		return getInt32Array(sql, (Object[]) null);
 	}
 
 	@Override
@@ -2898,18 +2769,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Long[] getInt64Array(String sql) {
-		return getInt64Array(sql, (Object[]) null);
-	}
-
-	@Override
 	public Long[] getInt64Array(String sql, Object... parameters) {
 		return getArray(sql, Long.class, parameters);
-	}
-
-	@Override
-	public Float[] getFloat32Array(String sql) {
-		return getFloat32Array(sql, (Object[]) null);
 	}
 
 	@Override
@@ -2918,28 +2779,13 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Double[] getFloat64Array(String sql) {
-		return getFloat64Array(sql, (Object[]) null);
-	}
-
-	@Override
 	public Double[] getFloat64Array(String sql, Object... parameters) {
 		return getArray(sql, Double.class, parameters);
 	}
 
 	@Override
-	public BigDecimal[] getNumericArray(String sql) {
-		return getNumericArray(sql, (Object[]) null);
-	}
-
-	@Override
 	public BigDecimal[] getNumericArray(String sql, Object... parameters) {
 		return getArray(sql, BigDecimal.class, parameters);
-	}
-
-	@Override
-	public Boolean[] getBooleanArray(String sql) {
-		return getBooleanArray(sql, (Object[]) null);
 	}
 
 	@Override
@@ -2949,28 +2795,13 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public String[] getStringArray(String sql) {
-		return getStringArray(sql, (Object[]) null);
-	}
-
-	@Override
 	public String[] getStringArray(String sql, Object... parameters) {
 		return getArray(sql, String.class, parameters);
 	}
 
 	@Override
-	public String[] getTextArray(String sql) {
-		return getTextArray(sql, (Object[]) null);
-	}
-
-	@Override
 	public String[] getTextArray(String sql, Object... parameters) {
 		return getArray(sql, String.class, parameters);
-	}
-
-	@Override
-	public LocalDate[] getDateArray(String sql) {
-		return getDateArray(sql, (Object[]) null);
 	}
 
 	@Override
@@ -2980,19 +2811,9 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public LocalTime[] getTimeArray(String sql) {
-		return getTimeArray(sql, (Object[]) null);
-	}
-
-	@Override
 	public LocalTime[] getTimeArray(String sql, Object... parameters) {
 		return Arrays.stream(getArray(sql, Object.class, parameters)).map(time -> Tuple.parseTime(time))
 				.toArray(LocalTime[]::new);
-	}
-
-	@Override
-	public LocalDateTime[] getDateTimeArray(String sql) {
-		return getDateTimeArray(sql, (Object[]) null);
 	}
 
 	@Override
@@ -3002,29 +2823,14 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public ZonedDateTime[] getUTCDateTimeArray(String sql) {
-		return getUTCDateTimeArray(sql, (Object[]) null);
-	}
-
-	@Override
 	public ZonedDateTime[] getUTCDateTimeArray(String sql, Object... parameters) {
 		return Arrays.stream(getArray(sql, Object.class, parameters))
 				.map(utcDateTime -> Tuple.parseUTCDateTime(utcDateTime)).toArray(ZonedDateTime[]::new);
 	}
 
 	@Override
-	public byte[][] getBinaryArray(String sql) {
-		return getBinaryArray(sql, (Object[]) null);
-	}
-
-	@Override
 	public byte[][] getBinaryArray(String sql, Object... parameters) {
 		return getArray(sql, byte[].class, parameters);
-	}
-
-	@Override
-	public HTMLFragment[] getHTMLArray(String sql, String allowedTags) {
-		return getHTMLArray(sql, allowedTags, (Object[]) null);
 	}
 
 	@Override
@@ -3034,19 +2840,9 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public URL[] getURLArray(String sql) {
-		return getURLArray(sql, (Object[]) null);
-	}
-
-	@Override
 	public URL[] getURLArray(String sql, Object... parameters) {
 		return Arrays.stream(getArray(sql, Object.class, parameters)).map(url -> Tuple.parseURL(url))
 				.toArray(URL[]::new);
-	}
-
-	@Override
-	public InternetAddress[] getEmailArray(String sql) {
-		return getEmailArray(sql, (Object[]) null);
 	}
 
 	@Override
@@ -3056,18 +2852,8 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public String[] getTelArray(String sql) {
-		return getTelArray(sql, (Object[]) null);
-	}
-
-	@Override
 	public String[] getTelArray(String sql, Object... parameters) {
 		return getArray(sql, String.class, parameters);
-	}
-
-	@Override
-	public ZoneId[] getTimeZoneArray(String sql) {
-		return getTimeZoneArray(sql, (Object[]) null);
 	}
 
 	@Override
@@ -3077,19 +2863,9 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Color[] getColorArray(String sql) {
-		return getColorArray(sql, (Object[]) null);
-	}
-
-	@Override
 	public Color[] getColorArray(String sql, Object... parameters) {
 		return Arrays.stream(getArray(sql, Object.class, parameters)).map(color -> Tuple.parseColor(color))
 				.toArray(Color[]::new);
-	}
-
-	@Override
-	public Image[] getImageArray(String sql) {
-		return getImageArray(sql, (Object[]) null);
 	}
 
 	@Override
@@ -3099,19 +2875,9 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Document[] getDocumentArray(String sql) {
-		return getDocumentArray(sql, (Object[]) null);
-	}
-
-	@Override
 	public Document[] getDocumentArray(String sql, Object... parameters) {
 		return Arrays.stream(getArray(sql, Object.class, parameters)).map(document -> Tuple.parseDocument(document))
 				.toArray(Document[]::new);
-	}
-
-	@Override
-	public <T> T[] getArray(String sql, Class<T> type) {
-		return getArray(sql, type, (Object[]) null);
 	}
 
 	@Override
@@ -3141,29 +2907,14 @@ public class PostgreSQLNode implements Node {
 	}
 
 	@Override
-	public Tuple getTuple(String sql) {
-		return getTuple(sql, (Object[]) null);
-	}
-
-	@Override
 	public Tuple getTuple(String sql, Object... parameters) {
 		Tuple[] tuples = query(sql, parameters);
 		return tuples.length == 1 ? tuples[0] : null;
 	}
 
 	@Override
-	public Tuple getMatrix(String sql, String[] axes) {
-		throw new NotImplementedException();
-	}
-
-	@Override
 	public Tuple getMatrix(String sql, String[] axes, Object... parameters) {
 		throw new NotImplementedException();
-	}
-
-	@Override
-	public Tuple[] query(String sql) {
-		return query(sql, (Object[]) null);
 	}
 
 	@Override
@@ -3190,11 +2941,6 @@ public class PostgreSQLNode implements Node {
 		}
 
 		return tuples.toArray(new Tuple[] {});
-	}
-
-	@Override
-	public <T> T[] query(String sql, Class<T> type) {
-		return query(sql, type, (Object[]) null);
 	}
 
 	@Override
