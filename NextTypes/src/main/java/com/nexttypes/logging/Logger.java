@@ -88,8 +88,17 @@ public class Logger extends java.util.logging.Logger {
 		} else {
 			message = NXException.getMessage(e);
 		}
+		
+		String sourceClass = null;
+		
+		StackTraceElement[] stackTraceElements = e.getStackTrace();
+		if (stackTraceElements != null && stackTraceElements.length > 0) {
+			sourceClass = stackTraceElements[0].getClassName();
+		} else {
+			sourceClass = "-";
+		}
 
-		log(level, e.getStackTrace()[0].getClassName(), user, remoteAddress, message);
+		log(level, sourceClass, user, remoteAddress, message);
 	}
 
 	public void log(Level level, Object source, String user, String remoteAddress, Message message) {
