@@ -290,6 +290,7 @@ public class Constants {
 	public static final String REFERENCES = "references";
 	public static final String REFERENCING_FIELD = "referencing_field";
 	public static final String REFERENCING_TYPE = "referencing_type";
+	public static final String REFERRER_POLICY = "referrer_policy";
 	public static final String RENAME_TITLE = "rename_title";
 	public static final String RENAMED_FIELDS = "renamed_fields";
 	public static final String RENAMED_INDEXES = "renamed_indexes";

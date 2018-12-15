@@ -3604,6 +3604,8 @@ public class HTMLView extends View {
 		Content content = new Content(document.toString(), Format.XHTML);
 		content.setHeader(HTTPHeader.CONTENT_SECURITY_POLICY,
 				typeSettings.gts(type, Constants.CONTENT_SECURITY_POLICY));
+		content.setHeader(HTTPHeader.REFERRER_POLICY,
+				typeSettings.gts(type, Constants.REFERRER_POLICY));
 
 		return content;
 	}
@@ -4036,12 +4038,12 @@ public class HTMLView extends View {
 			Element validators = document.getElementById(VALIDATORS);
 
 			if (validators != null) {
-				validators.appendElement(
-						imageAnchor(HTML5, "http://validator.w3.org/check?uri=referer", "/static/images/html5.png"));
-				validators.appendElement(
-						imageAnchor(CSS, "http://jigsaw.w3.org/css-validator/check/referer", "/static/images/css.gif"));
+				validators.appendElement(imageAnchor(HTML5,
+						"https://validator.w3.org/check?uri=referer", "/static/images/html5.png"));
+				validators.appendElement(imageAnchor(CSS,
+						"https://jigsaw.w3.org/css-validator/check/referer", "/static/images/css.gif"));
 				validators.appendElement(imageAnchor(WCAG,
-						"http://achecker.ca/checker/index.php?uri=referer&gid=WCAG2-AAA", "/static/images/wcag.jpeg"));
+						"https://achecker.ca/checker/index.php?uri=referer&gid=WCAG2-AAA", "/static/images/wcag.jpeg"));
 			}
 		}
 	}

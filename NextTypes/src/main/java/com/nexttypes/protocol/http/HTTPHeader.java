@@ -26,6 +26,7 @@ public enum HTTPHeader {
 	ETAG("ETag"),
 	IF_NONE_MATCH("If-None-Match"),
 	LOCATION("Location"),
+	REFERRER_POLICY("Referrer-Policy"),
 	USER_AGENT("User-Agent"),
 	WWW_AUTHENTICATE("WWW-Authenticate");
 
