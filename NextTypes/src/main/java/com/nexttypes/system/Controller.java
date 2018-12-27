@@ -190,9 +190,8 @@ public class Controller {
 	}
 	
 	public LinkedHashMap<String, LinkedHashMap<String, TypeField>> getTypeActions() {
-		if (actions == null) {		
+		if (actions == null && actionsInfo != null) {		
 			try (InputStream stream = getClass().getResourceAsStream(actionsInfo)) {
-
 				if (stream != null) {
 					ObjectMapper mapper = new ObjectMapper();
 					actions = mapper.readValue(stream, new com.fasterxml.jackson.core.type.TypeReference
@@ -200,12 +199,12 @@ public class Controller {
 				}
 			} catch (IOException e) {
 				throw new NXException(e);
-			}
-
-			if (actions == null) {
-				actions = new LinkedHashMap<>();
-			}		
+			}	
 		}
+		
+		if (actions == null) {
+			actions = new LinkedHashMap<>();
+		}	
 
 		return actions;
 	}

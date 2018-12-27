@@ -82,7 +82,7 @@ public class HTTPServlet extends HttpServlet {
 	protected static final long serialVersionUID = 1L;
 	public static final String MAX_REQUESTS = "429 Error: Requests per minute exceeded.";
 	public static final String X509_CERTIFICATES = "javax.servlet.request.X509Certificate";
-
+	
 	protected Settings settings;
 	protected Context context;
 	protected Logger logger;
@@ -92,8 +92,10 @@ public class HTTPServlet extends HttpServlet {
 	protected boolean binaryDebug;
 	protected int binaryDebugLimit;
 	protected ConcurrentHashMap<String, Requests> requestsMap = new ConcurrentHashMap<>();
-	protected ConcurrentHashMap<String, AuthErrors> authErrorsMap = new ConcurrentHashMap<>();
+	protected ConcurrentHashMap<String, Requests> authErrorsMap = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Requests> insertRequestsMap = new ConcurrentHashMap<>();
+	protected ConcurrentHashMap<String, Requests>[] requestsMaps = new ConcurrentHashMap[] { requestsMap,
+			authErrorsMap, insertRequestsMap };
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -107,11 +109,40 @@ public class HTTPServlet extends HttpServlet {
 		binaryDebug = settings.getBoolean(Constants.BINARY_DEBUG);
 		binaryDebugLimit = settings.getInt32(Constants.BINARY_DEBUG_LIMIT);
 		logger = context.getLogger();
+				
+		requestsMapsThread();
+	}
+	
+	protected void requestsMapsThread() {
+		
+		new Thread () {
+			public void run() {
+				try {
+					sleep(Constants.MINUTE_MILLISECONDS);
+				} catch (InterruptedException e) {
+					throw new NXException(e);
+				}
+				
+				while (true) {
+					long now = System.currentTimeMillis();
+					
+					for (ConcurrentHashMap<String, Requests> map : requestsMaps) {
+						
+						for (Map.Entry<String, Requests> entry : map.entrySet()) {
+							if (entry.getValue().firstRequestTime + Constants.MINUTE_MILLISECONDS 
+									< now) {
+								map.remove(entry.getKey());
+							}
+						}
+					}
+				}
+			}
+		}.start();
 	}
 
 	protected Content get(HTTPRequest req, HttpServletResponse response) throws IOException,
 		URISyntaxException {
-
+		
 		Content content = null;
 
 		String type = req.getType();
@@ -275,10 +306,12 @@ public class HTTPServlet extends HttpServlet {
 			break;
 
 		case Action.INSERT:
-			content = maxInsertRequestsExceeded(req);
+			content = checkMaxInsertRequests(req);
+			
 			if (content != null) {
 				return content;
 			}
+			
 		case Action.UPDATE:
 		case Action.UPDATE_ID:
 		case Action.UPDATE_PASSWORD:
@@ -643,8 +676,8 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected Content robots() {
-		HTTPRobots robots = new HTTPRobots(settings.getString(Constants.HOST), settings.getInt32(Constants.HTTPS_PORT),
-				settings.getStringArray(Constants.INDEX_TYPES));
+		HTTPRobots robots = new HTTPRobots(settings.getString(Constants.HOST),
+				settings.getInt32(Constants.HTTPS_PORT), settings.getStringArray(Constants.INDEX_TYPES));
 		return new Content(robots.toString(), Format.TEXT);
 	}
 
@@ -919,7 +952,7 @@ public class HTTPServlet extends HttpServlet {
 				debug(request);		
 			}
 
-			Content content = maxRequestsExceeded(request);
+			Content content = checkMaxRequests(request);
 
 			if (content == null) {
 
@@ -1097,31 +1130,36 @@ public class HTTPServlet extends HttpServlet {
 		logger.info(this, user, request.getRemoteAddr(), request.getMethod() + " " + url);
 	}
 
-	protected Content maxInsertRequestsExceeded(HTTPRequest req) {
+	protected Content checkMaxInsertRequests(HTTPRequest req) {
 		Content content = null;
+		
+		String type = req.getType();
+		
+		int maxInserts = req.getTypeSettings().getTypeInt32(type, Constants.MAX_INSERTS);
 
-		String remoteAddress = req.getRemoteAddress();
+		if (maxInserts > 0) {
+			
+			String remoteAddress = req.getRemoteAddress();
 
-		Requests requests = insertRequestsMap.get(remoteAddress);
+			Requests requests = insertRequestsMap.get(remoteAddress);
 
-		if (requests != null) {
-			long now = System.currentTimeMillis();
+			if (requests != null) {
+				long now = System.currentTimeMillis();
 
-			if (requests.firstRequestTime + 60000 < now) {
-				insertRequestsMap.remove(remoteAddress);
-			} else {
-				String type = req.getType();
+				if (requests.firstRequestTime + Constants.MINUTE_MILLISECONDS < now) {
+					insertRequestsMap.remove(remoteAddress);
+				} else {
+				
+					if (requests.requests >= maxInserts) {
+						String message = req.getStrings().gts(type, Constants.MAX_INSERTS_EXCEEDED);
 
-				int maxInsertsPerMinute = req.getTypeSettings().getTypeInt32(type, Constants.MAX_INSERTS);
+						content = new Content(message, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
 
-				if (requests.requests >= maxInsertsPerMinute) {
-					String message = req.getStrings().gts(type, Constants.MAX_INSERTS_EXCEEDED);
-
-					content = new Content(message, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
-
-					if (!requests.logged) {
-						logger.severe(this, req.getUser(), remoteAddress, new Message(Constants.MAX_INSERTS_EXCEEDED));
-						requests.logged = true;
+						if (!requests.logged) {
+							logger.severe(this, req.getUser(), remoteAddress,
+									new Message(Constants.MAX_INSERTS_EXCEEDED));
+							requests.logged = true;
+						}
 					}
 				}
 			}
@@ -1130,83 +1168,99 @@ public class HTTPServlet extends HttpServlet {
 		return content;
 	}
 
-	protected Content maxRequestsExceeded(HttpServletRequest req) {
+	protected Content checkMaxRequests(HttpServletRequest req) {
 		Content content = null;
 
-		String remoteAddress = req.getRemoteAddr();
+		if (maxRequests > 0) {
+			String remoteAddress = req.getRemoteAddr();
 
-		Requests requests = requestsMap.get(remoteAddress);
+			Requests requests = requestsMap.get(remoteAddress);
 
-		if (requests != null) {
-			long now = System.currentTimeMillis();
+			if (requests != null) {
+				long now = System.currentTimeMillis();
 
-			if (requests.firstRequestTime + 60000 < now) {
-				requests.requests = 1;
-				requests.firstRequestTime = now;
-				requests.logged = false;
-			} else {
-				requests.requests += 1;
+				if (requests.firstRequestTime + Constants.MINUTE_MILLISECONDS < now) {
+					requests.requests = 1;
+					requests.firstRequestTime = now;
+					requests.logged = false;
+				} else {
+					requests.requests += 1;
 
-				if (requests.requests > maxRequests) {
+					if (requests.requests > maxRequests) {
 
-					content = new Content(MAX_REQUESTS, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
+						content = new Content(MAX_REQUESTS, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
 
-					if (!requests.logged) {
-						Auth auth = (Auth) req.getSession().getAttribute(Constants.USER);
-						String userName = auth != null ? auth.getUser() : Auth.GUEST;
+						if (!requests.logged) {
+							Auth auth = (Auth) req.getSession().getAttribute(Constants.USER);
+							String userName = auth != null ? auth.getUser() : Auth.GUEST;
 
-						logger.severe(this, userName, remoteAddress, MAX_REQUESTS);
-						requests.logged = true;
+							logger.severe(this, userName, remoteAddress, MAX_REQUESTS);
+							requests.logged = true;
+						}
 					}
 				}
+			} else {
+				requestsMap.putIfAbsent(remoteAddress, new Requests());
 			}
-		} else {
-			requestsMap.putIfAbsent(remoteAddress, new Requests());
 		}
 
 		return content;
 	}
 
 	protected void insertRequest(HTTPRequest req) {
-		String remoteAddress = req.getRemoteAddress();
+		
+		String type = req.getType();
+		
+		int maxInserts = req.getTypeSettings().getTypeInt32(type, Constants.MAX_INSERTS);
 
-		Requests requests = insertRequestsMap.get(remoteAddress);
+		if (maxInserts > 0) {
+			
+			String remoteAddress = req.getRemoteAddress();
 
-		if (requests == null) {
-			requests = new Requests();
-			insertRequestsMap.putIfAbsent(remoteAddress, requests);
-		} else {
-			requests.requests += 1;
+			Requests requests = insertRequestsMap.get(remoteAddress);
+
+			if (requests == null) {
+				requests = new Requests();
+				insertRequestsMap.putIfAbsent(remoteAddress, requests);
+			} else {
+				requests.requests += 1;
+			}
 		}
 	}
 
 	protected void authError(String remoteAddress) {
 
-		AuthErrors authErrors = authErrorsMap.get(remoteAddress);
-
-		if (authErrors == null) {
-			authErrors = new AuthErrors();
-			authErrorsMap.putIfAbsent(remoteAddress, authErrors);
-		} else {
-			authErrors.errors += 1;
+		if (maxAuthErrors > 0) {
+			
+			Requests authErrors = authErrorsMap.get(remoteAddress);
+	
+			if (authErrors == null) {
+				authErrors = new Requests();
+				authErrorsMap.putIfAbsent(remoteAddress, authErrors);
+			} else {
+				authErrors.requests += 1;
+			}
 		}
 	}
 
 	protected void checkAuthErrors(String remoteAddress) {
 
-		AuthErrors authErrors = authErrorsMap.get(remoteAddress);
-
-		if (authErrors != null) {
-
-			long now = System.currentTimeMillis();
-
-			if (authErrors.firstErrorTime + 60000 < now) {
-				authErrorsMap.remove(remoteAddress);
-			} else {
-
-				if (authErrors.errors >= maxAuthErrors) {
-
-					throw new NXException(Constants.AUTH_ERRORS_PER_MINUTE_EXCEEDED);
+		if (maxAuthErrors > 0) {
+			
+			Requests authErrors = authErrorsMap.get(remoteAddress);
+	
+			if (authErrors != null) {
+	
+				long now = System.currentTimeMillis();
+	
+				if (authErrors.firstRequestTime + Constants.MINUTE_MILLISECONDS < now) {
+					authErrorsMap.remove(remoteAddress);
+				} else {
+	
+					if (authErrors.requests >= maxAuthErrors) {
+	
+						throw new NXException(Constants.AUTH_ERRORS_PER_MINUTE_EXCEEDED);
+					}
 				}
 			}
 		}
@@ -1221,16 +1275,6 @@ public class HTTPServlet extends HttpServlet {
 			requests = 1;
 			firstRequestTime = System.currentTimeMillis();
 			logged = false;
-		}
-	}
-
-	protected class AuthErrors {
-		protected int errors;
-		protected long firstErrorTime;
-
-		protected AuthErrors() {
-			errors = 1;
-			firstErrorTime = System.currentTimeMillis();
 		}
 	}
 }

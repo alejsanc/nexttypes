@@ -62,7 +62,7 @@ public class BackupTask extends Task {
 		directory = Utils.readDirectory(settings.getString(Constants.DIRECTORY));
 		prefix = settings.getString(Constants.PREFIX);
 		lang = settings.getString(Constants.LANG);
-		interval = settings.getInt32(Constants.INTERVAL) * 60000;
+		interval = settings.getInt32(Constants.INTERVAL) * Constants.MINUTE_MILLISECONDS;
 		incremental = settings.getInt32(Constants.INCREMENTAL);
 		logger = context.getLogger();
 
