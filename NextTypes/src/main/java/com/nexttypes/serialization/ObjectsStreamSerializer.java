@@ -23,7 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.nexttypes.interfaces.ObjectsStream;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class ObjectsStreamSerializer extends JsonSerializer<ObjectsStream> {
 	@Override
@@ -34,8 +34,8 @@ public class ObjectsStreamSerializer extends JsonSerializer<ObjectsStream> {
 			objects.exec();
 
 			generator.writeStartObject();
-			generator.writeNumberField(Constants.COUNT, objects.getCount());
-			generator.writeFieldName(Constants.ITEMS);
+			generator.writeNumberField(KeyWords.COUNT, objects.getCount());
+			generator.writeFieldName(KeyWords.ITEMS);
 			generator.writeStartArray();
 
 			while (objects.next()) {

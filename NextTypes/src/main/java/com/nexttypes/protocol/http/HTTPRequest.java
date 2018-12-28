@@ -67,21 +67,21 @@ import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.Action;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Utils;
 
 public class HTTPRequest {
 
-	protected static final String[] REQUEST_PARAMETERS = new String[] { Constants.TYPE, Constants.TYPES,
-			Constants.ADATE, Constants.ID, Constants.UDATE, Constants.OBJECTS, Constants.NEW_ID,
-			Constants.NEW_NAME, Constants.EXISTING_TYPES_ACTION, Constants.EXISTING_OBJECTS_ACTION,
-			Constants.OFFSET, Constants.LIMIT, Constants.ORDER, Constants.SEARCH,
-			Constants.CURRENT_PASSWORD, Constants.NEW_PASSWORD, Constants.NEW_PASSWORD_REPEAT,
-			Constants.VIEW, Constants.REF, Constants.FORM, Constants.YEAR, Constants.MONTH,
-			Constants.TYPE_ACTION, Constants.LOGIN_USER, Constants.LOGIN_PASSWORD, 
-			Constants.COMPONENT, Constants.INCLUDE_OBJECTS, Constants.INFO, Constants.NAMES,
-			Constants.CALENDAR, Constants.PREVIEW, Constants.REFERENCES, Action.FILTER_COMPONENT};
+	protected static final String[] REQUEST_PARAMETERS = new String[] { KeyWords.TYPE, KeyWords.TYPES,
+			KeyWords.ADATE, KeyWords.ID, KeyWords.UDATE, KeyWords.OBJECTS, KeyWords.NEW_ID,
+			KeyWords.NEW_NAME, KeyWords.EXISTING_TYPES_ACTION, KeyWords.EXISTING_OBJECTS_ACTION,
+			KeyWords.OFFSET, KeyWords.LIMIT, KeyWords.ORDER, KeyWords.SEARCH,
+			KeyWords.CURRENT_PASSWORD, KeyWords.NEW_PASSWORD, KeyWords.NEW_PASSWORD_REPEAT,
+			KeyWords.VIEW, KeyWords.REF, KeyWords.FORM, KeyWords.YEAR, KeyWords.MONTH,
+			KeyWords.TYPE_ACTION, KeyWords.LOGIN_USER, KeyWords.LOGIN_PASSWORD, 
+			KeyWords.COMPONENT, KeyWords.INCLUDE_OBJECTS, KeyWords.INFO, KeyWords.NAMES,
+			KeyWords.CALENDAR, KeyWords.PREVIEW, KeyWords.REFERENCES, Action.FILTER_COMPONENT};
 
 	protected Settings settings;
 	protected TypeSettings typeSettings;
@@ -168,8 +168,8 @@ public class HTTPRequest {
 
 		readParameters();
 
-		if (view == null || !ArrayUtils.contains(settings.getStringArray(Constants.VIEWS), view)) {
-			view = settings.getString(Constants.DEFAULT_VIEW);
+		if (view == null || !ArrayUtils.contains(settings.getStringArray(KeyWords.VIEWS), view)) {
+			view = settings.getString(KeyWords.DEFAULT_VIEW);
 		}
 
 		if (limit != null && limit == 0) {
@@ -207,30 +207,30 @@ public class HTTPRequest {
 				String token = getSessionToken();
 
 				if (token == null) {
-					throw new NXException(type, Constants.SESSION_EXPIRED);
+					throw new NXException(type, KeyWords.SESSION_EXPIRED);
 				}
 
-				String requestToken = request.getParameter(Constants.SESSION);
+				String requestToken = request.getParameter(KeyWords.SESSION);
 
 				if (requestToken == null) {
-					throw new NXException(type, Constants.SESSION_PARAMETER_NOT_FOUND);
+					throw new NXException(type, KeyWords.SESSION_PARAMETER_NOT_FOUND);
 				}
 
 				if (!requestToken.equals(token)) {
-					throw new NXException(type, Constants.INVALID_SESSION);
+					throw new NXException(type, KeyWords.INVALID_SESSION);
 				}
 			}
 		}
 	}
 
 	protected void setSessionToken() {
-		if (session.getAttribute(Constants.SESSION_TOKEN) == null) {
-			session.setAttribute(Constants.SESSION_TOKEN, Security.randomString());
+		if (session.getAttribute(KeyWords.SESSION_TOKEN) == null) {
+			session.setAttribute(KeyWords.SESSION_TOKEN, Security.randomString());
 		}
 	}
 
 	public String getSessionToken() {
-		return (String) session.getAttribute(Constants.SESSION_TOKEN);
+		return (String) session.getAttribute(KeyWords.SESSION_TOKEN);
 	}
 
 	protected void parseURLPath() {
@@ -258,7 +258,7 @@ public class HTTPRequest {
 		while (parameterNames.hasMoreElements()) {
 			String parameterName = parameterNames.nextElement();
 			
-			if (Constants.DEFAULT.equals(parameterName)) {
+			if (KeyWords.DEFAULT.equals(parameterName)) {
 				default_parameter = true;
 			} else if (ArrayUtils.contains(REQUEST_PARAMETERS, parameterName)) {
 				try {
@@ -290,7 +290,7 @@ public class HTTPRequest {
 								value = new FieldReference(fieldId[0], null, fieldId[1]);
 							} else if (fieldType == ZonedDateTime.class) {
 								value = ZonedDateTime.parse(tmp);
-							} else if (parameterName.equals(Constants.ORDER)) {
+							} else if (parameterName.equals(KeyWords.ORDER)) {
 								value = Utils.parserOrderString(tmp);
 							}
 						}
@@ -339,10 +339,10 @@ public class HTTPRequest {
 	public void checkFields(LinkedHashMap<String, TypeField> typeFields) {
 		for (String field : fields.getFields().keySet()) {
 			if (!typeFields.containsKey(field)) {
-				if (!((field.endsWith("_" + Constants.REPEAT) || field.endsWith("_" + Constants.NULL))
+				if (!((field.endsWith("_" + KeyWords.REPEAT) || field.endsWith("_" + KeyWords.NULL))
 						&& typeFields.containsKey(field.substring(0, field.lastIndexOf("_"))))) {
 					
-					throw new FieldException(type, field, Constants.INVALID_FIELD);
+					throw new FieldException(type, field, KeyWords.INVALID_FIELD);
 				}
 			}
 		}
@@ -362,7 +362,7 @@ public class HTTPRequest {
 
 			if (PT.isBinaryType(fieldType)) {
 				
-				if (fields.containsKey(field + "_" + Constants.NULL)) {
+				if (fields.containsKey(field + "_" + KeyWords.NULL)) {
 					
 					object.put(field, null);
 					
@@ -378,7 +378,7 @@ public class HTTPRequest {
 			} else if (fields.containsKey(field)) {
 
 				if (PT.PASSWORD.equals(fieldType) && Action.UPDATE.equals(type_action)) {
-					throw new FieldException(type, field, Constants.PASSWORD_FIELD_UPDATE);
+					throw new FieldException(type, field, KeyWords.PASSWORD_FIELD_UPDATE);
 				}
 
 				object.put(field, readField(field, fieldType));
@@ -392,7 +392,7 @@ public class HTTPRequest {
 		try {
 			InputStream stream = null;
 
-			Part part = request.getPart(Constants.DATA);
+			Part part = request.getPart(KeyWords.DATA);
 			if (part != null && part.getSize() > 0) {
 				stream = part.getInputStream();
 			}
@@ -419,11 +419,11 @@ public class HTTPRequest {
 		switch (fieldType) {
 		case PT.HTML:
 			value = fields.getHTML(field, lang, typeSettings.getFieldString(type, field,
-					Constants.HTML_ALLOWED_TAGS));
+					KeyWords.HTML_ALLOWED_TAGS));
 			break;
 		case PT.XML:
 			value = fields.getXML(field, lang, typeSettings.getFieldString(type, field,
-					Constants.XML_ALLOWED_TAGS));
+					KeyWords.XML_ALLOWED_TAGS));
 			break;
 		case PT.JSON:
 			value = fields.getJSON(field);
@@ -502,7 +502,7 @@ public class HTTPRequest {
 		ArrayList<Filter> filters = new ArrayList<>();
 		
 		LinkedHashMap<String, HashMap<String, String>> filtersParameters = 
-				compositeParameters.get(Constants.FILTERS);
+				compositeParameters.get(KeyWords.FILTERS);
 		
 		if (filtersParameters != null) {
 		
@@ -510,17 +510,17 @@ public class HTTPRequest {
 			
 				HashMap<String, String> filterParameters = entry.getValue();
 			
-				String field = filterParameters.get(Constants.FIELD);
+				String field = filterParameters.get(KeyWords.FIELD);
 				Comparison comparison = Comparison.valueOf(
-						filterParameters.get(Constants.COMPARISON).toUpperCase());
+						filterParameters.get(KeyWords.COMPARISON).toUpperCase());
 			
-				Object value = filterParameters.get(Constants.VALUE);
+				Object value = filterParameters.get(KeyWords.VALUE);
 				
-				if (!Comparison.LIKE.equals(comparison) && !Constants.ID.equals(field)) {
+				if (!Comparison.LIKE.equals(comparison) && !KeyWords.ID.equals(field)) {
 					String fieldType = typeFields.get(field).getType();
 				
 					if (PT.isPrimitiveType(fieldType) && !PT.isFilterType(fieldType)) {
-						throw new InvalidValueException(Constants.INVALID_FILTER_TYPE, fieldType);
+						throw new InvalidValueException(KeyWords.INVALID_FILTER_TYPE, fieldType);
 					}
 				
 					switch(fieldType) {
@@ -594,45 +594,45 @@ public class HTTPRequest {
 		LinkedHashMap<String, TypeField> typeObjectFields = typeObject.getFields();
 		LinkedHashMap<String, TypeIndex> typeObjectIndexes = typeObject.getIndexes();
 
-		LinkedHashMap<String, HashMap<String, String>> fields = compositeParameters.get(Constants.FIELDS);
+		LinkedHashMap<String, HashMap<String, String>> fields = compositeParameters.get(KeyWords.FIELDS);
 
 		if (fields != null) {
 			for (Map.Entry<String, HashMap<String, String>> entry : fields.entrySet()) {
 
 				HashMap<String, String> value = entry.getValue();
 
-				String fieldName = value.get(Constants.NAME);
+				String fieldName = value.get(KeyWords.NAME);
 
 				if (typeObjectFields.containsKey(fieldName)) {
-					throw new FieldException(type, fieldName, Constants.DUPLICATE_FIELD);
+					throw new FieldException(type, fieldName, KeyWords.DUPLICATE_FIELD);
 				}
 
-				String fieldType = value.get(Constants.TYPE);
-				String fieldParameters = value.get(Constants.PARAMETERS);
-				boolean fieldNotNull = value.get(Constants.NOT_NULL) != null ? true : false;
-				String fieldOldName = value.get(Constants.OLD_NAME);
+				String fieldType = value.get(KeyWords.TYPE);
+				String fieldParameters = value.get(KeyWords.PARAMETERS);
+				boolean fieldNotNull = value.get(KeyWords.NOT_NULL) != null ? true : false;
+				String fieldOldName = value.get(KeyWords.OLD_NAME);
 
 				typeObjectFields.put(fieldName, new TypeField(fieldType, fieldParameters, fieldNotNull,
 						fieldOldName));
 			}
 		}
 
-		LinkedHashMap<String, HashMap<String, String>> indexes = compositeParameters.get(Constants.INDEXES);
+		LinkedHashMap<String, HashMap<String, String>> indexes = compositeParameters.get(KeyWords.INDEXES);
 
 		if (indexes != null) {
 			for (Map.Entry<String, HashMap<String, String>> entry : indexes.entrySet()) {
 
 				HashMap<String, String> value = entry.getValue();
 
-				String indexName = value.get(Constants.NAME);
+				String indexName = value.get(KeyWords.NAME);
 
 				if (typeObjectIndexes.containsKey(indexName)) {
-					throw new IndexException(type, indexName, Constants.DUPLICATE_INDEX);
+					throw new IndexException(type, indexName, KeyWords.DUPLICATE_INDEX);
 				}
 
-				IndexMode indexMode = IndexMode.valueOf(value.get(Constants.MODE).toUpperCase());
-				String[] indexFields = Utils.split(value.get(Constants.FIELDS));
-				String indexOldName = value.get(Constants.OLD_NAME);
+				IndexMode indexMode = IndexMode.valueOf(value.get(KeyWords.MODE).toUpperCase());
+				String[] indexFields = Utils.split(value.get(KeyWords.FIELDS));
+				String indexOldName = value.get(KeyWords.OLD_NAME);
 
 				typeObjectIndexes.put(indexName, new TypeIndex(indexMode, indexFields, indexOldName));
 			}
@@ -971,14 +971,14 @@ public class HTTPRequest {
 		public String getPassword(String field) {
 
 			String password = getString(field);
-			String passwordRepeat = getString(field + "_" + Constants.REPEAT);
+			String passwordRepeat = getString(field + "_" + KeyWords.REPEAT);
 
 			if (!Security.passwordsMatch(password, passwordRepeat)) {
-				throw new NXException(type, Constants.PASSWORDS_DONT_MATCH);
+				throw new NXException(type, KeyWords.PASSWORDS_DONT_MATCH);
 			}
 
 			if (!Security.checkPasswordStrength(password)) {
-				throw new NXException(type, Constants.INVALID_PASSWORD);
+				throw new NXException(type, KeyWords.INVALID_PASSWORD);
 			}
 
 			return Security.passwordHash(password);

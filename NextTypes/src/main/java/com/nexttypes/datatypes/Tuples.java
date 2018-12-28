@@ -17,7 +17,7 @@
 package com.nexttypes.datatypes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class Tuples extends Result {
 	protected Tuple[] items;
@@ -34,7 +34,7 @@ public class Tuples extends Result {
 		this.items = items;
 	}
 
-	@JsonProperty(Constants.ITEMS)
+	@JsonProperty(KeyWords.ITEMS)
 	public Tuple[] getItems() {
 		return items;
 	}

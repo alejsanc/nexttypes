@@ -39,7 +39,7 @@ import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class ObjectsStreamDeserializer extends StreamDeserializer implements ObjectsStream {
 	protected Long count;
@@ -112,7 +112,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 					parser.nextToken();
 
 					switch (parser.getCurrentName()) {
-					case Constants.TYPE:
+					case KeyWords.TYPE:
 						type = parser.getText();
 						if (typeFields == null) {
 							if (nextNode.existsType(type)) {
@@ -122,19 +122,19 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 							}
 						}
 						break;
-					case Constants.ID:
+					case KeyWords.ID:
 						id = parser.getText();
 						break;
-					case Constants.CDATE:
+					case KeyWords.CDATE:
 						cdate = Tuple.parseUTCDateTime(parser.getText());
 						break;
-					case Constants.UDATE:
+					case KeyWords.UDATE:
 						udate = Tuple.parseUTCDateTime(parser.getText());
 						break;
-					case Constants.BACKUP:
+					case KeyWords.BACKUP:
 						backup = Tuple.parseBoolean(parser.getText());
 						break;
-					case Constants.FIELDS:
+					case KeyWords.FIELDS:
 						fields = parseFields(type);
 						break;
 
@@ -173,11 +173,11 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 						break;
 					case PT.HTML:
 						value = Tuple.parseHTML(parser.getText(), lang,
-								typeSettings.getFieldString(type, field, Constants.HTML_ALLOWED_TAGS));
+								typeSettings.getFieldString(type, field, KeyWords.HTML_ALLOWED_TAGS));
 						break;
 					case PT.XML:
 						value = Tuple.parseXML(parser.getText(), lang,
-								typeSettings.getFieldString(type, field, Constants.XML_ALLOWED_TAGS));
+								typeSettings.getFieldString(type, field, KeyWords.XML_ALLOWED_TAGS));
 						break;
 					case PT.JSON:
 						value = Tuple.parseJSON(parser.getText());

@@ -73,10 +73,10 @@ public class DBConnection {
 		}
 
 		protected DataSource createDataSource(String url, NodeMode mode, Settings settings, String driver) {
-			String user = settings.getString(mode + "_" + Constants.USER);
-			String password = settings.getString(mode + "_" + Constants.PASSWORD);
-			int maxConnections = settings.getInt32(mode + "_" + Constants.MAX_CONNECTIONS);
-			int maxTime = settings.getInt32(mode + "_" + Constants.MAX_TIME);
+			String user = settings.getString(mode + "_" + KeyWords.USER);
+			String password = settings.getString(mode + "_" + KeyWords.PASSWORD);
+			int maxConnections = settings.getInt32(mode + "_" + KeyWords.MAX_CONNECTIONS);
+			int maxTime = settings.getInt32(mode + "_" + KeyWords.MAX_TIME);
 
 			PoolProperties p = new PoolProperties();
 			p.setUrl(url); 
@@ -115,15 +115,15 @@ public class DBConnection {
 	}
 
 	protected static String url(Settings settings, String schema) {
-		String host = settings.getString(Constants.HOST);
-		String port = settings.getString(Constants.PORT);
-		String database = settings.getString(Constants.DATABASE);
+		String host = settings.getString(KeyWords.HOST);
+		String port = settings.getString(KeyWords.PORT);
+		String database = settings.getString(KeyWords.DATABASE);
 		return "jdbc:" + schema + "://" + host + ":" + port + "/" + database;
 	}
 
 	public static Connection getConnection(Settings settings, String schema, NodeMode mode) {
-		String user = settings.getString(mode + "_" + Constants.USER);
-		String password = settings.getString(mode + "_" + Constants.PASSWORD);
+		String user = settings.getString(mode + "_" + KeyWords.USER);
+		String password = settings.getString(mode + "_" + KeyWords.PASSWORD);
 		String url = url(settings, schema);
 
 		try {

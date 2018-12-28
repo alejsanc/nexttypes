@@ -42,6 +42,7 @@ import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
 public class Tuple {
@@ -67,7 +68,7 @@ public class Tuple {
 		return fields.containsKey(key);
 	}
 
-	@JsonProperty(Constants.FIELDS)
+	@JsonProperty(KeyWords.FIELDS)
 	public LinkedHashMap<String, Object> getFields() {
 		return fields;
 	}
@@ -304,7 +305,7 @@ public class Tuple {
 		BigDecimal numeric = parseNumeric(value);
 		
 		if (numeric != null && (numeric.compareTo(min) == -1 || numeric.compareTo(max) == 1)) {
-			throw new InvalidValueException(Constants.INVALID_NUMERIC, numeric);
+			throw new InvalidValueException(KeyWords.INVALID_NUMERIC, numeric);
 		}
 		
 		return numeric;
@@ -323,7 +324,7 @@ public class Tuple {
 			} else if ((Long) value == 1) {
 				value = true;
 			} else {
-				throw new InvalidValueException(Constants.INVALID_BOOLEAN, value);
+				throw new InvalidValueException(KeyWords.INVALID_BOOLEAN, value);
 			}
 		} else if (value instanceof byte[]) {
 			value = Boolean.parseBoolean(bytesToString(value));
@@ -361,7 +362,7 @@ public class Tuple {
 				((InternetAddress) value).validate();
 			}
 		} catch (AddressException e) {
-			throw new InvalidValueException(Constants.INVALID_EMAIL, value);
+			throw new InvalidValueException(KeyWords.INVALID_EMAIL, value);
 		}
 		return (InternetAddress) value;
 	}
@@ -428,7 +429,7 @@ public class Tuple {
 			ZoneOffset offset = ((ZonedDateTime) value).getOffset();
 
 			if (!offset.equals(ZoneOffset.UTC)) {
-				throw new InvalidValueException(Constants.INVALID_TIMEZONE, offset.getId());
+				throw new InvalidValueException(KeyWords.INVALID_TIMEZONE, offset.getId());
 			}
 		}
 		return (ZonedDateTime) value;

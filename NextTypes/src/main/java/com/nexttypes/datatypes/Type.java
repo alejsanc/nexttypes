@@ -25,10 +25,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nexttypes.exceptions.InvalidValueException;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
-@JsonPropertyOrder({ Constants.NAME, Constants.CDATE, Constants.ADATE, Constants.FIELDS, Constants.INDEXES,
-		Constants.ACTIONS })
+@JsonPropertyOrder({ KeyWords.NAME, KeyWords.CDATE, KeyWords.ADATE, KeyWords.FIELDS, KeyWords.INDEXES,
+		KeyWords.ACTIONS })
 public class Type {
 
 	public static final int MAX_ID_LENGTH = 100;
@@ -61,18 +61,18 @@ public class Type {
 	}
 
 	@JsonCreator
-	public Type(@JsonProperty(Constants.NAME) String name, @JsonProperty(Constants.CDATE) ZonedDateTime cdate,
-			@JsonProperty(Constants.ADATE) ZonedDateTime adate,
-			@JsonProperty(Constants.FIELDS) LinkedHashMap<String, TypeField> fields,
-			@JsonProperty(Constants.INDEXES) LinkedHashMap<String, TypeIndex> indexes,
-			@JsonProperty(Constants.ACTIONS) LinkedHashMap<String, LinkedHashMap<String, TypeField>> actions) {
+	public Type(@JsonProperty(KeyWords.NAME) String name, @JsonProperty(KeyWords.CDATE) ZonedDateTime cdate,
+			@JsonProperty(KeyWords.ADATE) ZonedDateTime adate,
+			@JsonProperty(KeyWords.FIELDS) LinkedHashMap<String, TypeField> fields,
+			@JsonProperty(KeyWords.INDEXES) LinkedHashMap<String, TypeIndex> indexes,
+			@JsonProperty(KeyWords.ACTIONS) LinkedHashMap<String, LinkedHashMap<String, TypeField>> actions) {
 
 		if (cdate != null && !cdate.getOffset().equals(ZoneOffset.UTC)) {
-			throw new InvalidValueException(Constants.INVALID_TIMEZONE, cdate.getZone());
+			throw new InvalidValueException(KeyWords.INVALID_TIMEZONE, cdate.getZone());
 		}
 
 		if (adate != null && !adate.getOffset().equals(ZoneOffset.UTC)) {
-			throw new InvalidValueException(Constants.INVALID_TIMEZONE, adate.getZone());
+			throw new InvalidValueException(KeyWords.INVALID_TIMEZONE, adate.getZone());
 		}
 
 		this.name = name;
@@ -83,32 +83,32 @@ public class Type {
 		this.actions = actions != null ? actions : new LinkedHashMap<>();
 	}
 
-	@JsonProperty(Constants.NAME)
+	@JsonProperty(KeyWords.NAME)
 	public String getName() {
 		return name;
 	}
 
-	@JsonProperty(Constants.CDATE)
+	@JsonProperty(KeyWords.CDATE)
 	public ZonedDateTime getCDate() {
 		return cdate;
 	}
 
-	@JsonProperty(Constants.ADATE)
+	@JsonProperty(KeyWords.ADATE)
 	public ZonedDateTime getADate() {
 		return adate;
 	}
 
-	@JsonProperty(Constants.FIELDS)
+	@JsonProperty(KeyWords.FIELDS)
 	public LinkedHashMap<String, TypeField> getFields() {
 		return fields;
 	}
 
-	@JsonProperty(Constants.INDEXES)
+	@JsonProperty(KeyWords.INDEXES)
 	public LinkedHashMap<String, TypeIndex> getIndexes() {
 		return indexes;
 	}
 
-	@JsonProperty(Constants.ACTIONS)
+	@JsonProperty(KeyWords.ACTIONS)
 	public LinkedHashMap<String, LinkedHashMap<String, TypeField>> getActions() {
 		return actions;
 	}

@@ -21,11 +21,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 @JsonInclude(Include.NON_NULL)
-@JsonPropertyOrder({ Constants.TYPE, Constants.LENGTH, Constants.PRECISION, Constants.SCALE,
-	Constants.RANGE, Constants.NOT_NULL })
+@JsonPropertyOrder({ KeyWords.TYPE, KeyWords.LENGTH, KeyWords.PRECISION, KeyWords.SCALE,
+	KeyWords.RANGE, KeyWords.NOT_NULL })
 public class TypeField {
 
 	protected String type;
@@ -79,12 +79,12 @@ public class TypeField {
 	}
 
 	@JsonCreator
-	public TypeField(@JsonProperty(Constants.TYPE) String type,
-			@JsonProperty(Constants.LENGTH) Integer length,
-			@JsonProperty(Constants.PRECISION) Integer precision,
-			@JsonProperty(Constants.SCALE) Integer scale,
-			@JsonProperty(Constants.RANGE) FieldRange range,
-			@JsonProperty(Constants.NOT_NULL) Boolean notNull) {
+	public TypeField(@JsonProperty(KeyWords.TYPE) String type,
+			@JsonProperty(KeyWords.LENGTH) Integer length,
+			@JsonProperty(KeyWords.PRECISION) Integer precision,
+			@JsonProperty(KeyWords.SCALE) Integer scale,
+			@JsonProperty(KeyWords.RANGE) FieldRange range,
+			@JsonProperty(KeyWords.NOT_NULL) Boolean notNull) {
 		
 		if (range != null) {
 			range.parse(type, precision, scale);
@@ -123,32 +123,32 @@ public class TypeField {
 		}
 	}
 
-	@JsonProperty(Constants.TYPE)
+	@JsonProperty(KeyWords.TYPE)
 	public String getType() {
 		return type;
 	}
 
-	@JsonProperty(Constants.LENGTH)
+	@JsonProperty(KeyWords.LENGTH)
 	public Integer getLength() {
 		return length;
 	}
 
-	@JsonProperty(Constants.PRECISION)
+	@JsonProperty(KeyWords.PRECISION)
 	public Integer getPrecision() {
 		return precision;
 	}
 
-	@JsonProperty(Constants.SCALE)
+	@JsonProperty(KeyWords.SCALE)
 	public Integer getScale() {
 		return scale;
 	}
 	
-	@JsonProperty(Constants.RANGE)
+	@JsonProperty(KeyWords.RANGE)
 	public FieldRange getRange() {
 		return range;
 	}
 
-	@JsonProperty(Constants.NOT_NULL)
+	@JsonProperty(KeyWords.NOT_NULL)
 	public Boolean isNotNull() {
 		return notNull;
 	}

@@ -19,7 +19,7 @@ package com.nexttypes.datatypes;
 import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class AlterIndexResult {
 
@@ -31,12 +31,12 @@ public class AlterIndexResult {
 		this.adate = adate;
 	}
 
-	@JsonProperty(Constants.ADATE)
+	@JsonProperty(KeyWords.ADATE)
 	public ZonedDateTime getADate() {
 		return adate;
 	}
 
-	@JsonProperty(Constants.ALTERED)
+	@JsonProperty(KeyWords.ALTERED)
 	public boolean isAltered() {
 		return mode || fields;
 	}
@@ -49,12 +49,12 @@ public class AlterIndexResult {
 		fields = true;
 	}
 
-	@JsonProperty(Constants.MODE_ALTERED)
+	@JsonProperty(KeyWords.MODE_ALTERED)
 	public boolean isModeAltered() {
 		return mode;
 	}
 
-	@JsonProperty(Constants.FIELDS_ALTERED)
+	@JsonProperty(KeyWords.FIELDS_ALTERED)
 	public boolean arefieldsAltered() {
 		return fields;
 	}

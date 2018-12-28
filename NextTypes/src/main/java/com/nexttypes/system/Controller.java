@@ -93,10 +93,10 @@ public class Controller {
 	public ActionResult executeAction(String[] objects, String action, Object... parameters) {
 		
 		Boolean objectsInputNotNull = typeSettings.getActionBoolean(type, action,
-				Constants.OBJECTS_INPUT_NOT_NULL);
+				KeyWords.OBJECTS_INPUT_NOT_NULL);
 		
 		if (objectsInputNotNull && (objects == null || objects.length == 0)) {
-			throw new ActionException(type, action, Constants.EMPTY_OBJECTS_LIST);
+			throw new ActionException(type, action, KeyWords.EMPTY_OBJECTS_LIST);
 		}		
 		
 		ActionResult result = null;
@@ -114,7 +114,7 @@ public class Controller {
 			TypeField typeField = entry.getValue();
 
 			if (typeField.isNotNull() && parameters[x] == null) {
-				throw new ActionFieldException(type, action, field, Constants.EMPTY_FIELD);
+				throw new ActionFieldException(type, action, field, KeyWords.EMPTY_FIELD);
 			}
 
 			if (parameters[x] != null) {
@@ -158,14 +158,14 @@ public class Controller {
 	protected void checkActionFileField(String action, String field, Object value) {
 		if (value instanceof File) {
 			String[] allowedContentTypes = typeSettings.getActionFieldStringArray(type, action, field,
-					Constants.ALLOWED_CONTENT_TYPES);
+					KeyWords.ALLOWED_CONTENT_TYPES);
 
 			if (allowedContentTypes != null) {
 				String contentType = ((File) value).getContentType();
 
 				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
 					throw new ActionFieldException(type, action, field,
-							Constants.DISALLOWED_CONTENT_TYPE, contentType);
+							KeyWords.DISALLOWED_CONTENT_TYPE, contentType);
 				}
 			}
 		}
@@ -216,7 +216,7 @@ public class Controller {
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
 			FieldRange range = getActionFieldRange(action, field);
 			if (range != null && !range.isInRange(value)) {
-				throw new ActionFieldException(type, action, field, Constants.OUT_OF_RANGE_VALUE,
+				throw new ActionFieldException(type, action, field, KeyWords.OUT_OF_RANGE_VALUE,
 						value);
 			}
 		}

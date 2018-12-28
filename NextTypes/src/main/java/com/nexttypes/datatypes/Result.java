@@ -18,10 +18,10 @@ package com.nexttypes.datatypes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
-@JsonPropertyOrder({ Constants.COUNT, Constants.OFFSET, Constants.LIMIT, Constants.MIN_LIMIT, Constants.MAX_LIMIT,
-		Constants.LIMIT_INCREMENT, Constants.ITEMS })
+@JsonPropertyOrder({ KeyWords.COUNT, KeyWords.OFFSET, KeyWords.LIMIT, KeyWords.MIN_LIMIT, KeyWords.MAX_LIMIT,
+		KeyWords.LIMIT_INCREMENT, KeyWords.ITEMS })
 public abstract class Result {
 
 	protected Long count;
@@ -55,32 +55,32 @@ public abstract class Result {
 		}
 	}
 
-	@JsonProperty(Constants.COUNT)
+	@JsonProperty(KeyWords.COUNT)
 	public Long getCount() {
 		return count;
 	}
 
-	@JsonProperty(Constants.OFFSET)
+	@JsonProperty(KeyWords.OFFSET)
 	public Long getOffset() {
 		return offset;
 	}
 
-	@JsonProperty(Constants.LIMIT)
+	@JsonProperty(KeyWords.LIMIT)
 	public Long getLimit() {
 		return limit;
 	}
 
-	@JsonProperty(Constants.MIN_LIMIT)
+	@JsonProperty(KeyWords.MIN_LIMIT)
 	public Long getMinLimit() {
 		return minLimit;
 	}
 
-	@JsonProperty(Constants.MAX_LIMIT)
+	@JsonProperty(KeyWords.MAX_LIMIT)
 	public Long getMaxLimit() {
 		return maxLimit;
 	}
 
-	@JsonProperty(Constants.LIMIT_INCREMENT)
+	@JsonProperty(KeyWords.LIMIT_INCREMENT)
 	public Long getLimitIncrement() {
 		return limitIncrement;
 	}

@@ -17,18 +17,18 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.Strings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class InvalidUserOrPasswordException extends UnauthorizedActionException {
 	protected static final long serialVersionUID = 1L;
 
 	public InvalidUserOrPasswordException() {
 		super(null, null);
-		setting = Constants.INVALID_USER_OR_PASSWORD;
+		setting = KeyWords.INVALID_USER_OR_PASSWORD;
 	}
 
 	@Override
 	public String getMessage(Strings strings) {
-		return strings.gts(type, Constants.INVALID_USER_OR_PASSWORD);
+		return strings.gts(type, KeyWords.INVALID_USER_OR_PASSWORD);
 	}
 }

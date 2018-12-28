@@ -68,7 +68,7 @@ import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Controller;
 import com.nexttypes.system.Loader;
@@ -90,13 +90,13 @@ public class ControllersNode implements Node {
 		this.user = user;
 		this.groups = groups;
 		settings = context.getSettings(Settings.CONTROLLERS_SETTINGS);
-		nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), user, groups, mode, lang, remoteAddress,
+		nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), user, groups, mode, lang, remoteAddress,
 				context, useConnectionPool);
 		typeSettings = context.getTypeSettings(groups);
 	}
 	
 	protected Controller getController(String type) {
-		String className = typeSettings.gts(type, Constants.CONTROLLER);
+		String className = typeSettings.gts(type, KeyWords.CONTROLLER);
 
 		Controller controller = null;
 

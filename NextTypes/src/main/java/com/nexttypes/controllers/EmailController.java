@@ -30,7 +30,7 @@ import com.nexttypes.datatypes.URL;
 import com.nexttypes.enums.Format;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.Node;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Controller;
 
 public class EmailController extends Controller {
@@ -57,7 +57,7 @@ public class EmailController extends Controller {
 			message.setFrom(object.getEmail(FROM));
 			message.addRecipient(Message.RecipientType.TO, object.getEmail(TO));
 			message.setSubject(object.getString(SUBJECT));
-			message.setContent(object.getHTML(Constants.MESSAGE).toString(), Format.XHTML.getContentType());
+			message.setContent(object.getHTML(KeyWords.MESSAGE).toString(), Format.XHTML.getContentType());
 			Transport.send(message);
 
 		} catch (MessagingException e) {

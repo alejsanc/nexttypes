@@ -17,7 +17,7 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.Strings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class MethodNotAllowedException extends NXException {
 
@@ -26,7 +26,7 @@ public class MethodNotAllowedException extends NXException {
 	protected String method;
 
 	public MethodNotAllowedException(String method) {
-		super(Constants.METHOD_NOT_ALLOWED);
+		super(KeyWords.METHOD_NOT_ALLOWED);
 		this.method = method;
 	}
 
@@ -36,6 +36,6 @@ public class MethodNotAllowedException extends NXException {
 
 	@Override
 	public String getMessage(Strings strings) {
-		return strings.gts(Constants.METHOD_NOT_ALLOWED) + ": " + method;
+		return strings.gts(KeyWords.METHOD_NOT_ALLOWED) + ": " + method;
 	}
 }

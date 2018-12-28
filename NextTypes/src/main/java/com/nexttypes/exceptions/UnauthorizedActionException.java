@@ -17,18 +17,18 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.Strings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class UnauthorizedActionException extends ActionException {
 	protected static final long serialVersionUID = 1L;
 
 	public UnauthorizedActionException(String type, String action) {
-		super(type, action, Constants.UNAUTHORIZED_ACTION);
+		super(type, action, KeyWords.UNAUTHORIZED_ACTION);
 	}
 
 	@Override
 	public String getMessage(Strings strings) {
-		StringBuilder message = new StringBuilder(strings.gts(type, Constants.UNAUTHORIZED_ACTION) + ": ");
+		StringBuilder message = new StringBuilder(strings.gts(type, KeyWords.UNAUTHORIZED_ACTION) + ": ");
 		
 		if (type != null) {
 			message.append(strings.getTypeName(type) + "::");

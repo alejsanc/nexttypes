@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class ImportObjectsResult {
 
@@ -55,17 +55,17 @@ public class ImportObjectsResult {
 		objects.add(id);
 	}
 
-	@JsonProperty(Constants.IMPORTED_OBJECTS)
+	@JsonProperty(KeyWords.IMPORTED_OBJECTS)
 	public LinkedHashMap<String, ArrayList<String>> getImportedObjects() {
 		return importedObjects;
 	}
 
-	@JsonProperty(Constants.IGNORED_OBJECTS)
+	@JsonProperty(KeyWords.IGNORED_OBJECTS)
 	public LinkedHashMap<String, ArrayList<String>> getIgnoredObjects() {
 		return ignoredObjects;
 	}
 
-	@JsonProperty(Constants.UPDATED_OBJECTS)
+	@JsonProperty(KeyWords.UPDATED_OBJECTS)
 	public LinkedHashMap<String, ArrayList<String>> getUpdatedObjects() {
 		return updatedObjects;
 	}

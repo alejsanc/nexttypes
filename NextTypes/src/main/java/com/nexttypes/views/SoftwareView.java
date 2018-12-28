@@ -22,7 +22,7 @@ import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.protocol.http.HTTPRequest;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class SoftwareView extends HTMLView {
 	protected final String SETTINGS_ROOT = "software.";
@@ -47,7 +47,7 @@ public class SoftwareView extends HTMLView {
 
 	@Override
 	public Content get(String type, String id, String lang, String view, String etag) {
-		String version_order = typeSettings.getFieldString(SOFTWARE_RELEASE, VERSION, Constants.ORDER);
+		String version_order = typeSettings.getFieldString(SOFTWARE_RELEASE, VERSION, KeyWords.ORDER);
 
 		String sql =
 				"select"
@@ -106,12 +106,12 @@ public class SoftwareView extends HTMLView {
 		}
 
 		HTMLFragment description = tuple.getHTML("description", lang,
-				typeSettings.getFieldString(type, "description", Constants.HTML_ALLOWED_TAGS));
+				typeSettings.getFieldString(type, "description", KeyWords.HTML_ALLOWED_TAGS));
 		if (description != null) {
 			article.appendElement(fieldOutput(strings.getString(DESCRIPTION), description));
 		}
 
-		main.appendElement(dates(type, tuple.getUTCDateTime(Constants.CDATE), tuple.getUTCDateTime(Constants.UDATE)));
+		main.appendElement(dates(type, tuple.getUTCDateTime(KeyWords.CDATE), tuple.getUTCDateTime(KeyWords.UDATE)));
 
 		return render(type);
 	}

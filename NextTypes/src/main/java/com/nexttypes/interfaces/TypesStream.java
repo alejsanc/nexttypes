@@ -23,19 +23,19 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nexttypes.datatypes.Type;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonPropertyOrder({ Constants.DATE, Constants.TYPES, Constants.OBJECTS })
+@JsonPropertyOrder({ KeyWords.DATE, KeyWords.TYPES, KeyWords.OBJECTS })
 public interface TypesStream extends Stream {
 
-	@JsonProperty(Constants.DATE)
+	@JsonProperty(KeyWords.DATE)
 	public ZonedDateTime getDate();
 
-	@JsonProperty(Constants.TYPES)
+	@JsonProperty(KeyWords.TYPES)
 	public LinkedHashMap<String, Type> getTypes();
 
-	@JsonProperty(Constants.OBJECTS)
+	@JsonProperty(KeyWords.OBJECTS)
 	public LinkedHashMap<String, ObjectsStream> getObjects();
 
 	public ObjectsStream getObjectsStream();

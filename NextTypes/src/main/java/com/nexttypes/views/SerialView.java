@@ -37,7 +37,7 @@ import com.nexttypes.protocol.http.HTTPHeader;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class SerialView extends View {
 
@@ -49,7 +49,7 @@ public class SerialView extends View {
 	public Content getTypesName(String lang, String view) {
 
 		String[] types = nextNode.getTypesName();
-		return content(types, view, Constants.TYPES, Constants.TYPE);
+		return content(types, view, KeyWords.TYPES, KeyWords.TYPE);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class SerialView extends View {
 
 		TypeInfo[] types = nextNode.getTypesInfo();
 
-		return content(types, view, Constants.TYPES, Constants.TYPE);
+		return content(types, view, KeyWords.TYPES, KeyWords.TYPE);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class SerialView extends View {
 
 		Reference[] references = nextNode.getReferences();
 
-		return content(references, view, Constants.REFERENCES, Constants.REFERENCE);
+		return content(references, view, KeyWords.REFERENCES, KeyWords.REFERENCE);
 	}
 
 	@Override

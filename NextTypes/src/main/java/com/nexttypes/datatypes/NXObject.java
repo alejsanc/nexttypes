@@ -26,12 +26,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nexttypes.exceptions.InvalidValueException;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
 @JsonInclude(Include.NON_NULL)
-@JacksonXmlRootElement(localName = Constants.OBJECT)
-@JsonPropertyOrder({ Constants.TYPE, Constants.ID, Constants.NAME, Constants.CDATE, Constants.UDATE, Constants.BACKUP })
+@JacksonXmlRootElement(localName = KeyWords.OBJECT)
+@JsonPropertyOrder({ KeyWords.TYPE, KeyWords.ID, KeyWords.NAME, KeyWords.CDATE, KeyWords.UDATE, KeyWords.BACKUP })
 public class NXObject extends Tuple {
 
 	protected String type;
@@ -67,11 +67,11 @@ public class NXObject extends Tuple {
 			Boolean backup, LinkedHashMap<String, Object> fields) {
 		
 		if (cdate != null && !cdate.getOffset().equals(ZoneOffset.UTC)) {
-			throw new InvalidValueException(Constants.INVALID_TIMEZONE, cdate.getZone());
+			throw new InvalidValueException(KeyWords.INVALID_TIMEZONE, cdate.getZone());
 		}
 
 		if (udate != null && !udate.getOffset().equals(ZoneOffset.UTC)) {
-			throw new InvalidValueException(Constants.INVALID_TIMEZONE, udate.getZone());
+			throw new InvalidValueException(KeyWords.INVALID_TIMEZONE, udate.getZone());
 		}
 
 		this.type = type;
@@ -86,32 +86,32 @@ public class NXObject extends Tuple {
 		}
 	}
 
-	@JsonProperty(Constants.TYPE)
+	@JsonProperty(KeyWords.TYPE)
 	public String getType() {
 		return type;
 	}
 
-	@JsonProperty(Constants.ID)
+	@JsonProperty(KeyWords.ID)
 	public String getId() {
 		return id;
 	}
 
-	@JsonProperty(Constants.NAME)
+	@JsonProperty(KeyWords.NAME)
 	public String getName() {
 		return name;
 	}
 
-	@JsonProperty(Constants.CDATE)
+	@JsonProperty(KeyWords.CDATE)
 	public ZonedDateTime getCDate() {
 		return cdate;
 	}
 
-	@JsonProperty(Constants.UDATE)
+	@JsonProperty(KeyWords.UDATE)
 	public ZonedDateTime getUDate() {
 		return udate;
 	}
 
-	@JsonProperty(Constants.BACKUP)
+	@JsonProperty(KeyWords.BACKUP)
 	public Boolean getBackup() {
 		return backup;
 	}

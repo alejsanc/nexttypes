@@ -17,7 +17,7 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.Strings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class DisallowedAttributeException extends InvalidValueException {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +25,7 @@ public class DisallowedAttributeException extends InvalidValueException {
 	protected String tag;
 
 	public DisallowedAttributeException(String tag, Object value) {
-		super(Constants.DISALLOWED_ATTRIBUTE, value);
+		super(KeyWords.DISALLOWED_ATTRIBUTE, value);
 		this.tag = tag;
 	}
 
@@ -35,6 +35,6 @@ public class DisallowedAttributeException extends InvalidValueException {
 
 	@Override
 	public String getMessage(Strings strings) {
-		return strings.gts(Constants.DISALLOWED_ATTRIBUTE) + ": " + tag + "::" + value;
+		return strings.gts(KeyWords.DISALLOWED_ATTRIBUTE) + ": " + tag + "::" + value;
 	}
 }

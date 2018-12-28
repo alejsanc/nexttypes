@@ -22,7 +22,7 @@ import com.nexttypes.datatypes.Message;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 
 public class Logger extends java.util.logging.Logger {
@@ -34,8 +34,8 @@ public class Logger extends java.util.logging.Logger {
 	public Logger(Context context) {
 		super(null, null);
 		settings = context.getSettings(Settings.LOGGER_SETTINGS);
-		strings = context.getStrings(settings.getString(Constants.LANG));
-		setLevel(Level.parse(settings.getString(Constants.LEVEL).toUpperCase()));
+		strings = context.getStrings(settings.getString(KeyWords.LANG));
+		setLevel(Level.parse(settings.getString(KeyWords.LEVEL).toUpperCase()));
 		handler = new FileHandler(settings);
 		addHandler(handler);
 	}

@@ -20,7 +20,7 @@ import java.util.LinkedHashMap;
 
 import org.w3c.dom.NodeList;
 
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
 public class XMLFragment extends XML {

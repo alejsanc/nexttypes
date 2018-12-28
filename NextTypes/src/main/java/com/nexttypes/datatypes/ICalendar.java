@@ -27,6 +27,7 @@ import java.util.Random;
 
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
@@ -48,7 +49,7 @@ public class ICalendar {
 
 	public ICalendar(String url, Tuple... events) {
 		calendar = new Calendar();
-		calendar.getProperties().add(new ProdId(Constants.NEXTTYPES));
+		calendar.getProperties().add(new ProdId(KeyWords.NEXTTYPES));
 		calendar.getProperties().add(Version.VERSION_2_0);
 		calendar.getProperties().add(CalScale.GREGORIAN);
 
@@ -56,13 +57,13 @@ public class ICalendar {
 
 		try {
 			for (Tuple event : events) {
-				String id = event.getString(Constants.ID); 
-				String summary = event.getString(Constants.SUMMARY);
-				String startDate = event.getDateTime(Constants.START_DATE)
+				String id = event.getString(KeyWords.ID); 
+				String summary = event.getString(KeyWords.SUMMARY);
+				String startDate = event.getDateTime(KeyWords.START_DATE)
 						.format(DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT));
-				String endDate = event.getDateTime(Constants.END_DATE)
+				String endDate = event.getDateTime(KeyWords.END_DATE)
 						.format(DateTimeFormatter.ofPattern(Constants.DATETIME_FORMAT));
-				String description = event.getString(Constants.DESCRIPTION);
+				String description = event.getString(KeyWords.DESCRIPTION);
 
 				DateTime startDateTime = new DateTime(startDate, Constants.DATETIME_FORMAT, null);
 

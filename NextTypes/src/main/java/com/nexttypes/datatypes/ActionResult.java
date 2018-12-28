@@ -17,7 +17,7 @@
 package com.nexttypes.datatypes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class ActionResult {
 
@@ -37,7 +37,7 @@ public class ActionResult {
 		this.message = message;
 	}
 
-	@JsonProperty(Constants.MESSAGE)
+	@JsonProperty(KeyWords.MESSAGE)
 	public String getMessage() {
 		return message;
 	}
@@ -46,7 +46,7 @@ public class ActionResult {
 		this.value = value;
 	}
 
-	@JsonProperty(Constants.VALUE)
+	@JsonProperty(KeyWords.VALUE)
 	public Object getValue() {
 		return value;
 	}

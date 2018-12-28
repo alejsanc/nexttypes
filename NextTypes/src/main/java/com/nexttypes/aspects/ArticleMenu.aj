@@ -21,7 +21,7 @@ import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.Action;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.views.ArticleView;
 import com.nexttypes.views.HTMLView;
 
@@ -37,7 +37,7 @@ public aspect ArticleMenu {
 
 		if (articleMenu != null && articleMenu) {
 
-			Element menuElement = target.getDocument().getElementById(Constants.MENU);
+			Element menuElement = target.getDocument().getElementById(KeyWords.MENU);
 
 			if (menuElement != null) {
 
@@ -50,7 +50,7 @@ public aspect ArticleMenu {
 				Element ul = menuElement.appendElement(HTML.UL);
 
 				for (Tuple tuple : tuples) {
-					ul.appendElement("li").appendElement(target.anchor(tuple.getString(Constants.NAME),
+					ul.appendElement("li").appendElement(target.anchor(tuple.getString(KeyWords.NAME),
 							target.hrefURL("/" + ArticleView.ARTICLE + "?" + Action.PREVIEW
 							+ target.parameter(ArticleView.CATEGORY, tuple.getString(ArticleView.CATEGORY)),
 							lang, view)));

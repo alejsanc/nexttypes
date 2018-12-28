@@ -25,7 +25,7 @@ import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.exceptions.UnauthorizedActionException;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.system.Action;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Controller;
 
 public class UserCertificateController extends Controller {
@@ -36,10 +36,10 @@ public class UserCertificateController extends Controller {
 
 	@Override
 	public ZonedDateTime insert(NXObject object) {
-		if (!object.containsKey(Constants.USER)) {
-			object.put(Constants.USER, user);
+		if (!object.containsKey(KeyWords.USER)) {
+			object.put(KeyWords.USER, user);
 		} else {
-			checkUser(object.getString(Constants.USER), Action.INSERT);
+			checkUser(object.getString(KeyWords.USER), Action.INSERT);
 		}
 		return nextNode.insert(object);
 	}
@@ -51,14 +51,14 @@ public class UserCertificateController extends Controller {
 
 	@Override
 	public ZonedDateTime update(NXObject object, ZonedDateTime udate) {
-		checkUser(object.getString(Constants.USER), Action.UPDATE);
+		checkUser(object.getString(KeyWords.USER), Action.UPDATE);
 		checkPermissions(object.getId(), Action.UPDATE);
 		return nextNode.update(object, udate);
 	}
 
 	@Override
 	public ZonedDateTime updateField(String id, String field, Object value) {
-		if (Constants.USER.equals(field)) {
+		if (KeyWords.USER.equals(field)) {
 			checkUser((String) value, Action.UPDATE_FIELD);
 		}
 		checkPermissions(id, Action.UPDATE_FIELD);
@@ -88,7 +88,7 @@ public class UserCertificateController extends Controller {
 
 	protected void checkPermissions(String id, String method) {
 		if (!ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
-			String objectUser = getStringField(id, Constants.USER);
+			String objectUser = getStringField(id, KeyWords.USER);
 
 			if (!user.equals(objectUser)) {
 				throwException(method);

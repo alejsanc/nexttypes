@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import com.nexttypes.datatypes.FieldReference;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class Strings extends TypeSettings {
 
@@ -29,19 +29,19 @@ public class Strings extends TypeSettings {
 	}
 
 	public String getTypeName(String type) {
-		return getTypeString(type, Constants.TYPE + "." + Constants.NAME, type);
+		return getTypeString(type, KeyWords.TYPE + "." + KeyWords.NAME, type);
 	}
 
 	public String getIdName(String type) {
-		return getTypeString(type, Constants.ID, Constants.ID);
+		return getTypeString(type, KeyWords.ID, KeyWords.ID);
 	}
 
 	public String getObjectsName(String type) {
-		return getTypeString(type, Constants.OBJECTS, Constants.OBJECTS);
+		return getTypeString(type, KeyWords.OBJECTS, KeyWords.OBJECTS);
 	}
 
 	public String getFieldName(String type, String field) {
-		return getFieldString(type, field, Constants.NAME, field);
+		return getFieldString(type, field, KeyWords.NAME, field);
 	}
 	
 	public String getActionName(String action) {
@@ -49,16 +49,16 @@ public class Strings extends TypeSettings {
 	}
 
 	public String getActionName(String type, String action) {
-		return getActionString(type, action, Constants.NAME, action);
+		return getActionString(type, action, KeyWords.NAME, action);
 	}
 
 	public String getActionFieldName(String type, String action, String field) {
-		return getActionFieldString(type, action, field, Constants.NAME, field);
+		return getActionFieldString(type, action, field, KeyWords.NAME, field);
 	}
 
 	public String getReferenceName(String type, FieldReference ref) {
 		String refType = ref != null ? ref.getType() : null;
-		String name = getTypeString(refType, Constants.REFERENCES + "." + type + "." + Constants.NAME);
+		String name = getTypeString(refType, KeyWords.REFERENCES + "." + type + "." + KeyWords.NAME);
 		if (name == null) {
 			name = type;
 			if (ref != null) {
@@ -69,6 +69,6 @@ public class Strings extends TypeSettings {
 	}
 	
 	public String getComparisonName(String type, String comparison) {
-		return getTypeString(type, Constants.COMPARISONS + "." + comparison + "." + Constants.NAME);
+		return getTypeString(type, KeyWords.COMPARISONS + "." + comparison + "." + KeyWords.NAME);
 	}
 }

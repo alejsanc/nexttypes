@@ -59,11 +59,11 @@ public class BackupTask extends Task {
 	public BackupTask(Context context) {
 		this.context = context;
 		settings = context.getSettings(Settings.BACKUP_SETTINGS);
-		directory = Utils.readDirectory(settings.getString(Constants.DIRECTORY));
-		prefix = settings.getString(Constants.PREFIX);
-		lang = settings.getString(Constants.LANG);
-		interval = settings.getInt32(Constants.INTERVAL) * Constants.MINUTE_MILLISECONDS;
-		incremental = settings.getInt32(Constants.INCREMENTAL);
+		directory = Utils.readDirectory(settings.getString(KeyWords.DIRECTORY));
+		prefix = settings.getString(KeyWords.PREFIX);
+		lang = settings.getString(KeyWords.LANG);
+		interval = settings.getInt32(KeyWords.INTERVAL) * Constants.MINUTE_MILLISECONDS;
+		incremental = settings.getInt32(KeyWords.INCREMENTAL);
 		logger = context.getLogger();
 
 		ArrayList<String> filesByDate = new ArrayList<>();
@@ -135,7 +135,7 @@ public class BackupTask extends Task {
 	public void backup() {
 		running = true;
 
-		try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), Auth.BACKUP, null, NodeMode.WRITE,
+		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), Auth.BACKUP, null, NodeMode.WRITE,
 				lang, URL.LOCALHOST, context, true)) {
 
 			ZonedDateTime dateTime = ZonedDateTime.now(ZoneOffset.UTC);
@@ -145,7 +145,7 @@ public class BackupTask extends Task {
 			boolean full;
 
 			if (count == incremental) {
-				filePath.append("-" + Constants.FULL);
+				filePath.append("-" + KeyWords.FULL);
 				count = 0;
 				full = true;
 			} else {

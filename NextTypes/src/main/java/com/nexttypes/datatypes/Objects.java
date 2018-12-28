@@ -20,9 +20,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
-@JacksonXmlRootElement(localName = Constants.OBJECTS)
+@JacksonXmlRootElement(localName = KeyWords.OBJECTS)
 public class Objects extends Result {
 
 	protected NXObject[] items;
@@ -39,9 +39,9 @@ public class Objects extends Result {
 		this.items = items;
 	}
 
-	@JacksonXmlElementWrapper(localName = Constants.ITEMS)
-	@JacksonXmlProperty(localName = Constants.OBJECT)
-	@JsonProperty(Constants.ITEMS)
+	@JacksonXmlElementWrapper(localName = KeyWords.ITEMS)
+	@JacksonXmlProperty(localName = KeyWords.OBJECT)
+	@JsonProperty(KeyWords.ITEMS)
 	public NXObject[] getItems() {
 		return items;
 	}

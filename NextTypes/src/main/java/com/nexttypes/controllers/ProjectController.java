@@ -26,6 +26,7 @@ import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.exceptions.UnauthorizedActionException;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.system.Action;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Controller;
 
@@ -81,16 +82,16 @@ public class ProjectController extends Controller {
 			NXObject object = new NXObject(type, id);
 			if (startDateString != null) {
 				LocalDateTime startDate = LocalDateTime.parse(startDateString, formatter);
-				object.put(Constants.DATE, startDate.toLocalDate());
-				object.put(Constants.START_TIME, startDate.toLocalTime());
+				object.put(KeyWords.DATE, startDate.toLocalDate());
+				object.put(KeyWords.START_TIME, startDate.toLocalTime());
 			}
 
 			if (endDateString != null) {
 				LocalDateTime endDate = LocalDateTime.parse(endDateString, formatter);
-				object.put(Constants.END_TIME, endDate.toLocalTime());
+				object.put(KeyWords.END_TIME, endDate.toLocalTime());
 			}
 
-			object.put(Constants.DESCRIPTION, vevent.getDescription().getValue());
+			object.put(KeyWords.DESCRIPTION, vevent.getDescription().getValue());
 
 			return nextNode.update(object);
 		} else {
@@ -184,7 +185,7 @@ public class ProjectController extends Controller {
 		}
 
 		for (Tuple permission : nextNode.query(sql, parameters)) {
-			if (!user.equals(permission.getString(Constants.USER))) {
+			if (!user.equals(permission.getString(KeyWords.USER))) {
 				throw new UnauthorizedActionException(type, method);
 			}
 		}

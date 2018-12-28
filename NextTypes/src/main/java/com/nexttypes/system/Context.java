@@ -38,7 +38,6 @@ import com.nexttypes.datatypes.Menu;
 import com.nexttypes.datatypes.MenuSection;
 import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
-import com.nexttypes.enums.Format;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.logging.Logger;
 import com.nexttypes.settings.Permissions;
@@ -76,11 +75,11 @@ public class Context {
 
 	public Context(ServletContext context) {
 		this.context = context;
-		directory = Utils.readDirectory(context.getInitParameter(Constants.SETTINGS_DIRECTORY));
+		directory = Utils.readDirectory(context.getInitParameter(KeyWords.SETTINGS_DIRECTORY));
 		context.setAttribute(CONTEXT, this);
 		init();
 
-		for (String className : settings.getStringArray(Constants.NODES)) {
+		for (String className : settings.getStringArray(KeyWords.NODES)) {
 			Loader.initNode(className, this);
 		}
 	}
@@ -141,7 +140,7 @@ public class Context {
 
 		if (groups != null) {
 			for (String group : groups) {
-				properties.addAll(0, getProperties(Constants.GROUPS + "/" + group + ".properties"));
+				properties.addAll(0, getProperties(KeyWords.GROUPS + "/" + group + ".properties"));
 			}
 		}
 
@@ -149,7 +148,7 @@ public class Context {
 	}
 
 	public Strings getStrings(String lang) {
-		return new Strings(getProperties(Constants.LANG + "/" + lang + ".properties"));
+		return new Strings(getProperties(KeyWords.LANG + "/" + lang + ".properties"));
 	}
 
 	public Permissions getPermissions(String user, String[] groups) {
@@ -233,7 +232,7 @@ public class Context {
 		HTML document = templates.get(file);
 		
 		if (document == null) {
-			document = new HTML(getFile(Constants.TEMPLATES + "/" + file), lang);
+			document = new HTML(getFile(KeyWords.TEMPLATES + "/" + file), lang);
 			templates.putIfAbsent(file, document);
 		}
 
@@ -245,7 +244,7 @@ public class Context {
 		
 		if (value == null) {
 			try {
-				value = IOUtils.toByteArray(getFile(Constants.DEFAULTS + "/" + file));
+				value = IOUtils.toByteArray(getFile(KeyWords.DEFAULTS + "/" + file));
 			} catch (IOException e) {
 				throw new NXException(e);
 			}
@@ -263,7 +262,7 @@ public class Context {
 			try {
 				ObjectMapper mapper = new ObjectMapper();
 				MenuSection[] sections;
-				sections = mapper.readValue(getFile(Constants.MENUS + "/" + file),
+				sections = mapper.readValue(getFile(KeyWords.MENUS + "/" + file),
 						TypeFactory.defaultInstance().constructArrayType(MenuSection.class));
 				menu = new Menu(sections);
 				

@@ -17,13 +17,13 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.Strings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class ActionExecutionException extends ActionException {
 	private static final long serialVersionUID = 1L;
 
 	public ActionExecutionException(String type, String action, Throwable cause) {
-		super(type, action, Constants.ACTION_EXECUTION_ERROR, cause);
+		super(type, action, KeyWords.ACTION_EXECUTION_ERROR, cause);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class ActionExecutionException extends ActionException {
 		
 		String message = getMessage(getCause());
 		
-		return strings.gts(type, Constants.ACTION_EXECUTION_ERROR) + ": "
+		return strings.gts(type, KeyWords.ACTION_EXECUTION_ERROR) + ": "
 			+ typeName + "::" + actionName + ": " + message;
 	}
 }

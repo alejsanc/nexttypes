@@ -71,6 +71,7 @@ import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Debug;
 import com.nexttypes.system.Loader;
@@ -103,11 +104,11 @@ public class HTTPServlet extends HttpServlet {
 
 		context = Context.get(getServletContext());
 		settings = context.getSettings(Settings.HTTP_SETTINGS);
-		maxRequests = settings.getInt32(Constants.MAX_REQUESTS);
-		maxAuthErrors = settings.getInt32(Constants.MAX_AUTH_ERRORS);
-		debug = settings.getBoolean(Constants.DEBUG);
-		binaryDebug = settings.getBoolean(Constants.BINARY_DEBUG);
-		binaryDebugLimit = settings.getInt32(Constants.BINARY_DEBUG_LIMIT);
+		maxRequests = settings.getInt32(KeyWords.MAX_REQUESTS);
+		maxAuthErrors = settings.getInt32(KeyWords.MAX_AUTH_ERRORS);
+		debug = settings.getBoolean(KeyWords.DEBUG);
+		binaryDebug = settings.getBoolean(KeyWords.BINARY_DEBUG);
+		binaryDebugLimit = settings.getInt32(KeyWords.BINARY_DEBUG_LIMIT);
 		logger = context.getLogger();
 				
 		requestsMapsThread();
@@ -170,9 +171,9 @@ public class HTTPServlet extends HttpServlet {
 						} else if (req.isReferences()) {
 							content = view.getReferences(req.getLang(), req.getView());
 						} else {
-							URIBuilder newURL = new URIBuilder(settings.getString(Constants.INDEX));
-							newURL.setParameter(Constants.LANG, req.getLang());
-							newURL.setParameter(Constants.VIEW, req.getView());
+							URIBuilder newURL = new URIBuilder(settings.getString(KeyWords.INDEX));
+							newURL.setParameter(KeyWords.LANG, req.getLang());
+							newURL.setParameter(KeyWords.VIEW, req.getView());
 							content = new Content(HTTPStatus.FOUND);
 							content.setHeader(HTTPHeader.LOCATION, newURL.toString());
 						}
@@ -332,7 +333,7 @@ public class HTTPServlet extends HttpServlet {
 			mode = NodeMode.WRITE;
 		}
 
-		try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), req, mode)) {
+		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), req, mode)) {
 			Strings strings = context.getStrings(req.getLang());
 			ZonedDateTime udate = null;
 			String[] fields = null;
@@ -340,7 +341,7 @@ public class HTTPServlet extends HttpServlet {
 			switch (req.getAction()) {
 			case Action.CREATE:
 				nextNode.create(req.readType());
-				content = new Content(strings.gts(req.getType(), Constants.TYPE_SUCCESSFULLY_CREATED));
+				content = new Content(strings.gts(req.getType(), KeyWords.TYPE_SUCCESSFULLY_CREATED));
 				break;
 
 			case Action.ALTER:
@@ -351,46 +352,46 @@ public class HTTPServlet extends HttpServlet {
 			case Action.RENAME:
 				ZonedDateTime adate = nextNode.rename(req.getType(), req.getNewName());
 				content = new Content(
-						new RenameResponse(strings.gts(req.getType(), Constants.TYPE_SUCCESSFULLY_RENAMED), adate));
+						new RenameResponse(strings.gts(req.getType(), KeyWords.TYPE_SUCCESSFULLY_RENAMED), adate));
 				break;
 
 			case Action.INSERT:
 				fields = req.getTypeSettings().getActionStringArray(req.getType(),
-						Action.INSERT, Constants.FIELDS);
+						Action.INSERT, KeyWords.FIELDS);
 				nextNode.insert(req.readObject(nextNode.getTypeFields(req.getType(), fields)));
-				content = new Content(strings.gts(req.getType(), Constants.OBJECT_SUCCESSFULLY_INSERTED));
+				content = new Content(strings.gts(req.getType(), KeyWords.OBJECT_SUCCESSFULLY_INSERTED));
 				insertRequest(req);
 				break;
 
 			case Action.UPDATE:
 				fields = req.getTypeSettings().getActionStringArray(req.getType(),
-						Action.UPDATE, Constants.FIELDS);
+						Action.UPDATE, KeyWords.FIELDS);
 				udate = nextNode.update(req.readObject(nextNode.getTypeFields(req.getType(),fields)),
 						req.getUDate());
 				content = new Content(
-						new UpdateResponse(strings.gts(req.getType(), Constants.OBJECT_SUCCESSFULLY_UPDATED), udate));
+						new UpdateResponse(strings.gts(req.getType(), KeyWords.OBJECT_SUCCESSFULLY_UPDATED), udate));
 				break;
 
 			case Action.UPDATE_ID:
 				udate = nextNode.updateId(req.getType(), req.getId(), req.getNewId());
 				content = new Content(new UpdateResponse(
-						strings.gts(req.getType(), Constants.OBJECT_ID_SUCCESSFULLY_UPDATED), udate));
+						strings.gts(req.getType(), KeyWords.OBJECT_ID_SUCCESSFULLY_UPDATED), udate));
 				break;
 
 			case Action.UPDATE_PASSWORD:
 				nextNode.updatePassword(req.getType(), req.getId(), req.getField(), req.getCurrentPassword(),
 						req.getNewPassword(), req.getNewPasswordRepeat());
-				content = new Content(strings.gts(req.getType(), Constants.PASSWORD_SUCCESSFULLY_UPDATED));
+				content = new Content(strings.gts(req.getType(), KeyWords.PASSWORD_SUCCESSFULLY_UPDATED));
 				break;
 
 			case Action.DELETE:
 				nextNode.delete(req.getType(), req.getObjects());
-				content = new Content(strings.gts(req.getType(), Constants.OBJECTS_SUCCESSFULLY_DELETED));
+				content = new Content(strings.gts(req.getType(), KeyWords.OBJECTS_SUCCESSFULLY_DELETED));
 				break;
 
 			case Action.DROP:
 				nextNode.drop(req.getTypes());
-				content = new Content(strings.gts(Constants.TYPES_SUCCESSFULLY_DROPPED));
+				content = new Content(strings.gts(KeyWords.TYPES_SUCCESSFULLY_DROPPED));
 				break;
 
 			case Action.IMPORT_OBJECTS:
@@ -453,22 +454,22 @@ public class HTTPServlet extends HttpServlet {
 
 		String user = req.getLoginUser();
 		if (user == null) {
-			throw new NXException(Constants.EMPTY_USER_NAME);
+			throw new NXException(KeyWords.EMPTY_USER_NAME);
 		}
 
 		String password = req.getLoginPassword();
 		if (password == null) {
-			throw new NXException(Constants.EMPTY_PASSWORD);
+			throw new NXException(KeyWords.EMPTY_PASSWORD);
 		}
 
-		if (nextNode.checkPassword(Constants.USER, user, Constants.PASSWORD, password)) {
+		if (nextNode.checkPassword(KeyWords.USER, user, KeyWords.PASSWORD, password)) {
 			String[] groups = nextNode.getGroups(user);
 
 			HttpSession session = req.getSession();
-			session.setAttribute(Constants.USER, new Auth(user, groups, true));
+			session.setAttribute(KeyWords.USER, new Auth(user, groups, true));
 
-			content = new Content(strings.gts(Constants.SUCCESSFUL_LOGIN) + ".");
-			logger.info(this, user, remoteAddress, new Message(Constants.SUCCESSFUL_LOGIN, user));
+			content = new Content(strings.gts(KeyWords.SUCCESSFUL_LOGIN) + ".");
+			logger.info(this, user, remoteAddress, new Message(KeyWords.SUCCESSFUL_LOGIN, user));
 		} else {
 			authError(remoteAddress);
 			throw new InvalidUserOrPasswordException();
@@ -482,14 +483,14 @@ public class HTTPServlet extends HttpServlet {
 		HttpServletRequest request = req.getServletRequest();
 		HttpSession session = request.getSession();
 		String remoteAddress = request.getRemoteAddr();
-		Auth user = (Auth) session.getAttribute(Constants.USER);
+		Auth user = (Auth) session.getAttribute(KeyWords.USER);
 
 		if (user != null) {
-			session.removeAttribute(Constants.USER);
-			content = new Content(strings.gts(Constants.SUCCESSFUL_LOGOUT));
-			logger.info(this, user.getUser(), remoteAddress, new Message(Constants.SUCCESSFUL_LOGOUT));
+			session.removeAttribute(KeyWords.USER);
+			content = new Content(strings.gts(KeyWords.SUCCESSFUL_LOGOUT));
+			logger.info(this, user.getUser(), remoteAddress, new Message(KeyWords.SUCCESSFUL_LOGOUT));
 		} else {
-			throw new NXException(Constants.USER_NOT_LOGGED_IN);
+			throw new NXException(KeyWords.USER_NOT_LOGGED_IN);
 		}
 
 		return content;
@@ -497,7 +498,7 @@ public class HTTPServlet extends HttpServlet {
 
 	protected void put(HTTPRequest req) throws IOException {
 				
-		try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), req, NodeMode.WRITE)) {
+		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), req, NodeMode.WRITE)) {
 
 			Object value = IOUtils.toByteArray(req.getServletRequest().getInputStream());
 			
@@ -510,9 +511,9 @@ public class HTTPServlet extends HttpServlet {
 			}
 			
 			if (req.getType() == null) {
-				throw new NXException(Constants.EMPTY_TYPE_NAME);
+				throw new NXException(KeyWords.EMPTY_TYPE_NAME);
 			} else if (req.getId() == null) {
-				throw new NXException(req.getType(), Constants.EMPTY_ID);
+				throw new NXException(req.getType(), KeyWords.EMPTY_ID);
 			} else if (req.getField() == null) {
 				nextNode.update(req.getType(), req.getId(), (byte[]) value);
 			} else {
@@ -522,7 +523,7 @@ public class HTTPServlet extends HttpServlet {
 
 				switch (fieldType) {
 				case PT.PASSWORD:
-					throw new FieldException(req.getType(), req.getField(), Constants.PASSWORD_FIELD_UPDATE);
+					throw new FieldException(req.getType(), req.getField(), KeyWords.PASSWORD_FIELD_UPDATE);
 
 				case PT.BINARY:
 					break;
@@ -601,13 +602,13 @@ public class HTTPServlet extends HttpServlet {
 
 				case PT.HTML:
 					allowedTags = req.getTypeSettings().getFieldString(req.getType(), req.getField(),
-							Constants.HTML_ALLOWED_TAGS);
+							KeyWords.HTML_ALLOWED_TAGS);
 					value = Tuple.parseHTML(value, req.getLang(), allowedTags);
 					break;
 
 				case PT.XML:
 					allowedTags = req.getTypeSettings().getFieldString(req.getType(), req.getField(),
-							Constants.XML_ALLOWED_TAGS);
+							KeyWords.XML_ALLOWED_TAGS);
 					value = Tuple.parseXML(value, req.getLang(), allowedTags);
 					break;
 
@@ -641,7 +642,7 @@ public class HTTPServlet extends HttpServlet {
 	protected Content webdav(HTTPRequest req) {
 		Content content = null;
 		
-		try (WebDAVView view = getWebDAVView(req.getType(), Constants.WEBDAV, req)) {
+		try (WebDAVView view = getWebDAVView(req.getType(), KeyWords.WEBDAV, req)) {
 			
 			if (debug) {
 				Debug.body();
@@ -650,12 +651,12 @@ public class HTTPServlet extends HttpServlet {
 			
 			try {
 				if (req.getType() == null) {
-					content = view.getTypesName(req.getLang(), Constants.WEBDAV);
+					content = view.getTypesName(req.getLang(), KeyWords.WEBDAV);
 				} else if (req.getId() == null) {
-					content = view.select(req.getType(), req.getLang(), Constants.WEBDAV, req.getRef(),
+					content = view.select(req.getType(), req.getLang(), KeyWords.WEBDAV, req.getRef(),
 							null, req.getSearch(), req.getOrder(), req.getOffset(), req.getLimit());
 				} else if (req.getField() == null) {
-					content = view.get(req.getType(), req.getId(), req.getLang(), Constants.WEBDAV, req.getETag());
+					content = view.get(req.getType(), req.getId(), req.getLang(), KeyWords.WEBDAV, req.getETag());
 				} else {
 					content = view.getField(req.getType(), req.getId(), req.getField(), req.getETag());
 				}
@@ -676,20 +677,20 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected Content robots() {
-		HTTPRobots robots = new HTTPRobots(settings.getString(Constants.HOST),
-				settings.getInt32(Constants.HTTPS_PORT), settings.getStringArray(Constants.INDEX_TYPES));
+		HTTPRobots robots = new HTTPRobots(settings.getString(KeyWords.HOST),
+				settings.getInt32(KeyWords.HTTPS_PORT), settings.getStringArray(KeyWords.INDEX_TYPES));
 		return new Content(robots.toString(), Format.TEXT);
 	}
 
 	protected Content sitemap(HttpServletRequest request, String lang, Auth auth) {
-		try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), auth.getUser(), auth.getGroups(),
+		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), auth.getUser(), auth.getGroups(),
 				NodeMode.READ, lang, request.getRemoteAddr(), context, true)) {
 
 			LinkedHashMap<String, ObjectInfo[]> objectsInfo = nextNode
-					.getObjectsInfo(settings.getStringArray(Constants.INDEX_TYPES));
+					.getObjectsInfo(settings.getStringArray(KeyWords.INDEX_TYPES));
 
-			HTTPSitemap sitemap = new HTTPSitemap(settings.getString(Constants.HOST),
-					settings.getInt32(Constants.HTTPS_PORT), objectsInfo);
+			HTTPSitemap sitemap = new HTTPSitemap(settings.getString(KeyWords.HOST),
+					settings.getInt32(KeyWords.HTTPS_PORT), objectsInfo);
 
 			return new Content(sitemap.toString(), Format.XML);
 		}
@@ -699,7 +700,7 @@ public class HTTPServlet extends HttpServlet {
 		Content content = null;
 
 		boolean secure = request.isSecure();
-		String host = settings.getString(Constants.HOST);
+		String host = settings.getString(KeyWords.HOST);
 		String requestHost = request.getServerName();
 		boolean validHost = requestHost.equals(host);
 		String method = request.getMethod();
@@ -710,7 +711,7 @@ public class HTTPServlet extends HttpServlet {
 
 				if (!secure) {
 					url.setScheme(URL.HTTPS);
-					url.setPort(settings.getInt32(Constants.HTTPS_PORT));
+					url.setPort(settings.getInt32(KeyWords.HTTPS_PORT));
 				}
 
 				if (!validHost) {
@@ -737,9 +738,9 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected String readLang(HttpServletRequest request) {
-		String lang = request.getParameter(Constants.LANG);
+		String lang = request.getParameter(KeyWords.LANG);
 
-		String[] langs = settings.getStringArray(Constants.LANGS);
+		String[] langs = settings.getStringArray(KeyWords.LANGS);
 
 		if (lang == null || !ArrayUtils.contains(langs, lang)) {
 
@@ -756,7 +757,7 @@ public class HTTPServlet extends HttpServlet {
 		}
 
 		if (lang == null) {
-			lang = settings.getString(Constants.DEFAULT_LANG);
+			lang = settings.getString(KeyWords.DEFAULT_LANG);
 		}
 
 		return lang;
@@ -765,12 +766,12 @@ public class HTTPServlet extends HttpServlet {
 	protected Auth auth(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 
-		Auth user = (Auth) session.getAttribute(Constants.USER);
+		Auth user = (Auth) session.getAttribute(KeyWords.USER);
 
 		if (user == null) {
 
-			try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), Auth.GUEST,
-					new String[] { Auth.GUESTS }, NodeMode.READ, settings.getString(Constants.DEFAULT_LANG),
+			try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), Auth.GUEST,
+					new String[] { Auth.GUESTS }, NodeMode.READ, settings.getString(KeyWords.DEFAULT_LANG),
 					request.getRemoteAddr(), context, true)) {
 
 				String userName = tlsAuth(request, nextNode);
@@ -784,7 +785,7 @@ public class HTTPServlet extends HttpServlet {
 				} else {
 					String[] groups = nextNode.getGroups(userName);
 					user = new Auth(userName, groups, false);
-					session.setAttribute(Constants.USER, user);
+					session.setAttribute(KeyWords.USER, user);
 				}
 			}
 		}
@@ -807,7 +808,7 @@ public class HTTPServlet extends HttpServlet {
 			String authUser = userPassword.substring(0, separatorIndex);
 			String authPassword = userPassword.substring(separatorIndex + 1, userPassword.length());
 
-			if (nextNode.checkPassword(Constants.USER, authUser, Constants.PASSWORD, authPassword)) {
+			if (nextNode.checkPassword(KeyWords.USER, authUser, KeyWords.PASSWORD, authPassword)) {
 				userName = authUser;
 			} else {
 				authError(remoteAddress);
@@ -1025,14 +1026,14 @@ public class HTTPServlet extends HttpServlet {
 		} else if (e instanceof UnauthorizedActionException) {
 			status = HTTPStatus.UNAUTHORIZED;
 			if (Auth.GUEST.equals(userName)) {
-				String[] basicAuthUserAgents = settings.getStringArray(Constants.BASIC_AUTH_USER_AGENTS);
+				String[] basicAuthUserAgents = settings.getStringArray(KeyWords.BASIC_AUTH_USER_AGENTS);
 
 				if (basicAuthUserAgents != null) {
 					String clientUserAgent = request.getHeader(HTTPHeader.USER_AGENT.toString());
 
 					for (String basicAuthUserAgent : basicAuthUserAgents) {
 						if (clientUserAgent.contains(basicAuthUserAgent)) {
-							String basic_auth_realm = settings.getString(Constants.BASIC_AUTH_REALM);
+							String basic_auth_realm = settings.getString(KeyWords.BASIC_AUTH_REALM);
 							response.setHeader(HTTPHeader.WWW_AUTHENTICATE.toString(),
 									"Basic realm=\"" + basic_auth_realm + "\"");
 							break;
@@ -1135,7 +1136,7 @@ public class HTTPServlet extends HttpServlet {
 		
 		String type = req.getType();
 		
-		int maxInserts = req.getTypeSettings().getTypeInt32(type, Constants.MAX_INSERTS);
+		int maxInserts = req.getTypeSettings().getTypeInt32(type, KeyWords.MAX_INSERTS);
 
 		if (maxInserts > 0) {
 			
@@ -1151,13 +1152,13 @@ public class HTTPServlet extends HttpServlet {
 				} else {
 				
 					if (requests.requests >= maxInserts) {
-						String message = req.getStrings().gts(type, Constants.MAX_INSERTS_EXCEEDED);
+						String message = req.getStrings().gts(type, KeyWords.MAX_INSERTS_EXCEEDED);
 
 						content = new Content(message, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
 
 						if (!requests.logged) {
 							logger.severe(this, req.getUser(), remoteAddress,
-									new Message(Constants.MAX_INSERTS_EXCEEDED));
+									new Message(KeyWords.MAX_INSERTS_EXCEEDED));
 							requests.logged = true;
 						}
 					}
@@ -1191,7 +1192,7 @@ public class HTTPServlet extends HttpServlet {
 						content = new Content(MAX_REQUESTS, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
 
 						if (!requests.logged) {
-							Auth auth = (Auth) req.getSession().getAttribute(Constants.USER);
+							Auth auth = (Auth) req.getSession().getAttribute(KeyWords.USER);
 							String userName = auth != null ? auth.getUser() : Auth.GUEST;
 
 							logger.severe(this, userName, remoteAddress, MAX_REQUESTS);
@@ -1211,7 +1212,7 @@ public class HTTPServlet extends HttpServlet {
 		
 		String type = req.getType();
 		
-		int maxInserts = req.getTypeSettings().getTypeInt32(type, Constants.MAX_INSERTS);
+		int maxInserts = req.getTypeSettings().getTypeInt32(type, KeyWords.MAX_INSERTS);
 
 		if (maxInserts > 0) {
 			
@@ -1259,7 +1260,7 @@ public class HTTPServlet extends HttpServlet {
 	
 					if (authErrors.requests >= maxAuthErrors) {
 	
-						throw new NXException(Constants.AUTH_ERRORS_PER_MINUTE_EXCEEDED);
+						throw new NXException(KeyWords.AUTH_ERRORS_PER_MINUTE_EXCEEDED);
 					}
 				}
 			}

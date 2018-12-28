@@ -22,7 +22,7 @@ import java.util.Properties;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.nexttypes.exceptions.UnauthorizedActionException;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class Permissions extends TypeSettings {
 	protected String user;
@@ -35,11 +35,11 @@ public class Permissions extends TypeSettings {
 	}
 
 	public String[] getAllowedUsers(String type, String action) {
-		return getTypeStringArray(type, new String[] { action + "." + Constants.USERS, Constants.USERS });
+		return getTypeStringArray(type, new String[] { action + "." + KeyWords.USERS, KeyWords.USERS });
 	}
 
 	public String[] getAllowedGroups(String type, String action) {
-		return getTypeStringArray(type, new String[] { action + "." + Constants.GROUPS, Constants.GROUPS });
+		return getTypeStringArray(type, new String[] { action + "." + KeyWords.GROUPS, KeyWords.GROUPS });
 	}
 
 	public boolean isAllowed(String action) {

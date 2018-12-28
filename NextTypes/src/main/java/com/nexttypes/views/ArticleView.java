@@ -37,6 +37,7 @@ import com.nexttypes.enums.Format;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class ArticleView extends HTMLView {
 
@@ -89,7 +90,7 @@ public class ArticleView extends HTMLView {
 				+ " where"
 					+ " a.id = ?");
 
-		String typeFilters = typeSettings.gts(type, Constants.FILTERS);
+		String typeFilters = typeSettings.gts(type, KeyWords.FILTERS);
 		if (typeFilters != null) {
 			sql.append(" and " + typeFilters);
 		}
@@ -104,18 +105,18 @@ public class ArticleView extends HTMLView {
 
 		Element article = main.appendElement(HTML.ARTICLE);
 
-		String title = tuple.getString(Constants.TITLE);
+		String title = tuple.getString(KeyWords.TITLE);
 		document.getTitle().appendText(title);
 		article.appendElement(HTML.H1).appendText(title);
 		
-		HTMLFragment text = tuple.getHTML(Constants.TEXT, lang,
-				typeSettings.getFieldString(type, Constants.TEXT, Constants.HTML_ALLOWED_TAGS));
+		HTMLFragment text = tuple.getHTML(KeyWords.TEXT, lang,
+				typeSettings.getFieldString(type, KeyWords.TEXT, KeyWords.HTML_ALLOWED_TAGS));
 		if (text != null) {
 			article.appendFragment(text);
 		}
 
-		ZonedDateTime cdate = tuple.getUTCDateTime(Constants.CDATE);
-		ZonedDateTime udate = tuple.getUTCDateTime(Constants.UDATE);
+		ZonedDateTime cdate = tuple.getUTCDateTime(KeyWords.CDATE);
+		ZonedDateTime udate = tuple.getUTCDateTime(KeyWords.UDATE);
 		
 		main.appendElement(dates(type, cdate, udate));
 		
@@ -137,7 +138,7 @@ public class ArticleView extends HTMLView {
 		
 		if (showAuthors && authors != null && authors.length > 0) {
 			main.appendElement(listFieldOutput(type, strings.gts(type, AUTHORS), authors,
-					Constants.USER, lang, view));
+					KeyWords.USER, lang, view));
 		}
 		
 		Boolean showCategories = typeSettings.getTypeBoolean(type, SHOW_CATEGORIES);
@@ -187,7 +188,7 @@ public class ArticleView extends HTMLView {
 			Tuple[] discussions = nextNode.query(discussionsSQL, id);
 		
 			for (Tuple discussion : discussions) {
-				URL link = discussion.getURL(Constants.LINK);
+				URL link = discussion.getURL(KeyWords.LINK);
 			
 				main.appendElement(HTML.P).appendElement(anchor(link.getHost() + " - "
 					+ discussion.getString(HTML.TITLE), link));
@@ -199,7 +200,7 @@ public class ArticleView extends HTMLView {
 		
 		String image = request.getURLRoot() + imageURL(tuple);
 				
-		String publisherLogo = request.getURLRoot() + typeSettings.gts(type, Constants.LOGO);
+		String publisherLogo = request.getURLRoot() + typeSettings.gts(type, KeyWords.LOGO);
 		
 		head.appendElement(HTML.SCRIPT).setAttribute(HTML.TYPE, Format.JSON_LD.getContentType())
 			.appendText(new JSONLD().article(title, image, authors, strings.gts(type, PUBLISHER),
@@ -214,11 +215,11 @@ public class ArticleView extends HTMLView {
 
 		Content content = null;
 		
-		if (Constants.RSS.equals(view)) {
+		if (KeyWords.RSS.equals(view)) {
 			StringBuilder sql = new StringBuilder(typeSettings.gts(type, Constants.RSS_SELECT));
 					
 			String category = request.getParameters().getString(CATEGORY);
-			String typeFilters = typeSettings.gts(type, Constants.FILTERS);
+			String typeFilters = typeSettings.gts(type, KeyWords.FILTERS);
 			String title = strings.getTypeName(ARTICLE);
 			ArrayList<Object> parameters = new ArrayList<>();
 			parameters.add(lang);
@@ -236,7 +237,7 @@ public class ArticleView extends HTMLView {
 			sql.append(" order by a.cdate desc limit 10");
 				
 			Tuple[] tuples = nextNode.query(sql.toString(), parameters.toArray());
-			RSS rss = new RSS(title, strings.gts(type, Constants.DESCRIPTION), type, lang,
+			RSS rss = new RSS(title, strings.gts(type, KeyWords.DESCRIPTION), type, lang,
 					request.getURLRoot(), tuples);
 			content = new Content(rss.toString(), Format.RSS);
 			
@@ -314,7 +315,7 @@ public class ArticleView extends HTMLView {
 		parameters.add(lang);
 		parameters.add(lang);
 
-		String previewTitle = strings.gts(type, Constants.PREVIEW_TITLE);
+		String previewTitle = strings.gts(type, KeyWords.PREVIEW_TITLE);
 		
 		category = request.getParameters().getString(CATEGORY);
 		
@@ -323,7 +324,7 @@ public class ArticleView extends HTMLView {
 			
 			loadTemplate(type, lang, view);
 			
-			Element searchForm = document.getElementById(Constants.SEARCH);
+			Element searchForm = document.getElementById(KeyWords.SEARCH);
 			searchForm.appendElement(input(HTML.HIDDEN, CATEGORY, CATEGORY, category));
 			
 			String categoryName = categoryName(category, lang);
@@ -354,21 +355,21 @@ public class ArticleView extends HTMLView {
 		if (tuples.getCount() > 0) {
 		
 			for (Tuple tuple : tuples.getItems()) {
-				String id = tuple.getString(Constants.ID);
-				String title = tuple.getString(Constants.TITLE);
+				String id = tuple.getString(KeyWords.ID);
+				String title = tuple.getString(KeyWords.TITLE);
 				String url = url(type, id, lang, view);
 
-				Element article = main.appendElement(HTML.DIV).addClass(Constants.PREVIEW);
-				article.appendElement(imageAnchor(title, url, tuple.getString(Constants.IMAGE_TYPE),
-					tuple.getString(Constants.IMAGE_ID), IMAGE));
-				article.appendElement(time(tuple.getDateTime(Constants.CDATE)));
+				Element article = main.appendElement(HTML.DIV).addClass(KeyWords.PREVIEW);
+				article.appendElement(imageAnchor(title, url, tuple.getString(KeyWords.IMAGE_TYPE),
+					tuple.getString(KeyWords.IMAGE_ID), IMAGE));
+				article.appendElement(time(tuple.getDateTime(KeyWords.CDATE)));
 				article.appendElement(HTML.H2).appendText(title);
 				
-				String text = tuple.getHTMLText(Constants.TEXT);
+				String text = tuple.getHTMLText(KeyWords.TEXT);
 				
 				if (text != null) {
 					article.appendElement(HTML.P).appendText(text + " ... ")
-						.appendElement(anchor(strings.gts(type, Constants.READ_MORE), url));
+						.appendElement(anchor(strings.gts(type, KeyWords.READ_MORE), url));
 				}
 				
 				if (showAuthors) {
@@ -376,7 +377,7 @@ public class ArticleView extends HTMLView {
 					
 					if (authors != null) {
 						article.appendElement(listFieldOutput(type, strings.gts(type, AUTHORS), authors,
-								Constants.USER, lang, view));
+								KeyWords.USER, lang, view));
 					}
 				}
 				
@@ -393,7 +394,7 @@ public class ArticleView extends HTMLView {
 					tuples.getCount(), tuples.getOffset(), tuples.getLimit(), tuples.getMinLimit(),
 					tuples.getMaxLimit(), tuples.getLimitIncrement(), Component.TYPE));
 		} else {
-			main.appendElement(HTML.P).appendText(strings.gts(Constants.NO_OBJECTS_FOUND));
+			main.appendElement(HTML.P).appendText(strings.gts(KeyWords.NO_OBJECTS_FOUND));
 		}
 
 		return render(type);

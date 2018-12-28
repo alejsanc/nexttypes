@@ -32,10 +32,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
-@JsonPropertyOrder({ Constants.CONTENT, Constants.CONTENT_TYPE })
+@JsonPropertyOrder({ KeyWords.CONTENT, KeyWords.CONTENT_TYPE })
 public class File extends PGobject{
 	private static final long serialVersionUID = 1L;
 	
@@ -75,12 +75,12 @@ public class File extends PGobject{
 	}
 	
 	public File(JSONObject file) {
-		this(file.getBinary(Constants.CONTENT), file.getString(Constants.CONTENT_TYPE));
+		this(file.getBinary(KeyWords.CONTENT), file.getString(KeyWords.CONTENT_TYPE));
 	}
 	
 	@JsonCreator
-	public File(@JsonProperty(Constants.CONTENT) byte[] content,
-			@JsonProperty(Constants.CONTENT_TYPE) String contentType) {
+	public File(@JsonProperty(KeyWords.CONTENT) byte[] content,
+			@JsonProperty(KeyWords.CONTENT_TYPE) String contentType) {
 		type = PT.FILE;
 
 		this.content = content;
@@ -140,12 +140,12 @@ public class File extends PGobject{
 		return name;
 	}
 
-	@JsonProperty(Constants.CONTENT)
+	@JsonProperty(KeyWords.CONTENT)
 	public byte[] getContent() {
 		return content;
 	}
 	
-	@JsonProperty(Constants.CONTENT_TYPE)
+	@JsonProperty(KeyWords.CONTENT_TYPE)
 	public String getContentType() {
 		return contentType;
 	}

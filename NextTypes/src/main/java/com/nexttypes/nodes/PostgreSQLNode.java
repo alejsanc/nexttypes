@@ -125,7 +125,7 @@ import com.nexttypes.serialization.TypesStreamDeserializer;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Context.TypesCache;
 import com.nexttypes.system.DBConnection;
@@ -291,9 +291,9 @@ public class PostgreSQLNode implements Node {
 	public PostgreSQLNode(Context context) {
 		
 		settings = context.getSettings(Settings.POSTGRESQL_SETTINGS);
-		lang = settings.getString(Constants.DEFAULT_LANG);
+		lang = settings.getString(KeyWords.DEFAULT_LANG);
 		connectionPool = DBConnection.getConnectionPool(settings, POSTGRESQL, DRIVER);
-		context.putDBConnectionPool(settings.getString(Constants.POOL), connectionPool);
+		context.putDBConnectionPool(settings.getString(KeyWords.POOL), connectionPool);
 		
 		try (PostgreSQLNode node = new PostgreSQLNode(Auth.ADMIN, new String[] { Auth.ADMINISTRATORS },
 				NodeMode.ADMIN, lang, URL.LOCALHOST, context, true)) {
@@ -330,7 +330,7 @@ public class PostgreSQLNode implements Node {
 		typeSettings = context.getTypeSettings(groups);
 		
 		if (lang == null) {
-			lang = settings.getString(Constants.DEFAULT_LANG);
+			lang = settings.getString(KeyWords.DEFAULT_LANG);
 		} 
 
 		this.lang = lang;
@@ -338,7 +338,7 @@ public class PostgreSQLNode implements Node {
 		strings = context.getStrings(lang);
 
 		if (useConnectionPool) {
-			connectionPool = context.getDatabaseConnectionPool(settings.getString(Constants.POOL));
+			connectionPool = context.getDatabaseConnectionPool(settings.getString(KeyWords.POOL));
 			connection = connectionPool.getConnection(mode);
 		} else {
 			connection = DBConnection.getConnection(settings, POSTGRESQL, mode);
@@ -461,7 +461,7 @@ public class PostgreSQLNode implements Node {
 		checkType(typeName);
 
 		if (single && existsType(typeName)) {
-			throw new TypeException(typeName, Constants.TYPE_ALREADY_EXISTS);
+			throw new TypeException(typeName, KeyWords.TYPE_ALREADY_EXISTS);
 		}
 
 		StringBuilder sql = new StringBuilder("create table \"" + typeName + "\"" + " (id character varying("
@@ -496,8 +496,8 @@ public class PostgreSQLNode implements Node {
 
 		execute(sql.toString());
 
-		String read_user = settings.getString(NodeMode.READ + "_" + Constants.USER);
-		String write_user = settings.getString(NodeMode.WRITE + "_" + Constants.USER);
+		String read_user = settings.getString(NodeMode.READ + "_" + KeyWords.USER);
+		String write_user = settings.getString(NodeMode.WRITE + "_" + KeyWords.USER);
 		execute("grant select on \"" + typeName + "\" to " + read_user);
 		execute("grant select, insert, update, delete on \"" + typeName + "\" to " + write_user);
 
@@ -876,7 +876,7 @@ public class PostgreSQLNode implements Node {
 		checkType(typeName);
 
 		if (adate != null && !adate.equals(getADate(typeName))) {
-			throw new NXException(typeName, Constants.ALREADY_ALTERED_TYPE);
+			throw new NXException(typeName, KeyWords.ALREADY_ALTERED_TYPE);
 		}
 
 		AlterResult result = new AlterResult();
@@ -972,10 +972,10 @@ public class PostgreSQLNode implements Node {
 			}
 			updateTypeDates(typeName, typeADate);
 			result.setADate(typeADate);
-			result.setMessage(strings.gts(typeName, Constants.TYPE_SUCCESSFULLY_ALTERED));
+			result.setMessage(strings.gts(typeName, KeyWords.TYPE_SUCCESSFULLY_ALTERED));
 		} else {
 			result.setADate(getADate(typeName));
-			result.setMessage(strings.gts(typeName, Constants.TYPE_NOT_ALTERED));
+			result.setMessage(strings.gts(typeName, KeyWords.TYPE_NOT_ALTERED));
 		}
 
 		return result;
@@ -1004,20 +1004,20 @@ public class PostgreSQLNode implements Node {
 
 	protected void checkFieldNullability(String type, String field, boolean notNull) {
 		if (notNull && hasNullValues(type, field)) {
-			throw new FieldException(type, field, Constants.FIELD_HAS_NULL_VALUES);
+			throw new FieldException(type, field, KeyWords.FIELD_HAS_NULL_VALUES);
 		}
 	}
 
 	protected void checkNewFieldNullability(String type, String field, boolean notNull) {
 		if (notNull && hasObjects(type)) {
-			throw new FieldException(type, field, Constants.TYPE_ALREADY_HAS_OBJECTS);
+			throw new FieldException(type, field, KeyWords.TYPE_ALREADY_HAS_OBJECTS);
 		}
 	}
 
 	protected void checkFieldIsPartOfIndex(String type, String field, LinkedHashMap<String, TypeIndex> indexes) {
 		for (Map.Entry<String, TypeIndex> entry : indexes.entrySet()) {
 			if (ArrayUtils.contains(entry.getValue().getFields(), field)) {
-				throw new FieldException(type, field, Constants.FIELD_IS_PART_OF_INDEX, entry.getKey());
+				throw new FieldException(type, field, KeyWords.FIELD_IS_PART_OF_INDEX, entry.getKey());
 			}
 		}
 	}
@@ -1048,12 +1048,12 @@ public class PostgreSQLNode implements Node {
 			Tuple[] references = query(sql.toString(), parameters.toArray());
 
 			LinkedHashMap<String, List<String>> referencesByType = Arrays.stream(references)
-					.collect(Collectors.groupingBy(reference -> reference.getString(Constants.TYPE), LinkedHashMap::new,
-							Collectors.mapping(reference -> reference.getString(Constants.ID), Collectors.toList())));
+					.collect(Collectors.groupingBy(reference -> reference.getString(KeyWords.TYPE), LinkedHashMap::new,
+							Collectors.mapping(reference -> reference.getString(KeyWords.ID), Collectors.toList())));
 
 			if (referencesByType != null && referencesByType.size() > 0) {
 				throw new StringException(
-						strings.gts(Constants.MISSING_REFERENCES) + ": " + new Serial(referencesByType, Format.JSON));
+						strings.gts(KeyWords.MISSING_REFERENCES) + ": " + new Serial(referencesByType, Format.JSON));
 			}
 		}
 	}
@@ -1061,13 +1061,13 @@ public class PostgreSQLNode implements Node {
 	protected void checkFileField(String type, String field, Object value) {
 		if (value instanceof File) {
 			String[] allowedContentTypes = typeSettings.getFieldStringArray(type, field,
-					Constants.ALLOWED_CONTENT_TYPES);
+					KeyWords.ALLOWED_CONTENT_TYPES);
 
 			if (allowedContentTypes != null) {
 				String contentType = ((File) value).getContentType();
 
 				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
-					throw new FieldException(type, field, Constants.DISALLOWED_CONTENT_TYPE, contentType);
+					throw new FieldException(type, field, KeyWords.DISALLOWED_CONTENT_TYPE, contentType);
 				}
 			}
 		}
@@ -1079,7 +1079,7 @@ public class PostgreSQLNode implements Node {
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
 			FieldRange range = getFieldRange(type, field);
 			if (range != null && !range.isInRange(value)) {
-				throw new FieldException(type, field, Constants.OUT_OF_RANGE_VALUE, value);
+				throw new FieldException(type, field, KeyWords.OUT_OF_RANGE_VALUE, value);
 			}
 		}
 	}
@@ -1170,7 +1170,7 @@ public class PostgreSQLNode implements Node {
 		checkType(type);
 		
 		if (id != null && single && existsObject(type, id)) {
-			throw new ObjectException(type, id, Constants.OBJECT_ALREADY_EXISTS);
+			throw new ObjectException(type, id, KeyWords.OBJECT_ALREADY_EXISTS);
 		}
 
 		for (Map.Entry<String, TypeField> entry : getTypeFields(type).entrySet()) {
@@ -1183,7 +1183,7 @@ public class PostgreSQLNode implements Node {
 				value = object.get(field);
 
 				if (value == null && typeField.isNotNull()){
-					throw new FieldException(type, field, Constants.EMPTY_FIELD);
+					throw new FieldException(type, field, KeyWords.EMPTY_FIELD);
 				}
 			} else {
 				value = getFieldDefault(type, field, fieldType);
@@ -1191,7 +1191,7 @@ public class PostgreSQLNode implements Node {
 				if (value != null) {
 					object.put(field, value);
 				} else if (typeField.isNotNull()) {
-					throw new FieldException(type, field, Constants.MISSING_FIELD);
+					throw new FieldException(type, field, KeyWords.MISSING_FIELD);
 				}
 			}	
 
@@ -1273,7 +1273,7 @@ public class PostgreSQLNode implements Node {
 			TypeField typeField = entry.getValue();
 
 			if (object.containsKey(field) && typeField.isNotNull() && object.get(field) == null) {
-				throw new FieldException(type, field, Constants.EMPTY_FIELD);
+				throw new FieldException(type, field, KeyWords.EMPTY_FIELD);
 			}
 
 			Object value = object.get(field);
@@ -1289,7 +1289,7 @@ public class PostgreSQLNode implements Node {
 		}
 
 		if (udate != null && !udate.equals(getUDate(type, id))) {
-			throw new ObjectException(type, id, Constants.ALREADY_UPDATED_OBJECT);
+			throw new ObjectException(type, id, KeyWords.ALREADY_UPDATED_OBJECT);
 		}
 
 		StringBuilder sql = new StringBuilder("update \"" + type + "\" set ");
@@ -1347,20 +1347,20 @@ public class PostgreSQLNode implements Node {
 
 		if (currentPassword == null) {
 			if (!ArrayUtils.contains(groups, Auth.ADMINISTRATORS) && getPasswordField(type, id, field) != null) {
-				throw new NXException(type, Constants.EMPTY_CURRENT_PASSWORD);
+				throw new NXException(type, KeyWords.EMPTY_CURRENT_PASSWORD);
 			}
 		} else {
 			if (!Security.checkPassword(getPasswordField(type, id, field), currentPassword)) {
-				throw new NXException(type, Constants.INVALID_CURRENT_PASSWORD);
+				throw new NXException(type, KeyWords.INVALID_CURRENT_PASSWORD);
 			}
 		}
 
 		if (!Security.passwordsMatch(newPassword, newPasswordRepeat)) {
-			throw new NXException(type, Constants.PASSWORDS_DONT_MATCH);
+			throw new NXException(type, KeyWords.PASSWORDS_DONT_MATCH);
 		}
 
 		if (!Security.checkPasswordStrength(newPassword)) {
-			throw new NXException(type, Constants.INVALID_PASSWORD);
+			throw new NXException(type, KeyWords.INVALID_PASSWORD);
 		}
 
 		return updateField(type, id, field, Security.passwordHash(newPassword));
@@ -1542,9 +1542,9 @@ public class PostgreSQLNode implements Node {
 		
 		String name = objectName ? tuple.getString("@name") : null;
 		
-		NXObject object = new NXObject(type, tuple.getString(Constants.ID), name,
-				tuple.getUTCDateTime(Constants.CDATE), tuple.getUTCDateTime(Constants.UDATE),
-				tuple.getBoolean(Constants.BACKUP));
+		NXObject object = new NXObject(type, tuple.getString(KeyWords.ID), name,
+				tuple.getUTCDateTime(KeyWords.CDATE), tuple.getUTCDateTime(KeyWords.UDATE),
+				tuple.getBoolean(KeyWords.BACKUP));
 
 		for (Entry<String, TypeField> entry : typeFields.entrySet()) {
 			String field = entry.getKey();
@@ -1556,7 +1556,7 @@ public class PostgreSQLNode implements Node {
 			case PT.HTML:
 				if (fulltext) {
 					value = tuple.getHTML(field, lang, typeSettings.getFieldString(type, field,
-							Constants.HTML_ALLOWED_TAGS));
+							KeyWords.HTML_ALLOWED_TAGS));
 				} else {
 					value = tuple.getHTMLText(field);
 				}
@@ -1564,7 +1564,7 @@ public class PostgreSQLNode implements Node {
 			case PT.XML:
 				if (fulltext) {
 					value = tuple.getXML(field, lang, typeSettings.getFieldString(type, field,
-							Constants.XML_ALLOWED_TAGS));
+							KeyWords.XML_ALLOWED_TAGS));
 				} else {
 					value = tuple.getString(field);
 				}
@@ -1672,8 +1672,8 @@ public class PostgreSQLNode implements Node {
 		for (TypeInfo type : types) {
 			Tuple objectsUDate = getTuple(
 					"select count(*) as objects, max(udate) as udate from \"" + type.getName() + "\"");
-			type.setObjects(objectsUDate.getInt64(Constants.OBJECTS));
-			type.setUDate(objectsUDate.getUTCDateTime(Constants.UDATE));
+			type.setObjects(objectsUDate.getInt64(KeyWords.OBJECTS));
+			type.setUDate(objectsUDate.getUTCDateTime(KeyWords.UDATE));
 		}
 		return types;
 	}
@@ -1691,7 +1691,7 @@ public class PostgreSQLNode implements Node {
 	@Override
 	public String getName(String type, String id, String lang) {
 		String name = null;
-		String idName = typeSettings.gts(type, Constants.ID_NAME);
+		String idName = typeSettings.gts(type, KeyWords.ID_NAME);
 
 		if (idName != null) {
 			String sql = idName + " where type.id = ?";
@@ -1703,7 +1703,7 @@ public class PostgreSQLNode implements Node {
 				parameters = new Object[] { id };
 			}
 
-			name = getTuple(sql, parameters).getString(Constants.NAME);
+			name = getTuple(sql, parameters).getString(KeyWords.NAME);
 
 			if (name == null) {
 				name = id;
@@ -1719,7 +1719,7 @@ public class PostgreSQLNode implements Node {
 	@Override
 	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
 		StringBuilder sql = new StringBuilder();
-		String idName = typeSettings.gts(type, Constants.ID_NAME);
+		String idName = typeSettings.gts(type, KeyWords.ID_NAME);
 
 		if (idName != null) {
 			sql.append(idName);
@@ -1727,7 +1727,7 @@ public class PostgreSQLNode implements Node {
 			sql.append("select type.id, type.id as name from \"" + type + "\" type");
 		}
 
-		String order = typeSettings.gts(type, Constants.ID_NAME + "." + Constants.ORDER);
+		String order = typeSettings.gts(type, KeyWords.ID_NAME + "." + KeyWords.ORDER);
 		if (order != null) {
 			sql.append(" order by " + order);
 		} else {
@@ -1745,8 +1745,8 @@ public class PostgreSQLNode implements Node {
 		}
 
 		for (Tuple tuple : tuples) {
-			String id = tuple.getString(Constants.ID);
-			String name = tuple.getString(Constants.NAME);
+			String id = tuple.getString(KeyWords.ID);
+			String name = tuple.getString(KeyWords.NAME);
 
 			if (name == null) {
 				name = id;
@@ -1839,23 +1839,23 @@ public class PostgreSQLNode implements Node {
 			Tuple[] tuples = query(GET_TYPE_FIELDS_QUERY, type);
 
 			for (Tuple tuple : tuples) {
-				String field = tuple.getString(Constants.NAME);
-				String fieldType = tuple.getString(Constants.TYPE);
+				String field = tuple.getString(KeyWords.NAME);
+				String fieldType = tuple.getString(KeyWords.TYPE);
 				FieldRange range = null;
 				
 				if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
 				
-					String min = typeSettings.getFieldString(type, field, Constants.MIN);
-					String max = typeSettings.getFieldString(type, field, Constants.MAX);
+					String min = typeSettings.getFieldString(type, field, KeyWords.MIN);
+					String max = typeSettings.getFieldString(type, field, KeyWords.MAX);
 					
 					if (min != null || max != null) {
 						range = new FieldRange(min, max);
 					}
 				}
 				
-				fields.put(field, new TypeField(fieldType, tuple.getInt32(Constants.LENGTH),
-						tuple.getInt32(Constants.PRECISION), tuple.getInt32(Constants.SCALE),
-							range, tuple.getBoolean(Constants.NOT_NULL)));
+				fields.put(field, new TypeField(fieldType, tuple.getInt32(KeyWords.LENGTH),
+						tuple.getInt32(KeyWords.PRECISION), tuple.getInt32(KeyWords.SCALE),
+							range, tuple.getBoolean(KeyWords.NOT_NULL)));
 			}
 
 			if (cacheEnabled) {
@@ -1910,9 +1910,9 @@ public class PostgreSQLNode implements Node {
 			Tuple[] tuples = query(GET_TYPE_INDEXES_QUERY, type);
 
 			for (Tuple tuple : tuples) {
-				String name = tuple.getString(Constants.NAME);
-				IndexMode mode = IndexMode.valueOf(tuple.getString(Constants.MODE).toUpperCase());
-				String[] fields = tuple.getStringArray(Constants.FIELDS);
+				String name = tuple.getString(KeyWords.NAME);
+				IndexMode mode = IndexMode.valueOf(tuple.getString(KeyWords.MODE).toUpperCase());
+				String[] fields = tuple.getStringArray(KeyWords.FIELDS);
 
 				indexes.put(name, new TypeIndex(mode, fields));
 			}
@@ -1940,7 +1940,7 @@ public class PostgreSQLNode implements Node {
 
 		for (String type : types) {
 			if (ArrayUtils.contains(Type.SYSTEM_TYPES, type)) {
-				throw new TypeException(type, Constants.SYSTEM_TYPES_CANT_BE_DROPPED);
+				throw new TypeException(type, KeyWords.SYSTEM_TYPES_CANT_BE_DROPPED);
 			}
 
 			sql.append("\"" + type + "\",");
@@ -2006,7 +2006,7 @@ public class PostgreSQLNode implements Node {
 	@Override
 	public XML getXMLField(String type, String id, String field) {
 		String xml = getStringField(type, id, field);
-		String allowedTags = typeSettings.getFieldString(type, field, Constants.XML_ALLOWED_TAGS);
+		String allowedTags = typeSettings.getFieldString(type, field, KeyWords.XML_ALLOWED_TAGS);
 		return Tuple.parseXML(xml, lang, allowedTags);
 	}
 
@@ -2047,7 +2047,7 @@ public class PostgreSQLNode implements Node {
 					xml.append(node);
 				}
 
-				String allowedTags = typeSettings.getFieldString(type, field, Constants.XML_ALLOWED_TAGS);
+				String allowedTags = typeSettings.getFieldString(type, field, KeyWords.XML_ALLOWED_TAGS);
 				XML xmlDocument = new XML(xml.toString(), lang, allowedTags);
 				xmlElement = xmlDocument.getDocumentElement();
 			}
@@ -2059,7 +2059,7 @@ public class PostgreSQLNode implements Node {
 	@Override
 	public HTMLFragment getHTMLField(String type, String id, String field) {
 		String html = getStringField(type, id, field);
-		String allowedTags = typeSettings.getFieldString(type, field, Constants.HTML_ALLOWED_TAGS);
+		String allowedTags = typeSettings.getFieldString(type, field, KeyWords.HTML_ALLOWED_TAGS);
 		return Tuple.parseHTML(html, lang, allowedTags);
 	}
 
@@ -2121,10 +2121,10 @@ public class PostgreSQLNode implements Node {
 		}
 
 		if (contentType == null) {
-			contentType = tuple.getString(Constants.CONTENT_TYPE);
+			contentType = tuple.getString(KeyWords.CONTENT_TYPE);
 		}
 
-		return new ObjectField(value, tuple.getUTCDateTime(Constants.UDATE), contentType);
+		return new ObjectField(value, tuple.getUTCDateTime(KeyWords.UDATE), contentType);
 	}
 
 	@Override
@@ -2160,7 +2160,7 @@ public class PostgreSQLNode implements Node {
 
 	@Override
 	public String getFieldContentType(String type, String id, String field) {
-		String contentType = typeSettings.getFieldString(type, field, Constants.CONTENT_TYPE);
+		String contentType = typeSettings.getFieldString(type, field, KeyWords.CONTENT_TYPE);
 
 		if (contentType == null) {
 			String fieldType = getTypeField(type, field).getType();
@@ -2208,10 +2208,10 @@ public class PostgreSQLNode implements Node {
 	protected Object getFieldDefault(String type, String field, String fieldType) {
 		Object value = null;
 		
-		String setting = strings.getFieldString(type, field, Constants.DEFAULT);
+		String setting = strings.getFieldString(type, field, KeyWords.DEFAULT);
 		
 		if (setting == null) {
-			setting = typeSettings.getFieldString(type, field, Constants.DEFAULT);
+			setting = typeSettings.getFieldString(type, field, KeyWords.DEFAULT);
 		}
 		
 		if (setting != null) {
@@ -2253,7 +2253,7 @@ public class PostgreSQLNode implements Node {
 						
 					case PT.HTML:
 						value = new HTMLFragment(content, lang, typeSettings.getFieldString(type, field,
-								Constants.HTML_ALLOWED_TAGS));
+								KeyWords.HTML_ALLOWED_TAGS));
 						break;
 						
 					case PT.JSON:
@@ -2262,7 +2262,7 @@ public class PostgreSQLNode implements Node {
 					
 					case PT.XML:
 						value = new XML(content, lang, typeSettings.getFieldString(type, field,
-								Constants.XML_ALLOWED_TAGS));
+								KeyWords.XML_ALLOWED_TAGS));
 						break;
 					}
 				}
@@ -2325,7 +2325,7 @@ public class PostgreSQLNode implements Node {
 					break;
 					
 				case PT.PASSWORD:
-					throw new FieldException(type, field, Constants.PASSWORD_FIELD_DEFAULT_VALUE);
+					throw new FieldException(type, field, KeyWords.PASSWORD_FIELD_DEFAULT_VALUE);
 							
 				default:
 					value = setting;	
@@ -2367,7 +2367,7 @@ public class PostgreSQLNode implements Node {
 
 	@Override
 	public TypesStream backup(boolean full) {
-		Filter filter = full ? null : new Filter(Constants.BACKUP, Comparison.EQUAL, false, true);
+		Filter filter = full ? null : new Filter(KeyWords.BACKUP, Comparison.EQUAL, false, true);
 
 		return new BackupStream(exportTypes(getTypesName(), filter, true));
 	}
@@ -2459,7 +2459,7 @@ public class PostgreSQLNode implements Node {
 							result.addIgnoredType(typeName);
 						}
 					} else {
-						throw new TypeException(typeName, Constants.TYPE_ALREADY_EXISTS);
+						throw new TypeException(typeName, KeyWords.TYPE_ALREADY_EXISTS);
 					}
 				} else {
 					create(type, false);
@@ -2561,7 +2561,7 @@ public class PostgreSQLNode implements Node {
 						update(item, null, false);
 						result.addUpdatedObject(type, id);
 					} else {
-						throw new ObjectException(type, id, Constants.OBJECT_ALREADY_EXISTS);
+						throw new ObjectException(type, id, KeyWords.OBJECT_ALREADY_EXISTS);
 					}
 				} else {
 					insert(item, false);
@@ -2629,7 +2629,7 @@ public class PostgreSQLNode implements Node {
 			rows = statement.executeUpdate();
 
 			if (expectedRows != null && rows != expectedRows) {
-				throw new InvalidValueException(Constants.INVALID_ROW_COUNT, rows);
+				throw new InvalidValueException(KeyWords.INVALID_ROW_COUNT, rows);
 			}
 
 		} catch (Exception e) {
@@ -3105,7 +3105,7 @@ public class PostgreSQLNode implements Node {
 							Checks.checkTypeOrField((String) parameter);
 							newSQL.append("\"" + parameter + "\"");
 						} else {
-							throw new InvalidValueException(Constants.INVALID_TYPE_OR_FIELD_NAME, parameter);
+							throw new InvalidValueException(KeyWords.INVALID_TYPE_OR_FIELD_NAME, parameter);
 						}
 						x++;
 					} else if (c == '?') {
@@ -3529,7 +3529,7 @@ public class PostgreSQLNode implements Node {
 			LinkedHashMap<String, TypeIndex> typeIndexes = getTypeIndexes(type);
 
 			if (objectsName) {
-				String idName = typeSettings.gts(type, Constants.ID_NAME);
+				String idName = typeSettings.gts(type, KeyWords.ID_NAME);
 				if (idName != null) {
 					fieldsSQL.append(", \"@" + type + "_id_name\".name as \"@name\"");
 					joinSQL.append(" join (" + idName + ") as \"@" + type + "_id_name\"" + " on \"" + type + "\".id=\"@"
@@ -3678,7 +3678,7 @@ public class PostgreSQLNode implements Node {
 				if (order != null && !order.isEmpty()) {
 					for (Map.Entry<String, Order> entry : order.entrySet()) {
 						String fieldValue = entry.getKey();
-						String fieldString = typeSettings.getFieldString(type, fieldValue, Constants.ORDER,
+						String fieldString = typeSettings.getFieldString(type, fieldValue, KeyWords.ORDER,
 							"\"" + fieldValue + "\"");
 						sql.append(fieldString);
 
@@ -3700,7 +3700,7 @@ public class PostgreSQLNode implements Node {
 		}
 
 		protected void addTypeFilters(String type, StringBuilder whereSQL) {
-			String typeFilters = typeSettings.gts(type, Constants.FILTERS);
+			String typeFilters = typeSettings.gts(type, KeyWords.FILTERS);
 			if (typeFilters != null) {
 				if (whereSQL.length() == 0) {
 					whereSQL.append(" where ");
@@ -3804,7 +3804,7 @@ public class PostgreSQLNode implements Node {
 		protected void addReference(StringBuilder fieldsSQL, StringBuilder joinSQL, String type, String field,
 				String fieldType, String lang) {
 
-			String fieldIdName = typeSettings.gts(fieldType, Constants.ID_NAME);
+			String fieldIdName = typeSettings.gts(fieldType, KeyWords.ID_NAME);
 
 			if (fieldIdName != null) {
 
@@ -3829,23 +3829,23 @@ public class PostgreSQLNode implements Node {
 
 			if (limit == null) {
 
-				limit = Long.valueOf(typeSettings.gts(type, Constants.LIMIT));
+				limit = Long.valueOf(typeSettings.gts(type, KeyWords.LIMIT));
 
 			}
 
 			if (limit != 0) {
 
-				minLimit = typeSettings.getTypeInt64(type, Constants.MIN_LIMIT);
+				minLimit = typeSettings.getTypeInt64(type, KeyWords.MIN_LIMIT);
 				if (limit < minLimit) {
 					limit = minLimit;
 				}
 
-				maxLimit = typeSettings.getTypeInt64(type, Constants.MAX_LIMIT);
+				maxLimit = typeSettings.getTypeInt64(type, KeyWords.MAX_LIMIT);
 				if (limit > maxLimit) {
 					limit = maxLimit;
 				}
 
-				limitIncrement = typeSettings.getTypeInt64(type, Constants.LIMIT_INCREMENT);
+				limitIncrement = typeSettings.getTypeInt64(type, KeyWords.LIMIT_INCREMENT);
 
 				if (offset != null && offset > 0) {
 					long offsets = count / limit;
@@ -3911,42 +3911,42 @@ public class PostgreSQLNode implements Node {
 
 	protected void checkType(String type) {
 		if (type == null || type.length() == 0) {
-			throw new NXException(Constants.EMPTY_TYPE_NAME);
+			throw new NXException(KeyWords.EMPTY_TYPE_NAME);
 		}
 	}
 	
 	protected void checkField(String type, String field) {
 		if (field == null || field.length() == 0) {
-			throw new TypeException(type, Constants.EMPTY_FIELD_NAME);
+			throw new TypeException(type, KeyWords.EMPTY_FIELD_NAME);
 		}
 	}
 
 	protected void checkIndex(String type, String index) {
 		if (index == null || index.length() == 0) {
-			throw new TypeException(type, Constants.EMPTY_INDEX_NAME);
+			throw new TypeException(type, KeyWords.EMPTY_INDEX_NAME);
 		}
 	}
 
 	protected void checkIndexFieldsList(String type, String index, String[] fields) {
 		if (fields == null || fields.length == 0) {
-			throw new IndexException(type, index, Constants.EMPTY_INDEX_FIELDS_LIST);
+			throw new IndexException(type, index, KeyWords.EMPTY_INDEX_FIELDS_LIST);
 		}
 	}
 
 	protected void checkId(String type, String id) {
 		if (id == null || id.length() == 0) {
-			throw new NXException(type, Constants.EMPTY_ID);
+			throw new NXException(type, KeyWords.EMPTY_ID);
 		}
 	}
 
 	protected void checkTypes(String[] types) {
 		if (types == null || types.length == 0) {
-			throw new NXException(Constants.EMPTY_TYPES_LIST);
+			throw new NXException(KeyWords.EMPTY_TYPES_LIST);
 		}
 	}
 	protected void checkObjects(String type, String[] objects) {
 		if (objects == null || objects.length == 0) {
-			throw new TypeException(type, Constants.EMPTY_OBJECTS_LIST);
+			throw new TypeException(type, KeyWords.EMPTY_OBJECTS_LIST);
 		}
 	}
 

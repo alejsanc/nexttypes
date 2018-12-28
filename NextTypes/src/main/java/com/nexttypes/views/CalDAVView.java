@@ -41,6 +41,7 @@ import com.nexttypes.protocol.http.HTTPMethod;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
 public class CalDAVView extends WebDAVView {
@@ -97,11 +98,11 @@ public class CalDAVView extends WebDAVView {
 			ZonedDateTime udate = null;
 
 			for (Tuple resource : resources) {
-				response = addResponse(path + resource.getString(Constants.ID));
+				response = addResponse(path + resource.getString(KeyWords.ID));
 
 				switch (propFindType) {
 				case DavConstants.PROPFIND_ALL_PROP:
-					udate = resource.getUTCDateTime(Constants.UDATE);
+					udate = resource.getUTCDateTime(KeyWords.UDATE);
 					response.add(new ResourceType(ResourceType.DEFAULT_RESOURCE));
 					response.add(new DefaultDavProperty(DavPropertyName.GETCONTENTLENGTH, 0));
 					response.add(new DefaultDavProperty(DavPropertyName.GETLASTMODIFIED,
@@ -127,7 +128,7 @@ public class CalDAVView extends WebDAVView {
 
 						if (DavPropertyName.GETLASTMODIFIED.equals(property)
 								|| DavPropertyName.GETETAG.equals(property)) {
-							udate = resource.getUTCDateTime(Constants.UDATE);
+							udate = resource.getUTCDateTime(KeyWords.UDATE);
 						}
 
 						if (DavPropertyName.RESOURCETYPE.equals(property)) {
@@ -183,11 +184,11 @@ public class CalDAVView extends WebDAVView {
 			String calendarURL = request.getURLRoot() + "/" + type + "/";
 
 			for (Tuple resource : resources) {
-				MultiStatusResponse response = addResponse(path + resource.getString(Constants.ID));
+				MultiStatusResponse response = addResponse(path + resource.getString(KeyWords.ID));
 				ICalendar calendar = new ICalendar(calendarURL, resource);
 
 				if (requestProperties.getContentSize() == 0) {
-					udate = resource.getUTCDateTime(Constants.UDATE);
+					udate = resource.getUTCDateTime(KeyWords.UDATE);
 					response.add(new ResourceType(ResourceType.DEFAULT_RESOURCE));
 					response.add(new DefaultDavProperty(DavPropertyName.GETLASTMODIFIED,
 							udate.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
@@ -201,7 +202,7 @@ public class CalDAVView extends WebDAVView {
 
 						if (DavPropertyName.GETLASTMODIFIED.equals(property)
 								|| DavPropertyName.GETETAG.equals(property)) {
-							udate = resource.getUTCDateTime(Constants.UDATE);
+							udate = resource.getUTCDateTime(KeyWords.UDATE);
 						}
 
 						if (DavPropertyName.RESOURCETYPE.equals(property)) {

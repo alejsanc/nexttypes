@@ -22,16 +22,16 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 @JsonInclude(Include.NON_NULL)
-@JsonPropertyOrder({ Constants.MIN, Constants.MAX })
+@JsonPropertyOrder({ KeyWords.MIN, KeyWords.MAX })
 public class FieldRange {
 	protected Object min;
 	protected Object max;
 	
-	public FieldRange(@JsonProperty(Constants.MIN) Object min,
-			@JsonProperty(Constants.MAX) Object max) {
+	public FieldRange(@JsonProperty(KeyWords.MIN) Object min,
+			@JsonProperty(KeyWords.MAX) Object max) {
 		this.min = min;
 		this.max = max;
 	}
@@ -100,12 +100,12 @@ public class FieldRange {
 		}
 	}
 	
-	@JsonProperty(Constants.MIN)
+	@JsonProperty(KeyWords.MIN)
 	public Object getMin() {
 		return min;
 	}
 	
-	@JsonProperty(Constants.MAX)
+	@JsonProperty(KeyWords.MAX)
 	public Object getMax() {
 		return max;
 	}

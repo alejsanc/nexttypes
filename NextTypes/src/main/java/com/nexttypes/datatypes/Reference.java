@@ -18,9 +18,9 @@ package com.nexttypes.datatypes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
-@JsonPropertyOrder({ Constants.REFERENCED_TYPE, Constants.REFERENCING_TYPE, Constants.REFERENCING_FIELD })
+@JsonPropertyOrder({ KeyWords.REFERENCED_TYPE, KeyWords.REFERENCING_TYPE, KeyWords.REFERENCING_FIELD })
 public class Reference {
 
 	protected String referencedType;
@@ -33,17 +33,17 @@ public class Reference {
 		this.referencingField = referencingField;
 	}
 
-	@JsonProperty(Constants.REFERENCED_TYPE)
+	@JsonProperty(KeyWords.REFERENCED_TYPE)
 	public String getReferencedType() {
 		return referencedType;
 	}
 
-	@JsonProperty(Constants.REFERENCING_TYPE)
+	@JsonProperty(KeyWords.REFERENCING_TYPE)
 	public String getReferencingType() {
 		return referencingType;
 	}
 
-	@JsonProperty(Constants.REFERENCING_FIELD)
+	@JsonProperty(KeyWords.REFERENCING_FIELD)
 	public String getReferencingField() {
 		return referencingField;
 	}

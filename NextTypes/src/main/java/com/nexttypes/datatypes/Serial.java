@@ -36,7 +36,7 @@ import com.nexttypes.enums.IndexMode;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.serialization.ArrayXMLSerializer;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class Serial {
 	protected Object object;
@@ -75,7 +75,7 @@ public class Serial {
 			mapper = new XmlMapper();
 			break;
 		default:
-			throw new InvalidValueException(Constants.INVALID_SERIAL_FORMAT, format);
+			throw new InvalidValueException(KeyWords.INVALID_SERIAL_FORMAT, format);
 		}
 
 		mapper.registerModule(new JavaTimeModule());

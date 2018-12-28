@@ -36,7 +36,7 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.interfaces.Module;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class Checks {
 	public static final Pattern TYPE_FIELD_INDEX_ACTION_CHECK = Pattern.compile("[a-z0-9_]+");
@@ -44,8 +44,8 @@ public class Checks {
 	public static final Pattern VIEW_CHECK = Pattern.compile("[a-z0-9\\-]+");
 	public static final Pattern LANG_CHECK = Pattern.compile("[a-z\\-]+");
 	public static final Pattern FIELD_PARAMETERS_CHECK = Pattern.compile("[a-z0-9_\\,]+");
-	public static final String[] FIELD_RESERVED_NAMES = { Constants.ID, Constants.CDATE, Constants.UDATE,
-			Constants.BACKUP };
+	public static final String[] FIELD_RESERVED_NAMES = { KeyWords.ID, KeyWords.CDATE, KeyWords.UDATE,
+			KeyWords.BACKUP };
 
 	public static void checkString(String value, Pattern check, String setting) {
 		if (value != null) {
@@ -68,17 +68,17 @@ public class Checks {
 	}
 
 	public static void checkType(String type) {
-		if (Constants.STATIC.equals(type)) {
-			throwException(Constants.TYPE_RESERVED_NAME, type);
+		if (KeyWords.STATIC.equals(type)) {
+			throwException(KeyWords.TYPE_RESERVED_NAME, type);
 		}
 		
-		checkMaxLength(type, Type.MAX_TYPE_NAME_LENGTH, Constants.TYPE_NAME_TOO_LONG);
-		checkString(type, TYPE_FIELD_INDEX_ACTION_CHECK, Constants.INVALID_TYPE_NAME);
+		checkMaxLength(type, Type.MAX_TYPE_NAME_LENGTH, KeyWords.TYPE_NAME_TOO_LONG);
+		checkString(type, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_TYPE_NAME);
 	}
 	
 	public static void checkCompositeType(String type) {
 		if (PT.isPrimitiveType(type)) {
-			throwException(Constants.PRIMITIVE_TYPE_WITH_THE_SAME_NAME, type);
+			throwException(KeyWords.PRIMITIVE_TYPE_WITH_THE_SAME_NAME, type);
 		}
 	}
 
@@ -126,8 +126,8 @@ public class Checks {
 	}
 
 	public static void checkId(String id) {
-		checkMaxLength(id, Type.MAX_ID_LENGTH, Constants.ID_TOO_LONG);
-		checkString(id, ID_ELEMENT_CHECK, Constants.INVALID_ID);
+		checkMaxLength(id, Type.MAX_ID_LENGTH, KeyWords.ID_TOO_LONG);
+		checkString(id, ID_ELEMENT_CHECK, KeyWords.INVALID_ID);
 	}
 
 	public static void checkObjects(String[] objects) {
@@ -139,26 +139,26 @@ public class Checks {
 	}
 
 	public static void checkLang(String lang) {
-		checkString(lang, LANG_CHECK, Constants.INVALID_LANG);
+		checkString(lang, LANG_CHECK, KeyWords.INVALID_LANG);
 	}
 
 	public static void checkField(String field) {
 		if (ArrayUtils.contains(FIELD_RESERVED_NAMES, field)) {
-			throw new InvalidValueException(Constants.FIELD_RESERVED_NAME, field);
+			throw new InvalidValueException(KeyWords.FIELD_RESERVED_NAME, field);
 		}
 
-		checkMaxLength(field, Type.MAX_FIELD_NAME_LENGTH, Constants.FIELD_NAME_TOO_LONG);
-		checkString(field, TYPE_FIELD_INDEX_ACTION_CHECK, Constants.INVALID_FIELD_NAME);
+		checkMaxLength(field, Type.MAX_FIELD_NAME_LENGTH, KeyWords.FIELD_NAME_TOO_LONG);
+		checkString(field, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_FIELD_NAME);
 	}
 
 	public static void checkTypeOrField(String typeOrField) {
-		checkMaxLength(typeOrField, Type.MAX_FIELD_NAME_LENGTH, Constants.TYPE_OR_FIELD_NAME_TOO_LONG);
-		checkString(typeOrField, TYPE_FIELD_INDEX_ACTION_CHECK, Constants.INVALID_TYPE_OR_FIELD_NAME);
+		checkMaxLength(typeOrField, Type.MAX_FIELD_NAME_LENGTH, KeyWords.TYPE_OR_FIELD_NAME_TOO_LONG);
+		checkString(typeOrField, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_TYPE_OR_FIELD_NAME);
 	}
 
 	public static void checkIndex(String index) {
-		checkMaxLength(index, Type.MAX_INDEX_NAME_LENGTH, Constants.INDEX_NAME_TOO_LONG);
-		checkString(index, TYPE_FIELD_INDEX_ACTION_CHECK, Constants.INVALID_INDEX_NAME);
+		checkMaxLength(index, Type.MAX_INDEX_NAME_LENGTH, KeyWords.INDEX_NAME_TOO_LONG);
+		checkString(index, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_INDEX_NAME);
 	}
 
 	public static void checkIndexes(String[] indexes) {
@@ -208,7 +208,7 @@ public class Checks {
 		if (filter != null) {
 			String field = filter.getField();
 
-			if (Constants.ID.equals(field)) {
+			if (KeyWords.ID.equals(field)) {
 				Object value = filter.getValue();
 				if (value instanceof String) {
 					checkId((String) value);
@@ -229,11 +229,11 @@ public class Checks {
 	}
 
 	public static void checkElement(String element) {
-		checkString(element, ID_ELEMENT_CHECK, Constants.INVALID_ELEMENT_NAME);
+		checkString(element, ID_ELEMENT_CHECK, KeyWords.INVALID_ELEMENT_NAME);
 	}
 
 	public static void checkView(String view) {
-		checkString(view, VIEW_CHECK, Constants.INVALID_VIEW_NAME);
+		checkString(view, VIEW_CHECK, KeyWords.INVALID_VIEW_NAME);
 	}
 
 	public static void checkOrder(LinkedHashMap<String, Order> order) {
@@ -248,17 +248,17 @@ public class Checks {
 	}
 
 	public static void checkAction(String action) {
-		checkMaxLength(action, Type.MAX_ACTION_NAME_LENGTH, Constants.ACTION_NAME_TOO_LONG);
-		checkString(action, TYPE_FIELD_INDEX_ACTION_CHECK, Constants.INVALID_ACTION_NAME);
+		checkMaxLength(action, Type.MAX_ACTION_NAME_LENGTH, KeyWords.ACTION_NAME_TOO_LONG);
+		checkString(action, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_ACTION_NAME);
 	}
 
 	public static void checkFieldParameters(String parameters) {
-		checkString(parameters, FIELD_PARAMETERS_CHECK, Constants.INVALID_PARAMETERS);
+		checkString(parameters, FIELD_PARAMETERS_CHECK, KeyWords.INVALID_PARAMETERS);
 	}
 
 	public static void checkTupleField(String field) {
-		checkMaxLength(field, Type.MAX_FIELD_NAME_LENGTH, Constants.FIELD_NAME_TOO_LONG);
-		checkString(field, TYPE_FIELD_INDEX_ACTION_CHECK, Constants.INVALID_FIELD_NAME);
+		checkMaxLength(field, Type.MAX_FIELD_NAME_LENGTH, KeyWords.FIELD_NAME_TOO_LONG);
+		checkString(field, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_FIELD_NAME);
 	}
 
 	public static void checkObject(NXObject object) {

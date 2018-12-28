@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class MenuSection {
 
@@ -29,7 +29,7 @@ public class MenuSection {
 	protected ArrayList<Anchor> anchors = new ArrayList<>();
 
 	@JsonCreator
-	public MenuSection(@JsonProperty(Constants.TITLE) String title, @JsonProperty(Constants.ANCHORS) Anchor[] anchors) {
+	public MenuSection(@JsonProperty(KeyWords.TITLE) String title, @JsonProperty(KeyWords.ANCHORS) Anchor[] anchors) {
 		this.title = title;
 		this.anchors.addAll(Arrays.asList(anchors));
 	}

@@ -20,9 +20,9 @@ import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
-@JsonPropertyOrder({ Constants.NAME, Constants.UDATE, Constants.OBJECTS, Constants.SIZE })
+@JsonPropertyOrder({ KeyWords.NAME, KeyWords.UDATE, KeyWords.OBJECTS, KeyWords.SIZE })
 public class TypeInfo {
 
 	protected String name;
@@ -51,22 +51,22 @@ public class TypeInfo {
 		this.size = size;
 	}
 
-	@JsonProperty(Constants.NAME)
+	@JsonProperty(KeyWords.NAME)
 	public String getName() {
 		return name;
 	}
 
-	@JsonProperty(Constants.UDATE)
+	@JsonProperty(KeyWords.UDATE)
 	public ZonedDateTime getUDate() {
 		return udate;
 	}
 
-	@JsonProperty(Constants.OBJECTS)
+	@JsonProperty(KeyWords.OBJECTS)
 	public Long getObjects() {
 		return objects;
 	}
 
-	@JsonProperty(Constants.SIZE)
+	@JsonProperty(KeyWords.SIZE)
 	public Long getSize() {
 		return size;
 	}

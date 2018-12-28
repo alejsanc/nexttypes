@@ -17,7 +17,7 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.Strings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class ViewNotFoundException extends NXException {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +25,7 @@ public class ViewNotFoundException extends NXException {
 	protected String view;
 
 	public ViewNotFoundException(String type, String view) {
-		super(type, Constants.VIEW_NOT_FOUND);
+		super(type, KeyWords.VIEW_NOT_FOUND);
 		this.view = view;
 	}
 
@@ -37,6 +37,6 @@ public class ViewNotFoundException extends NXException {
 	public String getMessage(Strings strings) {
 		String typeName = strings.getTypeName(type);
 		
-		return strings.gts(type, Constants.VIEW_NOT_FOUND) + ": " + typeName + "::" + view;
+		return strings.gts(type, KeyWords.VIEW_NOT_FOUND) + ": " + typeName + "::" + view;
 	}
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class ImportTypesResult {
 
@@ -76,32 +76,32 @@ public class ImportTypesResult {
 		updatedObjects.putAll(result.getUpdatedObjects());
 	}
 
-	@JsonProperty(Constants.IMPORTED_TYPES)
+	@JsonProperty(KeyWords.IMPORTED_TYPES)
 	public ArrayList<String> getImportedTypes() {
 		return importedTypes;
 	}
 
-	@JsonProperty(Constants.IGNORED_TYPES)
+	@JsonProperty(KeyWords.IGNORED_TYPES)
 	public ArrayList<String> getIgnoredTypes() {
 		return ignoredTypes;
 	}
 
-	@JsonProperty(Constants.ALTERED_TYPES)
+	@JsonProperty(KeyWords.ALTERED_TYPES)
 	public LinkedHashMap<String, AlterResult> getAlteredTypes() {
 		return alteredTypes;
 	}
 
-	@JsonProperty(Constants.IMPORTED_OBJECTS)
+	@JsonProperty(KeyWords.IMPORTED_OBJECTS)
 	public LinkedHashMap<String, ArrayList<String>> getImportedObjects() {
 		return importedObjects;
 	}
 
-	@JsonProperty(Constants.IGNORED_OBJECTS)
+	@JsonProperty(KeyWords.IGNORED_OBJECTS)
 	public LinkedHashMap<String, ArrayList<String>> getIgnoredObjects() {
 		return ignoredObjects;
 	}
 
-	@JsonProperty(Constants.UPDATED_OBJECTS)
+	@JsonProperty(KeyWords.UPDATED_OBJECTS)
 	public LinkedHashMap<String, ArrayList<String>> getUpdatedObjects() {
 		return updatedObjects;
 	}

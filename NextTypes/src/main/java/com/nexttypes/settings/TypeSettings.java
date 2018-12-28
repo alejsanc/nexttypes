@@ -27,7 +27,7 @@ import com.nexttypes.datatypes.FieldRange;
 import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.TypeField;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
 public class TypeSettings extends Settings {
@@ -91,37 +91,37 @@ public class TypeSettings extends Settings {
 
 	public String getFieldString(String type, String field, String setting) {
 		return getTypeString(type, new String[] {
-				Constants.FIELDS + "." + field + "." + setting,
-				Constants.FIELDS + "." + setting
+				KeyWords.FIELDS + "." + field + "." + setting,
+				KeyWords.FIELDS + "." + setting
 		});
 	}
 
 	public String getActionString(String type, String action, String setting) {
 		return getTypeString(type, new String[] {
-				Constants.ACTIONS + "." + action + "." + setting,
-				Constants.ACTIONS + "." + setting
+				KeyWords.ACTIONS + "." + action + "." + setting,
+				KeyWords.ACTIONS + "." + setting
 		});
 	}
 
 	public String getActionFieldString(String type, String action, String field, String setting) {
 		return getTypeString(type, new String[] {
-				Constants.ACTIONS + "." + action + "." + Constants.FIELDS + "." + field + "." + setting,
-				Constants.ACTIONS + "." + action + "." + Constants.FIELDS + "." + setting,
-				Constants.ACTIONS + "." + Constants.FIELDS + "." + field + "." + setting,
-				Constants.ACTIONS + "." + Constants.FIELDS + "." + setting
+				KeyWords.ACTIONS + "." + action + "." + KeyWords.FIELDS + "." + field + "." + setting,
+				KeyWords.ACTIONS + "." + action + "." + KeyWords.FIELDS + "." + setting,
+				KeyWords.ACTIONS + "." + KeyWords.FIELDS + "." + field + "." + setting,
+				KeyWords.ACTIONS + "." + KeyWords.FIELDS + "." + setting
 		});
 	}
 
 	public String getFieldString(String type, String field, String setting, String defaultValue) {
-		return getTypeString(type, Constants.FIELDS + "." + field + "." + setting, defaultValue);
+		return getTypeString(type, KeyWords.FIELDS + "." + field + "." + setting, defaultValue);
 	}
 
 	public String getActionString(String type, String action, String setting, String defaultValue) {
-		return getTypeString(type, Constants.ACTIONS + "." + action + "." + setting, defaultValue);
+		return getTypeString(type, KeyWords.ACTIONS + "." + action + "." + setting, defaultValue);
 	}
 
 	public String getActionFieldString(String type, String action, String field, String setting, String defaultValue) {
-		return getTypeString(type, Constants.ACTIONS + "." + action + "." + Constants.FIELDS + "."
+		return getTypeString(type, KeyWords.ACTIONS + "." + action + "." + KeyWords.FIELDS + "."
 				+ field + "." + setting, defaultValue);
 	}
 
@@ -171,7 +171,7 @@ public class TypeSettings extends Settings {
 	}
 
 	public String getView(String type, String view) {
-		return getTypeString(type, Constants.VIEWS + "." + view);
+		return getTypeString(type, KeyWords.VIEWS + "." + view);
 	}
 
 	public Short getFieldInt16(String type, String field, String setting) {

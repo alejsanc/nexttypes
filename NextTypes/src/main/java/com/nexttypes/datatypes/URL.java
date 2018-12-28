@@ -25,7 +25,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 
 import com.nexttypes.exceptions.InvalidValueException;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class URL {
 	public static final String LOCALHOST = "127.0.0.1";
@@ -54,7 +54,7 @@ public class URL {
 		try {
 			this.url = new URIBuilder(url);
 		} catch (URISyntaxException e) {
-			throw new InvalidValueException(Constants.INVALID_URL, url);
+			throw new InvalidValueException(KeyWords.INVALID_URL, url);
 		}
 	}
 

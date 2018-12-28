@@ -16,7 +16,7 @@
 
 package com.nexttypes.datatypes;
 
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class RSS extends XML {
 	private static final long serialVersionUID = 1L;
@@ -24,21 +24,21 @@ public class RSS extends XML {
 	public static final String PUBDATE = "pubDate";
 
 	public RSS(String title, String description, String type, String lang, String urlRoot, Tuple[] tuples) {
-		Element rss = setDocumentElement(Constants.RSS).setAttribute(Constants.VERSION, "2.0");
+		Element rss = setDocumentElement(KeyWords.RSS).setAttribute(KeyWords.VERSION, "2.0");
 
-		Element channel = rss.appendElement(Constants.CHANNEL);
-		channel.appendElement(Constants.TITLE).appendText(title);
-		channel.appendElement(Constants.DESCRIPTION).appendText(description);
+		Element channel = rss.appendElement(KeyWords.CHANNEL);
+		channel.appendElement(KeyWords.TITLE).appendText(title);
+		channel.appendElement(KeyWords.DESCRIPTION).appendText(description);
 
 		Element item;
 
 		for (Tuple tuple : tuples) {
-			item = channel.appendElement(Constants.ITEM);
-			item.appendElement(Constants.TITLE).appendText(tuple.getString(Constants.TITLE));
-			item.appendElement(Constants.DESCRIPTION).appendText(tuple.getHTMLText(Constants.DESCRIPTION));
-			item.appendElement(Constants.LINK).appendText(
-					urlRoot + "/" + type + "/" + tuple.getString(Constants.ID) + "?" + Constants.LANG + "=" + lang);
-			item.appendElement(PUBDATE).appendText(tuple.getUTCDateTime(Constants.PUB_DATE).toString());
+			item = channel.appendElement(KeyWords.ITEM);
+			item.appendElement(KeyWords.TITLE).appendText(tuple.getString(KeyWords.TITLE));
+			item.appendElement(KeyWords.DESCRIPTION).appendText(tuple.getHTMLText(KeyWords.DESCRIPTION));
+			item.appendElement(KeyWords.LINK).appendText(
+					urlRoot + "/" + type + "/" + tuple.getString(KeyWords.ID) + "?" + KeyWords.LANG + "=" + lang);
+			item.appendElement(PUBDATE).appendText(tuple.getUTCDateTime(KeyWords.PUB_DATE).toString());
 		}
 	}
 }

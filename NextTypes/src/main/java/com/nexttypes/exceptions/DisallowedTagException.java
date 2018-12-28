@@ -16,13 +16,13 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class DisallowedTagException extends InvalidValueException {
 
 	private static final long serialVersionUID = 1L;
 
 	public DisallowedTagException(Object value) {
-		super(Constants.DISALLOWED_TAG, value);
+		super(KeyWords.DISALLOWED_TAG, value);
 	}
 }

@@ -30,10 +30,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
-@JsonPropertyOrder({ Constants.CONTENT, Constants.THUMBNAIL, Constants.CONTENT_TYPE })
+@JsonPropertyOrder({ KeyWords.CONTENT, KeyWords.THUMBNAIL, KeyWords.CONTENT_TYPE })
 public class Image extends File {
 	private static final long serialVersionUID = 1L;
 	public static final int THUMBNAIL_WIDTH = 200;
@@ -68,13 +68,13 @@ public class Image extends File {
 	}
 	
 	public Image(JSONObject image) {
-		this(image.getBinary(Constants.CONTENT), image.getBinary(Constants.THUMBNAIL),
-				image.getString(Constants.CONTENT_TYPE));
+		this(image.getBinary(KeyWords.CONTENT), image.getBinary(KeyWords.THUMBNAIL),
+				image.getString(KeyWords.CONTENT_TYPE));
 	}
 
 	@JsonCreator
-	public Image(@JsonProperty(Constants.CONTENT) byte[] content, @JsonProperty(Constants.THUMBNAIL) byte[] thumbnail,
-			@JsonProperty(Constants.CONTENT_TYPE) String contentType) {
+	public Image(@JsonProperty(KeyWords.CONTENT) byte[] content, @JsonProperty(KeyWords.THUMBNAIL) byte[] thumbnail,
+			@JsonProperty(KeyWords.CONTENT_TYPE) String contentType) {
 		super(content, contentType);
 		
 		type = PT.IMAGE;
@@ -104,7 +104,7 @@ public class Image extends File {
 		thumbnail = binaryResize((int) thumbnailWidth, (int) thumbnailHeight);
 	}
 	
-	@JsonProperty(Constants.THUMBNAIL)
+	@JsonProperty(KeyWords.THUMBNAIL)
 	public byte[] getThumbnail() {
 		return thumbnail;
 	}

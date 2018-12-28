@@ -20,10 +20,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nexttypes.datatypes.JSON.JSONObject;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
-@JsonPropertyOrder({ Constants.CONTENT, Constants.TEXT, Constants.CONTENT_TYPE })
+@JsonPropertyOrder({ KeyWords.CONTENT, KeyWords.TEXT, KeyWords.CONTENT_TYPE })
 public class Document extends File {
 	private static final long serialVersionUID = 1L;
 
@@ -54,13 +54,13 @@ public class Document extends File {
 	}
 	
 	public Document(JSONObject document) {
-		this(document.getBinary(Constants.CONTENT), document.getString(Constants.TEXT),
-				document.getString(Constants.CONTENT_TYPE));
+		this(document.getBinary(KeyWords.CONTENT), document.getString(KeyWords.TEXT),
+				document.getString(KeyWords.CONTENT_TYPE));
 	}
 
 	@JsonCreator
-	public Document(@JsonProperty(Constants.CONTENT) byte[] content, @JsonProperty(Constants.TEXT) String text,
-			@JsonProperty(Constants.CONTENT_TYPE) String contentType) {
+	public Document(@JsonProperty(KeyWords.CONTENT) byte[] content, @JsonProperty(KeyWords.TEXT) String text,
+			@JsonProperty(KeyWords.CONTENT_TYPE) String contentType) {
 		super(content, contentType);
 		
 		type = PT.DOCUMENT;
@@ -72,7 +72,7 @@ public class Document extends File {
 		text = handler.toString().trim();
 	}
 
-	@JsonProperty(Constants.TEXT)
+	@JsonProperty(KeyWords.TEXT)
 	public String getText() {
 		return text;
 	}

@@ -27,6 +27,7 @@ import java.util.logging.LogRecord;
 
 import com.nexttypes.settings.Settings;
 import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
 public class FileHandler extends java.util.logging.Handler {
@@ -36,8 +37,8 @@ public class FileHandler extends java.util.logging.Handler {
 	protected LocalDate loggerDate;
 
 	public FileHandler(Settings settings) {
-		directory = Utils.readDirectory(settings.getString(Constants.DIRECTORY));
-		prefix = settings.getString(Constants.PREFIX);
+		directory = Utils.readDirectory(settings.getString(KeyWords.DIRECTORY));
+		prefix = settings.getString(KeyWords.PREFIX);
 	}
 
 	@Override

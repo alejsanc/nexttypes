@@ -17,11 +17,11 @@
 package com.nexttypes.datatypes;
 
 import com.nexttypes.enums.Comparison;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class IdFilter extends Filter {
 	
 	public IdFilter(Comparison comparison, Object value) {
-		super(Constants.ID, comparison, value, true);
+		super(KeyWords.ID, comparison, value, true);
 	}
 }

@@ -17,7 +17,7 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.Strings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class ElementNotFoundException extends NotFoundException {
 	private static final long serialVersionUID = 1L;
@@ -27,7 +27,7 @@ public class ElementNotFoundException extends NotFoundException {
 	protected String element;
 
 	public ElementNotFoundException(String type, String id, String field, String element) {
-		super(type, Constants.ELEMENT_NOT_FOUND);
+		super(type, KeyWords.ELEMENT_NOT_FOUND);
 		this.id = id;
 		this.field = field;
 		this.element = element;
@@ -49,7 +49,7 @@ public class ElementNotFoundException extends NotFoundException {
 		String typeName = strings.getTypeName(type);
 		String fieldName = strings.getFieldName(type, field);
 		
-		return strings.gts(type, Constants.ELEMENT_NOT_FOUND)
+		return strings.gts(type, KeyWords.ELEMENT_NOT_FOUND)
 				+ ": " + typeName + "::" + id + "::" + fieldName + "::" + element;
 	}
 }

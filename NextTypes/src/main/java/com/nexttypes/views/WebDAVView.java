@@ -52,7 +52,7 @@ import com.nexttypes.exceptions.NXException;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
 public class WebDAVView extends View {
@@ -214,11 +214,11 @@ public class WebDAVView extends View {
 			ZonedDateTime udate = null;
 
 			for (Tuple resource : resources) {
-				response = addResponse(path + resource.getString(Constants.ID));
+				response = addResponse(path + resource.getString(KeyWords.ID));
 
 				switch (propFindType) {
 				case DavConstants.PROPFIND_ALL_PROP:
-					udate = resource.getUTCDateTime(Constants.UDATE);
+					udate = resource.getUTCDateTime(KeyWords.UDATE);
 					response.add(new ResourceType(ResourceType.COLLECTION));
 					response.add(new DefaultDavProperty(DavPropertyName.GETLASTMODIFIED,
 							udate.format(DateTimeFormatter.RFC_1123_DATE_TIME)));
@@ -239,7 +239,7 @@ public class WebDAVView extends View {
 
 						if (DavPropertyName.GETLASTMODIFIED.equals(property)
 								|| DavPropertyName.GETETAG.equals(property)) {
-							udate = resource.getUTCDateTime(Constants.UDATE);
+							udate = resource.getUTCDateTime(KeyWords.UDATE);
 						}
 
 						if (DavPropertyName.RESOURCETYPE.equals(property)) {

@@ -19,7 +19,7 @@ package com.nexttypes.datatypes;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nexttypes.datatypes.JSON.JSONObject;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class Video extends File {
 	private static final long serialVersionUID = 1L;
@@ -45,12 +45,12 @@ public class Video extends File {
 	}
 	
 	public Video(JSONObject video) {
-		this(video.getBinary(Constants.CONTENT), video.getString(Constants.CONTENT_TYPE));
+		this(video.getBinary(KeyWords.CONTENT), video.getString(KeyWords.CONTENT_TYPE));
 	}
 
 	@JsonCreator
-	public Video(@JsonProperty(Constants.CONTENT) byte[] content,
-			@JsonProperty(Constants.CONTENT_TYPE) String contentType) {
+	public Video(@JsonProperty(KeyWords.CONTENT) byte[] content,
+			@JsonProperty(KeyWords.CONTENT_TYPE) String contentType) {
 		super(content, contentType);
 		
 		type = PT.VIDEO;

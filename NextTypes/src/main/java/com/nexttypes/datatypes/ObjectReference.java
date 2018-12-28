@@ -18,9 +18,9 @@ package com.nexttypes.datatypes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
-@JsonPropertyOrder({ Constants.ID, Constants.NAME })
+@JsonPropertyOrder({ KeyWords.ID, KeyWords.NAME })
 public class ObjectReference {
 	protected String id;
 	protected String name;
@@ -30,12 +30,12 @@ public class ObjectReference {
 		this.name = name == null ? id : name;
 	}
 
-	@JsonProperty(Constants.ID)
+	@JsonProperty(KeyWords.ID)
 	public String getId() {
 		return id;
 	}
 
-	@JsonProperty(Constants.NAME)
+	@JsonProperty(KeyWords.NAME)
 	public String getName() {
 		return name;
 	}

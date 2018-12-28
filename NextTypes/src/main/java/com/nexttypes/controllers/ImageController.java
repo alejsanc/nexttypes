@@ -21,7 +21,7 @@ import com.nexttypes.datatypes.Image;
 import com.nexttypes.exceptions.ObjectException;
 import com.nexttypes.interfaces.Node;
 import com.nexttypes.system.Action;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Controller;
 
 public class ImageController extends Controller {
@@ -41,9 +41,9 @@ public class ImageController extends Controller {
 	public ActionResult resize(String[] objects, Integer width, Integer height) {
 		
 		for (String id : objects) {
-			Image image = getImageField(id, Constants.IMAGE);
+			Image image = getImageField(id, KeyWords.IMAGE);
 			if (image != null) {
-				updateField(id, Constants.IMAGE, image.resize(width, height));
+				updateField(id, KeyWords.IMAGE, image.resize(width, height));
 			} else {
 				throw new ObjectException(type, id, IMAGE_NOT_FOUND);
 			}

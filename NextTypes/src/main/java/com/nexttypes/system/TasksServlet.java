@@ -37,7 +37,7 @@ public class TasksServlet extends GenericServlet {
 		super.init(config);
 		Context context = Context.get(getServletContext());
 		Settings settings = context.getSettings(Settings.TASKS_SETTINGS);
-		String[] taskNames = settings.getStringArray(Constants.TASKS);
+		String[] taskNames = settings.getStringArray(KeyWords.TASKS);
 
 		for (String taskName : taskNames) {
 			Task task = Loader.loadTask(taskName, context);

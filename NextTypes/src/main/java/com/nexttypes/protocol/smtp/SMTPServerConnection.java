@@ -30,7 +30,7 @@ import com.nexttypes.interfaces.Node;
 import com.nexttypes.logging.Logger;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Loader;
 
@@ -58,7 +58,7 @@ public class SMTPServerConnection extends Thread {
 		this.strings = strings;
 		this.logger = logger;
 
-		host = settings.getString(Constants.HOST);
+		host = settings.getString(KeyWords.HOST);
 	}
 
 	public void init() {
@@ -140,8 +140,8 @@ public class SMTPServerConnection extends Thread {
 
 	public void run() {
 
-		try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), Auth.SMTP, null, NodeMode.WRITE,
-				settings.getString(Constants.LANG), remoteAddress, context, true);
+		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), Auth.SMTP, null, NodeMode.WRITE,
+				settings.getString(KeyWords.LANG), remoteAddress, context, true);
 				BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				PrintStream output = new PrintStream(socket.getOutputStream())) {
 

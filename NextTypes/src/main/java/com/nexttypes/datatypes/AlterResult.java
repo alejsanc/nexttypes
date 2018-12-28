@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class AlterResult {
 
@@ -40,7 +40,7 @@ public class AlterResult {
 		this.adate = adate;
 	}
 
-	@JsonProperty(Constants.ADATE)
+	@JsonProperty(KeyWords.ADATE)
 	public ZonedDateTime getADate() {
 		return adate;
 	}
@@ -49,14 +49,14 @@ public class AlterResult {
 		this.message = message;
 	}
 
-	@JsonProperty(Constants.ALTERED)
+	@JsonProperty(KeyWords.ALTERED)
 	public boolean isAltered() {
 		return alteredFields.size() > 0 || addedFields.size() > 0 || droppedFields.size() > 0
 				|| renamedFields.size() > 0 || alteredIndexes.size() > 0 || addedIndexes.size() > 0
 				|| droppedIndexes.size() > 0 || renamedIndexes.size() > 0;
 	}
 
-	@JsonProperty(Constants.MESSAGE)
+	@JsonProperty(KeyWords.MESSAGE)
 	public String getMessage() {
 		return message;
 	}
@@ -93,42 +93,42 @@ public class AlterResult {
 		renamedIndexes.add(index);
 	}
 
-	@JsonProperty(Constants.ALTERED_FIELDS)
+	@JsonProperty(KeyWords.ALTERED_FIELDS)
 	public LinkedHashMap<String, AlterFieldResult> getAlteredFields() {
 		return alteredFields;
 	}
 
-	@JsonProperty(Constants.ADDED_FIELDS)
+	@JsonProperty(KeyWords.ADDED_FIELDS)
 	public String[] getAddedFields() {
 		return addedFields.toArray(new String[] {});
 	}
 
-	@JsonProperty(Constants.DROPPED_FIELDS)
+	@JsonProperty(KeyWords.DROPPED_FIELDS)
 	public String[] getDroppedFields() {
 		return droppedFields.toArray(new String[] {});
 	}
 
-	@JsonProperty(Constants.RENAMED_FIELDS)
+	@JsonProperty(KeyWords.RENAMED_FIELDS)
 	public String[] getRenamedFields() {
 		return renamedFields.toArray(new String[] {});
 	}
 
-	@JsonProperty(Constants.ALTERED_INDEXES)
+	@JsonProperty(KeyWords.ALTERED_INDEXES)
 	public LinkedHashMap<String, AlterIndexResult> getAlteredIndexes() {
 		return alteredIndexes;
 	}
 
-	@JsonProperty(Constants.ADDED_INDEXES)
+	@JsonProperty(KeyWords.ADDED_INDEXES)
 	public String[] getAddedIndexes() {
 		return addedIndexes.toArray(new String[] {});
 	}
 
-	@JsonProperty(Constants.DROPPED_INDEXES)
+	@JsonProperty(KeyWords.DROPPED_INDEXES)
 	public String[] getDroppedIndexes() {
 		return droppedIndexes.toArray(new String[] {});
 	}
 
-	@JsonProperty(Constants.RENAMED_INDEXES)
+	@JsonProperty(KeyWords.RENAMED_INDEXES)
 	public String[] getRenamedIndexes() {
 		return renamedIndexes.toArray(new String[] {});
 	}

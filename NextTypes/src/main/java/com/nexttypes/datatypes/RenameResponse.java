@@ -19,7 +19,7 @@ package com.nexttypes.datatypes;
 import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
 public class RenameResponse {
 
@@ -31,12 +31,12 @@ public class RenameResponse {
 		this.adate = adate;
 	}
 
-	@JsonProperty(Constants.MESSAGE)
+	@JsonProperty(KeyWords.MESSAGE)
 	public String getMessage() {
 		return message;
 	}
 
-	@JsonProperty(Constants.ADATE)
+	@JsonProperty(KeyWords.ADATE)
 	public ZonedDateTime getADate() {
 		return adate;
 	}

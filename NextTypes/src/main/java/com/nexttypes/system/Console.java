@@ -62,41 +62,41 @@ public class Console {
 			options = new Options();
 
 			OptionGroup methods = new OptionGroup();
-			methods.addOption(new Option("b", Constants.BACKUP, false, "Backup types and objects."));
+			methods.addOption(new Option("b", KeyWords.BACKUP, false, "Backup types and objects."));
 			methods.addOption(new Option("it", IMPORT_TYPES, false, "Import types."));
 			methods.addOption(new Option("io", IMPORT_OBJECTS, false, "Import objects."));
 			methods.addOption(Option.builder("et").longOpt(EXPORT_TYPES).desc("Export types.").optionalArg(true)
-					.hasArgs().valueSeparator(',').argName(Constants.TYPES).build());
+					.hasArgs().valueSeparator(',').argName(KeyWords.TYPES).build());
 			methods.addOption(Option.builder("eo").longOpt(EXPORT_OBJECTS).desc("Export objects.").optionalArg(true)
-					.hasArgs().valueSeparator(',').argName(Constants.OBJECTS).build());
-			methods.addOption(new Option("h", Constants.HELP, false, "Help."));
+					.hasArgs().valueSeparator(',').argName(KeyWords.OBJECTS).build());
+			methods.addOption(new Option("h", KeyWords.HELP, false, "Help."));
 			methods.setRequired(true);
 			options.addOptionGroup(methods);
 
-			options.addOption(Option.builder("s").longOpt(Constants.SETTINGS).hasArg().desc("Settings directory.")
-					.argName(Constants.SETTINGS).build());
-			options.addOption("f", Constants.FULL, false, "Make a full backup.");
+			options.addOption(Option.builder("s").longOpt(KeyWords.SETTINGS).hasArg().desc("Settings directory.")
+					.argName(KeyWords.SETTINGS).build());
+			options.addOption("f", KeyWords.FULL, false, "Make a full backup.");
 			options.addOption(Option.builder("eta").longOpt(EXISTING_TYPES_ACTION).hasArg()
-					.desc("Existing types action.").argName(Constants.ACTION).build());
+					.desc("Existing types action.").argName(KeyWords.ACTION).build());
 			options.addOption(Option.builder("eoa").longOpt(EXISTING_OBJECTS_ACTION).hasArg()
-					.desc("Existing objects action.").argName(Constants.ACTION).build());
-			options.addOption(Option.builder("t").longOpt(Constants.TYPE).hasArg().desc("Type name.")
-					.argName(Constants.TYPE).build());
+					.desc("Existing objects action.").argName(KeyWords.ACTION).build());
+			options.addOption(Option.builder("t").longOpt(KeyWords.TYPE).hasArg().desc("Type name.")
+					.argName(KeyWords.TYPE).build());
 			options.addOption("ino", INCLUDE_OBJECTS, false, "Include objects.");
-			options.addOption(Option.builder("o").longOpt(Constants.ORDER).hasArg().desc("Query order.")
-					.argName(Constants.ORDER).build());
-			options.addOption(Option.builder("l").longOpt(Constants.LANG).hasArg().desc("Language.")
-					.argName(Constants.LANG).build());
+			options.addOption(Option.builder("o").longOpt(KeyWords.ORDER).hasArg().desc("Query order.")
+					.argName(KeyWords.ORDER).build());
+			options.addOption(Option.builder("l").longOpt(KeyWords.LANG).hasArg().desc("Language.")
+					.argName(KeyWords.LANG).build());
 			String method = null;
 
 			CommandLineParser parser = new DefaultParser();
 			CommandLine command = parser.parse(options, args);
 
-			if (command.hasOption(Constants.HELP)) {
+			if (command.hasOption(KeyWords.HELP)) {
 				printHelp();
 				return;
-			} else if (command.hasOption(Constants.BACKUP)) {
-				method = Constants.BACKUP;
+			} else if (command.hasOption(KeyWords.BACKUP)) {
+				method = KeyWords.BACKUP;
 			} else if (command.hasOption(IMPORT_TYPES)) {
 				method = IMPORT_TYPES;
 			} else if (command.hasOption(EXPORT_TYPES)) {
@@ -110,15 +110,15 @@ public class Console {
 				return;
 			}
 
-			context = new Context(command.getOptionValue(Constants.SETTINGS));
+			context = new Context(command.getOptionValue(KeyWords.SETTINGS));
 			settings = context.getSettings(Settings.CONSOLE_SETTINGS);
-			String lang = command.hasOption(Constants.LANG) ? command.getOptionValue(Constants.LANG)
-					: settings.getString(Constants.DEFAULT_LANG);
+			String lang = command.hasOption(KeyWords.LANG) ? command.getOptionValue(KeyWords.LANG)
+					: settings.getString(KeyWords.DEFAULT_LANG);
 			strings = context.getStrings(lang);
 			NodeMode mode = null;
 
 			switch (method) {
-			case Constants.BACKUP:
+			case KeyWords.BACKUP:
 			case EXPORT_TYPES:
 			case IMPORT_OBJECTS:
 			case EXPORT_OBJECTS:
@@ -130,7 +130,7 @@ public class Console {
 				break;
 			}
 
-			try (Node nextNode = Loader.loadNode(settings.getString(Constants.NEXT_NODE), Auth.CONSOLE, null, mode,
+			try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), Auth.CONSOLE, null, mode,
 					lang, URL.LOCALHOST, context, false)) {
 
 				Object result = null;
@@ -138,8 +138,8 @@ public class Console {
 				ImportAction existingObjectsAction = null;
 
 				switch (method) {
-				case Constants.BACKUP:
-					boolean full = command.hasOption(Constants.FULL);
+				case KeyWords.BACKUP:
+					boolean full = command.hasOption(KeyWords.FULL);
 
 					try (TypesStream types = nextNode.backup(full)) {
 						writeResult(types);
@@ -175,9 +175,9 @@ public class Console {
 
 				case EXPORT_OBJECTS:
 					String[] objects = command.getOptionValues(EXPORT_OBJECTS);
-					String type = command.getOptionValue(Constants.TYPE);
+					String type = command.getOptionValue(KeyWords.TYPE);
 					LinkedHashMap<String, Order> order = Utils
-							.parserOrderString(command.getOptionValue(Constants.ORDER));
+							.parserOrderString(command.getOptionValue(KeyWords.ORDER));
 
 					try (ObjectsStream objectsExport = nextNode.exportObjects(type, objects, order)) {
 						writeResult(objectsExport);

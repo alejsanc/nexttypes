@@ -20,9 +20,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nexttypes.enums.IndexMode;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 
-@JsonPropertyOrder({ Constants.MODE, Constants.FIELDS })
+@JsonPropertyOrder({ KeyWords.MODE, KeyWords.FIELDS })
 public class TypeIndex {
 
 	protected IndexMode mode;
@@ -35,7 +35,7 @@ public class TypeIndex {
 	}
 
 	@JsonCreator
-	public TypeIndex(@JsonProperty(Constants.MODE) String mode, @JsonProperty(Constants.FIELDS) String fields[]) {
+	public TypeIndex(@JsonProperty(KeyWords.MODE) String mode, @JsonProperty(KeyWords.FIELDS) String fields[]) {
 		this(IndexMode.valueOf(mode.toUpperCase()), fields);
 	}
 
@@ -44,12 +44,12 @@ public class TypeIndex {
 		this.fields = fields;
 	}
 
-	@JsonProperty(Constants.MODE)
+	@JsonProperty(KeyWords.MODE)
 	public IndexMode getMode() {
 		return mode;
 	}
 
-	@JsonProperty(Constants.FIELDS)
+	@JsonProperty(KeyWords.FIELDS)
 	public String[] getFields() {
 		return fields;
 	}

@@ -24,7 +24,7 @@ import com.nexttypes.datatypes.URL;
 import com.nexttypes.logging.Logger;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 
 public class SMTPServer extends Thread {
@@ -40,9 +40,9 @@ public class SMTPServer extends Thread {
 			this.context = context;
 			logger = context.getLogger();
 			settings = context.getSettings(Settings.SMTP_SETTINGS);
-			strings = context.getStrings(settings.getString(Constants.LANG));
-			socket = new ServerSocket(settings.getInt32(Constants.PORT), settings.getInt32(Constants.BACKLOG),
-					InetAddress.getByName((settings.getString(Constants.BIND_ADDRESS))));
+			strings = context.getStrings(settings.getString(KeyWords.LANG));
+			socket = new ServerSocket(settings.getInt32(KeyWords.PORT), settings.getInt32(KeyWords.BACKLOG),
+					InetAddress.getByName((settings.getString(KeyWords.BIND_ADDRESS))));
 			open = true;
 		} catch (Exception e) {
 			logger.severe(Auth.SMTP, URL.LOCALHOST, e);

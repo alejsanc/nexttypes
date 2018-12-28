@@ -37,7 +37,7 @@ import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
-import com.nexttypes.system.Constants;
+import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Loader;
 
@@ -61,7 +61,7 @@ public abstract class View implements Module, AutoCloseable {
 		this.context = request.getContext();
 		this.settings = context.getSettings(settings);
 
-		nextNode = Loader.loadNode(this.settings.getString(Constants.NEXT_NODE), request, NodeMode.READ);
+		nextNode = Loader.loadNode(this.settings.getString(KeyWords.NEXT_NODE), request, NodeMode.READ);
 
 		typeSettings = request.getTypeSettings();
 		strings = request.getStrings();
