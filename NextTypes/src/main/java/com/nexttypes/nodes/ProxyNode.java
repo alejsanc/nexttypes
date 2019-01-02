@@ -64,6 +64,7 @@ import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
+import com.nexttypes.system.Constants;
 import com.nexttypes.system.Context;
 
 public class ProxyNode implements Node {
@@ -574,6 +575,11 @@ public class ProxyNode implements Node {
 	@Override
 	public TypesStream backup(boolean full) {
 		return nextNode.backup(full);
+	}
+	
+	@Override
+	public String getVersion() {
+		return nextNode.getVersion();
 	}
 
 	@Override

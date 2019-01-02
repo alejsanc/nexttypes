@@ -179,6 +179,7 @@ public class KeyWords {
 	public static final String INVALID_ROW_COUNT = "invalid_row_count";
 	public static final String INVALID_SERIAL_FORMAT = "invalid_serial_format";
 	public static final String INVALID_SESSION = "invalid_session";
+	public static final String INVALID_STREAM_FORMAT = "invalid_stream_format";
 	public static final String INVALID_TIMEZONE = "invalid_timezone";
 	public static final String INVALID_TYPE_NAME = "invalid_type_name";
 	public static final String INVALID_TYPE_OR_FIELD_NAME = "invalid_type_or_field_name";
@@ -341,6 +342,7 @@ public class KeyWords {
 	public static final String TYPES_SUCCESSFULLY_DROPPED = "types_successfully_dropped";
 	public static final String UDATE = "udate";
 	public static final String UNAUTHORIZED_ACTION = "unauthorized_action";
+	public static final String UNEXPECTED_TAG = "unexpected_tag";
 	public static final String UPDATE_ID_TITLE = "update_id_title";
 	public static final String UPDATE_PASSWORD_TITLE = "update_password_title";
 	public static final String UPDATE_TITLE = "update_title";

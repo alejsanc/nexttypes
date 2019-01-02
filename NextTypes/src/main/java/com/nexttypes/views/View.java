@@ -40,6 +40,7 @@ import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Loader;
+import com.nexttypes.system.Constants;
 
 public abstract class View implements Module, AutoCloseable {
 
@@ -68,6 +69,10 @@ public abstract class View implements Module, AutoCloseable {
 
 		user = request.getUser();
 		groups = request.getGroups();
+	}
+	
+	public Content getVersion() {
+		return new Content(Constants.VERSION, Format.TEXT);
 	}
 
 	public Content notFound(String type, String lang, String view, NotFoundException e) {

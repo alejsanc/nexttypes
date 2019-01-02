@@ -51,6 +51,7 @@ public @interface Action {
 	public static final String GET_TYPE = "get_type";
 	public static final String GET_TYPES_INFO = "get_types_info";
 	public static final String GET_TYPES_NAME = "get_types_name";
+	public static final String GET_VERSION = "get_version";
 	public static final String IMPORT_OBJECTS = "import_objects";
 	public static final String IMPORT_OBJECTS_FORM = "import_objects_form";
 	public static final String IMPORT_TYPES = "import_types";

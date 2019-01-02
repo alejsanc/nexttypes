@@ -30,18 +30,13 @@ public class FieldRange {
 	protected Object min;
 	protected Object max;
 	
-	public FieldRange(@JsonProperty(KeyWords.MIN) Object min,
-			@JsonProperty(KeyWords.MAX) Object max) {
+	public FieldRange(@JsonProperty(KeyWords.MIN) String min,
+			@JsonProperty(KeyWords.MAX) String max) {
 		this.min = min;
 		this.max = max;
 	}
 	
 	public FieldRange(String type, Integer precision, Integer scale) {
-		this(type, precision, scale, null, null);
-	}
-	
-	public FieldRange(String type, Integer precision, Integer scale, Object min, Object max) {
-		this(min, max);
 		parse(type, precision, scale);
 	}
 	

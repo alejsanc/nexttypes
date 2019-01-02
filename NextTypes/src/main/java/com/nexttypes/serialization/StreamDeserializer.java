@@ -16,12 +16,14 @@
 
 package com.nexttypes.serialization;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.KeyWords;
 
@@ -45,6 +47,17 @@ public class StreamDeserializer {
 			parser.setCodec(mapper);
 		} catch (Exception e) {
 			throw new NXException(KeyWords.INVALID_INPUT);
+		}
+	}
+	
+	protected void checkTag(String expectedTag) {
+		try {
+			String tag = parser.getCurrentName();
+			if (!expectedTag.equals(tag)) {
+				throw new InvalidValueException(KeyWords.UNEXPECTED_TAG, tag);
+			}
+		} catch (IOException e) {
+			throw new NXException(e);
 		}
 	}
 }

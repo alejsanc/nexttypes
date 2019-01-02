@@ -18,8 +18,21 @@ package com.nexttypes.interfaces;
 
 import java.io.Closeable;
 
-public interface Stream extends Closeable {
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.nexttypes.system.KeyWords;
 
+public interface Stream extends Closeable {
+	
+	public static final String NEXTTYPES_TYPES = "nexttypes_types";
+	public static final String NEXTTYPES_TUPLES = "nexttypes_tuples";
+	public static final String NEXTTYPES_OBJECTS = "nexttypes_objects";
+
+	@JsonProperty(KeyWords.FORMAT)
+	public String getFormat();
+	
+	@JsonProperty(KeyWords.VERSION)
+	public String getVersion();
+	
 	public void exec();
 
 	public boolean next();

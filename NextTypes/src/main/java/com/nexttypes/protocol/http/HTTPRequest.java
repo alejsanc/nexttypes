@@ -56,7 +56,6 @@ import com.nexttypes.enums.Component;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.IndexMode;
 import com.nexttypes.enums.Order;
-import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.IndexException;
 import com.nexttypes.exceptions.InvalidValueException;
@@ -80,7 +79,7 @@ public class HTTPRequest {
 			KeyWords.CURRENT_PASSWORD, KeyWords.NEW_PASSWORD, KeyWords.NEW_PASSWORD_REPEAT,
 			KeyWords.VIEW, KeyWords.REF, KeyWords.FORM, KeyWords.YEAR, KeyWords.MONTH,
 			KeyWords.TYPE_ACTION, KeyWords.LOGIN_USER, KeyWords.LOGIN_PASSWORD, 
-			KeyWords.COMPONENT, KeyWords.INCLUDE_OBJECTS, KeyWords.INFO, KeyWords.NAMES,
+			KeyWords.COMPONENT, KeyWords.INCLUDE_OBJECTS, KeyWords.VERSION, KeyWords.INFO, KeyWords.NAMES,
 			KeyWords.CALENDAR, KeyWords.PREVIEW, KeyWords.REFERENCES, Action.FILTER_COMPONENT};
 
 	protected Settings settings;
@@ -129,6 +128,7 @@ public class HTTPRequest {
 	protected Component component;
 	protected Integer filter_component;
 	protected boolean include_objects = false;
+	protected boolean version = false;
 	protected boolean info = false;
 	protected boolean names = false;
 	protected boolean references = false;
@@ -707,6 +707,10 @@ public class HTTPRequest {
 
 	public boolean includeObjects() {
 		return include_objects;
+	}
+	
+	public boolean isVersion() {
+		return version;
 	}
 
 	public boolean isInfo() {

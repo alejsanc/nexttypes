@@ -238,9 +238,7 @@ public class Tuple {
 	}
 
 	public static Float parseFloat32(Object value) {
-		if (value instanceof BigDecimal) {
-			value = ((BigDecimal) value).floatValue();
-		} else if (value instanceof String) {
+		if (value instanceof String) {
 			value = Float.parseFloat((String) value);
 		} else if (value instanceof byte[]) {
 			value = Float.parseFloat(bytesToString(value));
@@ -255,8 +253,6 @@ public class Tuple {
 	public static Double parseFloat64(Object value) {
 		if (value instanceof Float) {
 			value = ((Float) value).doubleValue();
-		} else if (value instanceof BigDecimal) {
-			value = ((BigDecimal) value).doubleValue();
 		} else if (value instanceof String) {
 			value = Double.parseDouble((String) value);
 		} else if (value instanceof byte[]) {

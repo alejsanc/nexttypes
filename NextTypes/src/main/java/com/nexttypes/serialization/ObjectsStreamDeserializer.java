@@ -33,6 +33,7 @@ import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.Video;
+import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.TypeNotFoundException;
 import com.nexttypes.interfaces.Node;
@@ -42,6 +43,7 @@ import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
 
 public class ObjectsStreamDeserializer extends StreamDeserializer implements ObjectsStream {
+	protected String version;
 	protected Long count;
 	protected NXObject item;
 	protected LinkedHashMap<String, TypeField> typeFields;
@@ -68,6 +70,16 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 		this.nextNode = nextNode;
 		this.typeSettings = typeSettings;
 	}
+	
+	@Override
+	public String getFormat() {
+		return NEXTTYPES_OBJECTS;
+	}
+	
+	@Override
+	public String getVersion() {
+		return version;
+	}
 
 	@Override
 	public void close() {
@@ -86,11 +98,33 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 			parser.nextToken();
 			parser.nextToken();
 			parser.nextToken();
+			
+			checkTag(KeyWords.FORMAT);
+			
+			String format = parser.getText();
+			if (!NEXTTYPES_OBJECTS.equals(format)) {
+				throw new InvalidValueException(KeyWords.INVALID_STREAM_FORMAT, format);
+			}
+			
+			parser.nextToken();
+			parser.nextToken();
+			
+			checkTag(KeyWords.VERSION);
+			
+			version = parser.getText();
+			
+			parser.nextToken();
+			parser.nextToken();
+			
+			checkTag(KeyWords.COUNT);
 
 			count = parser.getLongValue();
 
 			parser.nextToken();
 			parser.nextToken();
+			
+			checkTag(KeyWords.ITEMS);
+			
 		} catch (IOException e) {
 			throw new NXException(e);
 		}
@@ -99,9 +133,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 	@Override
 	public boolean next() {
 		try {
-			parser.nextToken();
-
-			if (parser.getCurrentToken().equals(JsonToken.START_OBJECT)) {
+			if (parser.nextToken() == JsonToken.START_OBJECT) {
 
 				String type = null, id = null;
 				ZonedDateTime cdate = null, udate = null;

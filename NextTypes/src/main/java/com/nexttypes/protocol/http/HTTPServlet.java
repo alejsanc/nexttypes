@@ -164,7 +164,9 @@ public class HTTPServlet extends HttpServlet {
 						content = view.loginForm(req.getLang(), req.getView());
 					} else {
 
-						if (req.isInfo()) {
+						if (req.isVersion()) {
+							content = view.getVersion();
+						} else if (req.isInfo()) {
 							content = view.getTypesInfo(req.getLang(), req.getView());
 						} else if (req.isNames()) {
 							content = view.getTypesName(req.getLang(), req.getView());

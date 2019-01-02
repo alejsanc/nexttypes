@@ -200,6 +200,10 @@ public aspect NodeSecurity extends Checks {
     before() : execution(* Node.backup(..)) {
     	checkPermissions(Action.BACKUP, thisJoinPoint);
     }
+    
+    before() : execution(* Node.getVersion(..)) {
+    	checkPermissions(Action.GET_VERSION, thisJoinPoint);
+    }
 
     before(String type, String[] objects, LinkedHashMap<String, Order> order) :
     	execution(* Node.exportObjects(..))

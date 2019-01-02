@@ -22,6 +22,7 @@ import com.nexttypes.serialization.ObjectsStreamSerializer;
 
 @JsonSerialize(using = ObjectsStreamSerializer.class)
 public interface ObjectsStream extends Stream {
+	
 	public NXObject getItem();
 
 	public Long getCount();

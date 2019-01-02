@@ -1,4 +1,6 @@
 {
+	"format": "nexttypes_types",
+	"version": "1.0",
 	"date": "2015-09-14T12:13:11.124Z",
 	"types": {
 		"group": {
@@ -183,12 +185,13 @@
 	},
 	"objects": {
 		"language": {
+			"format": "nexttypes_objects",
+			"version": "1.0",
 			"count": 2,
 			"items": [
 				{
 					"type": "language",
 					"id": "en",
-					"name": "English",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
@@ -199,7 +202,6 @@
 				{
 					"type": "language",
 					"id": "es",
-					"name": "Spanish",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
@@ -210,93 +212,68 @@
 			]
 		},
 		"language_language": {
+			"format": "nexttypes_objects",
+			"version": "1.0",
 			"count": 4,
 			"items": [
 				{
 					"type": "language_language",
 					"id": "en-es",
-					"name": "en-es",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
 					"fields": {
 						"name": "Inglés",
-						"language": {
-							"id": "en",
-							"name": "English"
-						},
-						"translation": {
-							"id": "es",
-							"name": "Spanish"
-						}
+						"language": "en",
+						"translation": "es"
 					}
 				},
 				{
 					"type": "language_language",
 					"id": "es-en",
-					"name": "es-en",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
 					"fields": {
 						"name": "Spanish",
-						"language": {
-							"id": "es",
-							"name": "Spanish"
-						},
-						"translation": {
-							"id": "en",
-							"name": "English"
-						}
+						"language": "es",
+						"translation": "en"
 					}
 				},
 				{
 					"type": "language_language",
 					"id": "es-es",
-					"name": "es-es",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
 					"fields": {
 						"name": "Español",
-						"language": {
-							"id": "es",
-							"name": "Spanish"
-						},
-						"translation": {
-							"id": "es",
-							"name": "Spanish"
-						}
+						"language": "es",
+						"translation": "es"
 					}
 				},
 				{
 					"type": "language_language",
 					"id": "en-en",
-					"name": "en-en",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
 					"fields": {
 						"name": "English",
-						"language": {
-							"id": "en",
-							"name": "English"
-						},
-						"translation": {
-							"id": "en",
-							"name": "English"
-						}
+						"language": "en",
+						"translation": "en"
 					}
 				}
 			]
 		},
 		"group": {
+			"format": "nexttypes_objects",
+			"version": "1.0",
 			"count": 2,
 			"items": [
 				{
 					"type": "group",
 					"id": "administrators",
-					"name": "Administrators",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
@@ -307,7 +284,6 @@
 				{
 					"type": "group",
 					"id": "users",
-					"name": "Users",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
@@ -318,12 +294,13 @@
 			]
 		},
 		"user": {
+			"format": "nexttypes_objects",
+			"version": "1.0",
 			"count": 1,
 			"items": [
 				{
 					"type": "user",
 					"id": "admin",
-					"name": "Admin Admin (admin)",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
@@ -338,47 +315,37 @@
 			]
 		},
 		"group_user": {
+			"format": "nexttypes_objects",
+			"version": "1.0",
 			"count": 1,
 			"items": [
 				{
 					"type": "group_user",
 					"id": "administrators-admin",
-					"name": "administrators-admin",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
 					"fields": {
-						"group": {
-							"id": "administrators",
-							"name": "Administrators"
-						},
-						"user": {
-							"id": "admin",
-							"name": "Admin Admin (admin)"
-						}
+						"group": "administrators",
+						"user": "admin"
 					}
 				}
 			]
 		},
 		"group_language": {
+			"format": "nexttypes_objects",
+			"version": "1.0",
 			"count": 4,
 			"items": [
 				{
 					"type": "group_language",
 					"id": "administrators-en",
-					"name": "administrators-en",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
 					"fields": {
-						"group": {
-							"id": "administrators",
-							"name": "Administrators"
-						},
-						"language": {
-							"id": "en",
-							"name": "English"
-						},
+						"group": "administrators",
+						"language": "en",
 						"name": "Administrators",
 						"description": "Administrators"
 					}
@@ -386,19 +353,12 @@
 				{
 					"type": "group_language",
 					"id": "administrators-es",
-					"name": "administrators-es",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
 					"fields": {
-						"group": {
-							"id": "administrators",
-							"name": "Administrators"
-						},
-						"language": {
-							"id": "es",
-							"name": "Spanish"
-						},
+						"group": "administrators",
+						"language": "es",
 						"name": "Administradores",
 						"description": "Administradores"
 					}
@@ -406,19 +366,12 @@
 				{
 					"type": "group_language",
 					"id": "users-en",
-					"name": "users-en",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
 					"fields": {
-						"group": {
-							"id": "users",
-							"name": "Users"
-						},
-						"language": {
-							"id": "en",
-							"name": "English"
-						},
+						"group": "users",
+						"language": "en",
 						"name": "Users",
 						"description": "Users"
 					}
@@ -426,19 +379,12 @@
 				{
 					"type": "group_language",
 					"id": "users-es",
-					"name": "users-es",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
 					"fields": {
-						"group": {
-							"id": "users",
-							"name": "Users"
-						},
-						"language": {
-							"id": "es",
-							"name": "Spanish"
-						},
+						"group": "users",
+						"language": "es",
 						"name": "Usuarios",
 						"description": "Usuarios"
 					}
@@ -446,20 +392,18 @@
 			]
 		},
 		"user_certificate": {
+			"format": "nexttypes_objects",
+			"version": "1.0",
 			"count": 1,
 			"items": [
 				{
 					"type": "user_certificate",
 					"id": "admin-certificate",
-					"name": "admin-certificate",
 					"cdate": "2015-06-24T17:40:03Z",
 					"udate": "2015-06-24T17:40:03Z",
 					"backup": false,
 					"fields": {
-						"user": {
-							"id": "admin",
-							"name": "Admin Admin (admin)"
-						},
+						"user": "admin",
 						"certificate_subject": "CN=Admin,O=NextTypes"
 					}
 				}

@@ -191,6 +191,11 @@ public class ControllersNode implements Node {
 		setTypeActions(backup.getTypes());
 		return backup;
 	}
+	
+	@Override
+	public String getVersion() {
+		return nextNode.getVersion();
+	}
 
 	@Override
 	public ObjectsStream exportObjects(String type, String[] objects, LinkedHashMap<String, Order> order) {

@@ -126,6 +126,7 @@ import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
+import com.nexttypes.system.Constants;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Context.TypesCache;
 import com.nexttypes.system.DBConnection;
@@ -359,6 +360,11 @@ public class PostgreSQLNode implements Node {
 		cache = context.getTypesCache();
 
 		logger = context.getLogger();
+	}
+	
+	@Override
+	public String getVersion() {
+		return Constants.VERSION;
 	}
 
 	@Override
@@ -3256,6 +3262,16 @@ public class PostgreSQLNode implements Node {
 			this.count = count;
 			this.tuples = tuples;
 		}
+		
+		@Override
+		public String getFormat() {
+			return NEXTTYPES_OBJECTS;
+		}
+		
+		@Override
+		public String getVersion() {
+			return Constants.VERSION;
+		}
 
 		@Override
 		public void exec() {
@@ -3294,6 +3310,16 @@ public class PostgreSQLNode implements Node {
 		protected PostgreSQLTuplesStream(String sql, Object... parameters) {
 			this.sql = sql;
 			this.parameters = parameters;
+		}
+		
+		@Override
+		public String getFormat() {
+			return NEXTTYPES_TUPLES;
+		}
+		
+		@Override
+		public String getVersion() {
+			return Constants.VERSION;
 		}
 
 		@Override
@@ -3398,6 +3424,16 @@ public class PostgreSQLNode implements Node {
 		protected LinkedHashMap<String, ObjectsStream> objects = new LinkedHashMap<>();
 		protected ZonedDateTime date = ZonedDateTime.now(ZoneOffset.UTC);
 
+		@Override
+		public String getFormat() {
+			return NEXTTYPES_TYPES;
+		}
+		
+		@Override
+		public String getVersion() {
+			return Constants.VERSION;
+		}
+		
 		@Override
 		public LinkedHashMap<String, Type> getTypes() {
 			return types;

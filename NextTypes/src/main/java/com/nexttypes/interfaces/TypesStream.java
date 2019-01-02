@@ -26,9 +26,9 @@ import com.nexttypes.datatypes.Type;
 import com.nexttypes.system.KeyWords;
 
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE)
-@JsonPropertyOrder({ KeyWords.DATE, KeyWords.TYPES, KeyWords.OBJECTS })
+@JsonPropertyOrder({ KeyWords.FORMAT, KeyWords.VERSION, KeyWords.DATE, KeyWords.TYPES, KeyWords.OBJECTS })
 public interface TypesStream extends Stream {
-
+	
 	@JsonProperty(KeyWords.DATE)
 	public ZonedDateTime getDate();
 

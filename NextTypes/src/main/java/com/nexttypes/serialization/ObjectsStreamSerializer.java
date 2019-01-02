@@ -34,6 +34,8 @@ public class ObjectsStreamSerializer extends JsonSerializer<ObjectsStream> {
 			objects.exec();
 
 			generator.writeStartObject();
+			generator.writeStringField(KeyWords.FORMAT, objects.getFormat());
+			generator.writeStringField(KeyWords.VERSION, objects.getVersion());
 			generator.writeNumberField(KeyWords.COUNT, objects.getCount());
 			generator.writeFieldName(KeyWords.ITEMS);
 			generator.writeStartArray();

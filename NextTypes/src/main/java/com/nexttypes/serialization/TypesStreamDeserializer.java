@@ -25,6 +25,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Type;
+import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.NotImplementedException;
 import com.nexttypes.interfaces.Node;
@@ -32,8 +33,10 @@ import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
+import com.nexttypes.system.KeyWords;
 
 public class TypesStreamDeserializer extends StreamDeserializer implements TypesStream {
+	protected String version;
 	protected LinkedHashMap<String, Type> types;
 	protected ZonedDateTime date;
 	protected String lang;
@@ -49,6 +52,16 @@ public class TypesStreamDeserializer extends StreamDeserializer implements Types
 		this.typeSettings = typeSettings;
 		this.strings = strings;
 	}
+	
+	@Override
+	public String getFormat() {
+		return NEXTTYPES_TYPES;
+	}
+	
+	@Override
+	public String getVersion() {
+		return version;
+	}
 
 	@Override
 	public void exec() {
@@ -56,17 +69,39 @@ public class TypesStreamDeserializer extends StreamDeserializer implements Types
 			parser.nextToken();
 			parser.nextToken();
 			parser.nextToken();
+			
+			checkTag(KeyWords.FORMAT);
+			
+			String format = parser.getText();
+			if (!NEXTTYPES_TYPES.equals(format)) {
+				throw new InvalidValueException(KeyWords.INVALID_STREAM_FORMAT, format);
+			}
+			
+			parser.nextToken();
+			parser.nextToken();
+			
+			checkTag(KeyWords.VERSION);
+			
+			version = parser.getText();
+			
+			parser.nextToken();
+			parser.nextToken();
+			
+			checkTag(KeyWords.DATE);
 
 			date = Tuple.parseUTCDateTime(parser.getText());
 
 			parser.nextToken();
 			parser.nextToken();
+			
+			checkTag(KeyWords.TYPES);
 
-			types = parser.readValueAs(new TypeReference<LinkedHashMap<String, Type>>() {
-			});
+			types = parser.readValueAs(new TypeReference<LinkedHashMap<String, Type>>() {});
 
 			parser.nextToken();
 			parser.nextToken();
+			
+			checkTag(KeyWords.OBJECTS);
 
 		} catch (IOException e) {
 			throw new NXException(e);
@@ -76,8 +111,7 @@ public class TypesStreamDeserializer extends StreamDeserializer implements Types
 	@Override
 	public boolean next() {
 		try {
-			parser.nextToken();
-			if (parser.getCurrentToken() == JsonToken.FIELD_NAME) {
+			if (parser.nextToken() == JsonToken.FIELD_NAME) {
 				return true;
 			} else {
 				return false;

@@ -65,6 +65,8 @@ public interface Node extends Module, AutoCloseable {
 
 	public static void init(Context context) {};
 	
+	public String getVersion();
+	
 	public String[] getGroups(String user);
 
 	public ZonedDateTime create(Type type);

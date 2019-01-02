@@ -25,6 +25,11 @@ import com.nexttypes.system.Action;
 import com.nexttypes.views.View;
 
 public aspect ViewSecurity extends Checks {
+	
+	before() : execution(* View.getVersion(..)) {
+    	checkPermissions(Action.GET_VERSION, thisJoinPoint);
+    }
+	
     before(String lang, String view) : (execution(* View.getTypesName(..))) && args(lang, view) {
     	checkLang(lang);
     	checkView(view);
