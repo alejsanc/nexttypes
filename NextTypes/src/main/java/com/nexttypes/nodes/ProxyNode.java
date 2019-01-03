@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Alejandro Sánchez <alex@nexttypes.com>
+ * Copyright 2015-2019 Alejandro Sánchez <alex@nexttypes.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,6 @@ import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
-import com.nexttypes.system.Constants;
 import com.nexttypes.system.Context;
 
 public class ProxyNode implements Node {

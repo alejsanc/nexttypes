@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Alejandro Sánchez <alex@nexttypes.com>
+ * Copyright 2015-2019 Alejandro Sánchez <alex@nexttypes.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 
 import org.w3c.dom.NodeList;
 
-import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
 public class XMLFragment extends XML {

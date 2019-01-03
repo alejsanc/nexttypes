@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 Alejandro Sánchez <alex@nexttypes.com>
+ * Copyright 2015-2019 Alejandro Sánchez <alex@nexttypes.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import com.nexttypes.datatypes.FieldRange;
-import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.system.KeyWords;
