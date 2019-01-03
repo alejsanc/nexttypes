@@ -235,6 +235,7 @@ public class KeyWords {
 	public static final String NO_OBJECTS_FOUND = "no_objects_found";
 	public static final String NO_TYPES_FOUND = "no_types_found";
 	public static final String NODES = "nodes";
+	public static final String NOT_IMPLEMENTED_METHOD = "not_implemented_method";
 	public static final String NOT_NULL = "not_null";
 	public static final String NOT_NULL_ALTERED = "not_null_altered";
 	public static final String NULL = "null";
