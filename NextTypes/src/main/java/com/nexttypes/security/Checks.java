@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.aspectj.lang.JoinPoint;
 
 import com.nexttypes.datatypes.FieldReference;
@@ -36,7 +35,6 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.nodes.Node;
-import com.nexttypes.settings.Permissions;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Module;
 
@@ -46,9 +44,7 @@ public class Checks {
 	public static final Pattern VIEW_CHECK = Pattern.compile("[a-z0-9\\-]+");
 	public static final Pattern LANG_CHECK = Pattern.compile("[a-z\\-]+");
 	public static final Pattern FIELD_PARAMETERS_CHECK = Pattern.compile("[a-z0-9_\\,]+");
-	public static final String[] FIELD_RESERVED_NAMES = { KeyWords.ID, KeyWords.CDATE, KeyWords.UDATE,
-			KeyWords.BACKUP };
-
+	
 	public static void checkString(String value, Pattern check, String setting) {
 		if (value != null) {
 			Matcher matcher = check.matcher(value);
@@ -145,7 +141,7 @@ public class Checks {
 	}
 
 	public static void checkField(String field) {
-		if (ArrayUtils.contains(FIELD_RESERVED_NAMES, field)) {
+		if (TypeField.isReservedName(field)) {
 			throw new InvalidValueException(KeyWords.FIELD_RESERVED_NAME, field);
 		}
 
@@ -182,7 +178,7 @@ public class Checks {
 	public static void checkIndexFields(String[] fields) {
 		if (fields != null) {
 			for (String field : fields) {
-				if (!ArrayUtils.contains(FIELD_RESERVED_NAMES, field)) {
+				if (!TypeField.isReservedName(field)) {
 					checkField(field);
 				}
 			}
@@ -217,7 +213,7 @@ public class Checks {
 				} else if (value instanceof String[]) {
 					checkObjects((String[]) value);
 				}
-			} else if (!ArrayUtils.contains(FIELD_RESERVED_NAMES, field)) {
+			} else if (!TypeField.isReservedName(field)) {
 				checkField(field);
 			}
 		}
@@ -242,7 +238,7 @@ public class Checks {
 		if (order != null) {
 			for (Map.Entry<String, Order> entry : order.entrySet()) {
 				String field = entry.getKey();
-				if (!ArrayUtils.contains(FIELD_RESERVED_NAMES, field)) {
+				if (!TypeField.isReservedName(field)) {
 					checkField(field);
 				}
 			}

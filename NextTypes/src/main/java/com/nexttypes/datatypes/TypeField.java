@@ -16,6 +16,8 @@
 
 package com.nexttypes.datatypes;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -27,6 +29,9 @@ import com.nexttypes.system.KeyWords;
 @JsonPropertyOrder({ KeyWords.TYPE, KeyWords.LENGTH, KeyWords.PRECISION, KeyWords.SCALE,
 	KeyWords.RANGE, KeyWords.NOT_NULL })
 public class TypeField {
+	
+	public static final String[] RESERVED_NAMES = { KeyWords.ID, KeyWords.CDATE, KeyWords.UDATE,
+			KeyWords.BACKUP };
 
 	protected String type;
 	protected Integer length;
@@ -160,4 +165,9 @@ public class TypeField {
 	public String getOldName() {
 		return oldName;
 	}
+	
+	public static boolean isReservedName(String field) {
+		return ArrayUtils.contains(RESERVED_NAMES, field);
+	}
+	
 }

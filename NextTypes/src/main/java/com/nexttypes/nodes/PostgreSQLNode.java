@@ -3718,11 +3718,21 @@ public class PostgreSQLNode extends Node {
 				sql.append(" order by ");
 				if (order != null && order.size() > 0) {
 					for (Map.Entry<String, Order> entry : order.entrySet()) {
-						String fieldValue = entry.getKey();
-						String fieldString = typeSettings.getFieldString(type, fieldValue, KeyWords.ORDER,
-							"\"" + fieldValue + "\"");
-						sql.append(fieldString);
-
+						String field = entry.getKey();
+						String settingsOrder = typeSettings.getFieldString(type, field,
+								KeyWords.ORDER);
+						
+						if (settingsOrder != null) {
+							sql.append(settingsOrder);
+						} else {
+							if (!TypeField.isReservedName(field)
+									&& !PT.isPrimitiveType(typeFields.get(field).getType())) {
+								sql.append("\"@" + field + "_name\"");
+							} else {
+								sql.append("\"" + field + "\"");
+							}
+						}
+						
 						Order orderValue = entry.getValue();
 
 						if (orderValue != null) {
