@@ -61,14 +61,18 @@ public class UnauthorizedReferenceException extends UnauthorizedException {
 	
 	@Override
 	public String getMessage(Strings strings) {
+		String referencedTypeName = strings.getTypeName(referencedType);
+		String referencingTypeName = strings.getTypeName(referencingType);
+		String referencingFieldName = strings.getFieldName(referencingType, referencingField);
+		
 		StringBuilder message = new StringBuilder(strings.gts(type, KeyWords.UNAUTHORIZED_REFERENCE)
-				+ ": " + referencingType);
+				+ ": " + referencingTypeName);
 		
 		if (referencingId != null) {
 			message.append("::" + referencingId);
 		}
 		
-		message.append("::" + referencingField + " -> " + referencedType + "::" + referencedId);
+		message.append("::" + referencingFieldName + " -> " + referencedTypeName + "::" + referencedId);
 		
 		return message.toString();
 	}
