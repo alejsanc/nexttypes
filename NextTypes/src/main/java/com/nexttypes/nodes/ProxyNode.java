@@ -59,14 +59,13 @@ import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.Order;
-import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.Context;
 
-public class ProxyNode implements Node {
+public class ProxyNode extends Node {
 	protected String type;
 	protected Node nextNode;
 	protected Node controllersNode;
@@ -294,6 +293,13 @@ public class ProxyNode implements Node {
 	@Override
 	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
 		return getNextNode(type).getObjectsName(type, lang);
+	}
+	
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingType,
+			String referencingAction, String referencingField, String lang) {
+		return getNextNode(referencedType).getObjectsName(referencedType, referencingType,
+				referencingAction, referencingField, lang);
 	}
 
 	@Override
@@ -946,5 +952,10 @@ public class ProxyNode implements Node {
 	@Override
 	public FieldRange getActionFieldRange(String type, String action, String field) {
 		return getNextNode(type).getActionFieldRange(type, action, field);
+	}
+
+	@Override
+	public Node getNextNode() {
+		return nextNode;
 	}
 }

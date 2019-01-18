@@ -84,7 +84,8 @@ import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.NotFoundException;
 import com.nexttypes.exceptions.ObjectNotFoundException;
 import com.nexttypes.exceptions.UnauthorizedActionException;
-import com.nexttypes.interfaces.Node;
+import com.nexttypes.exceptions.UnauthorizedException;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.protocol.http.HTTPHeader;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
@@ -201,7 +202,7 @@ public class HTMLView extends View {
 	protected ArrayList<String> textEditorModes;
 	protected Permissions permissions;
 	
-	public HTMLView(HTMLView parent) {
+	public HTMLView(String type, HTMLView parent) {
 		document = parent.getDocument();
 		nextNode = parent.getNextNode();
 		request = parent.getRequest();
@@ -211,12 +212,12 @@ public class HTMLView extends View {
 		strings = parent.getStrings();
 		user = parent.getUser();
 		groups = parent.getGroups();
-		permissions = parent.getPermissions();
+		permissions = context.getPermissions(type, this);
 	}
 
 	public HTMLView(HTTPRequest request) {
 		super(request, Settings.HTML_SETTINGS);
-		permissions = request.getContext().getPermissions(user, groups);
+		permissions = request.getContext().getPermissions(request.getType(), this);
 	}
 	
 	public Permissions getPermissions() {
@@ -487,7 +488,7 @@ public class HTMLView extends View {
 	public Content executeActionForm(String type, String id, String action, String lang, String view) {
 		loadTemplate(type, lang, view);
 
-		if (!permissions.isAllowed(type, action + "_" + KeyWords.FORM)) {
+		if (!permissions.isAllowed(type, id, action + "_" + KeyWords.FORM)) {
 			return unauthorized(type, lang, view, new UnauthorizedActionException(type, action));
 		}
 		
@@ -581,7 +582,7 @@ public class HTMLView extends View {
 			
 			row.appendElement(HTML.TD).appendText(fieldName);
 			Element inputRow = row.appendElement(HTML.TD);
-			inputRow.appendElement(actionFieldInput(type, action, field, fieldName,
+			inputRow.appendElement(fieldInput(type, action, field, fieldName,
 					null, typeField, lang));
 			
 			if (showRange) {
@@ -591,7 +592,7 @@ public class HTMLView extends View {
 
 		Element actionButton = form.appendElement(button(actionName, action, Icon.CHEVRON_TOP,
 				SUBMIT_FORM));
-		if (!permissions.isAllowed(type, action)) {
+		if (!permissions.isAllowed(type, id, action)) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
 
@@ -1567,7 +1568,7 @@ public class HTMLView extends View {
 			}
 			
 			String filterFieldName = strings.getFieldName(type, filterField);
-			valueInput = fieldInput(type, filterField, filterFieldName, filter.getValue(), typeField,
+			valueInput = fieldInput(type, Action.SELECT, filterField, filterFieldName, filter.getValue(), typeField,
 					lang).setAttribute(HTML.NAME, valueName);
 		}
 		
@@ -1671,7 +1672,7 @@ public class HTMLView extends View {
 			Element idCell = row.appendElement(HTML.TD);
 			idCell.appendText(object.getId());
 			
-			if (permissions.isAllowed(type, Action.UPDATE_ID_FORM)) {
+			if (permissions.isAllowed(type, object.getId(), Action.UPDATE_ID_FORM)) {
 				idCell.appendText(" ");
 				idCell.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_ID),
 						url(object.getType(), object.getId(), lang, view)
@@ -1710,7 +1711,7 @@ public class HTMLView extends View {
 
 		Element actionButton = form.appendElement(button(actionName, Action.UPDATE, Icon.PENCIL,
 				SUBMIT_FORM));
-		if (!permissions.isAllowed(type, Action.UPDATE)) {
+		if (!permissions.isAllowed(type, object.getId(), Action.UPDATE)) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
 
@@ -1736,7 +1737,7 @@ public class HTMLView extends View {
 
 		Element actionButton = form.appendElement(button(actionName, Action.UPDATE_ID, Icon.PENCIL,
 				SUBMIT_FORM));
-		if (!permissions.isAllowed(type, Action.UPDATE_ID)) {
+		if (!permissions.isAllowed(type, id, Action.UPDATE_ID)) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
 
@@ -1773,7 +1774,7 @@ public class HTMLView extends View {
 
 		Element actionButton = form.appendElement(button(actionName, Action.UPDATE_PASSWORD, Icon.PENCIL,
 				SUBMIT_FORM));
-		if (!permissions.isAllowed(type, Action.UPDATE_PASSWORD)) {
+		if (!permissions.isAllowed(type, id, Action.UPDATE_PASSWORD)) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
 
@@ -1791,7 +1792,7 @@ public class HTMLView extends View {
 			cell.addClass(REFERENCE_FIELD);
 			cell.appendText(nextNode.getName(typeField.getType(), ref.getId(), lang));
 		} else {
-			input = fieldInput(type, field, title, value, typeField, lang);
+			input = fieldInput(type, Action.INSERT, field, title, value, typeField, lang);
 		}
 
 		cell.appendElement(input);
@@ -1811,7 +1812,7 @@ public class HTMLView extends View {
 		if (typeField.getType().equals(PT.PASSWORD)) {
 			input = passwordFieldOutput(object.getType(), object.getId(), field, lang, view);
 		} else {
-			input = fieldInput(object.getType(), field, title, value, typeField, lang);
+			input = fieldInput(object.getType(), Action.UPDATE, field, title, value, typeField, lang);
 		}
 
 		cell.appendElement(input);
@@ -1827,7 +1828,7 @@ public class HTMLView extends View {
 		Element password = document.createElement(HTML.SPAN);
 		password.appendText(Security.HIDDEN_PASSWORD + " ");
 		
-		if (permissions.isAllowed(type, Action.UPDATE_PASSWORD_FORM)) {
+		if (permissions.isAllowed(type, id, Action.UPDATE_PASSWORD_FORM)) {
 			password.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_PASSWORD),
 				url(type, id, field, lang, view) + formParameter(Action.UPDATE_PASSWORD), Icon.PENCIL));
 		}
@@ -1835,18 +1836,6 @@ public class HTMLView extends View {
 		return password;
 	}
 
-	public Element fieldInput(String type, String field, String title, Object value, TypeField typeField,
-			String lang) {
-				
-		return fieldInput(type, null, field, title, value, typeField, lang);
-	}
-	
-	public Element actionFieldInput(String type, String action, String field, String title, Object value,
-			TypeField typeField, String lang) {
-
-		return fieldInput(type, action, field, title, value, typeField, lang);
-	}
-	
 	public Element fieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField, String lang) {
 
@@ -1902,12 +1891,11 @@ public class HTMLView extends View {
 	public Element binaryFieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField, String lang) {
 		
-		String allowedContentTypes = null;
-
-		if (action != null) {
-			allowedContentTypes = typeSettings.getActionFieldString(type, action, field,
+		String allowedContentTypes = typeSettings.getActionFieldString(type, action, field,
 					KeyWords.ALLOWED_CONTENT_TYPES);
-		} else {
+		
+		if (allowedContentTypes == null && (Action.INSERT.equals(action)
+				|| Action.UPDATE.equals(action))) {
 			allowedContentTypes = typeSettings.getFieldString(type, field, KeyWords.ALLOWED_CONTENT_TYPES);
 		}
 
@@ -1921,7 +1909,7 @@ public class HTMLView extends View {
 		
 		input.appendElement(clearAnchor);
 		
-		if (action == null && !typeField.isNotNull()) {
+		if ((Action.INSERT.equals(action) || Action.UPDATE.equals(action)) && !typeField.isNotNull()) {
 			input.appendElement(nullFieldInput(type, field, value));
 		}
 		
@@ -1996,14 +1984,8 @@ public class HTMLView extends View {
 		String inputType = null;
 						
 		if (PT.isStringType(fieldType)) {
-			Integer size = null;
-			
-			if (action != null) {
-				size = typeSettings.getActionFieldInt32(type, action, field, KeyWords.INPUT_SIZE);
-			} else {
-				size = typeSettings.getFieldInt32(type, field, KeyWords.INPUT_SIZE);
-			}
-			
+			Integer size = typeSettings.getActionFieldInt32(type, action, field, KeyWords.INPUT_SIZE);
+						
 			switch (fieldType) {
 			case PT.STRING:
 				inputType = HTML.TEXT;
@@ -2207,14 +2189,8 @@ public class HTMLView extends View {
 			textarea.addClass(fieldType);
 		}
 
-		String[] modes = null;
+		String[] modes = typeSettings.getActionFieldStringArray(type, action, field, KeyWords.EDITOR);
 		
-		if (action != null) {
-			modes = typeSettings.getActionFieldStringArray(type, action, field, KeyWords.EDITOR);
-		} else {
-			modes = typeSettings.getFieldStringArray(type, field, KeyWords.EDITOR);
-		}
-
 		if (modes == null || modes.length == 0) {
 			switch (fieldType) {
 			case PT.JSON:
@@ -2253,44 +2229,38 @@ public class HTMLView extends View {
 		String mode = typeSettings.getActionString(type, action, KeyWords.OBJECTS_INPUT_MODE);
 		Integer size = typeSettings.getActionInt32(type, action, KeyWords.OBJECTS_INPUT_SIZE);
 		
-		return objectsInput(KeyWords.OBJECTS, title, null, type, notNull, mode, size, lang);
+		return objectsInput(KeyWords.OBJECTS, title, null, type, action, notNull, mode, size, lang);
 	}
 	
 	public Element objectFieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField, String lang) {
 		
-		String mode = null;
-		Integer size = null;
-		
-		if (action != null) {
-			mode = typeSettings.getActionFieldString(type, action, field, KeyWords.OBJECT_INPUT_MODE);
-			size = typeSettings.getActionFieldInt32(type, action, field, KeyWords.INPUT_SIZE);
-		} else {
-			mode = typeSettings.getFieldString(type, field, KeyWords.OBJECT_INPUT_MODE);
-			size = typeSettings.getFieldInt32(type, field, KeyWords.INPUT_SIZE);
-		}
-		
-		return objectInput("@" + field, title, value, typeField.getType(), typeField.isNotNull(), mode,
-				size, lang);
+		String mode = typeSettings.getActionFieldString(type, action, field, KeyWords.OBJECT_INPUT_MODE);
+		Integer	size = typeSettings.getActionFieldInt32(type, action, field, KeyWords.INPUT_SIZE);
+				
+		return objectInput("@" + field, title, value, typeField.getType(), type, action, field,
+				typeField.isNotNull(), mode, size, lang);
 	}
 	
 	public Element filterObjectInput(String name, String title, Object value, String type,
-			boolean notNull, String lang) {
+			 boolean notNull, String lang) {
 		
 		String mode = typeSettings.gts(type, KeyWords.OBJECT_INPUT_MODE);
 		Integer size = typeSettings.getTypeInt32(type, KeyWords.ID_INPUT_SIZE);
 		
-		return objectInput(name, title, value, type, notNull, mode, size, lang);
+		return objectInput(name, title, value, type, Action.SELECT, null, null, notNull, mode, size, lang);
 	}
 	
-	public Element objectInput(String name, String title, Object value, String type, 
+	public Element objectInput(String name, String title, Object value, String referencedType,
+			String referencingType, String referencingAction, String referencingField,
 			boolean notNull, String mode, Integer size, String lang) {
 
 		Element input = null;
 				
 		switch (mode) {
 		case HTML.SELECT:			
-			input = objectSelectInput(name, title, value, type, notNull, lang);
+			input = objectSelectInput(name, title, value, referencedType, referencingType, 
+						referencingAction, referencingField, notNull, lang);
 			break;
 			
 		case HTML.TEXT:		
@@ -2298,7 +2268,8 @@ public class HTMLView extends View {
 			break;
 			
 		case HTML.RADIO:			
-			input = objectRadioInput(name, title, value, type, notNull, lang);
+			input = objectRadioInput(name, title, value, referencedType, referencingType,
+						referencingAction, referencingField, notNull, lang);
 			break;
 			
 		default:
@@ -2308,8 +2279,8 @@ public class HTMLView extends View {
 		return input;
 	}
 	
-	public Element objectsInput(String name, String title, Object value, String type, 
-			boolean notNull, String mode, Integer size, String lang) {
+	public Element objectsInput(String name, String title, Object value, String type,
+			String action, boolean notNull, String mode, Integer size, String lang) {
 
 		Element input = null;
 		
@@ -2323,7 +2294,8 @@ public class HTMLView extends View {
 			break;
 			
 		case HTML.SELECT:			
-			input = objectSelectInput(name, title, value, type, notNull, lang);
+			input = objectSelectInput(name, title, value, type, null,
+					action, null, notNull, lang);
 			break;
 			
 		case HTML.TEXT:		
@@ -2331,7 +2303,7 @@ public class HTMLView extends View {
 			break;
 			
 		case HTML.RADIO:			
-			input = objectRadioInput(name, title, value, type, notNull, lang);
+			input = objectRadioInput(name, title, value, type, null, action, null, notNull, lang);
 			break;
 			
 		default:
@@ -2387,7 +2359,8 @@ public class HTMLView extends View {
 		
 	}
 	
-	public Element objectSelectInput(String name, String title, Object value, String type,
+	public Element objectSelectInput(String name, String title, Object value, String referencedType,
+			String referencingType, String referencingAction, String referencingField,
 			boolean notNull, String lang) {
 		
 		Element input = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name)
@@ -2397,7 +2370,8 @@ public class HTMLView extends View {
 			input.appendElement(HTML.OPTION);
 		}
 
-		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, lang);
+		LinkedHashMap<String, String> names = nextNode.getObjectsName(referencedType, referencingType,
+				referencingAction, referencingField, lang);
 
 		for (Entry<String, String> entry : names.entrySet()) {
 			String objectId = entry.getKey();
@@ -2413,14 +2387,15 @@ public class HTMLView extends View {
 		return input;
 	}
 	
-	public Element objectRadioInput(String name, String title, Object value, String type, 
+	public Element objectRadioInput(String name, String title, Object value, String referencedType,
+			String referencingType, String referencingAction, String referencingField,
 			boolean notNull, String lang) {
 		
 		InputGroup inputGroup = document.createInputGroup();
 		inputGroup.addClass(OBJECT_RADIO_INPUT);
 		
 		if (!notNull) {
-			String nullName = strings.gts(type, KeyWords.NULL);
+			String nullName = strings.gts(referencedType, KeyWords.NULL);
 			
 			inputGroup.appendInput(input(HTML.RADIO, name, nullName, ""));
 			
@@ -2428,7 +2403,8 @@ public class HTMLView extends View {
 			
 		}
 		
-		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, lang);
+		LinkedHashMap<String, String> names = nextNode.getObjectsName(referencedType, referencingType,
+				referencingAction, referencingField, lang);
 		
 		for (Entry<String, String> entry : names.entrySet()) {
 			String objectId = entry.getKey();
@@ -2613,7 +2589,8 @@ public class HTMLView extends View {
 			LinkedHashMap<String, Order> order, Long count, Long offset, Long limit, Long minLimit,
 			Long maxLimit, Long limitIncrement, Component component) {
 
-		boolean appendUpdateAnchor = permissions.isAllowed(type, Action.UPDATE_FORM);
+		String[] updateDisallowedObjects = permissions.isAllowed(type, objects, Action.UPDATE_FORM);
+		String[] getDisallowedObjects = permissions.isAllowed(type, objects, Action.GET);
 		
 		Element form = form(type, lang, view).setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
 				.setAttribute(DATA_URL, request.getURLRoot()
@@ -2645,29 +2622,29 @@ public class HTMLView extends View {
 					search, order, offset, limit, component));
 		}
 
-		if (appendUpdateAnchor) {
-			header.appendElement(HTML.TH);
-		}
-
+		header.appendElement(HTML.TH);
+		
 		for (NXObject object : objects) {
+			String id = object.getId();
+			
 			Element row = body.appendElement(HTML.TR);
 
 			row.appendElement(HTML.TD).appendElement(
-					input(HTML.CHECKBOX, KeyWords.OBJECTS, strings.getObjectsName(type), object.getId())
+					input(HTML.CHECKBOX, KeyWords.OBJECTS, strings.getObjectsName(type), id)
 							.addClass(ITEM_CHECKBOX));
 
 			String idString = null;
-			if (object.getId().length() >= 25) {
-				idString = object.getId().substring(0, 22) + "...";
+			if (id.length() >= 25) {
+				idString = id.substring(0, 22) + "...";
 			} else {
-				idString = object.getId();
+				idString = id;
 			}
 
 			Element idCell = row.appendElement(HTML.TD);
 			
-			if (permissions.isAllowed(type, Action.GET)) {
+			if (!ArrayUtils.contains(getDisallowedObjects, id)) {
 				idCell.appendElement(HTML.A).appendText(idString)
-					.setAttribute(HTML.HREF, url(object.getType(), object.getId(), lang, view));
+					.setAttribute(HTML.HREF, url(object.getType(), id, lang, view));
 			} else {
 				idCell.appendText(idString);
 			}
@@ -2680,11 +2657,11 @@ public class HTMLView extends View {
 						.appendElement(fieldOutput(object, field, value, typeField, lang, view, true));
 			}
 
-			if (appendUpdateAnchor) {
+			if (!ArrayUtils.contains(updateDisallowedObjects, id)) {
 				String updateActionName = strings.getActionName(object.getType(), Action.UPDATE);
 				
 				row.appendElement(HTML.TD).appendElement(iconAnchor(updateActionName,
-					url(object.getType(), object.getId(), lang, view)
+					url(object.getType(), id, lang, view)
 					+ formParameter(Action.UPDATE), Icon.PENCIL));
 			}
 		}
@@ -3372,7 +3349,7 @@ public class HTMLView extends View {
 		String refParameter = refParameter(ref);
 		String searchParameter = parameter(KeyWords.SEARCH, search);
 
-		if (id != null && form != null && permissions.isAllowed(type, Action.GET)) {
+		if (id != null && form != null && permissions.isAllowed(type, id, Action.GET)) {
 			elements.add(iconAnchor(strings.gts(type, KeyWords.VIEW), url(type, id, lang, view)
 					+ refParameter, Icon.MAGNIFYING_GLASS));
 		}
@@ -3405,7 +3382,7 @@ public class HTMLView extends View {
 		}
 
 		if (id != null && !Action.UPDATE.equals(form)
-				&& permissions.isAllowed(type, Action.UPDATE_FORM)) {
+				&& permissions.isAllowed(type, id, Action.UPDATE_FORM)) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.UPDATE),
 					url(type, id, lang, view) + formParameter(Action.UPDATE), Icon.PENCIL));
 		}
@@ -3530,7 +3507,7 @@ public class HTMLView extends View {
 	}
 
 	@Override
-	public Content unauthorized(String type, String lang, String view, UnauthorizedActionException e) {
+	public Content unauthorized(String type, String lang, String view, UnauthorizedException e) {
 		Content content = null;
 
 		String message = e.getMessage(strings);
@@ -3627,7 +3604,7 @@ public class HTMLView extends View {
 		String className = typeSettings.getView(type, view);
 
 		if (className != null) {
-			htmlView = Loader.loadHTMLView(className, this);
+			htmlView = Loader.loadHTMLView(className, type, this);
 		} else {
 			htmlView = this;
 		}
@@ -3870,7 +3847,7 @@ public class HTMLView extends View {
 		if (actionsElement != null) {
 			String form = request.getForm();
 
-			if (permissions.isAllowed(type, Action.EXECUTE_ACTION_FORM) && type != null
+			if (permissions.isAllowed(type, id, Action.EXECUTE_ACTION_FORM) && type != null
 					&& !Action.INSERT.equals(form) && !Action.ALTER.equals(form)
 					&& !Action.RENAME.equals(form) && !request.isInfo()) {
 
@@ -3884,7 +3861,7 @@ public class HTMLView extends View {
 					}
 					
 					for (String action : actions.keySet()) {
-						if (!permissions.isAllowed(type, action + "_" + KeyWords.FORM)) {
+						if (!permissions.isAllowed(type, id, action + "_" + KeyWords.FORM)) {
 							actions.remove(action);
 						}
 					}

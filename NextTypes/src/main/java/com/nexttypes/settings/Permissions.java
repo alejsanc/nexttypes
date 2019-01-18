@@ -17,21 +17,36 @@
 package com.nexttypes.settings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.exceptions.UnauthorizedActionException;
+import com.nexttypes.exceptions.UnauthorizedReferenceException;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.system.KeyWords;
 
 public class Permissions extends TypeSettings {
 	protected String user;
 	protected String[] groups;
-	public Permissions(ArrayList<Properties> settings, String user, String[] groups) {
+	protected Node nextNode;
+	
+	public Permissions(ArrayList<Properties> settings, String user, String[] groups, Node nextNode) {
 		super(settings);
 		
 		this.user = user;
 		this.groups = groups;
+		this.nextNode = nextNode;
+	}
+	
+	public String getUser() {
+		return user;
+	}
+	
+	public String[] getGroups() {
+		return groups;
 	}
 
 	public String[] getAllowedUsers(String type, String action) {
@@ -66,7 +81,7 @@ public class Permissions extends TypeSettings {
 
 		return allowed;
 	}
-
+	
 	public void checkPermissions(String action) {
 		checkPermissions((String) null, action);
 	}
@@ -86,6 +101,47 @@ public class Permissions extends TypeSettings {
 			for (String type : types) {
 				checkPermissions(type, action);
 			}
+		}
+	}
+	
+	public boolean isAllowed(String type, String id, String action) {
+		return isAllowed(type, action);
+	}
+	
+	public String[] isAllowed(String type, String[] objects, String action) {
+		return isAllowed(type, action) ? new String[] {} : objects;
+	}
+	
+	public String[] isAllowed(String type, NXObject[] objects, String action) {
+		return isAllowed(type, Arrays.stream(objects).map(object -> object.getId())
+				.toArray(String[]::new), action);
+	}
+	
+	public void checkPermissions(String type, String id, String action) {
+		if (!isAllowed(type, id, action)) {
+			throw new UnauthorizedActionException(type, id, action);
+		}
+	}
+	
+	public void checkPermissions(String type, String[] objects, String action) {
+		String[] disallowedObjects = isAllowed(type, objects, action);
+		
+		if (disallowedObjects != null && disallowedObjects.length > 0) {
+			throw new UnauthorizedActionException(type, disallowedObjects, action);
+		}
+	}
+	
+	public boolean isAllowedToMakeReference(String referencedType, String referencedId,
+			String referencingType, String referencingId, String referencingfield) {
+		return true;
+	}
+	
+	public void checkReferencePermissions(String referencedType, String referencedId,
+			String referencingType, String referencingId, String referencingField) {
+		if (!isAllowedToMakeReference(referencedType, referencedId, referencingType, referencingId,
+				referencingField)) {
+			throw new UnauthorizedReferenceException(referencedType, referencedId, referencingType,
+					referencingId, referencingField);
 		}
 	}
 }

@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package com.nexttypes.interfaces;
+package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
-import com.nexttypes.settings.TypeSettings;
-import com.nexttypes.system.Context;
+public class UnauthorizedException extends NXException {
 
-public interface Module {
-	public String getUser();
+	private static final long serialVersionUID = 1L;
 
-	public String[] getGroups();
-
-	public void setUser(String user);
-
-	public void setGroups(String[] groups);
-
-	public Context getContext();
-
-	public Strings getStrings();
-
-	public TypeSettings getTypeSettings();
+	public UnauthorizedException(String setting) {
+		super(setting);
+	}
 }

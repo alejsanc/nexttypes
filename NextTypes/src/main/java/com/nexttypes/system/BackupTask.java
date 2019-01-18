@@ -34,9 +34,9 @@ import com.nexttypes.datatypes.URL;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.logging.Logger;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Settings;
 
 public class BackupTask extends Task {

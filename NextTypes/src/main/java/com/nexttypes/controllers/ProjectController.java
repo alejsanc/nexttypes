@@ -19,13 +19,12 @@ package com.nexttypes.controllers;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 
 import com.nexttypes.datatypes.ICalendar;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.Tuple;
-import com.nexttypes.exceptions.UnauthorizedActionException;
-import com.nexttypes.interfaces.Node;
-import com.nexttypes.system.Action;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Controller;
@@ -33,44 +32,25 @@ import com.nexttypes.system.Controller;
 import net.fortuna.ical4j.model.component.VEvent;
 
 public class ProjectController extends Controller {
-
-	public static final String PROJECT_MEETING = "project_meeting";
+	
 	public static final String PROJECT = "project";
 	public static final String DOCUMENT = "document";
+	public static final String PROJECT_MEETING = "project_meeting";
 	public static final String PROJECT_MEMBER = "project_member";
 	public static final String PROJECT_DOCUMENT = "project_document";
 	public static final String PROJECT_TICKET = "project_ticket";
 	public static final String PROJECT_DOCUMENT_CHAPTER = "project_document_chapter";
 	public static final String PROJECT_MEETING_PARTICIPANT = "project_meeting_participant";
 	public static final String PROJECT_TICKET_MESSAGE = "project_ticket_message";
-
+	
 	public ProjectController(String type, String user, String[] groups, Node nextNode) {
 		super(type, user, groups, nextNode);
 	}
 
 	@Override
-	public ZonedDateTime insert(NXObject object) {
-		checkParentPermissions(object.getString(getParentField()), Action.INSERT);
-		return nextNode.insert(object);
-	}
-
-	@Override
-	public ZonedDateTime update(NXObject object) {
-		return update(object, null);
-	}
-
-	@Override
-	public ZonedDateTime update(NXObject object, ZonedDateTime udate) {
-		checkParentPermissions(object.getString(getParentField()), Action.UPDATE);
-		checkPermissions(object.getId(), Action.UPDATE);
-		return nextNode.update(object, udate);
-	}
-
-	@Override
 	public ZonedDateTime update(String id, byte[] data) {
-		checkPermissions(id, Action.UPDATE);
-
-		if (type.equals(PROJECT_MEETING)) {
+		
+		if (PROJECT_MEETING.equals(type)) {
 			ICalendar calendar = new ICalendar(data);
 			VEvent vevent = calendar.getFirstEvent();
 
@@ -98,191 +78,128 @@ public class ProjectController extends Controller {
 			return null;
 		}
 	}
-
+	
 	@Override
-	public ZonedDateTime updateId(String id, String newId) {
-		checkPermissions(id, Action.UPDATE_ID);
-		return nextNode.updateId(type, id, newId);
-	}
-
-	@Override
-	public void delete(String... objects) {
-		checkPermissions(objects, Action.DELETE);
-		nextNode.delete(type, objects);
-	}
-
-	@Override
-	public ZonedDateTime updateField(String id, String field, Object value) {
-		String parentField = getParentField();
-		if (parentField.equals(field)) {
-			checkParentPermissions((String) value, Action.UPDATE_FIELD);
+	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
+			String referencingField, String lang) {
+			
+		if (true) {
+			return super.getObjectsName(lang);
 		}
-
-		checkPermissions(id, Action.UPDATE_FIELD);
-		return nextNode.updateField(type, id, field, value);
-	}
-
-	protected void checkPermissions(String id, String method) {
-		checkPermissions(new String[] { id }, method);
-	}
-
-	protected void checkPermissions(String[] objects, String method) {
+		/*if (Auth.GUEST.equals(user) || ArrayUtils.contains(groups,  Auth.ADMINISTRATORS)) {
+			return super.getObjectsName(lang);
+		}*/
+		
+		LinkedHashMap<String, String> objects = new LinkedHashMap<String, String>();
 		String sql = null;
 		Object[] parameters = null;
-
+		
 		switch (type) {
 		case PROJECT:
-			sql = "select id, owner as user from project where id in (?)";
-			parameters = new Object[] { objects };
-			break;
-
-		case PROJECT_MEMBER:
-			sql = "select" 
-					+ " pm.id,"
-					+ " p.owner as user"
-
-				+ " from"
-					+ " project p"
-					+ " join project_member pm on p.id = pm.project"
-
-				+ " where" 
-					+ " pm.id in (?)";
-
-			parameters = new Object[] { objects };
-			break;
-
-		case PROJECT_DOCUMENT_CHAPTER:
-		case PROJECT_MEETING_PARTICIPANT:
-		case PROJECT_TICKET_MESSAGE:
-			sql = "select"
-					+ " type.id,"
-					+ " pm.member as user"
-
-				+ " from"
-					+ " project_member pm"
-					+ " right join # ptype on (pm.project = ptype.project and pm.member = ?)"
-					+ " join # type on ptype.id = type.#"
-
-				+ " where"
-					+ " type.id in (?)";
+			if (PROJECT_MEMBER.equals(referencingType)) {
+				sql = "select id, name from project where owner = ?";
+				parameters = new Object[] { user };
+			} else {
+				sql = "select"
+						+ " p.id,"
+						+ " p.name"
+					
+					+ " from"
+						+ " project p"
+						+ " left join project_member pm on (p.id = pm.project and pm.member = ?)"
+				
+					+ " where"
+						+ " p.owner = ? or pm.member = ?";
 			
-			parameters = new Object[] { getParentType(), user, type, getParentField(), objects };
-			break;
-
-		default:
-			sql = "select"
-					+ " type.id,"
-					+ " pm.member as user"
-
-				+ " from"
-					+ " project_member pm"
-					+ " right join # type on (pm.project = type.project and pm.member = ?)"
-
-				+ " where"
-					+ " type.id in (?)";
-			parameters = new Object[] { type, user, objects };
-			break;
-		}
-
-		for (Tuple permission : nextNode.query(sql, parameters)) {
-			if (!user.equals(permission.getString(KeyWords.USER))) {
-				throw new UnauthorizedActionException(type, method);
+				parameters = new Object[] {user, user, user};			
 			}
-		}
-
-	}
-
-	protected void checkParentPermissions(String parent, String method) {
-		if (type.equals(PROJECT)) {
-			return;
-		}
-
-		if (parent == null) {
-			return;
-		}
-
-		String parentType = getParentType();
-
-		String sql = null;
-		Object[] parameters = null;
-
-		switch (type) {
-		case PROJECT_MEMBER:
-			sql = "select count(owner) = 1 from project where id = ? and owner = ?";
-			parameters = new Object[] { parent, user };
-			break;
-
-		case PROJECT_DOCUMENT_CHAPTER:
-		case PROJECT_MEETING_PARTICIPANT:
-		case PROJECT_TICKET_MESSAGE:
-			sql = "select"
-					+ " count(pm.member) = 1"
-
-				+ " from"
-					+ " project_member pm"
-					+ " join # ptype on pm.project = ptype.project"
-
-				+ " where"
-					+ " ptype.id = ?"
-				+ " and pm.member = ?";
 			
-			parameters = new Object[] { parentType, parent, user };
 			break;
-
-		default:
-			sql = "select count(member) = 1 from project_member where project = ? and member = ?";
-			parameters = new Object[] { parent, user };
+			
+		case PROJECT_MEETING:
+		case PROJECT_DOCUMENT:
+		case PROJECT_TICKET:
+			sql = "select"
+					+ " type.id,"
+					+ " p.name || ' - ' || type.# as name"
+			
+				+ " from"
+					+ " # type"
+					+ " join project p on type.project = p.id"
+					+ " left join project_member pm on (type.project = pm.project and pm.member = ?)"
+			
+				+ " where"
+					+ " p.owner = ? or pm.member = ?";
+			
+			parameters = new Object[] { getNameField(type), type, user, user, user };
+			
 			break;
 		}
-
-		if (!nextNode.getBoolean(sql, parameters)) {
-			throw new UnauthorizedActionException(type, method);
+		
+		sql += " order by name";
+		
+		Tuple[] tuples = nextNode.query(sql,  parameters);
+		
+		for (Tuple tuple : tuples) {
+			objects.put(tuple.getString(KeyWords.ID), tuple.getString(KeyWords.NAME));
 		}
+		
+		return objects;
+	}	
+	
+	public static String getNameField(String type) {
+		String name = null;
+				
+		switch (type) {
+		case PROJECT_MEETING:
+			name = "summary";
+			break;
+		case PROJECT_DOCUMENT:
+		case PROJECT_TICKET:
+			name = "title";
+			break;
+		}
+		
+		return name;
 	}
-
-	protected String getParentType() {
-		String parentType = null;
+	
+	public static String getReferencedType(String type) {
+		String referencedType = null;
 
 		switch (type) {
 		case PROJECT_DOCUMENT_CHAPTER:
-			parentType = PROJECT_DOCUMENT;
+			referencedType = PROJECT_DOCUMENT;
 			break;
 
 		case PROJECT_MEETING_PARTICIPANT:
-			parentType = PROJECT_MEETING;
+			referencedType = PROJECT_MEETING;
 			break;
 
 		case PROJECT_TICKET_MESSAGE:
-			parentType = PROJECT_TICKET;
+			referencedType = PROJECT_TICKET;
 			break;
-
-		default:
-			parentType = PROJECT;
 		}
 
-		return parentType;
+		return referencedType;
 	}
-
-	protected String getParentField() {
-		String parentField = null;
+	
+	public static String getReferencingField(String type) {
+		String referencingField = null;
 
 		switch (type) {
 		case PROJECT_DOCUMENT_CHAPTER:
-			parentField = DOCUMENT;
+			referencingField = DOCUMENT;
 			break;
 
 		case PROJECT_MEETING_PARTICIPANT:
-			parentField = PROJECT_MEETING;
+			referencingField = PROJECT_MEETING;
 			break;
 
 		case PROJECT_TICKET_MESSAGE:
-			parentField = PROJECT_TICKET;
+			referencingField = PROJECT_TICKET;
 			break;
-
-		default:
-			parentField = PROJECT;
 		}
 
-		return parentField;
+		return referencingField;
 	}
 }

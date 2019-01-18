@@ -62,11 +62,11 @@ import com.nexttypes.exceptions.InvalidUserOrPasswordException;
 import com.nexttypes.exceptions.MethodNotAllowedException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.NotFoundException;
-import com.nexttypes.exceptions.UnauthorizedActionException;
+import com.nexttypes.exceptions.UnauthorizedException;
 import com.nexttypes.exceptions.ViewNotFoundException;
-import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.Stream;
 import com.nexttypes.logging.Logger;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.system.Action;
@@ -257,7 +257,7 @@ public class HTTPServlet extends HttpServlet {
 			} catch (NotFoundException e) {
 				logException(e, req.getUser(), req.getRemoteAddress());
 				content = view.notFound(req.getType(), req.getLang(), req.getView(), e);
-			} catch (UnauthorizedActionException e) {
+			} catch (UnauthorizedException e) {
 				logException(e, req.getUser(), req.getRemoteAddress());
 				content = view.unauthorized(req.getType(), req.getLang(), req.getView(), e);
 			}
@@ -1025,7 +1025,7 @@ public class HTTPServlet extends HttpServlet {
 			status = HTTPStatus.NOT_FOUND;
 		} else if (e instanceof MethodNotAllowedException) {
 			status = HTTPStatus.METHOD_NOT_ALLOWED;
-		} else if (e instanceof UnauthorizedActionException) {
+		} else if (e instanceof UnauthorizedException) {
 			status = HTTPStatus.UNAUTHORIZED;
 			if (Auth.GUEST.equals(userName)) {
 				String[] basicAuthUserAgents = settings.getStringArray(KeyWords.BASIC_AUTH_USER_AGENTS);

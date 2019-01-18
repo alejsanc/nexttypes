@@ -29,9 +29,8 @@ import com.nexttypes.enums.Order;
 import com.nexttypes.enums.Component;
 import com.nexttypes.exceptions.NotFoundException;
 import com.nexttypes.exceptions.NotImplementedException;
-import com.nexttypes.exceptions.UnauthorizedActionException;
-import com.nexttypes.interfaces.Module;
-import com.nexttypes.interfaces.Node;
+import com.nexttypes.exceptions.UnauthorizedException;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.settings.Settings;
@@ -40,9 +39,10 @@ import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Loader;
+import com.nexttypes.system.Module;
 import com.nexttypes.system.Constants;
 
-public abstract class View implements Module, AutoCloseable {
+public abstract class View extends Module {
 
 	protected Context context;
 	protected HTTPRequest request;
@@ -79,10 +79,11 @@ public abstract class View implements Module, AutoCloseable {
 		return new Content(e.getMessage(request.getStrings()), Format.TEXT, HTTPStatus.NOT_FOUND);
 	}
 
-	public Content unauthorized(String type, String lang, String view, UnauthorizedActionException e) {
+	public Content unauthorized(String type, String lang, String view, UnauthorizedException e) {
 		return new Content(e.getMessage(request.getStrings()), Format.TEXT, HTTPStatus.UNAUTHORIZED);
 	}
 
+	@Override
 	public Node getNextNode() {
 		return nextNode;
 	}

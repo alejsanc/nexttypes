@@ -85,7 +85,7 @@ public aspect ViewSecurity extends Checks {
     	checkId(id);
     	checkLang(lang);
     	checkView(view);
-    	checkPermissions(type, Action.UPDATE_FORM, thisJoinPoint);
+    	checkPermissions(type, id, Action.UPDATE_FORM, thisJoinPoint);
     }
 
     before(String type, String id, String lang, String view) : 
@@ -95,7 +95,7 @@ public aspect ViewSecurity extends Checks {
     	checkId(id);
     	checkLang(lang);
     	checkView(view);
-    	checkPermissions(type, Action.UPDATE_ID_FORM, thisJoinPoint);
+    	checkPermissions(type, id, Action.UPDATE_ID_FORM, thisJoinPoint);
     }
 
     before(String type, String id, String field, String lang, String view) : 
@@ -106,7 +106,7 @@ public aspect ViewSecurity extends Checks {
     	checkField(field);
     	checkLang(lang);
     	checkView(view);
-    	checkPermissions(type, Action.UPDATE_PASSWORD_FORM, thisJoinPoint);
+    	checkPermissions(type, id, Action.UPDATE_PASSWORD_FORM, thisJoinPoint);
     }
 
     before(String type, String id, String action, String lang, String view) : 
@@ -117,7 +117,7 @@ public aspect ViewSecurity extends Checks {
     	checkAction(action);
     	checkLang(lang);
     	checkView(view);
-    	checkPermissions(type, Action.EXECUTE_ACTION_FORM, thisJoinPoint);
+    	checkPermissions(type, id, Action.EXECUTE_ACTION_FORM, thisJoinPoint);
     }
 
     before(String lang, String view) : 
@@ -236,7 +236,7 @@ public aspect ViewSecurity extends Checks {
     	checkId(id);
     	checkLang(lang);
     	checkView(view);
-    	checkPermissions(type, Action.GET, thisJoinPoint);
+    	checkPermissions(type, id, Action.GET, thisJoinPoint);
     }
 
     before(String type, String id, String field) : 
@@ -245,7 +245,7 @@ public aspect ViewSecurity extends Checks {
     	checkType(type);
     	checkId(id);
     	checkField(field);
-    	checkPermissions(type, Action.GET_FIELD, thisJoinPoint);
+    	checkPermissions(type, id, Action.GET_FIELD, thisJoinPoint);
     }
     
     before(String type, String field) : 
@@ -265,6 +265,6 @@ public aspect ViewSecurity extends Checks {
     	checkElement(element);
     	checkLang(lang);
     	checkView(view);
-    	checkPermissions(type, Action.GET_ELEMENT, thisJoinPoint);
+    	checkPermissions(type, id, Action.GET_ELEMENT, thisJoinPoint);
     }
 }

@@ -35,9 +35,9 @@ import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
 

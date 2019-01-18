@@ -37,8 +37,8 @@ public class SoftwareView extends HTMLView {
 	protected final String SOFTWARE_RELEASE = "software_release";
 	protected final String VERSION = "version";
 
-	public SoftwareView(HTMLView view) {
-		super(view);
+	public SoftwareView(String type, HTMLView view) {
+		super(type, view);
 	}
 
 	public SoftwareView(HTTPRequest request) {

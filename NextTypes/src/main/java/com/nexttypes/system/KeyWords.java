@@ -266,6 +266,7 @@ public class KeyWords {
 	public static final String PASSWORD_FIELD_UPDATE = "password_field_update";
 	public static final String PASSWORD_SUCCESSFULLY_UPDATED = "password_successfully_updated";
 	public static final String PASSWORDS_DONT_MATCH = "passwords_dont_match";
+	public static final String PERMISSIONS = "permissions";
 	public static final String POOL = "pool";
 	public static final String PORT = "port";
 	public static final String PRECISION = "precision";
@@ -343,6 +344,7 @@ public class KeyWords {
 	public static final String TYPES_SUCCESSFULLY_DROPPED = "types_successfully_dropped";
 	public static final String UDATE = "udate";
 	public static final String UNAUTHORIZED_ACTION = "unauthorized_action";
+	public static final String UNAUTHORIZED_REFERENCE = "unauthorized_reference";
 	public static final String UNEXPECTED_TAG = "unexpected_tag";
 	public static final String UPDATE_ID_TITLE = "update_id_title";
 	public static final String UPDATE_PASSWORD_TITLE = "update_password_title";

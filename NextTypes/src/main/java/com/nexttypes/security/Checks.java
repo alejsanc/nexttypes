@@ -35,8 +35,10 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.InvalidValueException;
-import com.nexttypes.interfaces.Module;
+import com.nexttypes.nodes.Node;
+import com.nexttypes.settings.Permissions;
 import com.nexttypes.system.KeyWords;
+import com.nexttypes.system.Module;
 
 public class Checks {
 	public static final Pattern TYPE_FIELD_INDEX_ACTION_CHECK = Pattern.compile("[a-z0-9_]+");
@@ -283,20 +285,43 @@ public class Checks {
 			checkTupleField((String) entry.getKey());
 		}
 	}
+	
+	public static void checkPermissions(String action, JoinPoint joinPoint) {
+		((Module) joinPoint.getTarget()).getPermissions().checkPermissions(action);
+	}
 
 	public static void checkPermissions(String type, String action, JoinPoint joinPoint) {
-		Module auth = (Module) joinPoint.getTarget();
-		auth.getContext().getPermissions(auth.getUser(), auth.getGroups()).checkPermissions(type, action);
+		((Module) joinPoint.getTarget()).getPermissions(type).checkPermissions(type, action);
+	}
+	
+	public static void checkPermissions(String type, String id, String action, JoinPoint joinPoint) {
+		((Module) joinPoint.getTarget()).getPermissions(type).checkPermissions(type, id, action);
+	}
+	
+	public static void checkPermissions(String type, String[] objects, String action, JoinPoint joinPoint) {
+		((Module) joinPoint.getTarget()).getPermissions(type).checkPermissions(type, objects, action);
 	}
 
 	public static void checkPermissions(String[] types, String action, JoinPoint joinPoint) {
-		Module auth = (Module) joinPoint.getTarget();
-		auth.getContext().getPermissions(auth.getUser(), auth.getGroups()).checkPermissions(types, action);
+		((Module) joinPoint.getTarget()).getPermissions().checkPermissions(types, action);
 	}
-
-	public static void checkPermissions(String action, JoinPoint joinPoint) {
-		Module auth = (Module) joinPoint.getTarget();
-		auth.getContext().getPermissions(auth.getUser(), auth.getGroups()).checkPermissions(action);
+	
+	public static void checkReferencePermissions(NXObject object, JoinPoint joinPoint) {
+		Module module = ((Module) joinPoint.getTarget());
+		Node nextNode = module.getNextNode();
+		String referencingType = object.getType();
+		String referencingId = object.getId();
+		
+		for (Map.Entry<String, Object> entry : object.getFields().entrySet()) {
+			String referencingField = entry.getKey();
+			String referencedType = nextNode.getFieldType(referencingType, referencingField);
+			
+			if (!PT.isPrimitiveType(referencedType)) {
+				String referencedId = (String) entry.getValue();
+				
+				module.getPermissions(referencedType).checkReferencePermissions(referencedType,
+						referencedId, referencingType, referencingId, referencingField);
+			}
+		}
 	}
-
 }

@@ -55,8 +55,8 @@ public class ArticleView extends HTMLView {
 	protected String category;
 	protected String categoryParameter;
 
-	public ArticleView(HTMLView view) {
-		super(view);
+	public ArticleView(String type, HTMLView view) {
+		super(type, view);
 	}
 
 	public ArticleView(HTTPRequest request) {

@@ -61,7 +61,6 @@ import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.enums.Order;
-import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.protocol.http.HTTPRequest;
@@ -73,7 +72,7 @@ import com.nexttypes.system.Context;
 import com.nexttypes.system.Controller;
 import com.nexttypes.system.Loader;
 
-public class ControllersNode implements Node {
+public class ControllersNode extends Node {
 	protected String user;
 	protected String[] groups;
 	protected Settings settings;
@@ -412,7 +411,14 @@ public class ControllersNode implements Node {
 
 	@Override
 	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
-		return getController(type).getNames(lang);
+		return getController(type).getObjectsName(lang);
+	}
+	
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingType,
+			String referencingAction, String referencingField, String lang) {
+		return getController(referencedType).getObjectsName(referencingType, referencingAction,
+				referencingField, lang);
 	}
 
 	@Override
@@ -988,5 +994,10 @@ public class ControllersNode implements Node {
 	@Override
 	public String[] getGroups(String user) {
 		return nextNode.getGroups(user);
+	}
+
+	@Override
+	public Node getNextNode() {
+		return nextNode;
 	}
 }

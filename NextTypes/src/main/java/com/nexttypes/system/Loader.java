@@ -17,11 +17,15 @@
 package com.nexttypes.system;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Properties;
 
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.interfaces.Node;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.protocol.http.HTTPRequest;
+import com.nexttypes.settings.Permissions;
+import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.views.HTMLView;
 import com.nexttypes.views.View;
 import com.nexttypes.views.WebDAVView;
@@ -75,8 +79,10 @@ public class Loader {
 		return (View) Loader.load(className, HTTPRequest.class, request);
 	}
 
-	public static HTMLView loadHTMLView(String className, HTMLView parent) {
-		return (HTMLView) Loader.load(className, HTMLView.class, parent);
+	public static HTMLView loadHTMLView(String className, String type, HTMLView parent) {
+		return (HTMLView) Loader.load(className,
+				new Class[] { String.class, HTMLView.class},
+				new Object[] { type, parent });
 	}
 	
 	public static WebDAVView loadWebDAVView(String className, HTTPRequest request) {
@@ -92,5 +98,12 @@ public class Loader {
 
 	public static Task loadTask(String className, Context context) {
 		return (Task) Loader.load(className, Context.class, context);
+	}
+	
+	public static Permissions loadPermissions(String className, ArrayList<Properties> settings,
+			String user, String[] groups, Node nextNode) {
+		return (Permissions) Loader.load(className,
+				new Class[] { ArrayList.class, String.class, String[].class, Node.class },
+				new Object[] { settings, user, groups, nextNode });
 	}
 }

@@ -23,7 +23,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.exceptions.UnauthorizedActionException;
-import com.nexttypes.interfaces.Node;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Controller;

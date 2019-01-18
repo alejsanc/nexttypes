@@ -29,7 +29,7 @@ import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.URL;
 import com.nexttypes.enums.Format;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.interfaces.Node;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Controller;
 

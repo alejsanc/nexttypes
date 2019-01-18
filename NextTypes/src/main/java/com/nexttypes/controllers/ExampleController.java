@@ -35,7 +35,7 @@ import com.nexttypes.datatypes.JSON;
 import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.Video;
 import com.nexttypes.datatypes.XML;
-import com.nexttypes.interfaces.Node;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.Controller;
 

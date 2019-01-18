@@ -25,22 +25,22 @@ import com.nexttypes.datatypes.Type;
 import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.enums.Order;
-import com.nexttypes.interfaces.Node;
 import com.nexttypes.system.Action;
+import com.nexttypes.nodes.Node;
  
 public aspect NodeSecurity extends Checks {
 
-    before(Type type) : (execution(* Node.create(..))) && args(type) {
+    before (Type type) : (execution(* Node.create(..))) && args(type) {
     	checkType(type);
     	checkPermissions(type.getName(), Action.CREATE, thisJoinPoint);
     }
 
-    before(Type type) : (execution(* Node.alter(..))) && args(type, ..) {
+    before (Type type) : (execution(* Node.alter(..))) && args(type, ..) {
     	checkType(type);
     	checkPermissions(type.getName(), Action.ALTER, thisJoinPoint);
     }
 
-    before(String type, String field, TypeField typeField) :
+    before (String type, String field, TypeField typeField) :
     	(execution(* Node.addField(..))) &&
     	args(type, field, typeField) {
     	
@@ -50,7 +50,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.ADD_FIELD, thisJoinPoint);
     }
 
-    before(String type, String field, TypeField typeField) :
+    before (String type, String field, TypeField typeField) :
     	execution(* Node.alterField(..)) &&
     	args(type, field, typeField) {
     	
@@ -60,7 +60,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.ALTER_FIELD, thisJoinPoint);
     }
 
-    before(String type, String index, TypeIndex typeIndex) :
+    before (String type, String index, TypeIndex typeIndex) :
     	execution(* Node.addIndex(..)) &&
     	args(type, index, typeIndex) {
     	
@@ -70,7 +70,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.ADD_INDEX, thisJoinPoint);
     }
 
-    before(String type, String index, TypeIndex typeIndex) :
+    before (String type, String index, TypeIndex typeIndex) :
     	execution(* Node.alterIndex(..)) &&
     	args(type, index, typeIndex) {
     	
@@ -80,7 +80,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.ALTER_INDEX, thisJoinPoint);
     }
 
-    before(String type, String newName) :
+    before (String type, String newName) :
     	execution(* Node.rename(..)) && args(type, newName) {
     	
     	checkType(type);
@@ -90,7 +90,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.RENAME, thisJoinPoint);
     }
 
-    before(String type, String field, String newName) :
+    before (String type, String field, String newName) :
     	execution(* Node.renameField(..)) && args(type, field, newName) {
     	
     	checkType(type);
@@ -99,7 +99,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.RENAME_FIELD, thisJoinPoint);
     }
 
-    before(String type, String index, String newName) :
+    before (String type, String index, String newName) :
     	execution(* Node.renameIndex(..)) && args(type, index, newName) {
     	
     	checkType(type);
@@ -108,80 +108,82 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.RENAME_INDEX, thisJoinPoint);
     }
 
-    before(NXObject object) : (execution(* Node.insert(..))) && args(object) {
+    before (NXObject object) : (execution(* Node.insert(..))) && args(object) {
     	checkObject(object);
     	checkPermissions(object.getType(), Action.INSERT, thisJoinPoint);
+    	checkReferencePermissions(object, thisJoinPoint);
     }
 
-    before(NXObject object) : execution(* Node.update(..)) && args(object, ..) {
+    before (NXObject object) : execution(* Node.update(..)) && args(object, ..) {
     	checkObject(object);
     	checkPermissions(object.getType(), Action.UPDATE, thisJoinPoint);
+    	checkReferencePermissions(object, thisJoinPoint);
     }
 
-    before(String type, String id) : execution(* Node.update(..)) && args(type, id, *) {
+    before (String type, String id) : execution(* Node.update(..)) && args(type, id, *) {
     	checkType(type);
     	checkId(id);
-    	checkPermissions(type, Action.UPDATE, thisJoinPoint);
+    	checkPermissions(type, id, Action.UPDATE, thisJoinPoint);
     }
 
-    before(String type, String id, String newId) : execution(* Node.updateId(..))
+    before (String type, String id, String newId) : execution(* Node.updateId(..))
     	&& args(type, id, newId) {
     	
     	checkType(type);
     	checkId(id);
     	checkId(newId);
-    	checkPermissions(type, Action.UPDATE_ID, thisJoinPoint);
+    	checkPermissions(type, id, Action.UPDATE_ID, thisJoinPoint);
     }
 
-    before(String type, String id, String field) : execution(* Node.updateField(..))
+    before (String type, String id, String field) : execution(* Node.updateField(..))
     	&& args(type, id, field, *) {
     	
     	checkType(type);
     	checkId(id);
     	checkField(field);
-    	checkPermissions(type, Action.UPDATE_FIELD, thisJoinPoint);
+    	checkPermissions(type, id, Action.UPDATE_FIELD, thisJoinPoint);
     }
 
-    before(String type, String id, String field) : execution(* Node.updatePassword(..))
+    before (String type, String id, String field) : execution(* Node.updatePassword(..))
     	&& args(type, id, field, ..) {
     	
     	checkType(type);
     	checkId(id);
     	checkField(field);
-    	checkPermissions(type, Action.UPDATE_PASSWORD, thisJoinPoint);
+    	checkPermissions(type, id, Action.UPDATE_PASSWORD, thisJoinPoint);
     }
 
-    before(String[] types) : execution(* Node.drop(..)) && args(types) {
+    before (String[] types) : execution(* Node.drop(..)) && args(types) {
     	checkTypes(types);
     	checkPermissions(types, Action.DROP, thisJoinPoint);
     }
 
-    before(String type, String field) : execution(* Node.dropField(..)) && args(type, field) {
+    before (String type, String field) : execution(* Node.dropField(..)) && args(type, field) {
     	checkType(type);
     	checkField(field);
     	checkPermissions(type, Action.DROP_FIELD, thisJoinPoint);
     }
 
-    before(String type, String index) : execution(* Node.dropIndex(..)) && args(type, index) {
+    before (String type, String index) : execution(* Node.dropIndex(..)) && args(type, index) {
     	checkType(type);
     	checkIndex(index);
     	checkPermissions(type, Action.DROP_INDEX, thisJoinPoint);
     }
 
-    before(String type, String[] objects) : execution(* Node.delete(..)) && args(type, objects) {
+    before (String type, String[] objects) : execution(* Node.delete(..)) && args(type, objects) {
     	checkType(type);
     	checkObjects(objects);
-    	checkPermissions(type, Action.DELETE, thisJoinPoint);
+    	checkPermissions(type, objects, Action.DELETE, thisJoinPoint);
     }
 
-    before(String[] types, boolean includeObjects) : execution(* Node.exportTypes(..))
+    before (String[] types, boolean includeObjects) : execution(* Node.exportTypes(..))
     	&& args(types, includeObjects) {
     	
     	checkTypes(types);
     	checkPermissions(types, Action.EXPORT_TYPES, thisJoinPoint);
     }
 
-    before(String[] types, Filter filter) : execution(* Node.exportTypes(..))
+    before (String[] types, Filter filter) : execution(* Node.exportTypes(..))
     	&& args(types, filter, ..) {
     	
     	checkTypes(types);
@@ -189,7 +191,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(types, Action.EXPORT_TYPES, thisJoinPoint);
     }
 
-    before(String[] types, Filter[] filters) : execution(* Node.exportTypes(..))
+    before (String[] types, Filter[] filters) : execution(* Node.exportTypes(..))
     	&& args(types, filters, ..) {
     	
     	checkTypes(types);
@@ -197,61 +199,61 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(types, Action.EXPORT_TYPES, thisJoinPoint);
     }
 
-    before() : execution(* Node.backup(..)) {
+    before () : execution(* Node.backup(..)) {
     	checkPermissions(Action.BACKUP, thisJoinPoint);
     }
     
-    before() : execution(* Node.getVersion(..)) {
+    before () : execution(* Node.getVersion(..)) {
     	checkPermissions(Action.GET_VERSION, thisJoinPoint);
     }
 
-    before(String type, String[] objects, LinkedHashMap<String, Order> order) :
+    before (String type, String[] objects, LinkedHashMap<String, Order> order) :
     	execution(* Node.exportObjects(..))
 		&& args(type, objects, order) {
     	
     	checkType(type);
     	checkObjects(objects);
     	checkOrder(order);
-    	checkPermissions(type, Action.EXPORT_OBJECTS, thisJoinPoint);
+    	checkPermissions(type, objects, Action.EXPORT_OBJECTS, thisJoinPoint);
     }
 
-    before() : execution(* Node.importTypes(..)) {
+    before () : execution(* Node.importTypes(..)) {
     	checkPermissions(Action.IMPORT_TYPES, thisJoinPoint);
     }
 
-    before() : execution(* Node.importObjects(..)) {
+    before () : execution(* Node.importObjects(..)) {
     	checkPermissions(Action.IMPORT_OBJECTS, thisJoinPoint);
     }
 
-    before(String type, String id, String action) : execution(* Node.executeAction(..)) 
+    before (String type, String id, String action) : execution(* Node.executeAction(..)) 
     	&& args(type, id, action, ..) {
 
     	checkType(type);
     	checkId(id);
     	checkAction(action);
-    	checkPermissions(type, action, thisJoinPoint);
+    	checkPermissions(type, id, action, thisJoinPoint);
     }
 
-    before(String type, String[] objects, String action) : execution(* Node.executeAction(..)) 
+    before (String type, String[] objects, String action) : execution(* Node.executeAction(..)) 
 		&& args(type, objects, action, ..) {
 
     	checkType(type);
     	checkObjects(objects);
     	checkAction(action);
-    	checkPermissions(type, action, thisJoinPoint);
+    	checkPermissions(type, objects, action, thisJoinPoint);
     }
 
-    before(String type, String id, String[] fields, String lang) :
+    before (String type, String id, String[] fields, String lang) :
 		execution(* Node.get(..)) && args(type, id, fields, lang, ..) {
     	
     	checkType(type);
     	checkId(id);
     	checkFields(fields);
     	checkLang(lang);
-    	checkPermissions(type, Action.GET, thisJoinPoint);
+    	checkPermissions(type, id, Action.GET, thisJoinPoint);
     }
 
-    before(String type, String[] fields, String lang, Filter[] filters, String search,
+    before (String type, String[] fields, String lang, Filter[] filters, String search,
 	    LinkedHashMap<String, Order> order) :
 		(execution(* Node.select(..)))
 		&& args(type, fields, lang, filters, search, order, ..) {
@@ -264,7 +266,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
 
-    before(String type, String[] fields, String lang, Filter[] filters, String search,
+    before (String type, String[] fields, String lang, Filter[] filters, String search,
 	    LinkedHashMap<String, Order> order) :
 		(execution(* Node.selectStream(..)))
 		&& args(type, fields, lang, filters, search, order, ..) {
@@ -277,7 +279,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
 
-    before(String type, String[] fields, String lang, Filter filter, String search,
+    before (String type, String[] fields, String lang, Filter filter, String search,
 	    LinkedHashMap<String, Order> order) :
 		(execution(* Node.select(..)))
 		&& args(type, fields, lang, filter, search, order, ..) {
@@ -290,7 +292,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
 
-    before(String type, String[] fields, String lang, Filter filter, String search,
+    before (String type, String[] fields, String lang, Filter filter, String search,
 	    LinkedHashMap<String, Order> order) :
 		(execution(* Node.selectStream(..)))
 		&& args(type, fields, lang, filter, search, order, ..) {
@@ -303,7 +305,7 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
 
-    before(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
+    before (String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
 	    String[] searchFields, String[] groupFields, String order) : (execution(* Node.select(..)))
 		&& args(type, sql, parameters, filters, search, searchFields, groupFields, order, ..) {
     	
@@ -311,40 +313,50 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
 
-    before(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order) :
+    before (String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order) :
 		(execution(* Node.select(..))) && args(type, sql, parameters, filters, order) {
     	
     	checkType(type);
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
 
-    before(String type, String id, String lang) : execution(* Node.getName(..)) && args(type, id, lang) {
+    before (String type, String id, String lang) : execution(* Node.getName(..)) && args(type, id, lang) {
     	checkType(type);
     	checkId(id);
     	checkLang(lang);
     }
 
-    before(String type, String lang) : execution(* Node.getObjectsName(..)) && args(type, lang) {
+    before (String type, String lang) :	execution(* Node.getObjectsName(..)) && args(type, lang) {
     	checkType(type);
     	checkLang(lang);
     }
+    
+    before (String referencedType, String referencingType, String referencingAction, 
+    		String referencingField, String lang) : execution(* Node.getObjectsName(..))
+    	&& args(referencedType, referencingType, referencingAction, referencingField, lang) {
+    	checkType(referencedType);
+    	checkType(referencingType);
+    	checkAction(referencingAction);
+    	checkField(referencingField);
+    	checkLang(lang);
+    }
 
-    before(String type, String index) : execution(* Node.getTypeIndex(..)) && args(type, index) {
+    before (String type, String index) : execution(* Node.getTypeIndex(..)) && args(type, index) {
     	checkType(type);
     	checkIndex(index);
     }
 
-    before(String type, String[] fields) : execution(* Node.getTypeFields(..)) && args(type, fields) {
+    before (String type, String[] fields) : execution(* Node.getTypeFields(..)) && args(type, fields) {
     	checkType(type);
     	checkFields(fields);
     }
 
-    before(String type, String[] indexes) : execution(* Node.getTypeIndexes(..)) && args(type, indexes) {
+    before (String type, String[] indexes) : execution(* Node.getTypeIndexes(..)) && args(type, indexes) {
     	checkType(type);
     	checkIndexes(indexes);
     }
 
-    before(String type) : (
+    before (String type) : (
 	    execution(* Node.getType(..)) ||
 	    execution(* Node.getUpReferences(..)) ||
 	    execution(* Node.getDownReferences(..)) ||
@@ -362,7 +374,7 @@ public aspect NodeSecurity extends Checks {
     	checkType(type);
     }
 
-    before(String[] types) : (
+    before (String[] types) : (
 	    execution(* Node.getObjectsInfo(..)) ||
 	    execution(* Node.getUpReferences(..)) ||
 	    execution(* Node.getTypes(..))
@@ -371,7 +383,7 @@ public aspect NodeSecurity extends Checks {
     	checkTypes(types);
     }
 
-    before(String type, String id) : (
+    before (String type, String id) : (
 	    execution(* Node.getFieldsSize(..)) ||
 	    execution(* Node.getFieldsInfo(..)) ||
 	    execution(* Node.getUDate(..)) ||
@@ -383,7 +395,7 @@ public aspect NodeSecurity extends Checks {
     	checkId(id);
     }
 
-    before(String type, String field) : (
+    before (String type, String field) : (
 	    execution(* Node.getTypeField(..)) ||
 	    execution(* Node.getFieldType(..)) ||
 	    execution(* Node.getFieldContentType(..)) ||
@@ -396,7 +408,7 @@ public aspect NodeSecurity extends Checks {
     	checkField(field);
     }
 
-    before(String type, String id, String field) : (
+    before (String type, String id, String field) : (
 	    execution(* Node.getField(..)) ||
 	    execution(* Node.getStringField(..)) ||
 	    execution(* Node.getBinaryField(..)) ||
@@ -420,7 +432,7 @@ public aspect NodeSecurity extends Checks {
     	checkField(field);
     }
 
-    before(String type, String id, String field, String element) : (
+    before (String type, String id, String field, String element) : (
     	execution(* Node.getHTMLElement(..)) ||
     	execution(* Node.getXMLElement(..))
     	) && args(type, id, field, element) {
@@ -431,14 +443,14 @@ public aspect NodeSecurity extends Checks {
     	checkElement(element);
     }
 
-    before(String type, String action) : 
+    before (String type, String action) : 
     	execution(* Node.getActionFields(..)) && args(type, action) {
     	
     	checkType(type);
     	checkAction(action);
     }
     
-    before(String type, String action, String field) : (
+    before (String type, String action, String field) : (
     	execution(* Node.getActionField(..)) ||
     	execution(* Node.getActionFieldType(..)) ||
     	execution(* Node.getActionFieldRange(..))

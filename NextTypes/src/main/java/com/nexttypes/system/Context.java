@@ -40,6 +40,7 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.logging.Logger;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Permissions;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.Strings;
@@ -63,7 +64,7 @@ public class Context {
 	protected ConcurrentHashMap<String, LinkedHashMap<String, TypeField>> fields
 		= new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, LinkedHashMap<String, TypeIndex>> indexes
-	= new ConcurrentHashMap<>();
+		= new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, HTML> templates = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, byte[]> defaults = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Menu> menus = new ConcurrentHashMap<>();
@@ -150,9 +151,32 @@ public class Context {
 	public Strings getStrings(String lang) {
 		return new Strings(getProperties(KeyWords.LANG + "/" + lang + ".properties"));
 	}
+	
+	public Permissions getPermissions(Module module) {
+		return getPermissions(null, module);
+	}
+	
+	public Permissions getPermissions(String type, Module module) {
+		return getPermissions(type, module.getUser(), module.getGroups(), module.getTypeSettings(), 
+				module.getNextNode());
+	}
 
-	public Permissions getPermissions(String user, String[] groups) {
-		return new Permissions(getProperties(Settings.PERMISSIONS_SETTINGS), user, groups);
+	public Permissions getPermissions(String type, String user, String[] groups, TypeSettings typeSettings,
+			Node nextNode) {
+		
+		Permissions permissions = null;
+		
+		ArrayList<Properties> settings = getProperties(Settings.PERMISSIONS_SETTINGS);
+		
+		String className = typeSettings.gts(type, KeyWords.PERMISSIONS);
+			
+		if (className != null) {
+			permissions = Loader.loadPermissions(className, settings, user, groups, nextNode);
+		} else {
+			permissions = new Permissions(settings, user, groups, nextNode);
+		}
+		
+		return permissions;
 	}
 
 	public Settings getSettings(String file) {

@@ -112,7 +112,6 @@ import com.nexttypes.exceptions.ObjectNotFoundException;
 import com.nexttypes.exceptions.StringException;
 import com.nexttypes.exceptions.TypeException;
 import com.nexttypes.exceptions.TypeNotFoundException;
-import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TuplesStream;
 import com.nexttypes.interfaces.TypesStream;
@@ -132,7 +131,7 @@ import com.nexttypes.system.Context.TypesCache;
 import com.nexttypes.system.DBConnection;
 import com.nexttypes.system.Utils;
 
-public class PostgreSQLNode implements Node {
+public class PostgreSQLNode extends Node {
 	public static final String POSTGRESQL = "postgresql";
 	public static final String DRIVER = "org.postgresql.Driver";
 
@@ -1721,6 +1720,12 @@ public class PostgreSQLNode implements Node {
 
 		return name;
 	}
+	
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingAction,
+			String referencingType, String referencingField, String lang) {
+		return getObjectsName(referencedType, lang);
+	}
 
 	@Override
 	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
@@ -1737,7 +1742,7 @@ public class PostgreSQLNode implements Node {
 		if (order != null) {
 			sql.append(" order by " + order);
 		} else {
-			sql.append(" order by type.id");
+			sql.append(" order by name");
 		}
 
 		LinkedHashMap<String, String> objects = new LinkedHashMap<String, String>();
@@ -3711,7 +3716,7 @@ public class PostgreSQLNode implements Node {
 			if (count > 0) {
 			
 				sql.append(" order by ");
-				if (order != null && !order.isEmpty()) {
+				if (order != null && order.size() > 0) {
 					for (Map.Entry<String, Order> entry : order.entrySet()) {
 						String fieldValue = entry.getKey();
 						String fieldString = typeSettings.getFieldString(type, fieldValue, KeyWords.ORDER,
@@ -4051,5 +4056,10 @@ public class PostgreSQLNode implements Node {
 	@Override
 	public TypeSettings getTypeSettings() {
 		return typeSettings;
+	}
+
+	@Override
+	public Node getNextNode() {
+		return this;
 	}
 }

@@ -57,8 +57,8 @@ import com.nexttypes.exceptions.ActionExecutionException;
 import com.nexttypes.exceptions.ActionFieldException;
 import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.interfaces.Node;
 import com.nexttypes.interfaces.ObjectsStream;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
 
@@ -391,8 +391,13 @@ public class Controller {
 		return nextNode.getName(type, id, lang);
 	}
 
-	public LinkedHashMap<String, String> getNames(String lang) {
+	public LinkedHashMap<String, String> getObjectsName(String lang) {
 		return nextNode.getObjectsName(type, lang);
+	}
+	
+	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
+			String referencingField, String lang) {
+		return nextNode.getObjectsName(type, referencingType, referencingAction, referencingField, lang);
 	}
 
 	public TypeField getTypeField(String field) {

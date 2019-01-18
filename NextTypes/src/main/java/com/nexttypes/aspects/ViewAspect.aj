@@ -19,7 +19,7 @@ package com.nexttypes.aspects;
 import org.aspectj.lang.JoinPoint;
 
 import com.nexttypes.datatypes.Content;
-import com.nexttypes.interfaces.Node;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.views.View;
 import com.nexttypes.protocol.http.HTTPStatus;
 

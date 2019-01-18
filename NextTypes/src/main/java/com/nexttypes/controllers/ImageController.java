@@ -19,7 +19,7 @@ package com.nexttypes.controllers;
 import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.exceptions.ObjectException;
-import com.nexttypes.interfaces.Node;
+import com.nexttypes.nodes.Node;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Controller;

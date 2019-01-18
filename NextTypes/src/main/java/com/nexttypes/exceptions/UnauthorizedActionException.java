@@ -16,14 +16,44 @@
 
 package com.nexttypes.exceptions;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.nexttypes.settings.Strings;
 import com.nexttypes.system.KeyWords;
 
-public class UnauthorizedActionException extends ActionException {
+public class UnauthorizedActionException extends UnauthorizedException {
 	protected static final long serialVersionUID = 1L;
 
+	protected String type;
+	protected String action;
+	protected String[] objects;
+	
 	public UnauthorizedActionException(String type, String action) {
-		super(type, action, KeyWords.UNAUTHORIZED_ACTION);
+		this(type, (String[]) null, action);
+	}
+	
+	public UnauthorizedActionException(String type, String id, String action) {
+		this(type, id != null ? new String[] { id } : null, action);
+	}
+	
+	public UnauthorizedActionException(String type, String[] objects, String action) {
+		super(KeyWords.UNAUTHORIZED_ACTION);
+		
+		this.type = type;
+		this.objects = objects;
+		this.action = action;
+	}
+	
+	public String getType() {
+		return type;
+	}
+	
+	public String[] getObjects() {
+		return objects;
+	}
+	
+	public String getAction() {
+		return action;
 	}
 
 	@Override
@@ -35,6 +65,10 @@ public class UnauthorizedActionException extends ActionException {
 		}
 		
 		message.append(strings.getActionName(type, action));
+		
+		if (objects != null && objects.length > 0) {
+			message.append(" -> " + StringUtils.join(objects, ","));
+		}
 		
 		return message.toString();
 	}
