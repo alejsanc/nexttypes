@@ -1291,7 +1291,7 @@ public class HTMLView extends View {
 		Element actionButton = form.appendElement(button(actionName, Action.INSERT, Icon.PLUS,
 				SUBMIT_FORM));
 		if (!permissions.isAllowed(type, Action.INSERT) ||
-				!(ref != null && permissions.isAllowedToMakeReference(ref, type, null))) {
+				(ref != null && !permissions.isAllowedToMakeReference(ref, type, null))) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
 
