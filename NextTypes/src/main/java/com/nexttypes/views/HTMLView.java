@@ -1244,10 +1244,10 @@ public class HTMLView extends View {
 		}
 
 		if (ref != null) {
-			String field = ref.getField();
+			String field = ref.getReferencingField();
 			
 			if (!ArrayUtils.contains(fields, field)) {
-				form.appendElement(input(HTML.HIDDEN, "@" + field, null, ref.getId()));
+				form.appendElement(input(HTML.HIDDEN, "@" + field, null, ref.getReferencedId()));
 			}
 		}
 		
@@ -1290,7 +1290,8 @@ public class HTMLView extends View {
 
 		Element actionButton = form.appendElement(button(actionName, Action.INSERT, Icon.PLUS,
 				SUBMIT_FORM));
-		if (!permissions.isAllowed(type, Action.INSERT)) {
+		if (!permissions.isAllowed(type, Action.INSERT) ||
+				!(ref != null && permissions.isAllowedToMakeReference(ref, type, null))) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
 
@@ -1404,7 +1405,8 @@ public class HTMLView extends View {
 		Filter[] refAndFilters = null;
 		
 		if (ref != null) {
-			Filter refFilter = new Filter(ref.getField(), Comparison.EQUAL, ref.getId(), false);
+			Filter refFilter = new Filter(ref.getReferencingField(), Comparison.EQUAL,
+					ref.getReferencedId(), false);
 			
 			if (filters != null) {
 				refAndFilters = (Filter[]) ArrayUtils.add(filters, refFilter);
@@ -1429,10 +1431,6 @@ public class HTMLView extends View {
 
 		if (Component.REFERENCE.equals(component)) {
 			htmlView = getHTMLView(type, view);
-			if (ref != null) {
-				ref.setType(typeFields.get(ref.getField()).getType());
-			}
-			
 			select.appendElement(htmlView.referenceSelectHeader(type, lang, view, ref, search, count, 
 					component));
 		} else {
@@ -1587,11 +1585,13 @@ public class HTMLView extends View {
 	public Element referenceOutput(String type, String lang, String view, FieldReference ref,
 			Filter[] filters, String search, LinkedHashMap<String, Order> order) {
 		
-		String refType = nextNode.getTypeField(type, ref.getField()).getType();
+		String referencedType = nextNode.getTypeField(type, ref.getReferencingField()).getType();
 
 		Element div = document.createElement(HTML.DIV).addClass(REFERENCE_OUTPUT);
-		div.appendElement(HTML.STRONG).appendText(strings.getFieldName(type, ref.getField()) + ": ");
-		div.appendElement(anchor(nextNode.getName(refType, ref.getId(), lang), url(refType, ref.getId(), lang, view)));
+		div.appendElement(HTML.STRONG).appendText(strings.getFieldName(type, ref.getReferencingField())
+				+ ": ");
+		div.appendElement(anchor(nextNode.getName(referencedType, ref.getReferencedId(), lang),
+				url(referencedType, ref.getReferencedId(), lang, view)));
 		
 		String url = url(type, lang, view) + filtersParameters(filters) + searchParameter(search)
 			+ orderParameter(order);
@@ -1600,13 +1600,14 @@ public class HTMLView extends View {
 		return div;
 	}
 
-	public Element downReferences(String refType, String refId, String lang, String view) {
+	public Element downReferences(String referencedType, String referencedId, String lang, String view) {
 		Element references = document.createElement(HTML.DIV);
 
-		for (TypeReference downReference : nextNode.getDownReferences(refType)) {
-			FieldReference ref = new FieldReference(downReference.getField(), refType, refId);
-			references.appendElement(selectElement(downReference.getType(), lang, view, ref, null, null,
-					null, 0L, null, Component.REFERENCE));
+		for (TypeReference downReference : nextNode.getDownReferences(referencedType)) {
+			FieldReference ref = new FieldReference(downReference.getReferencingField(), referencedType,
+					referencedId);
+			references.appendElement(selectElement(downReference.getReferencingType(), lang, view, ref,
+					null, null, null, 0L, null, Component.REFERENCE));
 		}
 
 		return references;
@@ -1786,11 +1787,12 @@ public class HTMLView extends View {
 		Element cell = document.createElement(HTML.TD);
 		Element input = null;
 
-		if (ref != null && field.equals(ref.getField())) {
+		if (ref != null && field.equals(ref.getReferencingField())) {
 			input = document.createElement(HTML.DIV)
-					.appendElement(input(HTML.HIDDEN, "@" + ref.getField(), title, ref.getId()));
+					.appendElement(input(HTML.HIDDEN, "@" + ref.getReferencingField(), title,
+							ref.getReferencedId()));
 			cell.addClass(REFERENCE_FIELD);
-			cell.appendText(nextNode.getName(typeField.getType(), ref.getId(), lang));
+			cell.appendText(nextNode.getName(typeField.getType(), ref.getReferencedId(), lang));
 		} else {
 			input = fieldInput(type, Action.INSERT, field, title, value, typeField, lang);
 		}
@@ -2927,7 +2929,7 @@ public class HTMLView extends View {
 	}
 	
 	public String refString(FieldReference ref) {
-		return ref.getField() + ":" + ref.getId();
+		return ref.getReferencingField() + ":" + ref.getReferencedId();
 	}
 
 	public String formParameter(String action) {
@@ -4069,8 +4071,8 @@ public class HTMLView extends View {
 			main.appendElement(referenceOutput(type, lang, view, ref, null, null, null));
 
 			filters.append(" and # = ?");
-			parameters.add(ref.getField());
-			parameters.add(ref.getId());
+			parameters.add(ref.getReferencingField());
+			parameters.add(ref.getReferencedId());
 		}
 
 		Tuple[] events = nextNode.select(type, sql, parameters, filters.toString(), "date, start_time");

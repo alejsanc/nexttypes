@@ -47,7 +47,7 @@ public class ICalendarView extends View {
 		if (sql != null) {
 			if (ref != null) {
 				sql += " where #=?";
-				parameters = new Object[] { ref.getField(), ref.getId() };
+				parameters = new Object[] { ref.getReferencingField(), ref.getReferencedId() };
 			}
 
 			Tuple[] events = nextNode.query(sql, parameters);

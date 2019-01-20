@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.exceptions.UnauthorizedActionException;
 import com.nexttypes.exceptions.UnauthorizedReferenceException;
@@ -129,6 +130,12 @@ public class Permissions extends TypeSettings {
 		if (disallowedObjects != null && disallowedObjects.length > 0) {
 			throw new UnauthorizedActionException(type, disallowedObjects, action);
 		}
+	}
+	
+	public boolean isAllowedToMakeReference(FieldReference ref, String referencingType,
+			String referencingId) {
+		return isAllowedToMakeReference(ref.getReferencedType(), ref.getReferencedId(),
+				referencingType, referencingId, ref.getReferencingField());
 	}
 	
 	public boolean isAllowedToMakeReference(String referencedType, String referencedId,

@@ -74,9 +74,9 @@ public class ProjectPermissions extends Permissions {
 						+ " project p"
 						+ " left join project_member pm on (p.id = pm.project and pm.member = ?)"
 				
-					+ " where p.id in (?) and pm.member is null";
+					+ " where p.id in (?) and p.owner != ? and pm.member is null";
 				
-				parameters = new Object[] {user, objects};
+				parameters = new Object[] {user, objects, user};
 			}
 			
 			break;

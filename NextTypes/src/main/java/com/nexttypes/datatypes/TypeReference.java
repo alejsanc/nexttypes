@@ -17,27 +17,27 @@
 package com.nexttypes.datatypes;
 
 public class TypeReference {
-	protected String type;
-	protected String field;
+	protected String referencingType;
+	protected String referencingField;
 
-	public TypeReference(String type, String field) {
-		this.type = type;
-		this.field = field;
+	public TypeReference(String referencingType, String referencingField) {
+		this.referencingType = referencingType;
+		this.referencingField = referencingField;
 	}
 
-	public String getType() {
-		return type;
+	public String getReferencingType() {
+		return referencingType;
 	}
 
-	public String getField() {
-		return field;
+	public String getReferencingField() {
+		return referencingField;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setReferencingType(String referencingType) {
+		this.referencingType = referencingType;
 	}
 
-	public void setField(String field) {
-		this.field = field;
+	public void setReferencingField(String referencingField) {
+		this.referencingField = referencingField;
 	}
 }

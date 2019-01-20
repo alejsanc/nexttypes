@@ -717,7 +717,7 @@ public class PostgreSQLNode extends Node {
 		TypeReference[] references = getDownReferences(type);
 
 		for (TypeReference reference : references) {
-			setFieldType(reference.getType(), reference.getField(), newName);
+			setFieldType(reference.getReferencingType(), reference.getReferencingField(), newName);
 		}
 
 		execute("alter table \"" + type + "\" rename to \"" + newName + "\"");

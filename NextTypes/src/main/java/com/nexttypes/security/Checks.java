@@ -221,8 +221,9 @@ public class Checks {
 
 	public static void checkRef(FieldReference ref) {
 		if (ref != null) {
-			checkField(ref.getField());
-			checkId(ref.getId());
+			checkField(ref.getReferencingField());
+			checkType(ref.getReferencedType());
+			checkId(ref.getReferencedId());
 		}
 	}
 

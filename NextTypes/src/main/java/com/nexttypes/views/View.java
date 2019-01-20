@@ -64,6 +64,12 @@ public abstract class View extends Module {
 
 		nextNode = Loader.loadNode(this.settings.getString(KeyWords.NEXT_NODE), request, NodeMode.READ);
 
+		FieldReference ref = request.getRef();
+		
+		if (ref != null) {
+			ref.setReferencedType(nextNode.getFieldType(request.getType(), ref.getReferencingField()));
+		}
+		
 		typeSettings = request.getTypeSettings();
 		strings = request.getStrings();
 

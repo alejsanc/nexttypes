@@ -57,12 +57,12 @@ public class Strings extends TypeSettings {
 	}
 
 	public String getReferenceName(String type, FieldReference ref) {
-		String refType = ref != null ? ref.getType() : null;
-		String name = getTypeString(refType, KeyWords.REFERENCES + "." + type + "." + KeyWords.NAME);
+		String referencedType = ref != null ? ref.getReferencedType() : null;
+		String name = getTypeString(referencedType, KeyWords.REFERENCES + "." + type + "." + KeyWords.NAME);
 		if (name == null) {
 			name = type;
 			if (ref != null) {
-				name += " (" + ref.getField() + ")";
+				name += " (" + ref.getReferencingField() + ")";
 			}
 		}
 		return name;

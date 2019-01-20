@@ -17,37 +17,37 @@
 package com.nexttypes.datatypes;
 
 public class FieldReference {
-	protected String field;
-	protected String type;
-	protected String id;
+	protected String referencingField;
+	protected String referencedType;
+	protected String referencedId;
 
-	public FieldReference(String field, String type, String id) {
-		this.field = field;
-		this.type = type;
-		this.id = id;
+	public FieldReference(String referencingField, String referencedType, String referencedId) {
+		this.referencingField = referencingField;
+		this.referencedType = referencedType;
+		this.referencedId = referencedId;
 	}
 
-	public String getField() {
-		return field;
+	public String getReferencingField() {
+		return referencingField;
 	}
 
-	public String getType() {
-		return type;
+	public String getReferencedType() {
+		return referencedType;
 	}
 
-	public String getId() {
-		return id;
+	public String getReferencedId() {
+		return referencedId;
 	}
 
-	public void setField(String field) {
-		this.field = field;
+	public void setReferencingField(String referencingField) {
+		this.referencingField = referencingField;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setReferencedType(String referencedType) {
+		this.referencedType = referencedType;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setReferencedId(String referencedId) {
+		this.referencedId = referencedId;
 	}
 }

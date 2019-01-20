@@ -96,7 +96,8 @@ public class SerialView extends View {
 			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
 		if (ref != null) {
-			Filter refFilter = new Filter(ref.getField(), Comparison.EQUAL, ref.getId(), false);
+			Filter refFilter = new Filter(ref.getReferencingField(), Comparison.EQUAL,
+					ref.getReferencedId(), false);
 			
 			if (filters != null) {
 				filters = (Filter[]) ArrayUtils.add(filters, refFilter);
