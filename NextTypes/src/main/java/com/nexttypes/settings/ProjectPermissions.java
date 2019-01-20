@@ -104,13 +104,14 @@ public class ProjectPermissions extends Permissions {
 				+ " from"
 					+ " # type"
 					+ " join # rtype on type.# = rtype.id "
+					+ " join project p on rtype.project = p.id"
 					+ " left join project_member pm on (rtype.project = pm.project and pm.member = ?)"
 
 				+ " where"
-					+ " type.id in (?) and pm.member is null";
+					+ " type.id in (?) and p.owner != ? and pm.member is null";
 			
 			parameters = new Object[] { type, ProjectController.getReferencedType(type),
-					ProjectController.getReferencingField(type), user, objects};
+					ProjectController.getReferencingField(type), user, objects, user};
 		
 			break;
 
@@ -120,12 +121,13 @@ public class ProjectPermissions extends Permissions {
 
 				+ " from"
 					+ " # type"
+					+ " join project p on (type.project = p.id)"
 					+ " left join project_member pm on (type.project = pm.project and pm.member = ?)"
 
 				+ " where"
-					+ " type.id in (?) and pm.member is null";
+					+ " type.id in (?) and p.owner != ? and pm.member is null";
 			
-			parameters = new Object[] { type, user, objects };
+			parameters = new Object[] { type, user, objects, user };
 			break;
 		}
 		

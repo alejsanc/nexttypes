@@ -2593,6 +2593,8 @@ public class HTMLView extends View {
 
 		String[] updateDisallowedObjects = permissions.isAllowed(type, objects, Action.UPDATE_FORM);
 		String[] getDisallowedObjects = permissions.isAllowed(type, objects, Action.GET);
+		String[] deleteDisallowedObjects = permissions.isAllowed(type, objects, Action.DELETE);
+		String[] exportDisallowedObjects = permissions.isAllowed(type, objects, Action.EXPORT_OBJECTS);
 		
 		Element form = form(type, lang, view).setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
 				.setAttribute(DATA_URL, request.getURLRoot()
@@ -2614,7 +2616,12 @@ public class HTMLView extends View {
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
 		Element body = table.appendElement(HTML.TBODY);
 
-		header.appendElement(HTML.TH).appendElement(allCheckbox(type));
+		Element allCheckbox = header.appendElement(HTML.TH).appendElement(allCheckbox(type));
+		
+		if (objects.length == deleteDisallowedObjects.length
+				&& objects.length == exportDisallowedObjects.length) {
+			allCheckbox.setAttribute(HTML.DISABLED);
+		}
 
 		header.appendElement(selectTableHeaderCell(type, KeyWords.ID, lang, view, ref, filters, 
 				search, order, offset, limit, component));
@@ -2631,10 +2638,14 @@ public class HTMLView extends View {
 			
 			Element row = body.appendElement(HTML.TR);
 
-			row.appendElement(HTML.TD).appendElement(
+			Element checkbox = row.appendElement(HTML.TD).appendElement(
 					input(HTML.CHECKBOX, KeyWords.OBJECTS, strings.getObjectsName(type), id)
 							.addClass(ITEM_CHECKBOX));
-
+			if (ArrayUtils.contains(deleteDisallowedObjects, id)
+					&& ArrayUtils.contains(exportDisallowedObjects, id)) {
+				checkbox.setAttribute(HTML.DISABLED);
+			}
+			
 			String idString = null;
 			if (id.length() >= 25) {
 				idString = id.substring(0, 22) + "...";
@@ -2676,7 +2687,7 @@ public class HTMLView extends View {
 		String actionName = strings.getActionName(type, Action.DELETE);
 
 		Element actionButton = button(actionName, Action.DELETE, Icon.MINUS, SUBMIT_FORM);
-		if (!permissions.isAllowed(type, Action.DELETE)) {
+		if (objects.length == deleteDisallowedObjects.length) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
 
@@ -2686,7 +2697,7 @@ public class HTMLView extends View {
 		
 		div.appendElement(actionButton);
 
-		div.appendElement(exportButton(type, !permissions.isAllowed(type, Action.EXPORT_OBJECTS)));
+		div.appendElement(exportButton(type, objects.length == exportDisallowedObjects.length));
 
 		return form;
 	}
