@@ -217,7 +217,7 @@ public class HTMLView extends View {
 
 	public HTMLView(HTTPRequest request) {
 		super(request, Settings.HTML_SETTINGS);
-		permissions = request.getContext().getPermissions(request.getType(), this);
+		permissions = getPermissions(request.getType());
 	}
 	
 	public Permissions getPermissions() {
@@ -812,7 +812,7 @@ public class HTMLView extends View {
 			String field = entry.getKey();
 			Object value = entry.getValue();
 			TypeField typeField = typeFields.get(field);
-			article.appendElement(fieldOutput(object, field, value, typeField, lang, view));
+			article.appendElement(fieldWithLabelOutput(object, field, value, typeField, lang, view));
 		}
 
 		article.appendElement(dates(object.getType(), object.getCDate(), object.getUDate()));
@@ -2585,6 +2585,43 @@ public class HTMLView extends View {
 		return selectTable(type, objects, typeFields, lang, view, null, null, search, order, count,
 				offset, limit, minLimit, maxLimit, limitIncrement, component);
 	}
+	
+	public LinkedHashMap<String, String[]> disallowedReferences(NXObject[] objects, 
+			LinkedHashMap<String, TypeField> typeFields) {
+		
+		LinkedHashMap<String, ArrayList<String>> references = new LinkedHashMap<>();
+		LinkedHashMap<String, String[]> disallowedReferences = new LinkedHashMap<>();
+		
+		for (NXObject object : objects) {
+			for (Map.Entry<String, Object> entry : object.getFields().entrySet()) {
+				String field = entry.getKey();
+				Object value = entry.getValue();
+				String fieldType = typeFields.get(field).getType();
+				
+				if (!PT.isPrimitiveType(fieldType) && value != null) {
+					ArrayList<String> fieldReferences = references.get(field);
+					
+					if (fieldReferences == null) {
+						fieldReferences = new ArrayList<>();
+						references.put(field, fieldReferences);
+					}
+					
+					fieldReferences.add(((ObjectReference) value).getId());
+				}
+			}
+		}
+		
+		for (Map.Entry<String, ArrayList<String>> entry : references.entrySet()) {
+			String field = entry.getKey();
+			ArrayList<String> fieldReferences = entry.getValue();
+			String fieldType = typeFields.get(field).getType();
+			
+			disallowedReferences.put(field, getPermissions(fieldType)
+					.isAllowed(fieldType, fieldReferences.toArray(new String[] {}), Action.GET));
+		}
+		
+		return disallowedReferences;
+	}
 
 	public Element selectTable(String type, NXObject[] objects, LinkedHashMap<String, TypeField> typeFields,
 			String lang, String view, FieldReference ref, Filter[] filters, String search,
@@ -2595,6 +2632,8 @@ public class HTMLView extends View {
 		String[] getDisallowedObjects = permissions.isAllowed(type, objects, Action.GET);
 		String[] deleteDisallowedObjects = permissions.isAllowed(type, objects, Action.DELETE);
 		String[] exportDisallowedObjects = permissions.isAllowed(type, objects, Action.EXPORT_OBJECTS);
+		
+		LinkedHashMap<String, String[]> disallowedReferences = disallowedReferences(objects, typeFields);
 		
 		Element form = form(type, lang, view).setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
 				.setAttribute(DATA_URL, request.getURLRoot()
@@ -2666,8 +2705,18 @@ public class HTMLView extends View {
 				String field = entry.getKey();
 				Object value = entry.getValue();
 				TypeField typeField = typeFields.get(field);
-				row.appendElement(HTML.TD)
-						.appendElement(fieldOutput(object, field, value, typeField, lang, view, true));
+				String fieldType = typeField.getType();
+				
+				Element outputCell = row.appendElement(HTML.TD);
+				
+				if (!PT.isPrimitiveType(fieldType) && value != null && ArrayUtils
+						.contains(disallowedReferences.get(field), ((ObjectReference) value).getId())) {
+					
+					outputCell.appendText(((ObjectReference) value).getName());
+					
+				} else {
+					outputCell.appendElement(fieldOutput(object, field, value, typeField, lang, view, true));
+				}
 			}
 
 			if (!ArrayUtils.contains(updateDisallowedObjects, id)) {
@@ -3062,13 +3111,22 @@ public class HTMLView extends View {
 		return output;
 	}
 
-	public Element fieldOutput(NXObject object, String field, Object value, TypeField typeField,
+	public Element fieldWithLabelOutput(NXObject object, String field, Object value, TypeField typeField,
 			String lang, String view) {
 		Element output = document.createElement(HTML.DIV);
 		output.addClass(FIELD_OUTPUT);
+		
+		String fieldType = typeField.getType();
 		String fieldName = strings.getFieldName(object.getType(), field);
 		output.appendElement(HTML.STRONG).appendText(fieldName + ": ");
-		output.appendElement(fieldOutput(object, field, value, typeField, lang, view, false));
+		
+		if (value != null && !PT.isPrimitiveType(fieldType) && !getPermissions(fieldType)
+				.isAllowed(fieldType, ((ObjectReference) value).getId(), Action.GET)) {
+			output.appendText(((ObjectReference) value).getName());
+		} else {
+			output.appendElement(fieldOutput(object, field, value, typeField, lang, view, false));
+		}
+		
 		return output;
 	}
 
@@ -3170,12 +3228,8 @@ public class HTMLView extends View {
 		
 		ObjectReference reference = (ObjectReference) value;
 		
-		if (permissions.isAllowed(fieldType, Action.GET)) {
-			anchor = anchor(reference.getName(), url(fieldType, reference.getId(), lang, view));
-		} else {
-			anchor = document.createElement(HTML.SPAN).appendText(reference.getName());
-		}
-		
+		anchor = anchor(reference.getName(), url(fieldType, reference.getId(), lang, view));
+				
 		return anchor;
 	}
 
