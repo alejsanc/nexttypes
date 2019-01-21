@@ -135,13 +135,14 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, id, Action.UPDATE_ID, thisJoinPoint);
     }
 
-    before (String type, String id, String field) : execution(* Node.updateField(..))
-    	&& args(type, id, field, *) {
+    before (String type, String id, String field, Object value) : execution(* Node.updateField(..))
+    	&& args(type, id, field, value) {
     	
     	checkType(type);
     	checkId(id);
     	checkField(field);
     	checkPermissions(type, id, Action.UPDATE_FIELD, thisJoinPoint);
+    	checkReferencePermissions(type, id, field, value, thisJoinPoint);
     }
 
     before (String type, String id, String field) : execution(* Node.updatePassword(..))

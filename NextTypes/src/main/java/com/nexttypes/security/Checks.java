@@ -321,4 +321,18 @@ public class Checks {
 			}
 		}
 	}
+	
+	public static void checkReferencePermissions(String type, String id, String field, Object value,
+			JoinPoint joinPoint) {
+		Module module = ((Module) joinPoint.getTarget());
+		Node nextNode = module.getNextNode();
+		
+		String referencedType = nextNode.getFieldType(type, field);
+		
+		if (!PT.isPrimitiveType(referencedType)) {
+		
+			module.getPermissions(referencedType).checkReferencePermissions(referencedType,
+				(String) value, type, id, field);
+		}
+	}
 }
