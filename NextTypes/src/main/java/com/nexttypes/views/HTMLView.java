@@ -3422,7 +3422,9 @@ public class HTMLView extends View {
 		}
 
 		if (!Action.INSERT.equals(form) && permissions.isAllowed(type, Action.INSERT_FORM)
-				&& (ref == null || permissions.isAllowedToMakeReference(ref, type, id))) {
+				&& (ref == null || getPermissions(ref.getReferencedType())
+					.isAllowedToMakeReference(ref, type, id))) {
+			
 			elements.add(iconAnchor(strings.getActionName(type, Action.INSERT),
 					url(type, lang, view) + formParameter(Action.INSERT) + refParameter, Icon.PLUS));
 		}
