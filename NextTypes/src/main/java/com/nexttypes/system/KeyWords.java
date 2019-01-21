@@ -95,6 +95,7 @@ public class KeyWords {
 	public static final String EMPTY_INDEX_FIELDS_LIST = "empty_index_fields_list";
 	public static final String EMPTY_INDEX_NAME = "empty_index_name";
 	public static final String EMPTY_INPUT = "empty_input";
+	public static final String EMPTY_NEW_NAME = "empty_new_name";
 	public static final String EMPTY_OBJECTS_LIST = "empty_objects_list";
 	public static final String EMPTY_PASSWORD = "empty_password";
 	public static final String EMPTY_TYPE_NAME = "empty_type_name";

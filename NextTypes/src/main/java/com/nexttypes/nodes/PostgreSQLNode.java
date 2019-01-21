@@ -710,6 +710,10 @@ public class PostgreSQLNode extends Node {
 	}
 
 	protected ZonedDateTime renameType(String type, String newName, boolean single) {
+		
+		checkType(type);
+		checkNewName(type, newName);
+		
 		cacheEnabled = false;
 
 		ZonedDateTime adate = null;
@@ -3966,6 +3970,12 @@ public class PostgreSQLNode extends Node {
 		}
 	}
 	
+	protected void checkNewName(String type, String newName) {
+		if (newName == null || newName.length() == 0) {
+			throw new TypeException(type, KeyWords.EMPTY_NEW_NAME);
+		}
+	}
+		
 	protected void checkField(String type, String field) {
 		if (field == null || field.length() == 0) {
 			throw new TypeException(type, KeyWords.EMPTY_FIELD_NAME);
