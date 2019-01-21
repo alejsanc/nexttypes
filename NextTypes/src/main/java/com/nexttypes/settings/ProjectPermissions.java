@@ -138,6 +138,10 @@ public class ProjectPermissions extends Permissions {
 	public boolean isAllowedToMakeReference(String referencedType, String referencedId,
 			String referencingType, String referencingId, String referencingfield) {
 		
+		if (Auth.GUEST.equals(user) || ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
+			return true;
+		}
+		
 		String sql = null;
 		Object[] parameters = null;
 		

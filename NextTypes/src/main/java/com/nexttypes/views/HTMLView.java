@@ -3421,7 +3421,8 @@ public class HTMLView extends View {
 					+ refParameter, Icon.MAGNIFYING_GLASS));
 		}
 
-		if (!Action.INSERT.equals(form) && permissions.isAllowed(type, Action.INSERT_FORM)) {
+		if (!Action.INSERT.equals(form) && permissions.isAllowed(type, Action.INSERT_FORM)
+				&& (ref == null || permissions.isAllowedToMakeReference(ref, type, id))) {
 			elements.add(iconAnchor(strings.getActionName(type, Action.INSERT),
 					url(type, lang, view) + formParameter(Action.INSERT) + refParameter, Icon.PLUS));
 		}
