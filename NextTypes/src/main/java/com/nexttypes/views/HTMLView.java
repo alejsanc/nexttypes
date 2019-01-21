@@ -341,8 +341,12 @@ public class HTMLView extends View {
 		String addFieldActionName = strings.getActionName(type, Action.ADD_FIELD);
 
 		typeForm.appendElement(HTML.H2).appendText(fields + ":");
-		typeForm.appendElement(HTML.P)
+		Element addFieldButton = typeForm.appendElement(HTML.P)
 				.appendElement(button(addFieldActionName, null, Icon.PLUS, ADD_FIELD));
+		
+		if (!permissions.isAllowed(type, Action.ADD_FIELD)) {
+			addFieldButton.setAttribute(HTML.DISABLED);
+		}
 		
 		Element fieldsTable = typeForm.appendElement(HTML.TABLE).setAttribute(HTML.ID, KeyWords.FIELDS);
 
@@ -356,6 +360,8 @@ public class HTMLView extends View {
 		Element fieldsBody = fieldsTable.appendElement(HTML.TBODY);
 		
 		if (type != null) {
+			
+			boolean dropFieldAllowed = permissions.isAllowed(type, Action.DROP_FIELD);
 			
 			String[] types = (String[]) ArrayUtils.addAll(PT.PRIMITIVE_TYPES, nextNode.getTypesName());
 						
@@ -383,7 +389,12 @@ public class HTMLView extends View {
 				row.appendElement(HTML.TD).appendElement(booleanInput(field + ":" 
 						+ KeyWords.NOT_NULL, notNull, typeField.isNotNull()));
 								
-				row.appendElement(HTML.TD).appendElement(smallButton(dropField, Icon.MINUS, DELETE_ROW));
+				Element dropFieldButton = row.appendElement(HTML.TD)
+						.appendElement(smallButton(dropField, Icon.MINUS, DELETE_ROW));
+				
+				if (!dropFieldAllowed) {
+					dropFieldButton.setAttribute(HTML.DISABLED);
+				}
 								
 				x++;
 			}
@@ -392,10 +403,12 @@ public class HTMLView extends View {
 		String addIndexActionName = strings.getActionName(type, Action.ADD_INDEX);
 
 		typeForm.appendElement(HTML.H2).appendText(strings.gts(type, KeyWords.INDEXES) + ":");
-		typeForm.appendElement(HTML.P)
+		Element addIndexButton = typeForm.appendElement(HTML.P)
 				.appendElement(button(addIndexActionName, null, Icon.PLUS, ADD_INDEX));
 		
-		
+		if (!permissions.isAllowed(type, Action.ADD_INDEX)) {
+			addIndexButton.setAttribute(HTML.DISABLED);
+		}
 
 		Element indexesTable = typeForm.appendElement(HTML.TABLE)
 				.setAttribute(HTML.ID, KeyWords.INDEXES);
@@ -409,6 +422,9 @@ public class HTMLView extends View {
 		Element indexesBody = indexesTable.appendElement(HTML.TBODY);
 
 		if (type != null) {
+			
+			boolean dropIndexAllowed = permissions.isAllowed(type, Action.DROP_INDEX);
+			
 			LinkedHashMap<String, TypeIndex> typeIndexes = nextNode.getTypeIndexes(type);
 			int x = 0;
 			for (Map.Entry<String, TypeIndex> entry : typeIndexes.entrySet()) {
@@ -427,8 +443,12 @@ public class HTMLView extends View {
 				row.appendElement(HTML.TD).appendElement(input(HTML.TEXT, index + ":" + KeyWords.FIELDS, fields,
 						String.join(",", typeIndex.getFields())));
 				
-				row.appendElement(HTML.TD)
+				Element dropIndexButton = row.appendElement(HTML.TD)
 						.appendElement(smallButton(dropIndex, Icon.MINUS, DELETE_ROW));
+				
+				if (!dropIndexAllowed) {
+					dropIndexButton.setAttribute(HTML.DISABLED);
+				}
 				
 				x++;
 			}
