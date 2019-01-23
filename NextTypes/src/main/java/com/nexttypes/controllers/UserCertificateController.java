@@ -18,13 +18,8 @@ package com.nexttypes.controllers;
 
 import java.time.ZonedDateTime;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.NXObject;
-import com.nexttypes.exceptions.UnauthorizedActionException;
 import com.nexttypes.nodes.Node;
-import com.nexttypes.system.Action;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Controller;
 
@@ -38,71 +33,8 @@ public class UserCertificateController extends Controller {
 	public ZonedDateTime insert(NXObject object) {
 		if (!object.containsKey(KeyWords.USER)) {
 			object.put(KeyWords.USER, user);
-		} else {
-			checkUser(object.getString(KeyWords.USER), Action.INSERT);
-		}
+		} 
+		
 		return nextNode.insert(object);
-	}
-
-	@Override
-	public ZonedDateTime update(NXObject object) {
-		return update(object, null);
-	}
-
-	@Override
-	public ZonedDateTime update(NXObject object, ZonedDateTime udate) {
-		checkUser(object.getString(KeyWords.USER), Action.UPDATE);
-		checkPermissions(object.getId(), Action.UPDATE);
-		return nextNode.update(object, udate);
-	}
-
-	@Override
-	public ZonedDateTime updateField(String id, String field, Object value) {
-		if (KeyWords.USER.equals(field)) {
-			checkUser((String) value, Action.UPDATE_FIELD);
-		}
-		checkPermissions(id, Action.UPDATE_FIELD);
-		return nextNode.updateField(type, id, field, value);
-	}
-
-	@Override
-	public ZonedDateTime updateId(String id, String newId) {
-		checkPermissions(id, Action.UPDATE_ID);
-		return nextNode.updateId(type, id, newId);
-	}
-
-	@Override
-	public void delete(String... objects) {
-		checkPermissions(objects, Action.DELETE);
-		nextNode.delete(type, objects);
-	}
-
-	protected void checkPermissions(String[] objects, String method) {
-		if (!ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
-			if (nextNode.getBoolean("select count(*) != 0 from # where id in(?) and \"user\" != ?",
-					type, objects, user)) {
-				throwException(method);
-			}
-		}
-	}
-
-	protected void checkPermissions(String id, String method) {
-		if (!ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
-			String objectUser = getStringField(id, KeyWords.USER);
-
-			if (!user.equals(objectUser)) {
-				throwException(method);
-			}
-		}
-	}
-
-	protected void checkUser(String objectUser, String method) {
-		if (objectUser != null && !user.equals(objectUser) && !ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
-			throwException(method);
-		}
-	}
-
-	protected void throwException(String method) {
-		throw new UnauthorizedActionException(type, method);
 	}
 }

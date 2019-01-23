@@ -353,6 +353,7 @@ public class KeyWords {
 	public static final String UPDATED_OBJECTS = "updated_objects";
 	public static final String UPDATING_DATE = "updating_date";
 	public static final String USER = "user";
+	public static final String USER_CERTIFICATE = "user_certificate";
 	public static final String USER_NOT_LOGGED_IN = "user_not_logged_in";
 	public static final String USERS = "users";
 	public static final String VALUE = "value";
