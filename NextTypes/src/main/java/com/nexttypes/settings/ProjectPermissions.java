@@ -37,11 +37,6 @@ public class ProjectPermissions extends Permissions {
 	}
 	
 	@Override
-	public boolean isAllowed(String type, String id, String action) {
-		return isAllowed(type, new String[] { id }, action).length == 0; 
-	}
-	
-	@Override
 	public String[] isAllowed(String type, String[] objects, String action) {
 		
 		if ((Auth.GUEST.equals(user) || ArrayUtils.contains(groups, Auth.ADMINISTRATORS))

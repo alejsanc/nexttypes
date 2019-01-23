@@ -106,7 +106,7 @@ public class Permissions extends TypeSettings {
 	}
 	
 	public boolean isAllowed(String type, String id, String action) {
-		return isAllowed(type, action);
+		return isAllowed(type, new String[] { id }, action).length == 0; 
 	}
 	
 	public String[] isAllowed(String type, String[] objects, String action) {
