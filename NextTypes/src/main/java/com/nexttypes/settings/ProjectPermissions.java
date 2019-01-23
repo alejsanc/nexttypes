@@ -19,8 +19,6 @@ package com.nexttypes.settings;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.nexttypes.controllers.ProjectController;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.nodes.Node;
@@ -39,8 +37,7 @@ public class ProjectPermissions extends Permissions {
 	@Override
 	public String[] isAllowed(String type, String[] objects, String action) {
 		
-		if ((Auth.GUEST.equals(user) || ArrayUtils.contains(groups, Auth.ADMINISTRATORS))
-				&& isAllowed(type, action)) {
+		if ((Auth.isGuest(user) || Auth.isAdministrator(groups)) && isAllowed(type, action)) {
 			return new String[] {};
 		}
 		
@@ -133,7 +130,7 @@ public class ProjectPermissions extends Permissions {
 	public boolean isAllowedToMakeReference(String referencedType, String referencedId,
 			String referencingType, String referencingId, String referencingfield) {
 		
-		if (Auth.GUEST.equals(user) || ArrayUtils.contains(groups, Auth.ADMINISTRATORS)) {
+		if (Auth.isGuest(user) || Auth.isAdministrator(groups)) {
 			return true;
 		}
 		

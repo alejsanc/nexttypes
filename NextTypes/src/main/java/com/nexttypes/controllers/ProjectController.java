@@ -21,8 +21,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.ICalendar;
 import com.nexttypes.datatypes.NXObject;
@@ -86,7 +84,7 @@ public class ProjectController extends Controller {
 	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
 			String referencingField, String lang) {
 		
-		if (Auth.GUEST.equals(user) || ArrayUtils.contains(groups,  Auth.ADMINISTRATORS)) {
+		if (Auth.isGuest(user) || Auth.isAdministrator(groups)) {
 			return super.getObjectsName(lang);
 		}
 		

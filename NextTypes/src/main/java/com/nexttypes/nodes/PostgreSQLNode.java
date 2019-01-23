@@ -1355,7 +1355,7 @@ public class PostgreSQLNode extends Node {
 			String newPassword, String newPasswordRepeat) {
 
 		if (currentPassword == null) {
-			if (!ArrayUtils.contains(groups, Auth.ADMINISTRATORS) && getPasswordField(type, id, field) != null) {
+			if (!Auth.isAdministrator(groups) && getPasswordField(type, id, field) != null) {
 				throw new NXException(type, KeyWords.EMPTY_CURRENT_PASSWORD);
 			}
 		} else {

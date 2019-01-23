@@ -16,6 +16,8 @@
 
 package com.nexttypes.datatypes;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 public class Auth {
 	public static final String GUEST = "guest";
 	public static final String GUESTS = "guests";
@@ -52,5 +54,13 @@ public class Auth {
 
 	public boolean isLoginUser() {
 		return loginUser;
+	}
+	
+	public static boolean isAdministrator(String[] groups) {
+		return ArrayUtils.contains(groups, ADMINISTRATORS);
+	}
+	
+	public static boolean isGuest(String user) {
+		return GUEST.equals(user);
 	}
 }
