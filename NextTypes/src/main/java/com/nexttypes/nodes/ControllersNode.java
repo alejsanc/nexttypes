@@ -34,6 +34,7 @@ import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.AlterFieldResult;
 import com.nexttypes.datatypes.AlterIndexResult;
 import com.nexttypes.datatypes.AlterResult;
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
@@ -73,25 +74,23 @@ import com.nexttypes.system.Controller;
 import com.nexttypes.system.Loader;
 
 public class ControllersNode extends Node {
-	protected String user;
-	protected String[] groups;
+	protected Auth auth;
 	protected Settings settings;
 	protected TypeSettings typeSettings;
 	protected Node nextNode;
 
 	public ControllersNode(HTTPRequest request, NodeMode mode) {
-		this(request.getUser(), request.getGroups(), mode, request.getLang(), request.getRemoteAddress(),
+		this(request.getAuth(), mode, request.getLang(), request.getRemoteAddress(),
 				request.getContext(), true);
 	}
 
-	public ControllersNode(String user, String[] groups, NodeMode mode, String lang, String remoteAddress,
+	public ControllersNode(Auth auth, NodeMode mode, String lang, String remoteAddress,
 			Context context, boolean useConnectionPool) {
-		this.user = user;
-		this.groups = groups;
+		this.auth = auth;
 		settings = context.getSettings(Settings.CONTROLLERS_SETTINGS);
-		nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), user, groups, mode, lang, remoteAddress,
+		nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), auth, mode, lang, remoteAddress,
 				context, useConnectionPool);
-		typeSettings = context.getTypeSettings(groups);
+		typeSettings = context.getTypeSettings(auth);
 	}
 	
 	protected Controller getController(String type) {
@@ -102,9 +101,9 @@ public class ControllersNode extends Node {
 		ProxyNode proxyNode = new ProxyNode(type, nextNode, this);
 
 		if (className != null) {
-			controller = Loader.loadController(className, type, user, groups, proxyNode);
+			controller = Loader.loadController(className, type, auth, proxyNode);
 		} else {
-			controller = new Controller(type, user, groups, proxyNode);
+			controller = new Controller(type, auth, proxyNode);
 		}
 
 		return controller;
@@ -937,23 +936,8 @@ public class ControllersNode extends Node {
 	}
 
 	@Override
-	public String getUser() {
-		return nextNode.getUser();
-	}
-
-	@Override
-	public String[] getGroups() {
-		return nextNode.getGroups();
-	}
-
-	@Override
-	public void setUser(String user) {
-		nextNode.setUser(user);
-	}
-
-	@Override
-	public void setGroups(String[] groups) {
-		nextNode.setGroups(groups);
+	public Auth getAuth() {
+		return nextNode.getAuth();
 	}
 
 	@Override

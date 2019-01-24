@@ -18,6 +18,7 @@ package com.nexttypes.controllers;
 
 import java.time.ZonedDateTime;
 
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.system.KeyWords;
@@ -25,14 +26,14 @@ import com.nexttypes.system.Controller;
 
 public class UserCertificateController extends Controller {
 
-	public UserCertificateController(String type, String user, String[] groups, Node nextNode) {
-		super(type, user, groups, nextNode);
+	public UserCertificateController(String type, Auth auth, Node nextNode) {
+		super(type, auth, nextNode);
 	}
 
 	@Override
 	public ZonedDateTime insert(NXObject object) {
 		if (!object.containsKey(KeyWords.USER)) {
-			object.put(KeyWords.USER, user);
+			object.put(KeyWords.USER, auth.getUser());
 		} 
 		
 		return nextNode.insert(object);

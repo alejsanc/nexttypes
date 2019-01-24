@@ -135,8 +135,8 @@ public class BackupTask extends Task {
 	public void backup() {
 		running = true;
 
-		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), Auth.BACKUP, null, NodeMode.WRITE,
-				lang, URL.LOCALHOST, context, true)) {
+		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE),
+				new Auth(Auth.BACKUP), NodeMode.WRITE, lang, URL.LOCALHOST, context, true)) {
 
 			ZonedDateTime dateTime = ZonedDateTime.now(ZoneOffset.UTC);
 

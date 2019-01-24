@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.exceptions.UnauthorizedActionException;
@@ -30,24 +31,18 @@ import com.nexttypes.nodes.Node;
 import com.nexttypes.system.KeyWords;
 
 public class Permissions extends TypeSettings {
-	protected String user;
-	protected String[] groups;
+	protected Auth auth;
 	protected Node nextNode;
 	
-	public Permissions(ArrayList<Properties> settings, String user, String[] groups, Node nextNode) {
+	public Permissions(ArrayList<Properties> settings, Auth auth, Node nextNode) {
 		super(settings);
 		
-		this.user = user;
-		this.groups = groups;
+		this.auth = auth;
 		this.nextNode = nextNode;
 	}
 	
-	public String getUser() {
-		return user;
-	}
-	
-	public String[] getGroups() {
-		return groups;
+	public Auth getAuth() {
+		return auth;
 	}
 
 	public String[] getAllowedUsers(String type, String action) {
@@ -66,8 +61,9 @@ public class Permissions extends TypeSettings {
 		boolean allowed = false;
 		String[] allowedUsers = getAllowedUsers(type, action);
 		String[] allowedGroups = null;
+		String[] groups = auth.getGroups();
 
-		if (ArrayUtils.contains(allowedUsers, user)) {
+		if (ArrayUtils.contains(allowedUsers, auth.getUser())) {
 			allowed = true;
 		} else if (groups != null && groups.length > 0) {
 			allowedGroups = getAllowedGroups(type, action);

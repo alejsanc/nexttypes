@@ -210,8 +210,7 @@ public class HTMLView extends View {
 		settings = parent.getSettings();
 		typeSettings = parent.getTypeSettings();
 		strings = parent.getStrings();
-		user = parent.getUser();
-		groups = parent.getGroups();
+		auth = parent.getAuth();
 		permissions = context.getPermissions(type, this);
 	}
 
@@ -3702,28 +3701,6 @@ public class HTMLView extends View {
 		return htmlView;
 	}
 
-	@Override
-	public String getUser() {
-		return user;
-	}
-
-	@Override
-	public String[] getGroups() {
-		return groups;
-	}
-
-	@Override
-	public void setUser(String user) {
-		this.user = user;
-		nextNode.setUser(user);
-	}
-
-	@Override
-	public void setGroups(String[] groups) {
-		this.groups = groups;
-		nextNode.setGroups(groups);
-	}
-
 	public void head(String type, String lang, String view) {
 		if (head != null) {
 			head.appendElement(HTML.META).setAttribute(HTML.CHARSET, Constants.UTF_8_CHARSET);
@@ -3856,7 +3833,7 @@ public class HTMLView extends View {
 		Element userElement = document.getElementById(KeyWords.USER);
 
 		if (userElement != null) {
-			String user = request.getUser();
+			String user = auth.getUser();
 
 			if (Auth.GUEST.equals(user)) {
 				userElement.addClass(HTML.HIDDEN);
@@ -3874,7 +3851,7 @@ public class HTMLView extends View {
 			
 			form.appendElement(button);
 
-			if (!request.isLoginUser()) {
+			if (!auth.isLoginUser()) {
 				button.addClass(HTML.HIDDEN);
 			}
 		}
@@ -4131,7 +4108,8 @@ public class HTMLView extends View {
 		String typeName = strings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
-		ZoneId timeZone = nextNode.getTimeZone("select time_zone from \"user\" where id=?", request.getUser());
+		ZoneId timeZone = nextNode.getTimeZone("select time_zone from \"user\" where id=?",
+				auth.getUser());
 		
 		LocalDate today = timeZone != null ? LocalDate.now(timeZone) : LocalDate.now();
 

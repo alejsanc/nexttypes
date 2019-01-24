@@ -44,8 +44,8 @@ public class ProjectController extends Controller {
 	public static final String PROJECT_MEETING_PARTICIPANT = "project_meeting_participant";
 	public static final String PROJECT_TICKET_MESSAGE = "project_ticket_message";
 	
-	public ProjectController(String type, String user, String[] groups, Node nextNode) {
-		super(type, user, groups, nextNode);
+	public ProjectController(String type, Auth auth, Node nextNode) {
+		super(type, auth, nextNode);
 	}
 
 	@Override
@@ -84,7 +84,9 @@ public class ProjectController extends Controller {
 	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
 			String referencingField, String lang) {
 		
-		if (Auth.isGuest(user) || Auth.isAdministrator(groups)) {
+		String user = auth.getUser();
+		
+		if (auth.isGuest() || auth.isAdministrator()) {
 			return super.getObjectsName(lang);
 		}
 		

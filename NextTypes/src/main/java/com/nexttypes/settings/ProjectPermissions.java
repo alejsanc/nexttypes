@@ -28,16 +28,17 @@ public class ProjectPermissions extends Permissions {
 
 	protected Node nextNode;
 	
-	public ProjectPermissions(ArrayList<Properties> settings, String user, String[] groups, Node nextNode) {
-		super(settings, user, groups, nextNode);
+	public ProjectPermissions(ArrayList<Properties> settings, Auth auth, Node nextNode) {
+		super(settings, auth, nextNode);
 		
 		this.nextNode = nextNode;
 	}
 	
 	@Override
 	public String[] isAllowed(String type, String[] objects, String action) {
-		
-		if ((Auth.isGuest(user) || Auth.isAdministrator(groups)) && isAllowed(type, action)) {
+		String user = auth.getUser();
+				
+		if ((auth.isGuest() || auth.isAdministrator()) && isAllowed(type, action)) {
 			return new String[] {};
 		}
 		
@@ -130,7 +131,9 @@ public class ProjectPermissions extends Permissions {
 	public boolean isAllowedToMakeReference(String referencedType, String referencedId,
 			String referencingType, String referencingId, String referencingfield) {
 		
-		if (Auth.isGuest(user) || Auth.isAdministrator(groups)) {
+		String user = auth.getUser();
+		
+		if (auth.isGuest() || auth.isAdministrator()) {
 			return true;
 		}
 		

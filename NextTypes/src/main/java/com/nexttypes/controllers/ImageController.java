@@ -17,6 +17,7 @@
 package com.nexttypes.controllers;
 
 import com.nexttypes.datatypes.ActionResult;
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.exceptions.ObjectException;
 import com.nexttypes.nodes.Node;
@@ -31,8 +32,8 @@ public class ImageController extends Controller {
 	public final String IMAGE_SUCCESSFULLY_RESIZED = "image_successfully_resized";
 	public final String IMAGES_SUCCESSFULLY_RESIZED = "images_successfully_resized";
 
-	public ImageController(String type, String user, String[] groups, Node nextNode) {
-		super(type, user, groups, nextNode);
+	public ImageController(String type, Auth auth, Node nextNode) {
+		super(type, auth, nextNode);
 		
 		actionsInfo = "/com/nexttypes/controllers/image-actions.json";
 	}

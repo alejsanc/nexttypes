@@ -255,10 +255,10 @@ public class HTTPServlet extends HttpServlet {
 				}
 
 			} catch (NotFoundException e) {
-				logException(e, req.getUser(), req.getRemoteAddress());
+				logException(e, req.getAuth().getUser(), req.getRemoteAddress());
 				content = view.notFound(req.getType(), req.getLang(), req.getView(), e);
 			} catch (UnauthorizedException e) {
-				logException(e, req.getUser(), req.getRemoteAddress());
+				logException(e, req.getAuth().getUser(), req.getRemoteAddress());
 				content = view.unauthorized(req.getType(), req.getLang(), req.getView(), e);
 			}
 		}
@@ -468,7 +468,7 @@ public class HTTPServlet extends HttpServlet {
 			String[] groups = nextNode.getGroups(user);
 
 			HttpSession session = req.getSession();
-			session.setAttribute(KeyWords.USER, new Auth(user, groups, true));
+			session.setAttribute(KeyWords.AUTH, new Auth(user, groups, true));
 
 			content = new Content(strings.gts(KeyWords.SUCCESSFUL_LOGIN) + ".");
 			logger.info(this, user, remoteAddress, new Message(KeyWords.SUCCESSFUL_LOGIN, user));
@@ -485,12 +485,12 @@ public class HTTPServlet extends HttpServlet {
 		HttpServletRequest request = req.getServletRequest();
 		HttpSession session = request.getSession();
 		String remoteAddress = request.getRemoteAddr();
-		Auth user = (Auth) session.getAttribute(KeyWords.USER);
+		Auth auth = (Auth) session.getAttribute(KeyWords.AUTH);
 
-		if (user != null) {
-			session.removeAttribute(KeyWords.USER);
+		if (auth != null) {
+			session.removeAttribute(KeyWords.AUTH);
 			content = new Content(strings.gts(KeyWords.SUCCESSFUL_LOGOUT));
-			logger.info(this, user.getUser(), remoteAddress, new Message(KeyWords.SUCCESSFUL_LOGOUT));
+			logger.info(this, auth.getUser(), remoteAddress, new Message(KeyWords.SUCCESSFUL_LOGOUT));
 		} else {
 			throw new NXException(KeyWords.USER_NOT_LOGGED_IN);
 		}
@@ -685,7 +685,7 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected Content sitemap(HttpServletRequest request, String lang, Auth auth) {
-		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), auth.getUser(), auth.getGroups(),
+		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), auth,
 				NodeMode.READ, lang, request.getRemoteAddr(), context, true)) {
 
 			LinkedHashMap<String, ObjectInfo[]> objectsInfo = nextNode
@@ -768,31 +768,31 @@ public class HTTPServlet extends HttpServlet {
 	protected Auth auth(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 
-		Auth user = (Auth) session.getAttribute(KeyWords.USER);
+		Auth auth = (Auth) session.getAttribute(KeyWords.AUTH);
 
-		if (user == null) {
+		if (auth == null) {
 
-			try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), Auth.GUEST,
-					new String[] { Auth.GUESTS }, NodeMode.READ, settings.getString(KeyWords.DEFAULT_LANG),
+			try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), 
+					new Auth(Auth.GUEST), NodeMode.READ, settings.getString(KeyWords.DEFAULT_LANG),
 					request.getRemoteAddr(), context, true)) {
 
-				String userName = tlsAuth(request, nextNode);
+				String user = tlsAuth(request, nextNode);
 
-				if (userName == null) {
-					userName = basicAuth(request, nextNode);
+				if (user == null) {
+					user = basicAuth(request, nextNode);
 				}
 
-				if (userName == null) {
-					user = new Auth();
+				if (user == null) {
+					auth = new Auth(Auth.GUEST);
 				} else {
-					String[] groups = nextNode.getGroups(userName);
-					user = new Auth(userName, groups, false);
-					session.setAttribute(KeyWords.USER, user);
+					String[] groups = nextNode.getGroups(user);
+					auth = new Auth(user, groups, false);
+					session.setAttribute(KeyWords.AUTH, auth);
 				}
 			}
 		}
 
-		return user;
+		return auth;
 	}
 
 	protected String basicAuth(HttpServletRequest request, Node nextNode) {
@@ -1159,7 +1159,7 @@ public class HTTPServlet extends HttpServlet {
 						content = new Content(message, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
 
 						if (!requests.logged) {
-							logger.severe(this, req.getUser(), remoteAddress,
+							logger.severe(this, req.getAuth().getUser(), remoteAddress,
 									new Message(KeyWords.MAX_INSERTS_EXCEEDED));
 							requests.logged = true;
 						}
@@ -1194,7 +1194,7 @@ public class HTTPServlet extends HttpServlet {
 						content = new Content(MAX_REQUESTS, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
 
 						if (!requests.logged) {
-							Auth auth = (Auth) req.getSession().getAttribute(KeyWords.USER);
+							Auth auth = (Auth) req.getSession().getAttribute(KeyWords.AUTH);
 							String userName = auth != null ? auth.getUser() : Auth.GUEST;
 
 							logger.severe(this, userName, remoteAddress, MAX_REQUESTS);

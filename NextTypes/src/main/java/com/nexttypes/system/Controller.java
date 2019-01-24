@@ -32,6 +32,7 @@ import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.AlterFieldResult;
 import com.nexttypes.datatypes.AlterIndexResult;
 import com.nexttypes.datatypes.AlterResult;
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
 import com.nexttypes.datatypes.FieldRange;
@@ -67,17 +68,15 @@ public class Controller {
 	protected String actionsInfo;	
 	protected Node nextNode;
 	protected String type;
-	protected String user;
-	protected String[] groups;
+	protected Auth auth;
 	protected Context context;
 	protected TypeSettings typeSettings;
 	protected Strings strings;
 
-	public Controller(String type, String user, String[] groups, Node nextNode) {
+	public Controller(String type, Auth auth, Node nextNode) {
 		this.nextNode = nextNode;
 		this.type = type;
-		this.user = user;
-		this.groups = groups;
+		this.auth = auth;
 		
 		context = nextNode.getContext();
 		typeSettings = nextNode.getTypeSettings();

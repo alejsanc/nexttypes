@@ -87,7 +87,7 @@ public class HTTPRequest {
 	protected Strings strings;
 	protected HttpServletRequest request;
 	protected URL url;
-	protected Auth user;
+	protected Auth auth;
 	protected HTTPMethod requestMethod;
 	protected String remoteAddress;
 	protected HttpSession session;
@@ -138,14 +138,14 @@ public class HTTPRequest {
 
 	protected LinkedHashMap<String, LinkedHashMap<String, HashMap<String, String>>> compositeParameters;
 
-	public HTTPRequest(HttpServletRequest request, Settings settings, Context context, String lang, Strings strings,
-			Auth user, URL url) {
+	public HTTPRequest(HttpServletRequest request, Settings settings, Context context, String lang, 
+			Strings strings, Auth auth, URL url) {
 		this.request = request;
 		this.settings = settings;
 		this.context = context;
 		this.strings = strings;
 		this.lang = lang;
-		this.user = user;
+		this.auth = auth;
 		this.url = url;
 
 		remoteAddress = request.getRemoteAddr();
@@ -154,7 +154,7 @@ public class HTTPRequest {
 
 		requestMethod = HTTPMethod.valueOf(request.getMethod());
 
-		typeSettings = context.getTypeSettings(user.getGroups());
+		typeSettings = context.getTypeSettings(auth);
 
 		if (HTTPMethod.GET.equals(requestMethod)) {
 			etag = request.getHeader(HTTPHeader.IF_NONE_MATCH.toString());
@@ -665,16 +665,8 @@ public class HTTPRequest {
 		return url.isRobots();
 	}
 
-	public String getUser() {
-		return user.getUser();
-	}
-
-	public String[] getGroups() {
-		return user.getGroups();
-	}
-
-	public boolean isLoginUser() {
-		return user.isLoginUser();
+	public Auth getAuth() {
+		return auth;
 	}
 
 	public HTTPMethod getRequestMethod() {

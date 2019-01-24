@@ -275,8 +275,7 @@ public class PostgreSQLNode extends Node {
 	protected TypesCache cache;
 	protected boolean cacheEnabled = true;
 
-	protected String user;
-	protected String[] groups;
+	protected Auth auth;
 	protected String lang;
 	
 	protected Connection connection;
@@ -295,8 +294,9 @@ public class PostgreSQLNode extends Node {
 		connectionPool = DBConnection.getConnectionPool(settings, POSTGRESQL, DRIVER);
 		context.putDBConnectionPool(settings.getString(KeyWords.POOL), connectionPool);
 		
-		try (PostgreSQLNode node = new PostgreSQLNode(Auth.ADMIN, new String[] { Auth.ADMINISTRATORS },
-				NodeMode.ADMIN, lang, URL.LOCALHOST, context, true)) {
+		try (PostgreSQLNode node = new PostgreSQLNode(new Auth(Auth.ADMIN,
+				new String[] { Auth.ADMINISTRATORS }), NodeMode.ADMIN, lang, URL.LOCALHOST,
+				context, true)) {
 
 			if (node.getTypesName().length == 0) {
 				node.importTypes(node.getClass()
@@ -315,19 +315,18 @@ public class PostgreSQLNode extends Node {
 	}
 
 	public PostgreSQLNode(HTTPRequest request, NodeMode mode) {
-		this(request.getUser(), request.getGroups(), mode, request.getLang(), request.getRemoteAddress(),
+		this(request.getAuth(), mode, request.getLang(), request.getRemoteAddress(),
 				request.getContext(), true);
 	}
 
-	public PostgreSQLNode(String user, String[] groups, NodeMode mode, String lang, String remoteAddress,
+	public PostgreSQLNode(Auth auth, NodeMode mode, String lang, String remoteAddress,
 			Context context, boolean useConnectionPool) {
-		this.user = user;
-		this.groups = groups;
+		this.auth = auth;
 		this.remoteAddress = remoteAddress;
 		this.context = context;
 
 		settings = context.getSettings(Settings.POSTGRESQL_SETTINGS);
-		typeSettings = context.getTypeSettings(groups);
+		typeSettings = context.getTypeSettings(auth);
 		
 		if (lang == null) {
 			lang = settings.getString(KeyWords.DEFAULT_LANG);
@@ -1355,7 +1354,7 @@ public class PostgreSQLNode extends Node {
 			String newPassword, String newPasswordRepeat) {
 
 		if (currentPassword == null) {
-			if (!Auth.isAdministrator(groups) && getPasswordField(type, id, field) != null) {
+			if (!auth.isAdministrator() && getPasswordField(type, id, field) != null) {
 				throw new NXException(type, KeyWords.EMPTY_CURRENT_PASSWORD);
 			}
 		} else {
@@ -3208,26 +3207,6 @@ public class PostgreSQLNode extends Node {
 	}
 
 	@Override
-	public String getUser() {
-		return user;
-	}
-
-	@Override
-	public String[] getGroups() {
-		return groups;
-	}
-
-	@Override
-	public void setUser(String user) {
-		this.user = user;
-	}
-
-	@Override
-	public void setGroups(String[] groups) {
-		this.groups = groups;
-	}
-
-	@Override
 	public ActionResult executeAction(String type, String id, String action, Object... parameters) {
 		throw new NotImplementedException();
 	}
@@ -4045,7 +4024,7 @@ public class PostgreSQLNode extends Node {
 	}
 
 	protected void log(String sql) {
-		logger.info(this, user, remoteAddress, sql);
+		logger.info(this, auth.getUser(), remoteAddress, sql);
 	}
 
 	@Override
@@ -4081,5 +4060,10 @@ public class PostgreSQLNode extends Node {
 	@Override
 	public Node getNextNode() {
 		return this;
+	}
+	
+	@Override
+	public Auth getAuth() {
+		return auth;
 	}
 }

@@ -37,6 +37,7 @@ public class KeyWords {
 	public static final String ALTERED_INDEXES = "altered_indexes";
 	public static final String ALTERED_TYPES = "altered_types";
 	public static final String ANCHORS = "anchors";
+	public static final String AUTH = "auth";
 	public static final String AUTH_ERRORS_PER_MINUTE_EXCEEDED = "auth_errors_per_minute_exceeded";
 	public static final String BACKLOG = "backlog";
 	public static final String BACKUP = "backup";

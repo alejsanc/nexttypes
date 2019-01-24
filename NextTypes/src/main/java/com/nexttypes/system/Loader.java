@@ -20,12 +20,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.settings.Permissions;
-import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.views.HTMLView;
 import com.nexttypes.views.View;
 import com.nexttypes.views.WebDAVView;
@@ -58,12 +58,12 @@ public class Loader {
 		}
 	}
 
-	public static Node loadNode(String className, String user, String[] groups, NodeMode mode, String lang,
+	public static Node loadNode(String className, Auth auth, NodeMode mode, String lang,
 			String remoteAddress, Context context, boolean useConnectionPool) {
 		return (Node) Loader.load(className,
-				new Class[] { String.class, String[].class, NodeMode.class, String.class, String.class, Context.class,
+				new Class[] { Auth.class, NodeMode.class, String.class, String.class, Context.class,
 						boolean.class },
-				new Object[] { user, groups, mode, lang, remoteAddress, context, useConnectionPool });
+				new Object[] { auth, mode, lang, remoteAddress, context, useConnectionPool });
 	}
 
 	public static Node loadNode(String className, HTTPRequest request, NodeMode mode) {
@@ -89,11 +89,11 @@ public class Loader {
 		return (WebDAVView) Loader.load(className, HTTPRequest.class, request);
 	}
 
-	public static Controller loadController(String className, String type, String user, String[] groups,
+	public static Controller loadController(String className, String type, Auth auth,
 			Node nextNode) {
 		return (Controller) Loader.load(className,
-				new Class[] { String.class, String.class, String[].class, Node.class },
-				new Object[] { type, user, groups, nextNode });
+				new Class[] { String.class, Auth.class, Node.class },
+				new Object[] { type, auth, nextNode });
 	}
 
 	public static Task loadTask(String className, Context context) {
@@ -101,9 +101,9 @@ public class Loader {
 	}
 	
 	public static Permissions loadPermissions(String className, ArrayList<Properties> settings,
-			String user, String[] groups, Node nextNode) {
+			Auth auth, Node nextNode) {
 		return (Permissions) Loader.load(className,
-				new Class[] { ArrayList.class, String.class, String[].class, Node.class },
-				new Object[] { settings, user, groups, nextNode });
+				new Class[] { ArrayList.class, Auth.class, Node.class },
+				new Object[] { settings, auth, nextNode });
 	}
 }

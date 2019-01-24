@@ -16,19 +16,14 @@
 
 package com.nexttypes.system;
 
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Permissions;
 import com.nexttypes.settings.Strings;
 import com.nexttypes.settings.TypeSettings;
 
 public abstract class Module implements AutoCloseable {
-	public abstract String getUser();
-
-	public abstract String[] getGroups();
-
-	public abstract void setUser(String user);
-
-	public abstract void setGroups(String[] groups);
+	public abstract Auth getAuth();
 
 	public abstract Context getContext();
 

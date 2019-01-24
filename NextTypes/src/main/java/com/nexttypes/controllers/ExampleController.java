@@ -26,6 +26,7 @@ import javax.mail.internet.InternetAddress;
 
 import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.Audio;
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.HTMLFragment;
@@ -44,8 +45,8 @@ public class ExampleController extends Controller {
 	public static final String TRY = "try";
 	public static final String OK = "OK";
 
-	public ExampleController(String type, String user, String[] groups, Node nextNode) {
-		super(type, user, groups, nextNode);
+	public ExampleController(String type, Auth auth, Node nextNode) {
+		super(type, auth, nextNode);
 		
 		actionsInfo = "/com/nexttypes/controllers/example-actions.json";
 	}

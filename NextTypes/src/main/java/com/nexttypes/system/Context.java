@@ -33,6 +33,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.HTML;
 import com.nexttypes.datatypes.Menu;
 import com.nexttypes.datatypes.MenuSection;
@@ -134,9 +135,11 @@ public class Context {
 		return indexes;
 	}
 
-	public TypeSettings getTypeSettings(String[] groups) {
+	public TypeSettings getTypeSettings(Auth auth) {
 		ArrayList<Properties> properties = new ArrayList<>();
 
+		String [] groups = auth.getGroups();
+		
 		properties.addAll(0, getProperties(Settings.TYPES_SETTINGS));
 
 		if (groups != null) {
@@ -157,11 +160,11 @@ public class Context {
 	}
 	
 	public Permissions getPermissions(String type, Module module) {
-		return getPermissions(type, module.getUser(), module.getGroups(), module.getTypeSettings(), 
+		return getPermissions(type, module.getAuth(), module.getTypeSettings(), 
 				module.getNextNode());
 	}
 
-	public Permissions getPermissions(String type, String user, String[] groups, TypeSettings typeSettings,
+	public Permissions getPermissions(String type, Auth auth, TypeSettings typeSettings,
 			Node nextNode) {
 		
 		Permissions permissions = null;
@@ -171,9 +174,9 @@ public class Context {
 		String className = typeSettings.gts(type, KeyWords.PERMISSIONS);
 			
 		if (className != null) {
-			permissions = Loader.loadPermissions(className, settings, user, groups, nextNode);
+			permissions = Loader.loadPermissions(className, settings, auth, nextNode);
 		} else {
-			permissions = new Permissions(settings, user, groups, nextNode);
+			permissions = new Permissions(settings, auth, nextNode);
 		}
 		
 		return permissions;

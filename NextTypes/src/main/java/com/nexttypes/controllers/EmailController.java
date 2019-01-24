@@ -25,6 +25,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.URL;
 import com.nexttypes.enums.Format;
@@ -40,8 +41,8 @@ public class EmailController extends Controller {
 	public static final String TO = "to";
 	public static final String SUBJECT = "subject";
 	
-	public EmailController(String type, String user, String[] groups, Node nextNode) {
-		super(type, user, groups, nextNode);
+	public EmailController(String type, Auth auth, Node nextNode) {
+		super(type, auth, nextNode);
 	}
 
 	@Override

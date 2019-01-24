@@ -20,6 +20,7 @@ import java.time.Month;
 import java.time.Year;
 import java.util.LinkedHashMap;
 
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.Filter;
@@ -50,8 +51,7 @@ public abstract class View extends Module {
 	protected Settings settings;
 	protected TypeSettings typeSettings;
 	protected Strings strings;
-	protected String user;
-	protected String[] groups;
+	protected Auth auth;
 
 	public View() {
 
@@ -73,8 +73,7 @@ public abstract class View extends Module {
 		typeSettings = request.getTypeSettings();
 		strings = request.getStrings();
 
-		user = request.getUser();
-		groups = request.getGroups();
+		auth = request.getAuth();
 	}
 	
 	public Content getVersion() {
@@ -102,25 +101,8 @@ public abstract class View extends Module {
 	}
 
 	@Override
-	public String getUser() {
-		return request.getUser();
-	}
-
-	@Override
-	public String[] getGroups() {
-		return request.getGroups();
-	}
-
-	@Override
-	public void setUser(String user) {
-		this.user = user;
-		nextNode.setUser(user);
-	}
-
-	@Override
-	public void setGroups(String[] groups) {
-		this.groups = groups;
-		nextNode.setGroups(groups);
+	public Auth getAuth() {
+		return auth;
 	}
 
 	@Override

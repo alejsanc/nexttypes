@@ -33,6 +33,7 @@ import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.AlterFieldResult;
 import com.nexttypes.datatypes.AlterIndexResult;
 import com.nexttypes.datatypes.AlterResult;
+import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Color;
 import com.nexttypes.datatypes.Document;
 import com.nexttypes.datatypes.FieldInfo;
@@ -885,23 +886,8 @@ public class ProxyNode extends Node {
 	}
 
 	@Override
-	public String getUser() {
-		return nextNode.getUser();
-	}
-
-	@Override
-	public String[] getGroups() {
-		return nextNode.getGroups();
-	}
-
-	@Override
-	public void setUser(String user) {
-		nextNode.setUser(user);
-	}
-
-	@Override
-	public void setGroups(String[] groups) {
-		nextNode.setGroups(groups);
+	public Auth getAuth() {
+		return nextNode.getAuth();
 	}
 
 	@Override

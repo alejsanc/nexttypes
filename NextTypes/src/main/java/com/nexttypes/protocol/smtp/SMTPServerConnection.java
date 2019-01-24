@@ -140,10 +140,13 @@ public class SMTPServerConnection extends Thread {
 
 	public void run() {
 
-		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), Auth.SMTP, null, NodeMode.WRITE,
-				settings.getString(KeyWords.LANG), remoteAddress, context, true);
-				BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				PrintStream output = new PrintStream(socket.getOutputStream())) {
+		try (
+			Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE),
+				new Auth(Auth.SMTP), NodeMode.WRITE, settings.getString(KeyWords.LANG),
+				remoteAddress, context, true);
+				
+			BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			PrintStream output = new PrintStream(socket.getOutputStream())) {
 
 			this.nextNode = nextNode;
 			this.input = input;

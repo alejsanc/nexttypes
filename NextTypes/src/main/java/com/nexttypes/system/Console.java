@@ -130,8 +130,8 @@ public class Console {
 				break;
 			}
 
-			try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), Auth.CONSOLE, null, mode,
-					lang, URL.LOCALHOST, context, false)) {
+			try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE),
+					new Auth(Auth.CONSOLE), mode, lang, URL.LOCALHOST, context, false)) {
 
 				Object result = null;
 

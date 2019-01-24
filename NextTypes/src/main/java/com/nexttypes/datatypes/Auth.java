@@ -20,7 +20,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class Auth {
 	public static final String GUEST = "guest";
-	public static final String GUESTS = "guests";
 	public static final String ADMIN = "admin";
 	public static final String ADMINISTRATORS = "administrators";
 	public static final String HTTP = "http";
@@ -32,10 +31,12 @@ public class Auth {
 	protected String[] groups;
 	protected boolean loginUser;
 
-	public Auth() {
-		user = GUEST;
-		groups = new String[] { GUESTS };
-		loginUser = false;
+	public Auth(String user) {
+		this(user, null, false);
+	}
+	
+	public Auth(String user, String[] groups) {
+		this(user, groups, false);
 	}
 
 	public Auth(String user, String[] groups, boolean loginUser) {
@@ -56,11 +57,11 @@ public class Auth {
 		return loginUser;
 	}
 	
-	public static boolean isAdministrator(String[] groups) {
+	public boolean isAdministrator() {
 		return ArrayUtils.contains(groups, ADMINISTRATORS);
 	}
 	
-	public static boolean isGuest(String user) {
+	public boolean isGuest() {
 		return GUEST.equals(user);
 	}
 }
