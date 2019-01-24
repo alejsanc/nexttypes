@@ -98,7 +98,7 @@ public class UserPermissions extends Permissions {
 	
 	@Override
 	public boolean isAllowedToMakeReference(String referencedType, String referencedId,
-			String referencingType, String referencingId, String referencingfield) {
+			String referencingType, String referencingId, String referencingField) {
 		
 		if (auth.isGuest() || auth.isAdministrator()) {
 			return true;
@@ -106,10 +106,11 @@ public class UserPermissions extends Permissions {
 		
 		boolean result = false;
 		
-		switch (referencedType) {
-		case KeyWords.USER:
+		if (KeyWords.USER.equals(referencedType) && KeyWords.USER_CERTIFICATE.equals(referencingType)) {
 			result = auth.getUser().equals(referencedId);
-			break;
+		} else {
+			result = super.isAllowedToMakeReference(referencedType, referencedId, referencingType,
+					referencingId, referencingField);
 		}
 		
 		return result;

@@ -305,6 +305,7 @@ public class KeyWords {
 	public static final String SHOW_CONTROL_PANEL = "show_control_panel";
 	public static final String SHOW_HEADER = "show_header";
 	public static final String SHOW_ID = "show_id";
+	public static final String SHOW_INSERT_FORM_BUTTON = "show_insert_form_button";
 	public static final String SHOW_PREVIEW = "show_preview";
 	public static final String SHOW_PROGRESS = "show_progress";
 	public static final String SHOW_RANGE = "show_range";

@@ -205,6 +205,10 @@ public class TypeSettings extends Settings {
 		return Tuple.parseNumeric(getFieldString(type, field, setting), typeField);
 	}
 	
+	public Boolean getFieldBoolean(String type, String field, String setting) {
+		return Tuple.parseBoolean(getFieldString(type, field, setting));
+	}
+	
 	public LocalDate getFieldDate(String type, String field, String setting) {
 		return Tuple.parseDate(getFieldString(type, field, setting));
 	}
