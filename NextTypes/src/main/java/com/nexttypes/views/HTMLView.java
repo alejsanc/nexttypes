@@ -1310,7 +1310,7 @@ public class HTMLView extends View {
 		Element actionButton = form.appendElement(button(actionName, Action.INSERT, Icon.PLUS,
 				SUBMIT_FORM));
 		if (!permissions.isAllowed(type, Action.INSERT) ||
-				(ref != null && !permissions.isAllowedToMakeReference(ref, type, null))) {
+				(ref != null && !permissions.isAllowedToMakeReference(type, null, ref))) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
 
@@ -3441,8 +3441,7 @@ public class HTMLView extends View {
 		}
 
 		if (!Action.INSERT.equals(form) && permissions.isAllowed(type, Action.INSERT_FORM)
-				&& ((ref == null || getPermissions(ref.getReferencedType())
-					.isAllowedToMakeReference(ref, type, id))
+				&& ((ref == null || permissions.isAllowedToMakeReference(type, id, ref))
 						|| typeSettings.getFieldBoolean(type, ref.getReferencingField(), 
 								KeyWords.SHOW_INSERT_FORM_BUTTON))) {
 			

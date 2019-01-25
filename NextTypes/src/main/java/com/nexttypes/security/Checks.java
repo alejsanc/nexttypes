@@ -35,6 +35,7 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.nodes.Node;
+import com.nexttypes.settings.Permissions;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Module;
 
@@ -308,6 +309,7 @@ public class Checks {
 		Node nextNode = module.getNextNode();
 		String referencingType = object.getType();
 		String referencingId = object.getId();
+		Permissions permissions = module.getPermissions(referencingType);
 		
 		for (Map.Entry<String, Object> entry : object.getFields().entrySet()) {
 			String referencingField = entry.getKey();
@@ -316,8 +318,8 @@ public class Checks {
 			if (!PT.isPrimitiveType(referencedType)) {
 				String referencedId = (String) entry.getValue();
 				
-				module.getPermissions(referencedType).checkReferencePermissions(referencedType,
-						referencedId, referencingType, referencingId, referencingField);
+				permissions.checkReferencePermissions(referencingType, referencingId, referencingField,
+						referencedType, referencedId);
 			}
 		}
 	}
@@ -331,8 +333,8 @@ public class Checks {
 		
 		if (!PT.isPrimitiveType(referencedType)) {
 		
-			module.getPermissions(referencedType).checkReferencePermissions(referencedType,
-				(String) value, type, id, field);
+			module.getPermissions(type).checkReferencePermissions(type, id, field, referencedType,
+				(String) value);
 		}
 	}
 }

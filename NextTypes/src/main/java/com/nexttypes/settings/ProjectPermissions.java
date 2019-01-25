@@ -128,8 +128,8 @@ public class ProjectPermissions extends Permissions {
 	}
 	
 	@Override
-	public boolean isAllowedToMakeReference(String referencedType, String referencedId,
-			String referencingType, String referencingId, String referencingfield) {
+	public boolean isAllowedToMakeReference(String referencingType, String referencingId,
+			String referencingfield, String referencedType, String referencedId) {
 		
 		String user = auth.getUser();
 		

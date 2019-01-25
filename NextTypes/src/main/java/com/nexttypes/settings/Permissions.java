@@ -128,23 +128,23 @@ public class Permissions extends TypeSettings {
 		}
 	}
 	
-	public boolean isAllowedToMakeReference(FieldReference ref, String referencingType,
-			String referencingId) {
-		return isAllowedToMakeReference(ref.getReferencedType(), ref.getReferencedId(),
-				referencingType, referencingId, ref.getReferencingField());
+	public boolean isAllowedToMakeReference(String referencingType, String referencingId, 
+			FieldReference ref) {
+		return isAllowedToMakeReference(referencingType, referencingId, ref.getReferencingField(),
+				ref.getReferencedType(), ref.getReferencedId());
 	}
 	
-	public boolean isAllowedToMakeReference(String referencedType, String referencedId,
-			String referencingType, String referencingId, String referencingfield) {
+	public boolean isAllowedToMakeReference(String referencingType, String referencingId,
+			String referencingField, String referencedType, String referencedId) {
 		return true;
 	}
 	
-	public void checkReferencePermissions(String referencedType, String referencedId,
-			String referencingType, String referencingId, String referencingField) {
-		if (!isAllowedToMakeReference(referencedType, referencedId, referencingType, referencingId,
-				referencingField)) {
-			throw new UnauthorizedReferenceException(referencedType, referencedId, referencingType,
-					referencingId, referencingField);
+	public void checkReferencePermissions(String referencingType, String referencingId,
+			String referencingField, String referencedType, String referencedId) {
+		if (!isAllowedToMakeReference(referencingType, referencingId, referencingField,
+				referencedType, referencedId)) {
+			throw new UnauthorizedReferenceException(referencingType, referencingId,
+					referencingField, referencedType, referencedId);
 		}
 	}
 }

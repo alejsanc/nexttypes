@@ -28,23 +28,15 @@ public class UnauthorizedReferenceException extends UnauthorizedException {
 	protected String referencingId;
 	protected String referencingField;
 	
-	public UnauthorizedReferenceException(String referencedType, String referencedId,
-			String referencingType, String referencingId, String referencingField) {
+	public UnauthorizedReferenceException(String referencingType, String referencingId,
+			String referencingField, String referencedType, String referencedId) {
 		super(KeyWords.UNAUTHORIZED_REFERENCE);
 		
-		this.referencedType = referencedType;
-		this.referencedId = referencedId;
 		this.referencingType = referencingType;
 		this.referencingId = referencingId;
 		this.referencingField = referencingField;
-	}
-	
-	public String getReferencedType() {
-		return referencedType;
-	}
-
-	public String getReferencedId() {
-		return referencedId;
+		this.referencedType = referencedType;
+		this.referencedId = referencedId;
 	}
 	
 	public String getReferencingType() {
@@ -59,11 +51,19 @@ public class UnauthorizedReferenceException extends UnauthorizedException {
 		return referencingField;
 	}
 	
+	public String getReferencedType() {
+		return referencedType;
+	}
+
+	public String getReferencedId() {
+		return referencedId;
+	}	
+	
 	@Override
 	public String getMessage(Strings strings) {
-		String referencedTypeName = strings.getTypeName(referencedType);
 		String referencingTypeName = strings.getTypeName(referencingType);
 		String referencingFieldName = strings.getFieldName(referencingType, referencingField);
+		String referencedTypeName = strings.getTypeName(referencedType);
 		
 		StringBuilder message = new StringBuilder(strings.gts(type, KeyWords.UNAUTHORIZED_REFERENCE)
 				+ ": " + referencingTypeName);
