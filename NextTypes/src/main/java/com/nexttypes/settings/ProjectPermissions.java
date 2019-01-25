@@ -45,6 +45,7 @@ public class ProjectPermissions extends Permissions {
 		String sql = null;
 		Object[] parameters = null;
 
+		root:
 		switch (type) {
 		case ProjectController.PROJECT:
 			
@@ -74,20 +75,7 @@ public class ProjectPermissions extends Permissions {
 			
 			break;
 
-		case ProjectController.PROJECT_MEMBER:
-			sql = "select" 
-					+ " pm.id"
-
-				+ " from"
-					+ " project_member pm"
-					+ " join project p on pm.project = p.id"
-
-				+ " where" 
-					+ " pm.id in (?) and p.owner != ?";
-
-			parameters = new Object[] { objects, user };
-			break;
-
+		
 		case ProjectController.PROJECT_DOCUMENT_CHAPTER:
 		case ProjectController.PROJECT_MEETING_PARTICIPANT:
 		case ProjectController.PROJECT_TICKET_MESSAGE:
@@ -107,6 +95,30 @@ public class ProjectPermissions extends Permissions {
 					ProjectController.getReferencingField(type), user, objects, user};
 		
 			break;
+
+		case ProjectController.PROJECT_MEMBER:
+			switch (action) {
+			case Action.UPDATE:
+			case Action.UPDATE_FIELD:
+			case Action.UPDATE_FORM:
+			case Action.UPDATE_ID:
+			case Action.UPDATE_ID_FORM:
+			case Action.DELETE:
+			
+				sql = "select" 
+						+ " pm.id"
+
+					+ " from"
+						+ " project_member pm"
+						+ " join project p on pm.project = p.id"
+
+					+ " where" 
+						+ " pm.id in (?) and p.owner != ?";
+
+				parameters = new Object[] { objects, user };
+			
+				break root;
+			}
 
 		default:
 			sql = "select"
