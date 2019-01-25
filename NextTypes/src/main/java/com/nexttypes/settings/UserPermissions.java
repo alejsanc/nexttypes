@@ -104,14 +104,14 @@ public class UserPermissions extends Permissions {
 			return true;
 		}
 		
-		boolean result = false;
+		boolean allowed = false;
 		
 		if (KeyWords.USER.equals(referencedType)) {
-			result = auth.getUser().equals(referencedId);
+			allowed = auth.getUser().equals(referencedId);
 		} else {
-			result = true;
+			allowed = true;
 		}
 		
-		return result;
+		return allowed;
 	}
 }

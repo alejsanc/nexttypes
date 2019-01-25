@@ -36,12 +36,12 @@ public class ProjectPermissions extends Permissions {
 	
 	@Override
 	public String[] isAllowed(String type, String[] objects, String action) {
-		String user = auth.getUser();
-				
+						
 		if ((auth.isGuest() || auth.isAdministrator()) && isAllowed(type, action)) {
 			return new String[] {};
 		}
 		
+		String user = auth.getUser();
 		String sql = null;
 		Object[] parameters = null;
 
@@ -143,14 +143,14 @@ public class ProjectPermissions extends Permissions {
 	public boolean isAllowedToMakeReference(String referencingType, String referencingId,
 			String referencingfield, String referencedType, String referencedId) {
 		
-		String user = auth.getUser();
-		
 		if (auth.isGuest() || auth.isAdministrator()) {
 			return true;
 		}
 		
+		String user = auth.getUser();
+		boolean allowed = true;
 		String sql = null;
-		Object[] parameters = null;
+		Object[] parameters = null;		
 		
 		switch (referencedType) {
 		case ProjectController.PROJECT:
@@ -192,6 +192,10 @@ public class ProjectPermissions extends Permissions {
 			break;
 		}
 		
-		return nextNode.getBoolean(sql, parameters);
+		if (sql != null) {
+			allowed = nextNode.getBoolean(sql, parameters);
+		}
+		
+		return allowed;
 	}
 }
