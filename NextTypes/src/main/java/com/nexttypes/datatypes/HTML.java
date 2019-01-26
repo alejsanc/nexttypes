@@ -199,7 +199,7 @@ public class HTML extends XML {
 		
 		@Override
 		public Element setAttribute(String name, Object value) {
-			if (HTML.NAME.equals(name)) {
+			if (HTML.NAME.equals(name) || HTML.FORM.equals(name)) {
 				for (Element input : inputs) {
 					input.setAttribute(name, value);
 				}
