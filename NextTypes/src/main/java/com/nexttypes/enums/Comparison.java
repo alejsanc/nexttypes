@@ -24,7 +24,9 @@ public enum Comparison {
 	LESS("less"),
 	LESS_OR_EQUAL("less_or_equal"),
 	LIKE("like"),
-	NOT_LIKE("not_like");
+	NOT_LIKE("not_like"),
+	NULL("null"),
+	NOT_NULL("not_null");
 	
 	protected String comparison;
 	

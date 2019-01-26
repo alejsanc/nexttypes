@@ -3805,6 +3805,14 @@ public class PostgreSQLNode extends Node {
 						whereSQL.append("::text not like ?");
 						value = "%" + value + "%";
 						break;
+						
+					case NULL:
+						whereSQL.append("is null");
+						break;
+						
+					case NOT_NULL:
+						whereSQL.append("is not null");
+						break;
 					}
 					
 					parameters.add(value);
