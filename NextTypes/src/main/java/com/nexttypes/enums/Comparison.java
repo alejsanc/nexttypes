@@ -23,7 +23,8 @@ public enum Comparison {
 	GREATER_OR_EQUAL("greater_or_equal"),
 	LESS("less"),
 	LESS_OR_EQUAL("less_or_equal"),
-	LIKE("like");
+	LIKE("like"),
+	NOT_LIKE("not_like");
 	
 	protected String comparison;
 	

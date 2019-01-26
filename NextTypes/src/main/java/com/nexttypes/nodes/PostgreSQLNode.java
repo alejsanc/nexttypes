@@ -3771,18 +3771,23 @@ public class PostgreSQLNode extends Node {
 							whereSQL.append("in(?)");
 						}
 						break;
+						
 					case GREATER:
 						whereSQL.append("> ?");
 						break;
+						
 					case GREATER_OR_EQUAL:
 						whereSQL.append(">= ?");
 						break;
+						
 					case LESS:
 						whereSQL.append("< ?");
 						break;
+						
 					case LESS_OR_EQUAL:
 						whereSQL.append("<= ?");
 						break;
+						
 					case NOT_EQUAL:
 						if (value == null) {
 							whereSQL.append("is not null");
@@ -3790,8 +3795,14 @@ public class PostgreSQLNode extends Node {
 							whereSQL.append("not in(?)");
 						}
 						break;
+						
 					case LIKE:
 						whereSQL.append("::text like ?");
+						value = "%" + value + "%";
+						break;
+						
+					case NOT_LIKE:
+						whereSQL.append("::text not like ?");
 						value = "%" + value + "%";
 						break;
 					}
