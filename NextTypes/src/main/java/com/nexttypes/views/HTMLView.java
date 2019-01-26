@@ -600,12 +600,12 @@ public class HTMLView extends View {
 			
 			
 			row.appendElement(HTML.TD).appendText(fieldName);
-			Element inputRow = row.appendElement(HTML.TD);
-			inputRow.appendElement(fieldInput(type, action, field, fieldName,
+			Element cell = row.appendElement(HTML.TD);
+			cell.appendElement(fieldInput(type, action, field, fieldName,
 					null, typeField, lang));
 			
 			if (showRange) {
-				inputRow.appendElement(fieldRange(typeField));
+				appendFieldRange(cell, typeField);
 			}
 		}
 
@@ -617,7 +617,7 @@ public class HTMLView extends View {
 
 		return form;
 	}
-
+	
 	@Override
 	public Content importTypesForm(String lang, String view) {
 		loadTemplate(null, lang, view);
@@ -1819,7 +1819,7 @@ public class HTMLView extends View {
 		cell.appendElement(input);
 		
 		if (showRange) {
-			cell.appendElement(fieldRange(typeField));
+			appendFieldRange(cell, typeField);
 		}
 		
 		return cell;
@@ -1839,7 +1839,7 @@ public class HTMLView extends View {
 		cell.appendElement(input);
 		
 		if (showRange) {
-			cell.appendElement(fieldRange(typeField));
+			appendFieldRange(cell, typeField);
 		}
 		
 		return cell;
@@ -2092,15 +2092,16 @@ public class HTMLView extends View {
 		return input;
 	}
 	
-	public Element fieldRange(TypeField typeField) {
-		return fieldRange(typeField.getRange());
-	}
-	
-	public Element fieldRange(FieldRange range) {
+	public void appendFieldRange(Element element, TypeField typeField) {
+		FieldRange range = typeField.getRange();
+		
 		if (range != null) {
-			return fieldRange(range.getMin(), range.getMax());
-		} else {
-			return document.createElement(HTML.SPAN);
+			Object min = range.getMin();
+			Object max = range.getMax();
+		
+			if (min != null || max != null) {
+				element.appendElement(fieldRange(min, max));
+			}
 		}
 	}
 	
@@ -2108,18 +2109,16 @@ public class HTMLView extends View {
 		Element span = document.createElement(HTML.SPAN)
 				.addClass(FIELD_RANGE);
 		
-		if (min != null || max != null) {
-			if (min != null) {
-				span.appendText(min);
-			}
-			
-			span.appendText(" - ");
-			
-			if (max != null) {
-				span.appendText(max);
-			}
+		if (min != null) {
+			span.appendText(min);
 		}
-		
+			
+		span.appendText(" - ");
+			
+		if (max != null) {
+			span.appendText(max);
+		}
+				
 		return span;
 	}
 	
