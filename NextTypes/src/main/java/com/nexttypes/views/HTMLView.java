@@ -2306,7 +2306,7 @@ public class HTMLView extends View {
 		String mode = typeSettings.gts(type, KeyWords.OBJECT_INPUT_MODE);
 		Integer size = typeSettings.getTypeInt32(type, KeyWords.ID_INPUT_SIZE);
 		
-		return objectInput(name, title, value, type, Action.SELECT, null, null, notNull, mode, size, lang);
+		return objectInput(name, title, value, type, null, Action.SELECT, null, notNull, mode, size, lang);
 	}
 	
 	public Element filterObjectTextInput(String name, String title, Object value, String type) {
@@ -2358,8 +2358,7 @@ public class HTMLView extends View {
 			break;
 			
 		case HTML.SELECT:			
-			input = objectSelectInput(name, title, value, type, null,
-					action, null, notNull, lang);
+			input = objectSelectInput(name, title, value, type, null, action, null, notNull, lang);
 			break;
 			
 		case HTML.TEXT:		
