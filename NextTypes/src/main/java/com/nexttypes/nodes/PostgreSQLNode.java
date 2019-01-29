@@ -3555,9 +3555,10 @@ public class PostgreSQLNode extends Node {
 			if (objectsName) {
 				String idName = typeSettings.gts(type, KeyWords.ID_NAME);
 				if (idName != null) {
-					fieldsSQL.append(", \"@" + type + "_id_name\".name as \"@name\"");
-					joinSQL.append(" join (" + idName + ") as \"@" + type + "_id_name\"" + " on \"" + type + "\".id=\"@"
-						+ type + "_id_name\".id");
+					fieldsSQL.append(", \"@@" + type + "\".name as \"@name\"");
+					joinSQL.append(" join (" + idName + ") as \"@@" + type + "\"" + " on \""
+							+ type + "\".id=\"@@" + type + "\".id");
+					
 					if (idName.contains("?")) {
 						parameters.add(lang);
 					}
@@ -3583,7 +3584,8 @@ public class PostgreSQLNode extends Node {
 					if (binary) {
 						fieldsSQL.append(", \"" + type + "\".\"" + field + "\"");
 					} else {
-						fieldsSQL.append(", octet_length(\"" + type + "\".\"" + field + "\") as \"" + field + "\"");
+						fieldsSQL.append(", octet_length(\"" + type + "\".\"" + field + "\") as \""
+								+ field + "\"");
 					}
 					break;
 				case PT.FILE:
@@ -3593,24 +3595,24 @@ public class PostgreSQLNode extends Node {
 					if (binary) {
 						fieldsSQL.append(", \"" + type + "\".\"" + field + "\"");
 					} else {
-						fieldsSQL.append(
-								", octet_length((\"" + type + "\".\"" + field + "\").content) as \"" + field + "\"");
+						fieldsSQL.append(", octet_length((\"" + type + "\".\"" + field
+								+ "\").content) as \"" + field + "\"");
 					}
 					break;
 				case PT.DOCUMENT:
 					if (binary) {
 						fieldsSQL.append(", \"" + type + "\".\"" + field + "\"");
 					} else {
-						fieldsSQL.append(", octet_length((\"" + type + "\".\"" + field + "\").content) as \"@" + field
-								+ "_size\"");
+						fieldsSQL.append(", octet_length((\"" + type + "\".\"" + field 
+								+ "\").content) as \"@" + field + "_size\"");
 
 						if (documentPreview) {
 							if (fulltext) {
-								fieldsSQL.append(
-										", (\"" + type + "\".\"" + field + "\").text as \"@" + field + "_text\"");
+								fieldsSQL.append(", (\"" + type + "\".\"" + field + "\").text as \"@"
+										+ field + "_text\"");
 							} else {
-								fieldsSQL.append(", left((\"" + type + "\".\"" + field + "\").text, 200) as \"@" + field
-										+ "_text\"");
+								fieldsSQL.append(", left((\"" + type + "\".\"" + field
+										+ "\").text, 200) as \"@" + field + "_text\"");
 							}
 						}
 					}
@@ -3629,7 +3631,8 @@ public class PostgreSQLNode extends Node {
 					if (fulltext) {
 						fieldsSQL.append(", \"" + type + "\".\"" + field + "\"");
 					} else {
-						fieldsSQL.append(", left(\"" + type + "\".\"" + field + "\"::text, 200) as \"" + field + "\"");
+						fieldsSQL.append(", left(\"" + type + "\".\"" + field + "\"::text, 200) as \""
+								+ field + "\"");
 					}
 					break;
 				case PT.INT16:
@@ -3708,8 +3711,9 @@ public class PostgreSQLNode extends Node {
 						if (settingsOrder != null) {
 							sql.append(settingsOrder);
 						} else {
-							if (!TypeField.isReservedName(field)
-									&& !PT.isPrimitiveType(typeFields.get(field).getType())) {
+							TypeField typeField = typeFields.get(field);
+							
+							if (typeField != null && !PT.isPrimitiveType(typeField.getType())) {
 								sql.append("\"@" + field + "_name\"");
 							} else {
 								sql.append("\"" + field + "\"");
@@ -3745,25 +3749,29 @@ public class PostgreSQLNode extends Node {
 			}
 		}
 
-		protected void addFilters(StringBuilder whereSQL, Filter[] filters) {
-			addFilters(null, whereSQL, filters);
-		}
-
 		protected void addFilters(String type, StringBuilder whereSQL, Filter[] filters) {
 			if (filters != null && filters.length > 0) {
+				LinkedHashMap<String, TypeField> typeFields = PostgreSQLNode.this.getTypeFields(type);
+				
 				whereSQL.append(" where ");
 
 				for (Filter filter : filters) {
-
-					if (type != null) {
-						whereSQL.append("\"" + type + "\".");
-					}
 					
+					String field = filter.getField();
+					Comparison comparison = filter.getComparison();
 					Object value = filter.getValue();
-
-					whereSQL.append("\"" + filter.getField() + "\" ");
+					TypeField typeField = typeFields.get(field);
 					
-					switch (filter.getComparison()) {
+					if (typeField != null && !PT.isPrimitiveType(typeField.getType())
+							&& (Comparison.LIKE.equals(comparison)
+									|| Comparison.NOT_LIKE.equals(comparison))) {
+						whereSQL.append("\"@" + field + "\".name");
+					
+					} else {
+						whereSQL.append("\"" + type + "\".\"" + field + "\" ");
+					} 
+					
+					switch (comparison) {
 					case EQUAL:
 						if (value == null) {
 							whereSQL.append("is null");
@@ -3797,12 +3805,12 @@ public class PostgreSQLNode extends Node {
 						break;
 						
 					case LIKE:
-						whereSQL.append("::text like ?");
+						whereSQL.append("::text ilike ?");
 						value = "%" + value + "%";
 						break;
 						
 					case NOT_LIKE:
-						whereSQL.append("::text not like ?");
+						whereSQL.append("::text not ilike ?");
 						value = "%" + value + "%";
 						break;
 					}
@@ -3826,7 +3834,7 @@ public class PostgreSQLNode extends Node {
 
 		protected void addSearch(String type, StringBuilder whereSQL, String search, TypeIndex typeIndex) {
 			StringBuilder fulltextFields = new StringBuilder();
-			LinkedHashMap<String, TypeField> typeFields = getTypeFields();
+			LinkedHashMap<String, TypeField> typeFields = PostgreSQLNode.this.getTypeFields(type);
 
 			for (String field : typeIndex.getFields()) {
 				TypeField typeField = typeFields.get(field);
@@ -3852,22 +3860,20 @@ public class PostgreSQLNode extends Node {
 				String fieldType, String lang) {
 
 			String fieldIdName = typeSettings.gts(fieldType, KeyWords.ID_NAME);
+			
+			if (fieldIdName == null) {
+				fieldIdName = "select id, id as name from \"" + fieldType + "\"";
+			}
 
-			if (fieldIdName != null) {
+			fieldsSQL.append(", \"@" + field + "\".id as \"@" + field + "_id\","
+					+ " \"@" + field + "\".name" + " as \"@" + field + "_name\"");
 
-				fieldsSQL.append(", \"@" + field + "_id_name\".id as \"@" + field + "_id\"," + " coalesce(\"@" + field
-						+ "_id_name\".name, \"@" + field + "_id_name\".id)" + " as \"@" + field + "_name\"");
+			joinSQL.append(" left join (select id_name.id, coalesce(id_name.name, id_name.id)"
+					+ " as name from (" + fieldIdName + ") as id_name) as \"@" + field + "\""
+					+ " on \"" + type + "\".\"" + field + "\"=\"@" + field + "\".id");
 
-				joinSQL.append(" left join (" + fieldIdName + ") as \"@" + field + "_id_name\"" + " on \"" + type
-						+ "\".\"" + field + "\"=\"@" + field + "_id_name\".id");
-
-				if (fieldIdName.contains("?")) {
-					parameters.add(lang);
-				}
-
-			} else {
-				fieldsSQL.append(", \"" + field + "\" as \"@" + field + "_id\"," + " \"" + field + "\" as \"@" + field
-						+ "_name\"");
+			if (fieldIdName.contains("?")) {
+				parameters.add(lang);
 			}
 		}
 

@@ -497,8 +497,9 @@ public class XML extends PGobject {
 			return element.getAttribute(name);
 		}
 
-		public void removeAttribute(String name) {
+		public Element removeAttribute(String name) {
 			element.removeAttribute(name);
+			return this;
 		}
 		
 		public Element addClass(String className) {

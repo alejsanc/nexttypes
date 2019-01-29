@@ -169,5 +169,4 @@ public class TypeField {
 	public static boolean isReservedName(String field) {
 		return ArrayUtils.contains(RESERVED_NAMES, field);
 	}
-	
 }

@@ -145,6 +145,9 @@ public class HTMLView extends View {
 	//Classes
 	public static final String ADD_FILTER = "add-filter";
 	public static final String FILTER_FIELD = "filter-field";
+	public static final String FILTER_COMPARISON = "filter-comparison";
+	public static final String FILTER_INPUT = "filter-input";
+	public static final String FILTER_TEXT_INPUT = "filter-text-input";
 	public static final String FIELD_RANGE = "field-range";
 	public static final String OBJECT_RADIO_INPUT = "object-radio-input";
 	public static final String OBJECTS_TEXTAREA_INPUT = "objects-textarea-input";
@@ -1529,9 +1532,10 @@ public class HTMLView extends View {
 		Element row = document.createElement(HTML.TR);
 		
 		String filterField = filter.getField();
+		Object filterValue = filter.getValue();
 		
 		Element fieldSelect = row.appendElement(HTML.TD).appendElement(HTML.SELECT)
-				.setAttribute(HTML.CLASS, FILTER_FIELD)
+				.addClass(FILTER_FIELD)
 				.setAttribute(HTML.NAME, KeyWords.FILTERS + ":" + count + ":" + KeyWords.FIELD)
 				.setAttribute(HTML.FORM, KeyWords.SEARCH);
 				
@@ -1559,6 +1563,7 @@ public class HTMLView extends View {
 		}
 		
 		Element comparisonSelect = row.appendElement(HTML.TD).appendElement(HTML.SELECT)
+				.addClass(FILTER_COMPARISON)
 				.setAttribute(HTML.NAME, KeyWords.FILTERS + ":" + count + ":" + KeyWords.COMPARISON)
 				.setAttribute(HTML.FORM, KeyWords.SEARCH);
 	
@@ -1572,26 +1577,59 @@ public class HTMLView extends View {
 			}
 		}
 		
-		Element valueInput = null;
+		Element filterInput = null;
+		Element filterTextInput = null;
 		TypeField typeField = typeFields.get(filterField);
 		String valueName = KeyWords.FILTERS + ":" + count + ":" + KeyWords.VALUE;
-		
+				
 		if (KeyWords.ID.equals(filterField)) {
-			valueInput = filterObjectInput(valueName, strings.getIdName(type),
-					filter.getValue(), type, true, lang);
+			String idName = strings.getIdName(type);
+			
+			filterInput = filterObjectInput(valueName, idName, filterValue, type, true, lang);
+			
+			filterTextInput = filterObjectTextInput(valueName, idName, filterValue, type);
 		} else {
-			if (PT.isTextType(typeField.getType())) {
+			String fieldType = typeField.getType();
+			
+			if (PT.isTextType(fieldType)) {
 				typeField = new TypeField(PT.STRING, null, null, null, null, typeField.isNotNull());
-			}
+			} 
 			
 			String filterFieldName = strings.getFieldName(type, filterField);
-			valueInput = fieldInput(type, Action.SELECT, filterField, filterFieldName, filter.getValue(), typeField,
-					lang).setAttribute(HTML.NAME, valueName);
+			filterInput = fieldInput(type, Action.SELECT, filterField, filterFieldName,
+					filterValue, typeField, lang).setAttribute(HTML.NAME, valueName);
+			
+			if (!PT.isStringType(fieldType) && !PT.isTextType(fieldType)) {
+				filterTextInput = input(HTML.TEXT, filterField, filterFieldName, filterValue)
+						.setAttribute(HTML.NAME, valueName);
+			}
 		}
 		
-		valueInput.setAttribute(HTML.FORM, KeyWords.SEARCH);
+		filterInput.addClass(FILTER_INPUT);
+		filterInput.setAttribute(HTML.FORM, KeyWords.SEARCH);
 		
-		row.appendElement(HTML.TD).appendElement(valueInput);
+		Element inputCell = row.appendElement(HTML.TD);
+		inputCell.appendElement(filterInput);
+				
+		if (filterTextInput != null) {
+			filterTextInput.addClass(FILTER_TEXT_INPUT);
+			filterTextInput.setAttribute(HTML.FORM, KeyWords.SEARCH);
+			
+			inputCell.appendElement(filterTextInput);
+			
+			if (Comparison.LIKE.equals(filter.getComparison())
+				|| Comparison.NOT_LIKE.equals(filter.getComparison())) {
+				
+				filterInput.addClass(HTML.HIDDEN);
+				filterInput.setAttribute(HTML.DISABLED);
+				filterInput.removeAttribute(HTML.VALUE);
+				
+			} else {	
+				filterTextInput.addClass(HTML.HIDDEN);
+				filterTextInput.setAttribute(HTML.DISABLED);
+				filterTextInput.removeAttribute(HTML.VALUE);
+			}
+		}
 		
 		String dropFilter = strings.gts(type, KeyWords.DROP_FILTER);
 		
@@ -2269,6 +2307,12 @@ public class HTMLView extends View {
 		Integer size = typeSettings.getTypeInt32(type, KeyWords.ID_INPUT_SIZE);
 		
 		return objectInput(name, title, value, type, Action.SELECT, null, null, notNull, mode, size, lang);
+	}
+	
+	public Element filterObjectTextInput(String name, String title, Object value, String type) {
+		Integer size = typeSettings.getTypeInt32(type, KeyWords.ID_INPUT_SIZE);
+		
+		return objectTextInput(name, title, value, size);
 	}
 	
 	public Element objectInput(String name, String title, Object value, String referencedType,

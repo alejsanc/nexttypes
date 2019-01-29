@@ -516,7 +516,9 @@ public class HTTPRequest {
 			
 				Object value = filterParameters.get(KeyWords.VALUE);
 				
-				if (!Comparison.LIKE.equals(comparison) && !KeyWords.ID.equals(field)) {
+				if (!Comparison.LIKE.equals(comparison) && !Comparison.NOT_LIKE.equals(comparison)
+						&& !KeyWords.ID.equals(field)) {
+					
 					String fieldType = typeFields.get(field).getType();
 				
 					if (PT.isPrimitiveType(fieldType) && !PT.isFilterType(fieldType)) {

@@ -125,6 +125,7 @@ function initEventListeners() {
 	addEventListeners(document, "input.binary", "change", binaryInputChange);
 	addEventListeners(document, "input.null", "change", nullInputChange);
 	addEventListeners(document, "select.filter-field", "change", changeFilterField)
+	addEventListeners(document, "select.filter-comparison", "change", filterComparisonChange)
 	addSelectTableEventListeners(document);
 	
 	var forms = document.querySelectorAll("form.unload-confirmation");
@@ -299,6 +300,8 @@ function loadFilter(row, field) {
 			container.innerHTML = request.responseText;
 			container.querySelector("button.delete-row").addEventListener("click", deleteRow);
 			container.querySelector("select.filter-field").addEventListener("change", changeFilterField);
+			container.querySelector("select.filter-comparison").addEventListener("change",
+					filterComparisonChange)
 			row.parentNode.replaceChild(container.firstChild, row);
 		} else {
 			alert(request.responseText);
@@ -312,6 +315,31 @@ function changeFilterField(event) {
 	var field = select.options[select.selectedIndex].value;
 	
 	loadFilter(select.parentNode.parentNode, field);
+}
+
+function filterComparisonChange(event) {
+	var select = event.currentTarget;
+	var comparison = select.options[select.selectedIndex].value;
+	var filterInput = select.parentNode.parentNode.querySelector(".filter-input");
+	var filterTextInput = filterInput.parentNode.querySelector(".filter-text-input");
+	
+	if (comparison == "like" || comparison == "not_like") {
+		if (filterTextInput != null) {
+			filterInput.classList.add("hidden");
+			filterTextInput.classList.remove("hidden");
+			
+			filterInput.disabled = true;
+			filterTextInput.disabled = false;
+		}
+	} else {
+		if (filterTextInput != null) {
+			filterTextInput.classList.add("hidden");
+			filterInput.classList.remove("hidden");
+			
+			filterTextInput.disabled = true;
+			filterInput.disabled = false;
+		}
+	}
 }
 
 function deleteRow(event) {
