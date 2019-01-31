@@ -66,6 +66,7 @@ public @interface Action {
 	public static final String RENAME_FIELD = "rename_field";
 	public static final String RENAME_FORM = "rename_form";
 	public static final String RENAME_INDEX = "rename_index";
+	public static final String SEARCH = "search";
 	public static final String SELECT = "select";
 	public static final String SELECT_COMPONENT = "select_component";
 	public static final String UPDATE = "update";

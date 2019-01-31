@@ -1596,7 +1596,7 @@ public class HTMLView extends View {
 			} 
 			
 			String filterFieldName = strings.getFieldName(type, filterField);
-			filterInput = fieldInput(type, Action.SELECT, filterField, filterFieldName,
+			filterInput = fieldInput(type, Action.SEARCH, filterField, filterFieldName,
 					filterValue, typeField, lang).setAttribute(HTML.NAME, valueName);
 			
 			if (!PT.isStringType(fieldType) && !PT.isTextType(fieldType)) {
@@ -2306,7 +2306,7 @@ public class HTMLView extends View {
 		String mode = typeSettings.gts(type, KeyWords.OBJECT_INPUT_MODE);
 		Integer size = typeSettings.getTypeInt32(type, KeyWords.ID_INPUT_SIZE);
 		
-		return objectInput(name, title, value, type, null, Action.SELECT, null, notNull, mode, size, lang);
+		return objectInput(name, title, value, type, null, Action.SEARCH, null, notNull, mode, size, lang);
 	}
 	
 	public Element filterObjectTextInput(String name, String title, Object value, String type) {

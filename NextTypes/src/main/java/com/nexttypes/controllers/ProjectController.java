@@ -27,6 +27,7 @@ import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.system.KeyWords;
+import com.nexttypes.system.Action;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Controller;
 
@@ -35,7 +36,6 @@ import net.fortuna.ical4j.model.component.VEvent;
 public class ProjectController extends Controller {
 	
 	public static final String PROJECT = "project";
-	public static final String DOCUMENT = "document";
 	public static final String PROJECT_MEETING = "project_meeting";
 	public static final String PROJECT_MEMBER = "project_member";
 	public static final String PROJECT_DOCUMENT = "project_document";
@@ -87,10 +87,14 @@ public class ProjectController extends Controller {
 		String user = auth.getUser();
 		
 		if (auth.isGuest() || auth.isAdministrator()) {
-			return super.getObjectsName(lang);
+			return getObjectsName(lang);
 		}
 		
-		LinkedHashMap<String, String> objects = new LinkedHashMap<String, String>();
+		if (Action.SEARCH.equals(referencingAction)) {
+			return getObjectsName(lang);
+		}
+		
+		LinkedHashMap<String, String> objects = null;
 		String sql = null;
 		Object[] parameters = null;
 		
@@ -136,12 +140,18 @@ public class ProjectController extends Controller {
 			break;
 		}
 		
-		sql += " order by name";
+		if (sql != null) {
 		
-		Tuple[] tuples = nextNode.query(sql,  parameters);
+			sql += " order by name";
+			objects = new LinkedHashMap<String, String>();
 		
-		for (Tuple tuple : tuples) {
-			objects.put(tuple.getString(KeyWords.ID), tuple.getString(KeyWords.NAME));
+			Tuple[] tuples = nextNode.query(sql,  parameters);
+		
+			for (Tuple tuple : tuples) {
+				objects.put(tuple.getString(KeyWords.ID), tuple.getString(KeyWords.NAME));
+			}
+		} else {
+			objects = getObjectsName(lang);
 		}
 		
 		return objects;
@@ -188,7 +198,7 @@ public class ProjectController extends Controller {
 
 		switch (type) {
 		case PROJECT_DOCUMENT_CHAPTER:
-			referencingField = DOCUMENT;
+			referencingField = PROJECT_DOCUMENT;
 			break;
 
 		case PROJECT_MEETING_PARTICIPANT:
