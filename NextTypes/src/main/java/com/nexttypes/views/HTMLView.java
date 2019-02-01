@@ -1600,7 +1600,7 @@ public class HTMLView extends View {
 			filterInput = fieldInput(type, Action.SEARCH, filterField, filterFieldName,
 					filterValue, typeField, lang).setAttribute(HTML.NAME, valueName);
 			
-			if (!PT.isStringType(fieldType) && !PT.isTextType(fieldType)) {
+			if (!PT.STRING.equals(fieldType) && !PT.TEL.equals(fieldType) && !PT.isTextType(fieldType)) {
 				filterTextInput = input(HTML.TEXT, filterField, filterFieldName, filterValue)
 						.setAttribute(HTML.NAME, valueName);
 			}
