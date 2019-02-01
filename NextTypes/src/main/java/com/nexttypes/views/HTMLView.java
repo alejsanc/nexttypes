@@ -822,7 +822,8 @@ public class HTMLView extends View {
 		return render(type);
 	}
 
-	public Element getElement(NXObject object, LinkedHashMap<String, TypeField> typeFields, String lang, String view) {
+	public Element getElement(NXObject object, LinkedHashMap<String, TypeField> typeFields, String lang,
+			String view) {
 		Element article = document.createElement(HTML.ARTICLE);
 
 		String typeName = strings.getTypeName(object.getType());
@@ -895,8 +896,8 @@ public class HTMLView extends View {
 	}
 
 	@Override
-	public Content getElement(String type, String id, String field, String element, String lang, String view,
-			String etag) {
+	public Content getElement(String type, String id, String field, String element, String lang,
+			String view, String etag) {
 		Content content = null;
 
 		String fieldType = nextNode.getTypeField(type, field).getType();
@@ -1304,7 +1305,7 @@ public class HTMLView extends View {
 				fieldCell.appendText(fieldName);
 			}
 
-			row.appendElement(insertFormCell(type, field, fieldName, value, typeField, ref, lang,
+			row.appendElement(insertFormCell(type, field, fieldName, value, typeField, lang, ref,
 					showRange));
 		}
 		
@@ -1840,7 +1841,7 @@ public class HTMLView extends View {
 	}
 
 	public Element insertFormCell(String type, String field, String title, Object value, 
-			TypeField typeField, FieldReference ref, String lang, boolean showRange) {
+			TypeField typeField, String lang, FieldReference ref, boolean showRange) {
 		Element cell = document.createElement(HTML.TD);
 		Element input = null;
 
@@ -2218,7 +2219,8 @@ public class HTMLView extends View {
 		return textarea;
 	}
 
-	public Element documentFieldOutput(String type, String id, String field, Object value, String lang, boolean preview) {
+	public Element documentFieldOutput(String type, String id, String field, Object value, String lang,
+			boolean preview) {
 
 		DocumentPreview docPrev = (DocumentPreview) value;
 
@@ -2354,7 +2356,7 @@ public class HTMLView extends View {
 			break;
 			
 		case MULTIPLE_SELECT:
-			input = objectsMultipleSelectInput(name, title, size, type, lang);
+			input = objectsMultipleSelectInput(name, title, size, type, action, lang);
 			break;
 			
 		case HTML.SELECT:			
@@ -2402,12 +2404,12 @@ public class HTMLView extends View {
 	}
 	
 	public Element objectsMultipleSelectInput(String name, String title, Integer size, 
-			String type, String lang) {
+			String type, String action, String lang) {
 		
 		Element input = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name)
 				.setAttribute(HTML.TITLE, title);
 
-		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, lang);
+		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, null, action, null, lang);
 
 		for (Entry<String, String> entry : names.entrySet()) {
 			String objectId = entry.getKey();
@@ -4144,7 +4146,8 @@ public class HTMLView extends View {
 	}
 
 	@Override
-	public Content calendar(String type, String lang, String view, FieldReference ref, Year year, Month month) {
+	public Content calendar(String type, String lang, String view, FieldReference ref, Year year,
+			Month month) {
 		loadTemplate(type, lang, view);
 
 		String title = strings.gts(type, KeyWords.CALENDAR_TITLE);
@@ -4191,8 +4194,8 @@ public class HTMLView extends View {
 		return render(type);
 	}
 
-	public Element calendar(String type, String lang, String view, FieldReference ref, Month month, LocalDate today,
-			LocalDate date, Tuple[] events, LocalDate firstDate) {
+	public Element calendar(String type, String lang, String view, FieldReference ref, Month month,
+			LocalDate today, LocalDate date, Tuple[] events, LocalDate firstDate) {
 
 		Element calendar = document.createElement(HTML.DIV).addClass(CALENDAR);
 
@@ -4205,8 +4208,8 @@ public class HTMLView extends View {
 		return calendar;
 	}
 
-	public Element month(String type, String lang, String view, Month month, LocalDate today, LocalDate date,
-			Map<LocalDate, List<Tuple>> eventsByDate) {
+	public Element month(String type, String lang, String view, Month month, LocalDate today,
+			LocalDate date, Map<LocalDate, List<Tuple>> eventsByDate) {
 
 		Element monthElement = document.createElement(HTML.TABLE).addClass(CALENDAR_MONTH);
 
