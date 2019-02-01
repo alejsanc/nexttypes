@@ -604,8 +604,7 @@ public class HTMLView extends View {
 			
 			row.appendElement(HTML.TD).appendText(fieldName);
 			Element cell = row.appendElement(HTML.TD);
-			cell.appendElement(fieldInput(type, action, field, fieldName,
-					null, typeField, lang));
+			cell.appendElement(fieldInput(type, action, field, fieldName, null, typeField, lang));
 			
 			if (showRange) {
 				appendFieldRange(cell, typeField);
@@ -1591,9 +1590,9 @@ public class HTMLView extends View {
 			filterTextInput = filterObjectTextInput(valueName, idName, filterValue, type);
 		} else {
 			String fieldType = typeField.getType();
-			
+						
 			if (PT.isTextType(fieldType)) {
-				typeField = new TypeField(PT.STRING, null, null, null, null, typeField.isNotNull());
+				typeField = typeField.getStringTypeField();
 			} 
 			
 			String filterFieldName = strings.getFieldName(type, filterField);
@@ -1601,8 +1600,11 @@ public class HTMLView extends View {
 					filterValue, typeField, lang).setAttribute(HTML.NAME, valueName);
 			
 			if (!PT.STRING.equals(fieldType) && !PT.TEL.equals(fieldType) && !PT.isTextType(fieldType)) {
-				filterTextInput = input(HTML.TEXT, filterField, filterFieldName, filterValue)
-						.setAttribute(HTML.NAME, valueName);
+								
+				typeField = typeField.getStringTypeField();
+				
+				filterTextInput = fieldInput(type, Action.SEARCH, filterField, filterFieldName,
+						filterValue, typeField, lang).setAttribute(HTML.NAME, valueName);
 			}
 		}
 		
