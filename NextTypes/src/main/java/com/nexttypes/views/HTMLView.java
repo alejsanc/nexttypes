@@ -782,7 +782,7 @@ public class HTMLView extends View {
 			
 			if (permissions.isAllowed(referencedType, Action.GET_TYPE)) {
 				referencedTypeCell.appendElement(anchor(referencedTypeName, 
-						url(referencedType, lang, view) + "&" + KeyWords.INFO));
+						url(referencedType, lang, view) + parameter(KeyWords.INFO)));
 			} else {
 				referencedTypeCell.appendText(referencedTypeName);
 			}
@@ -791,7 +791,7 @@ public class HTMLView extends View {
 			
 			if (permissions.isAllowed(referencingType, Action.GET_TYPE)) {
 				referencingTypeCell.appendElement(anchor(referencingTypeName,
-						url(referencingType, lang, view) + "&" + KeyWords.INFO));
+						url(referencingType, lang, view) + parameter(KeyWords.INFO)));
 			} else {
 				referencingTypeCell.appendText(referencingTypeName);
 			}
@@ -1179,7 +1179,7 @@ public class HTMLView extends View {
 			
 			if (permissions.isAllowed(type, Action.GET_TYPE)) {
 				infoCell.appendElement(iconAnchor(strings.gts(type, KeyWords.TYPE),
-						url(type, lang, view) + "&" + KeyWords.INFO, Icon.INFO));
+						url(type, lang, view) + parameter(KeyWords.INFO), Icon.INFO));
 			}
 		}
 		
@@ -1652,7 +1652,7 @@ public class HTMLView extends View {
 				url(referencedType, ref.getReferencedId(), lang, view)));
 		
 		String url = url(type, lang, view) + filtersParameters(filters) + searchParameter(search)
-			+ orderParameter(order);
+			+ orderParameter(order) + calendarParameter(request.isCalendar());
 		div.appendElement(iconAnchor(strings.gts(type, KeyWords.DELETE_REFERENCE), url, Icon.DELETE));
 		
 		return div;
@@ -3042,13 +3042,17 @@ public class HTMLView extends View {
 			+ searchParameter(search) + orderParameter(order) + parameter(KeyWords.OFFSET, offset)
 			+ parameter(KeyWords.LIMIT, limit) + previewParameter(request.isPreview());
 	}
+	
+	public String parameter(String name) {
+		return "&" + name;
+	}
 
 	public String parameter(String name, Object value) {
 		return value != null ? "&" + name + "=" + value : "";
 	}
 
 	public String refParameter(FieldReference ref) {
-		return ref != null ? "&" + KeyWords.REF + "=" + refString(ref) : "";
+		return ref != null ? parameter(KeyWords.REF, refString(ref)) : "";
 	}
 	
 	public String refString(FieldReference ref) {
@@ -3063,8 +3067,16 @@ public class HTMLView extends View {
 		return preview ? previewParameter() : "";
 	}
 	
+	public String calendarParameter(boolean calendar) {
+		return calendar ? calendarParameter() : "";
+	}
+	
 	public String previewParameter() {
-		return "&" + Action.PREVIEW;
+		return parameter(Action.PREVIEW);
+	}
+	
+	public String calendarParameter() {
+		return parameter(Action.CALENDAR);
 	}
 	
 	public String searchParameter(String search) {
@@ -3096,7 +3108,7 @@ public class HTMLView extends View {
 		if (filters != null) {
 			for (int x = 0; x < filters.length; x++) {
 				Filter filter = filters[x];
-				String parameterRoot = "&" + KeyWords.FILTERS + ":" + x + ":";
+				String parameterRoot = parameter(KeyWords.FILTERS + ":" + x + ":");
 			
 				parameters.append(parameterRoot + KeyWords.FIELD + "=" + filter.getField());
 			
@@ -3523,7 +3535,7 @@ public class HTMLView extends View {
 
 		if (!request.isInfo() && permissions.isAllowed(type, Action.GET_TYPE)) {
 			elements.add(iconAnchor(strings.gts(type, KeyWords.TYPE), url(type, lang, view)
-					+ "&" + KeyWords.INFO, Icon.INFO));
+					+ parameter(KeyWords.INFO), Icon.INFO));
 		}
 
 		String rssSelect = typeSettings.gts(type, Constants.RSS_SELECT);
@@ -3542,7 +3554,7 @@ public class HTMLView extends View {
 			String calendarSelect = typeSettings.gts(type, Constants.CALENDAR_SELECT);
 
 			if (calendarSelect != null) {
-				String url = url(type, lang, view) + "&" + Action.CALENDAR + refParameter;
+				String url = url(type, lang, view) + calendarParameter() + refParameter;
 
 				elements.add(iconAnchor(strings.getActionName(type, Action.CALENDAR), url, Icon.CALENDAR));
 			}
@@ -3985,8 +3997,8 @@ public class HTMLView extends View {
 
 							String actionName = strings.getActionName(type, action);
 
-							String actionParameters = formParameter(Action.EXECUTE_ACTION) + "&"
-									+ KeyWords.TYPE_ACTION + "=" + action;
+							String actionParameters = formParameter(Action.EXECUTE_ACTION)
+									+ parameter(KeyWords.TYPE_ACTION, action);
 
 							actionsElement.appendElement(anchor(actionName, url(type, id, lang, view)
 									+ actionParameters));
@@ -4243,9 +4255,9 @@ public class HTMLView extends View {
 		LocalDate before = date.minusMonths(1);
 		LocalDate after = date.plusMonths(1);
 
-		navigator.appendElement(anchor("<<", url(type, lang, view) + "&" + Action.CALENDAR + "&" + KeyWords.YEAR + "="
-				+ before.getYear() + "&" + KeyWords.MONTH + "=" + before.getMonthValue()
-					+ refParameter(ref)));
+		navigator.appendElement(anchor("<<", url(type, lang, view) + calendarParameter()
+			+ parameter(KeyWords.YEAR, before.getYear()) + parameter(KeyWords.MONTH, 
+					before.getMonthValue()) + refParameter(ref)));
 
 		Element yearSelect = navigator.appendElement(HTML.SELECT).addClass(YEARS);
 		for (int year = date.minusYears(10).getYear(); year <= date.plusYears(10).getYear(); year++) {
@@ -4270,9 +4282,9 @@ public class HTMLView extends View {
 
 		}
 
-		navigator.appendElement(anchor(">>", url(type, lang, view) + "&" + Action.CALENDAR + "&"
-				+ KeyWords.YEAR + "=" + after.getYear() + "&" + KeyWords.MONTH + "=" 
-				+ after.getMonthValue() + refParameter(ref)));
+		navigator.appendElement(anchor(">>", url(type, lang, view) + calendarParameter()
+			+ parameter(KeyWords.YEAR, after.getYear()) + parameter(KeyWords.MONTH, 
+					after.getMonthValue()) + refParameter(ref)));
 
 		return navigator;
 	}
