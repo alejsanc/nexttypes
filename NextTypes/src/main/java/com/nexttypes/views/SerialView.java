@@ -82,6 +82,16 @@ public class SerialView extends View {
 
 		return content;
 	}
+	
+	@Override
+	public Content getObjectsName(String type, String lang, String view, String search, Long offset,
+			Long limit) {
+		
+		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, null, null, null, lang, 
+				search, offset, limit);
+		
+		return content(names, view);
+	}
 
 	@Override
 	public Content getReferences(String lang, String view) {

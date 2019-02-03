@@ -135,6 +135,11 @@ public abstract class View extends Module {
 	public Content get(String type, String id, String lang, String view, String etag) {
 		throw new NotImplementedException();
 	}
+	
+	public Content getObjectsName(String type, String lang, String view, String search, Long offset,
+			Long limit) {
+		throw new NotImplementedException();
+	}
 
 	public Content getReferences(String lang, String view) {
 		throw new NotImplementedException();

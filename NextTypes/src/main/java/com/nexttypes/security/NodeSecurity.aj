@@ -327,14 +327,17 @@ public aspect NodeSecurity extends Checks {
     	checkLang(lang);
     }
 
-    before (String type, String lang) :	execution(* Node.getObjectsName(..)) && args(type, lang) {
+    before (String type, String lang) :	execution(* Node.getObjectsName(..))
+    	&& args(type, lang, ..) {
+    	
     	checkType(type);
     	checkLang(lang);
     }
     
     before (String referencedType, String referencingType, String referencingAction, 
     		String referencingField, String lang) : execution(* Node.getObjectsName(..))
-    	&& args(referencedType, referencingType, referencingAction, referencingField, lang) {
+    	&& args(referencedType, referencingType, referencingAction, referencingField, lang, ..) {
+    	
     	checkType(referencedType);
     	checkType(referencingType);
     	checkAction(referencingAction);

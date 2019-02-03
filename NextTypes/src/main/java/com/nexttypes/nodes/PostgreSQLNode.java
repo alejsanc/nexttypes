@@ -1727,37 +1727,66 @@ public class PostgreSQLNode extends Node {
 	@Override
 	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingAction,
 			String referencingType, String referencingField, String lang) {
-		return getObjectsName(referencedType, lang);
+		return getObjectsName(referencedType, lang, (String) null, (Long) null, (Long) null);
+	}
+	
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingAction,
+			String referencingType, String referencingField, String lang, String search, Long offset,
+			Long limit) {
+		return getObjectsName(referencedType, lang, search, offset, limit);
+	}
+	
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
+		return getObjectsName(type, lang, (String) null, (Long) null, (Long) null);
 	}
 
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
+	public LinkedHashMap<String, String> getObjectsName(String type, String lang, String search,
+			Long offset, Long limit) {
+		
 		StringBuilder sql = new StringBuilder();
+		ArrayList<Object> parameters = new ArrayList<>();
 		String idName = typeSettings.gts(type, KeyWords.ID_NAME);
 
 		if (idName != null) {
 			sql.append(idName);
+			
+			if (idName.contains("?")) {
+				parameters.add(lang);
+			}
 		} else {
 			sql.append("select type.id, type.id as name from \"" + type + "\" type");
 		}
-
+		
+		if (search != null) {
+			sql = new StringBuilder("select id, name from (" + sql.toString() + ") as names"
+					+ " where name ilike ?");
+			parameters.add("%" + search + "%");
+		}
+		
 		String order = typeSettings.gts(type, KeyWords.ID_NAME + "." + KeyWords.ORDER);
 		if (order != null) {
 			sql.append(" order by " + order);
 		} else {
 			sql.append(" order by name");
+		}	
+		
+		if (offset != null) {
+			sql.append(" offset ?");
+			parameters.add(offset);
 		}
-
+		
+		if (limit != null) {
+			sql.append(" limit ?");
+			parameters.add(limit);
+		}
+		
 		LinkedHashMap<String, String> objects = new LinkedHashMap<String, String>();
 
-		Tuple[] tuples = null;
-
-		if (idName != null && idName.contains("?")) {
-			tuples = query(sql.toString(), lang);
-		} else {
-			tuples = query(sql.toString());
-		}
-
+		Tuple[] tuples = query(sql.toString(), parameters.toArray());
+		
 		for (Tuple tuple : tuples) {
 			String id = tuple.getString(KeyWords.ID);
 			String name = tuple.getString(KeyWords.NAME);

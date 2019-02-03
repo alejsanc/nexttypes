@@ -317,6 +317,16 @@ function changeFilterField(event) {
 	loadFilter(select.parentNode.parentNode, field);
 }
 
+function disableInput(input) {
+	
+	input.disabled = true;
+}
+
+function enableInput(input) {
+	
+	input.disabled = false;
+}
+
 function filterComparisonChange(event) {
 	var select = event.currentTarget;
 	var comparison = select.options[select.selectedIndex].value;
@@ -328,7 +338,16 @@ function filterComparisonChange(event) {
 			filterInput.classList.add("hidden");
 			filterTextInput.classList.remove("hidden");
 			
-			filterInput.disabled = true;
+			if (filterInput.classList.contains("input-group")) {
+				var inputs = filterInput.querySelectorAll("input");
+								
+				for (let input of inputs) {
+					input.disabled = true;
+				}
+			} else {
+				filterInput.disabled = true;
+			}
+			
 			filterTextInput.disabled = false;
 		}
 	} else {
@@ -337,7 +356,16 @@ function filterComparisonChange(event) {
 			filterInput.classList.remove("hidden");
 			
 			filterTextInput.disabled = true;
-			filterInput.disabled = false;
+			
+			if (filterInput.classList.contains("input-group")) {
+				var inputs = filterInput.querySelectorAll("input");
+				
+				for (let input of inputs) {
+					input.disabled = false;
+				}
+			} else {
+				input.disabled = false;
+			}
 		}
 	}
 }

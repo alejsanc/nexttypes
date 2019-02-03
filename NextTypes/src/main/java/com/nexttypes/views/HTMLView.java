@@ -2339,6 +2339,10 @@ public class HTMLView extends View {
 			input = objectRadioInput(name, title, value, referencedType, referencingType,
 						referencingAction, referencingField, notNull, lang);
 			break;
+		
+		case HTML.LIST:
+			input = objectListInput(name, title, value, size);
+			break;
 			
 		default:
 			throw new InvalidValueException(KeyWords.INVALID_OBJECT_INPUT_MODE, mode);
@@ -2395,6 +2399,25 @@ public class HTMLView extends View {
 		}
 		
 		return input;
+	}
+	
+	public Element objectListInput(String name, String title, Object value, Integer size) {
+		InputGroup inputGroup = document.createInputGroup();
+		
+		String listId = name + "-" + HTML.LIST;
+		
+		Element input = inputGroup.appendInput(input(HTML.TEXT, name, title, value))
+				.setAttribute(HTML.LIST, listId);
+				
+		if (size != null) {
+			input.setAttribute(HTML.SIZE, size);
+		}
+		
+		Element list = inputGroup.appendElement(HTML.DATALIST).setAttribute(HTML.ID, listId);
+		list.appendElement(HTML.OPTION).appendText("prueba1");
+		list.appendElement(HTML.OPTION).appendText("prueba2");
+		
+		return inputGroup;
 	}
 	
 	public Element objectsTextareaInput(String name, String title) {
@@ -3919,7 +3942,8 @@ public class HTMLView extends View {
 	public void search(String type, String lang, String view, FieldReference ref, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		if (type != null) {
-			Element form = document.getElementById(KeyWords.SEARCH);
+			Element form = document.getElementById(KeyWords.SEARCH)
+					.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF);
 
 			if (form != null) {
 				form.setAttribute(HTML.ACTION, "/" + type).setAttribute(HTML.METHOD, HTML.GET);

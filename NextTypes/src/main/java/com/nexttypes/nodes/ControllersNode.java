@@ -407,10 +407,16 @@ public class ControllersNode extends Node {
 	public String getName(String type, String id, String lang) {
 		return getController(type).getName(id, lang);
 	}
-
+	
 	@Override
 	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
 		return getController(type).getObjectsName(lang);
+	}
+
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String type, String lang, String search,
+			Long offset, Long limit ) {
+		return getController(type).getObjectsName(lang, search, offset, limit);
 	}
 	
 	@Override
@@ -418,6 +424,14 @@ public class ControllersNode extends Node {
 			String referencingAction, String referencingField, String lang) {
 		return getController(referencedType).getObjectsName(referencingType, referencingAction,
 				referencingField, lang);
+	}
+	
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingType,
+			String referencingAction, String referencingField, String lang, String search, Long offset,
+			Long limit) {
+		return getController(referencedType).getObjectsName(referencingType, referencingAction,
+				referencingField, lang, search, offset, limit);
 	}
 
 	@Override

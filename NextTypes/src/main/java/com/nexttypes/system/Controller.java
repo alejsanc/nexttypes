@@ -389,14 +389,25 @@ public class Controller {
 	public String getName(String id, String lang) {
 		return nextNode.getName(type, id, lang);
 	}
-
+	
 	public LinkedHashMap<String, String> getObjectsName(String lang) {
 		return nextNode.getObjectsName(type, lang);
+	}
+
+	public LinkedHashMap<String, String> getObjectsName(String lang, String search, Long offset,
+			Long limit) {
+		return nextNode.getObjectsName(type, lang, search, offset, limit);
 	}
 	
 	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
 			String referencingField, String lang) {
 		return nextNode.getObjectsName(type, referencingType, referencingAction, referencingField, lang);
+	}
+	
+	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
+			String referencingField, String lang, String search, Long offset, Long limit) {
+		return nextNode.getObjectsName(type, referencingType, referencingAction, referencingField, lang,
+				search, offset, limit);
 	}
 
 	public TypeField getTypeField(String field) {

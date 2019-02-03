@@ -297,10 +297,24 @@ public class ProxyNode extends Node {
 	}
 	
 	@Override
+	public LinkedHashMap<String, String> getObjectsName(String type, String lang, String search,
+			Long offset, Long limit) {
+		return getNextNode(type).getObjectsName(type, lang, search, offset, limit);
+	}
+	
+	@Override
 	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingType,
 			String referencingAction, String referencingField, String lang) {
 		return getNextNode(referencedType).getObjectsName(referencedType, referencingType,
 				referencingAction, referencingField, lang);
+	}
+	
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingType,
+			String referencingAction, String referencingField, String lang, String search, Long offset,
+			Long limit) {
+		return getNextNode(referencedType).getObjectsName(referencedType, referencingType,
+				referencingAction, referencingField, lang, search, offset, limit);
 	}
 
 	@Override

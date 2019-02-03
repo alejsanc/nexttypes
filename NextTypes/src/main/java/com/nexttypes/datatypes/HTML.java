@@ -123,6 +123,9 @@ public class HTML extends XML {
 	public static final String BACKGROUND_COLOR = "background-color";
 	public static final String RADIO = "radio";
 	public static final String READONLY = "readonly";
+	public static final String LIST = "list";
+	public static final String DATALIST = "datalist";
+	public static final String INPUT_GROUP = "input-group";
 
 	public HTML() {
 		super();
@@ -195,6 +198,7 @@ public class HTML extends XML {
 		
 		public InputGroup() {
 			super(document.createElement(HTML.SPAN));
+			addClass(INPUT_GROUP);
 		}
 		
 		@Override
@@ -212,6 +216,10 @@ public class HTML extends XML {
 		public Element appendInput(Element input) {
 			inputs.add(input);
 			return appendElement(input);
+		}
+		
+		public Element appendInput(String input) {
+			return appendInput(createElement(input));
 		}
 		
 		public Element[] getInputs() {

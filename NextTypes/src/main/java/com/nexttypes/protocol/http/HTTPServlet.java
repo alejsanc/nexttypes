@@ -183,7 +183,9 @@ public class HTTPServlet extends HttpServlet {
 
 				} else if (id == null) {
 					
+					LinkedHashMap<String, TypeField> typeFields = null;
 					Integer filterCount = req.getFilterComponent();
+					
 					if (filterCount != null) {
 						content = view.filterComponent(req.getType(), null, req.getLang(),
 								req.getView(), filterCount);
@@ -196,30 +198,29 @@ public class HTTPServlet extends HttpServlet {
 					} else if (Action.EXECUTE_ACTION.equals(form)) {
 						content = view.executeActionForm(req.getType(), null, req.getAction(), req.getLang(),
 								req.getView());
+					} else if (req.isNames()) {
+						content = view.getObjectsName(req.getType(), req.getLang(), req.getView(),
+								req.getSearch(), req.getOffset(), req.getLimit());
+					} else if (req.isInfo()) {
+						content = view.getType(req.getType(), req.getLang(), req.getView());
+					} else if (req.isPreview()) {
+						typeFields = view.getNextNode().getTypeFields(req.getType());
+						content = view.preview(req.getType(), req.getLang(), req.getView(),
+							req.getRef(), req.readFilters(typeFields), req.getSearch(),
+							req.getOrder(), req.getOffset(), req.getLimit());
+					} else if (req.isCalendar()) {
+						content = view.calendar(req.getType(), req.getLang(), req.getView(),
+							req.getRef(), req.getYear(), req.getMonth());
+					} else if (req.getComponent() != null) {
+						typeFields = view.getNextNode().getTypeFields(req.getType());
+						content = view.selectComponent(req.getType(), req.getLang(), req.getView(),
+							req.getRef(), req.readFilters(typeFields), req.getSearch(),
+							req.getOrder(), req.getOffset(), req.getLimit(), req.getComponent());
 					} else {
-						LinkedHashMap<String, TypeField> typeFields = null;
-						
-						if (req.isInfo()) {
-							content = view.getType(req.getType(), req.getLang(), req.getView());
-						} else if (req.isPreview()) {
-							typeFields = view.getNextNode().getTypeFields(req.getType());
-							content = view.preview(req.getType(), req.getLang(), req.getView(),
-									req.getRef(), req.readFilters(typeFields), req.getSearch(),
-									req.getOrder(), req.getOffset(), req.getLimit());
-						} else if (req.isCalendar()) {
-							content = view.calendar(req.getType(), req.getLang(), req.getView(),
-									req.getRef(), req.getYear(), req.getMonth());
-						} else if (req.getComponent() != null) {
-							typeFields = view.getNextNode().getTypeFields(req.getType());
-							content = view.selectComponent(req.getType(), req.getLang(), req.getView(),
-									req.getRef(), req.readFilters(typeFields), req.getSearch(),
-									req.getOrder(), req.getOffset(), req.getLimit(), req.getComponent());
-						} else {
-							typeFields = view.getNextNode().getTypeFields(req.getType());
-							content = view.select(req.getType(), req.getLang(), req.getView(),
-									req.getRef(), req.readFilters(typeFields), req.getSearch(),
-									req.getOrder(), req.getOffset(), req.getLimit());
-						}
+						typeFields = view.getNextNode().getTypeFields(req.getType());
+						content = view.select(req.getType(), req.getLang(), req.getView(),
+							req.getRef(), req.readFilters(typeFields), req.getSearch(),
+							req.getOrder(), req.getOffset(), req.getLimit());
 					}
 
 				} else if (req.getField() == null) {
