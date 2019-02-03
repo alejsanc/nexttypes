@@ -171,7 +171,7 @@ public class CalDAVView extends WebDAVView {
 		} 
 
 		if (depth == DavConstants.DEPTH_1) {
-			String sql = typeSettings.gts(type, Constants.ICAL_SELECT);
+			String sql = typeSettings.gts(type, Constants.ICALENDAR_SELECT);
 			Object[] parameters = null;
 
 			if (objects.size() > 0) {

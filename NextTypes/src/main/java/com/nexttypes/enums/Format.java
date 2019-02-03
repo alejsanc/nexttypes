@@ -17,23 +17,25 @@
 package com.nexttypes.enums;
 
 public enum Format {
-	BINARY("application/octet-stream", "bin"),
-	ICALENDAR("text/calendar", "ics"),
-	IMAGES("image/*", "*"),
-	JAVASCRIPT("application/javascript", "js"),
-	JSON("application/json", "json"),
-	JSON_LD("application/ld+json", "json"),
-	PNG("image/png", "png"),
-	RSS("application/rss+xml", "rss"),
-	SMILE("application/x-jackson-smile", "sml"),
-	TEXT("text/plain", "txt"),
-	XHTML("application/xhtml+xml", "html"),
-	XML("application/xml", "xml");
+	BINARY("binary", "application/octet-stream", "bin"),
+	ICALENDAR("icalendar", "text/calendar", "ics"),
+	IMAGES("images", "image/*", "*"),
+	JAVASCRIPT("javascript", "application/javascript", "js"),
+	JSON("json", "application/json", "json"),
+	JSON_LD("json_ld", "application/ld+json", "json"),
+	PNG("png", "image/png", "png"),
+	RSS("rss", "application/rss+xml", "rss"),
+	SMILE("smile", "application/x-jackson-smile", "sml"),
+	TEXT("text", "text/plain", "txt"),
+	XHTML("xhtml", "application/xhtml+xml", "html"),
+	XML("xml", "application/xml", "xml");
 
+	protected String format;
 	protected String contentType;
 	protected String extension;
 
-	private Format(String contentType, String extension) {
+	private Format(String format, String contentType, String extension) {
+		this.format = format;
 		this.contentType = contentType;
 		this.extension = extension;
 	}
@@ -44,5 +46,10 @@ public enum Format {
 
 	public String getExtension() {
 		return extension;
+	}
+	
+	@Override
+	public String toString() {
+		return format;
 	}
 }

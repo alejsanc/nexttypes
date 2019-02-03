@@ -215,7 +215,7 @@ public class ArticleView extends HTMLView {
 
 		Content content = null;
 		
-		if (KeyWords.RSS.equals(view)) {
+		if (Format.RSS.toString().equals(view)) {
 			StringBuilder sql = new StringBuilder(typeSettings.gts(type, Constants.RSS_SELECT));
 					
 			String category = request.getParameters().getString(CATEGORY);

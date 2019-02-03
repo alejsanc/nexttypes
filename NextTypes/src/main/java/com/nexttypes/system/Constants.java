@@ -27,6 +27,6 @@ public class Constants {
 	public static final long MINUTE_MILLISECONDS = 60000;
 	
 	public static final String CALENDAR_SELECT = "calendar.select";
-	public static final String ICAL_SELECT = "views.ical.select";
+	public static final String ICALENDAR_SELECT = "views.icalendar.select";
 	public static final String RSS_SELECT = "views.rss.select";
 }

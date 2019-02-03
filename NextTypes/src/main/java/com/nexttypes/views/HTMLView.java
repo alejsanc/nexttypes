@@ -150,6 +150,7 @@ public class HTMLView extends View {
 	public static final String FILTER_TEXT_INPUT = "filter-text-input";
 	public static final String FIELD_RANGE = "field-range";
 	public static final String OBJECT_RADIO_INPUT = "object-radio-input";
+	public static final String OBJECT_LIST_INPUT = "object-list-input";
 	public static final String OBJECTS_TEXTAREA_INPUT = "objects-textarea-input";
 	public static final String REFERENCE_OUTPUT = "reference-output";
 	public static final String SEARCH_OUTPUT = "search-output";
@@ -2341,7 +2342,8 @@ public class HTMLView extends View {
 			break;
 		
 		case HTML.LIST:
-			input = objectListInput(name, title, value, size);
+			input = objectListInput(name, title, value, referencedType, referencingType,
+						referencingAction, referencingField, size, lang);
 			break;
 			
 		default:
@@ -2401,13 +2403,17 @@ public class HTMLView extends View {
 		return input;
 	}
 	
-	public Element objectListInput(String name, String title, Object value, Integer size) {
+	public Element objectListInput(String name, String title, Object value, String referencedType,
+			String referencingType, String referencingAction, String referencingField, Integer size,
+			String lang) {
+		
 		InputGroup inputGroup = document.createInputGroup();
 		
 		String listId = name + "-" + HTML.LIST;
 		
 		Element input = inputGroup.appendInput(input(HTML.TEXT, name, title, value))
-				.setAttribute(HTML.LIST, listId);
+				.addClass(OBJECT_LIST_INPUT).setAttribute(HTML.LIST, listId)
+				.setAttribute(DATA_URL, url(referencedType, lang, Format.JSON.toString()));
 				
 		if (size != null) {
 			input.setAttribute(HTML.SIZE, size);
@@ -2724,9 +2730,8 @@ public class HTMLView extends View {
 		LinkedHashMap<String, String[]> disallowedReferences = disallowedReferences(objects, typeFields);
 		
 		Element form = form(type, lang, view).setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
-				.setAttribute(DATA_URL, request.getURLRoot()
-								+ selectTableURL(type, lang, view, ref, filters, search, order,
-										offset, limit))
+				.setAttribute(DATA_URL, selectTableURL(type, lang, view, ref, filters, search, order,
+						offset, limit))
 				.setAttribute(DATA_STRINGS_OBJECTS_DELETE_CONFIRMATION,
 						strings.gts(type, KeyWords.OBJECTS_DELETE_CONFIRMATION));
 
@@ -3569,10 +3574,10 @@ public class HTMLView extends View {
 			elements.add(rssIconAnchor(type, lang, ref));
 		}
 
-		String icalSelect = typeSettings.gts(type, Constants.ICAL_SELECT);
+		String icalendarSelect = typeSettings.gts(type, Constants.ICALENDAR_SELECT);
 
-		if (icalSelect != null) {
-			elements.add(icalIconAnchor(type, lang, ref));
+		if (icalendarSelect != null) {
+			elements.add(icalendarIconAnchor(type, lang, ref));
 		}
 
 		if (!request.isCalendar() && permissions.isAllowed(type, Action.CALENDAR)) {
@@ -3593,15 +3598,15 @@ public class HTMLView extends View {
 	}
 	
 	public String rssURL(String type, String lang, FieldReference ref) {
-		return url(type, lang, KeyWords.RSS) + refParameter(ref);
+		return url(type, lang, Format.RSS.toString()) + refParameter(ref);
 	}
 	
-	public Element icalIconAnchor(String type, String lang, FieldReference ref) {
-		return iconAnchor(ICALENDAR, icalURL(type, lang, ref), Icon.FILE);
+	public Element icalendarIconAnchor(String type, String lang, FieldReference ref) {
+		return iconAnchor(ICALENDAR, icalendarURL(type, lang, ref), Icon.FILE);
 	}
 	
-	public String icalURL(String type, String lang, FieldReference ref) {
-		return url(type, lang, KeyWords.ICAL) + refParameter(ref);
+	public String icalendarURL(String type, String lang, FieldReference ref) {
+		return url(type, lang, Format.ICALENDAR.toString()) + refParameter(ref);
 	}
 
 	public Element booleanOutput(Object value) {
@@ -4154,7 +4159,7 @@ public class HTMLView extends View {
 			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.ALTERNATE)
 					.setAttribute(HTML.TYPE, Format.RSS.getContentType())
 					.setAttribute(HTML.TITLE, RSS)
-					.setAttribute(HTML.HREF, url(type, lang, KeyWords.RSS));
+					.setAttribute(HTML.HREF, url(type, lang, Format.RSS.toString()));
 		}
 	}
 

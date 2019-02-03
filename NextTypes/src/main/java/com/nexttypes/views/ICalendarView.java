@@ -41,7 +41,7 @@ public class ICalendarView extends View {
 	public Content select(String type, String lang, String view, FieldReference ref, Filter[] filters,
 			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 
-		String sql = typeSettings.gts(type, Constants.ICAL_SELECT);
+		String sql = typeSettings.gts(type, Constants.ICALENDAR_SELECT);
 		Object[] parameters = null;
 
 		if (sql != null) {

@@ -16,6 +16,7 @@
 
 package com.nexttypes.datatypes;
 
+import com.nexttypes.enums.Format;
 import com.nexttypes.system.KeyWords;
 
 public class RSS extends XML {
@@ -24,7 +25,7 @@ public class RSS extends XML {
 	public static final String PUBDATE = "pubDate";
 
 	public RSS(String title, String description, String type, String lang, String urlRoot, Tuple[] tuples) {
-		Element rss = setDocumentElement(KeyWords.RSS).setAttribute(KeyWords.VERSION, "2.0");
+		Element rss = setDocumentElement(Format.RSS.toString()).setAttribute(KeyWords.VERSION, "2.0");
 
 		Element channel = rss.appendElement(KeyWords.CHANNEL);
 		channel.appendElement(KeyWords.TITLE).appendText(title);

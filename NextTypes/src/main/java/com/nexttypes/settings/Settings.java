@@ -34,7 +34,7 @@ public class Settings {
 	public static final String CONSOLE_SETTINGS = "console.properties";
 	public static final String TASKS_SETTINGS = "tasks.properties";
 	public static final String HTML_SETTINGS = "html.properties";
-	public static final String ICALENDAR_SETTINGS = "ical.properties";
+	public static final String ICALENDAR_SETTINGS = "icalendar.properties";
 	public static final String RSS_SETTINGS = "rss.properties";
 	public static final String SERIAL_SETTINGS = "serial.properties";
 	public static final String WEBDAV_SETTINGS = "webdav.properties";

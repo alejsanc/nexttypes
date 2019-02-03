@@ -134,7 +134,6 @@ public class KeyWords {
 	public static final String HOST = "host";
 	public static final String HTML_ALLOWED_TAGS = "html_allowed_tags";
 	public static final String HTTPS_PORT = "https_port";
-	public static final String ICAL = "ical";
 	public static final String ID = "id";
 	public static final String ID_INPUT_SIZE = "id_input_size";
 	public static final String ID_NAME = "id_name";
@@ -291,7 +290,6 @@ public class KeyWords {
 	public static final String RENAMED_FIELDS = "renamed_fields";
 	public static final String RENAMED_INDEXES = "renamed_indexes";
 	public static final String REPEAT = "repeat";
-	public static final String RSS = "rss";
 	public static final String SCALE = "scale";
 	public static final String SEARCH = "search";
 	public static final String SELECT_STRING_NOT_FOUND = "select_string_not_found";
