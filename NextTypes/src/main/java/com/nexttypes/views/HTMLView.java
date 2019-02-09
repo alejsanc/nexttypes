@@ -2413,16 +2413,15 @@ public class HTMLView extends View {
 		
 		Element input = inputGroup.appendInput(input(HTML.TEXT, name, title, value))
 				.addClass(OBJECT_LIST_INPUT).setAttribute(HTML.LIST, listId)
-				.setAttribute(DATA_URL, url(referencedType, lang, Format.JSON.toString()));
+				.setAttribute(DATA_URL, url(referencedType, lang, Format.JSON.toString()) 
+						+ parameter(KeyWords.NAMES));
 				
 		if (size != null) {
 			input.setAttribute(HTML.SIZE, size);
 		}
 		
-		Element list = inputGroup.appendElement(HTML.DATALIST).setAttribute(HTML.ID, listId);
-		list.appendElement(HTML.OPTION).appendText("prueba1");
-		list.appendElement(HTML.OPTION).appendText("prueba2");
-		
+		inputGroup.appendElement(HTML.DATALIST).setAttribute(HTML.ID, listId);
+				
 		return inputGroup;
 	}
 	

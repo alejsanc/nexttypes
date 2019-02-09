@@ -124,8 +124,9 @@ function initEventListeners() {
 	addEventListeners(document, "select.months", "change", changeMonth);
 	addEventListeners(document, "input.binary", "change", binaryInputChange);
 	addEventListeners(document, "input.null", "change", nullInputChange);
-	addEventListeners(document, "select.filter-field", "change", changeFilterField)
-	addEventListeners(document, "select.filter-comparison", "change", filterComparisonChange)
+	addEventListeners(document, "select.filter-field", "change", changeFilterField);
+	addEventListeners(document, "select.filter-comparison", "change", filterComparisonChange);
+	addEventListeners(document, "input.object-list-input", "input", objectListInputChange);
 	addSelectTableEventListeners(document);
 	
 	var forms = document.querySelectorAll("form.unload-confirmation");
@@ -301,7 +302,14 @@ function loadFilter(row, field) {
 			container.querySelector("button.delete-row").addEventListener("click", deleteRow);
 			container.querySelector("select.filter-field").addEventListener("change", changeFilterField);
 			container.querySelector("select.filter-comparison").addEventListener("change",
-					filterComparisonChange)
+					filterComparisonChange);
+			
+			var objectListInput = container.querySelector("input.object-list-input");
+			
+			if (objectListInput != null) {
+				objectListInput.addEventListener("input", objectListInputChange);
+			}
+			
 			row.parentNode.replaceChild(container.firstChild, row);
 		} else {
 			alert(request.responseText);
@@ -364,9 +372,40 @@ function filterComparisonChange(event) {
 					input.disabled = false;
 				}
 			} else {
-				input.disabled = false;
+				filterInput.disabled = false;
 			}
 		}
+	}
+}
+
+function objectListInputChange(event) {
+	var input = event.currentTarget;
+	var url = input.getAttribute("data-url");
+	var search = input.value;
+	var list = input.parentNode.querySelector("datalist");
+	
+	list.innerHTML = "";
+	
+	if (search != null && search.length > 0) {
+		var request = new XMLHttpRequest();
+		request.open("GET", url + "&search=" + search, true);
+		request.onload = function(e) {
+			
+			if (request.status == 200) {
+				var objects = JSON.parse(request.responseText);
+				
+				for (let id in objects) {
+					var option = document.createElement("option");
+					option.appendChild(document.createTextNode(id));
+					option.setAttribute("label", objects[id]);
+					list.appendChild(option);
+				}
+			} else {
+				alert(request.responseText);
+			}
+		}
+		
+		request.send(null);
 	}
 }
 

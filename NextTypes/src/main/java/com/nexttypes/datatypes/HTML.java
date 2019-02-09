@@ -19,10 +19,14 @@ package com.nexttypes.datatypes;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.w3c.dom.Document;
 
 public class HTML extends XML {
 	private static final long serialVersionUID = 1L;
+	
+	public static final String[] INPUT_ATTRIBUTES = new String[] { HTML.NAME, HTML.FORM,
+			HTML.DISABLED, HTML.VALUE };
 
 	public static final String DOCTYPE = "<!DOCTYPE html>";
 
@@ -194,6 +198,7 @@ public class HTML extends XML {
 	}
 	
 	public class InputGroup extends Element {
+						
 		protected ArrayList<Element> inputs = new ArrayList<>();
 		
 		public InputGroup() {
@@ -203,12 +208,24 @@ public class HTML extends XML {
 		
 		@Override
 		public Element setAttribute(String name, Object value) {
-			if (HTML.NAME.equals(name) || HTML.FORM.equals(name)) {
+			if (ArrayUtils.contains(INPUT_ATTRIBUTES, name)) {
 				for (Element input : inputs) {
 					input.setAttribute(name, value);
 				}
 			} else {
 				super.setAttribute(name, value);
+			}
+			return this;
+		}
+		
+		@Override
+		public Element removeAttribute(String name) {
+			if (ArrayUtils.contains(INPUT_ATTRIBUTES, name)) {
+				for (Element input : inputs) {
+					input.removeAttribute(name);
+				}
+			} else {
+				super.removeAttribute(name);
 			}
 			return this;
 		}

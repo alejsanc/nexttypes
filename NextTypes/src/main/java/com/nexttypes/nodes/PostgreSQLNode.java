@@ -1762,8 +1762,10 @@ public class PostgreSQLNode extends Node {
 		
 		if (search != null) {
 			sql = new StringBuilder("select id, name from (" + sql.toString() + ") as names"
-					+ " where name ilike ?");
-			parameters.add("%" + search + "%");
+					+ " where id ilike ? or name ilike ?");
+			search = "%" + search + "%";
+			parameters.add(search);
+			parameters.add(search);
 		}
 		
 		String order = typeSettings.gts(type, KeyWords.ID_NAME + "." + KeyWords.ORDER);
