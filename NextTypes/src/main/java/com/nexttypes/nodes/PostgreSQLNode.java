@@ -294,9 +294,8 @@ public class PostgreSQLNode extends Node {
 		connectionPool = DBConnection.getConnectionPool(settings, POSTGRESQL, DRIVER);
 		context.putDBConnectionPool(settings.getString(KeyWords.POOL), connectionPool);
 		
-		try (PostgreSQLNode node = new PostgreSQLNode(new Auth(Auth.ADMIN,
-				new String[] { Auth.ADMINISTRATORS }), NodeMode.ADMIN, lang, URL.LOCALHOST,
-				context, true)) {
+		try (PostgreSQLNode node = new PostgreSQLNode(new Auth(Auth.ADMIN, Auth.ADMINISTRATORS),
+				NodeMode.ADMIN, lang, URL.LOCALHOST, context, true)) {
 
 			if (node.getTypesName().length == 0) {
 				node.importTypes(node.getClass()

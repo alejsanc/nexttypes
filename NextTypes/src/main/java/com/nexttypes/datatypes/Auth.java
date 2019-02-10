@@ -20,6 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class Auth {
 	public static final String GUEST = "guest";
+	public static final String GUESTS = "guests";
 	public static final String ADMIN = "admin";
 	public static final String ADMINISTRATORS = "administrators";
 	public static final String HTTP = "http";
@@ -33,6 +34,10 @@ public class Auth {
 
 	public Auth(String user) {
 		this(user, null, false);
+	}
+	
+	public Auth(String user, String group) {
+		this(user, new String[] { group }, false);
 	}
 	
 	public Auth(String user, String[] groups) {

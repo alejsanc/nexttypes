@@ -3921,7 +3921,7 @@ public class HTMLView extends View {
 		if (userElement != null) {
 			String user = auth.getUser();
 
-			if (Auth.GUEST.equals(user)) {
+			if (auth.isGuest()) {
 				userElement.addClass(HTML.HIDDEN);
 			}
 

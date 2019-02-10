@@ -774,8 +774,8 @@ public class HTTPServlet extends HttpServlet {
 		if (auth == null) {
 
 			try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), 
-					new Auth(Auth.GUEST), NodeMode.READ, settings.getString(KeyWords.DEFAULT_LANG),
-					request.getRemoteAddr(), context, true)) {
+					new Auth(Auth.GUEST, Auth.GUESTS), NodeMode.READ,
+					settings.getString(KeyWords.DEFAULT_LANG), request.getRemoteAddr(), context, true)) {
 
 				String user = tlsAuth(request, nextNode);
 
@@ -784,7 +784,7 @@ public class HTTPServlet extends HttpServlet {
 				}
 
 				if (user == null) {
-					auth = new Auth(Auth.GUEST);
+					auth = new Auth(Auth.GUEST, Auth.GUESTS);
 				} else {
 					String[] groups = nextNode.getGroups(user);
 					auth = new Auth(user, groups, false);
