@@ -124,10 +124,8 @@ function initEventListeners() {
 	addEventListeners(document, "select.months", "change", changeMonth);
 	addEventListeners(document, "input.binary", "change", binaryInputChange);
 	addEventListeners(document, "input.null", "change", nullInputChange);
-	addEventListeners(document, "select.filter-field", "change", changeFilterField);
-	addEventListeners(document, "select.filter-comparison", "change", filterComparisonChange);
-	addEventListeners(document, "input.object-list-input", "input", objectListInputChange);
 	addSelectTableEventListeners(document);
+	addFilterEventListeners(document);
 	
 	var forms = document.querySelectorAll("form.unload-confirmation");
 	for (let form of forms) {
@@ -148,6 +146,12 @@ function addSelectTableEventListeners(rootElement) {
 	addEventListeners(rootElement, "input.all-checkbox", "change", checkUncheckAll);
 	addEventListeners(rootElement, "input.item-checkbox", "change", uncheckAll);
 	addEventListeners(rootElement, "select.limit", "change", changeLimit);
+}
+
+function addFilterEventListeners(rootElement) {
+	addEventListeners(rootElement, "select.filter-field", "change", changeFilterField);
+	addEventListeners(rootElement, "select.filter-comparison", "change", filterComparisonChange);
+	addEventListeners(rootElement, "input.object-list-input", "keyup", objectListInputChange);
 }
 
 function addEventListeners(rootElement, query, event, eventFunction) {
@@ -299,16 +303,9 @@ function loadFilter(row, field) {
 		if (request.status == 200) {
 			var container = document.createElement("div");
 			container.innerHTML = request.responseText;
-			container.querySelector("button.delete-row").addEventListener("click", deleteRow);
-			container.querySelector("select.filter-field").addEventListener("change", changeFilterField);
-			container.querySelector("select.filter-comparison").addEventListener("change",
-					filterComparisonChange);
-			
-			var objectListInput = container.querySelector("input.object-list-input");
-			
-			if (objectListInput != null) {
-				objectListInput.addEventListener("input", objectListInputChange);
-			}
+						
+			addEventListeners(container, "button.delete-row", "click", deleteRow);
+			addFilterEventListeners(container);
 			
 			row.parentNode.replaceChild(container.firstChild, row);
 		} else {
@@ -323,16 +320,6 @@ function changeFilterField(event) {
 	var field = select.options[select.selectedIndex].value;
 	
 	loadFilter(select.parentNode.parentNode, field);
-}
-
-function disableInput(input) {
-	
-	input.disabled = true;
-}
-
-function enableInput(input) {
-	
-	input.disabled = false;
 }
 
 function filterComparisonChange(event) {
