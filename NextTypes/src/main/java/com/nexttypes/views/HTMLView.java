@@ -3929,8 +3929,8 @@ public class HTMLView extends View {
 
 			form.appendText(strings.gts(type, KeyWords.USER) + ": ");
 
-			Element userNameSpan = form.appendElement(HTML.SPAN).setId(USER_NAME);
-			userNameSpan.appendText(user);
+			Element userName = form.appendElement(HTML.SPAN).setId(USER_NAME);
+			userName.appendText(user);
 
 			Element button = button(strings.gts(type, KeyWords.LOGOUT), Action.LOGOUT, Icon.ACCOUNT_LOGOUT,
 					SUBMIT_FORM).setId(LOGOUT_BUTTON);

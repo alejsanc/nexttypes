@@ -797,7 +797,7 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected String basicAuth(HttpServletRequest request, Node nextNode) {
-		String userName = null;
+		String user = null;
 
 		String basicAuth = request.getHeader(HTTPHeader.AUTHORIZATION.toString());
 
@@ -812,18 +812,18 @@ public class HTTPServlet extends HttpServlet {
 			String authPassword = userPassword.substring(separatorIndex + 1, userPassword.length());
 
 			if (nextNode.checkPassword(KeyWords.USER, authUser, KeyWords.PASSWORD, authPassword)) {
-				userName = authUser;
+				user = authUser;
 			} else {
 				authError(remoteAddress);
 				throw new InvalidUserOrPasswordException();
 			}
 		}
 
-		return userName;
+		return user;
 	}
 
 	protected String tlsAuth(HttpServletRequest request, Node nextNode) {
-		String userName = null;
+		String user = null;
 
 		if (request.isSecure()) {
 
@@ -836,17 +836,17 @@ public class HTTPServlet extends HttpServlet {
 
 				X509Certificate cert = ((X509Certificate[]) requestCertificates)[0];
 				String subject = cert.getSubjectX500Principal().getName();
-				userName = nextNode.getString("select \"user\" from user_certificate where certificate_subject = ?",
+				user = nextNode.getString("select \"user\" from user_certificate where certificate_subject = ?",
 						subject);
 
-				if (userName == null) {
+				if (user == null) {
 					authError(remoteAddress);
 					throw new CertificateNotFoundException(subject);
 				}
 			}
 		}
 
-		return userName;
+		return user;
 	}
 	
 	protected void debug(HttpServletRequest request) {
@@ -1017,7 +1017,7 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected void writeException(Exception e, HttpServletRequest request, HttpServletResponse response,
-			Strings strings, String userName) {
+			Strings strings, String user) {
 		
 		HTTPStatus status = null;
 		String message = null;
@@ -1028,7 +1028,7 @@ public class HTTPServlet extends HttpServlet {
 			status = HTTPStatus.METHOD_NOT_ALLOWED;
 		} else if (e instanceof UnauthorizedException) {
 			status = HTTPStatus.UNAUTHORIZED;
-			if (Auth.GUEST.equals(userName)) {
+			if (Auth.GUEST.equals(user)) {
 				String[] basicAuthUserAgents = settings.getStringArray(KeyWords.BASIC_AUTH_USER_AGENTS);
 
 				if (basicAuthUserAgents != null) {
@@ -1061,12 +1061,12 @@ public class HTTPServlet extends HttpServlet {
 		String remoteAddress = request.getRemoteAddr();
 
 		try {
-			logException(e, userName, remoteAddress);
+			logException(e, user, remoteAddress);
 			response.setStatus(status.toInt32());
 			response.setContentType(Format.TEXT.getContentType());
 			response.getWriter().write(message);
 		} catch (Exception e2) {
-			logger.severe(userName, remoteAddress, e2);
+			logger.severe(user, remoteAddress, e2);
 		}
 	}
 
@@ -1196,9 +1196,9 @@ public class HTTPServlet extends HttpServlet {
 
 						if (!requests.logged) {
 							Auth auth = (Auth) req.getSession().getAttribute(KeyWords.AUTH);
-							String userName = auth != null ? auth.getUser() : Auth.GUEST;
+							String user = auth != null ? auth.getUser() : Auth.GUEST;
 
-							logger.severe(this, userName, remoteAddress, MAX_REQUESTS);
+							logger.severe(this, user, remoteAddress, MAX_REQUESTS);
 							requests.logged = true;
 						}
 					}
