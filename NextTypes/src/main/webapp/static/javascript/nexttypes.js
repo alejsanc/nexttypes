@@ -465,7 +465,7 @@ function submitForm(event) {
 		
 		if (showProgress) {
 				
-			progress(request, cancelString);
+			createProgress(request, cancelString);
 			var bar = document.getElementById("progress-bar");
 			var text = document.getElementById("progress-text");
 			var start = Date.now();
@@ -646,7 +646,7 @@ function createDialog() {
 	return dialog;	
 }
 
-function progress(request, cancelString) {
+function createProgress(request, cancelString) {
 	var dialog = createDialog();
 	dialog.classList.add("progress-dialog");
 		
