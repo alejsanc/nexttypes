@@ -352,10 +352,9 @@ public class ControllersNode extends Node {
 
 	@Override
 	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
-			String search, String[] searchFields, String[] groupFields, String order, Long offset,
-			Long limit) {
+			String search, String[] searchFields, String order, Long offset, Long limit) {
 		return getController(type).select(sql, parameters, filters, search, searchFields,
-				groupFields, order, offset, limit);
+				order, offset, limit);
 	}
 
 	@Override

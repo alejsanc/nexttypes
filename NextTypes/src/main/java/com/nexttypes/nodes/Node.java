@@ -128,8 +128,7 @@ public abstract class Node extends Module {
 			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit);
 
 	public abstract Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
-			String search, String[] searchFields, String[] groupFields, String order, Long offset,
-			Long limit);
+			String search, String[] searchFields, String order, Long offset, Long limit);
 
 	public abstract Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
 			String order);

@@ -350,7 +350,7 @@ public class ArticleView extends HTMLView {
 		sql.append(fromSQL);
 
 		Tuples tuples = nextNode.select(type, sql, parameters, categoryFilter, search,
-				new String[] { "al.title", "al.text" }, null, "cdate desc", offset, limit);
+				new String[] { "al.title", "al.text" }, "cdate desc", offset, limit);
 		
 		if (tuples.getCount() > 0) {
 		

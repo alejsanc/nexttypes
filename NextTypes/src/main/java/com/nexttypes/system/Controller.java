@@ -353,8 +353,8 @@ public class Controller {
 	}
 
 	public Tuples select(StringBuilder sql, ArrayList<Object> parameters, String filters,
-			String search, String[] searchFields, String[] groupFields, String order, Long offset, Long limit) {
-		return nextNode.select(type, sql, parameters, filters, search, searchFields, groupFields, order,
+			String search, String[] searchFields, String order, Long offset, Long limit) {
+		return nextNode.select(type, sql, parameters, filters, search, searchFields, order,
 				offset, limit);
 	}
 
