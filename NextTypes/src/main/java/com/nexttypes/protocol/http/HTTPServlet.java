@@ -836,8 +836,8 @@ public class HTTPServlet extends HttpServlet {
 
 				X509Certificate cert = ((X509Certificate[]) requestCertificates)[0];
 				String subject = cert.getSubjectX500Principal().getName();
-				user = nextNode.getString("select \"user\" from user_certificate where certificate_subject = ?",
-						subject);
+				user = nextNode.getString("select \"user\" from user_certificate"
+						+ " where certificate_subject = ?", subject);
 
 				if (user == null) {
 					authError(remoteAddress);
