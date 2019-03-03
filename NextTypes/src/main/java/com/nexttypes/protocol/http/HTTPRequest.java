@@ -36,6 +36,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 
+import com.nexttypes.datatypes.ActionReference;
 import com.nexttypes.datatypes.Audio;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Document;
@@ -77,7 +78,7 @@ public class HTTPRequest {
 			KeyWords.NEW_NAME, KeyWords.EXISTING_TYPES_ACTION, KeyWords.EXISTING_OBJECTS_ACTION,
 			KeyWords.OFFSET, KeyWords.LIMIT, KeyWords.ORDER, KeyWords.SEARCH,
 			KeyWords.CURRENT_PASSWORD, KeyWords.NEW_PASSWORD, KeyWords.NEW_PASSWORD_REPEAT,
-			KeyWords.VIEW, KeyWords.REF, KeyWords.FORM, KeyWords.YEAR, KeyWords.MONTH,
+			KeyWords.VIEW, KeyWords.REF, KeyWords.AREF, KeyWords.FORM, KeyWords.YEAR, KeyWords.MONTH,
 			KeyWords.TYPE_ACTION, KeyWords.LOGIN_USER, KeyWords.LOGIN_PASSWORD, 
 			KeyWords.COMPONENT, KeyWords.INCLUDE_OBJECTS, KeyWords.VERSION, KeyWords.INFO, KeyWords.NAMES,
 			KeyWords.CALENDAR, KeyWords.PREVIEW, KeyWords.REFERENCES, Action.FILTER_COMPONENT};
@@ -106,6 +107,7 @@ public class HTTPRequest {
 	protected String[] types;
 	protected String[] objects;
 	protected FieldReference ref;
+	protected ActionReference aref;
 	protected String search;
 	protected LinkedHashMap<String, Order> order;
 	protected String type_action;
@@ -192,6 +194,7 @@ public class HTTPRequest {
 		Checks.checkObjects(objects);
 		Checks.checkTypes(types);
 		Checks.checkRef(ref);
+		Checks.checkARef(aref);
 		Checks.checkOrder(order);
 		Checks.checkAction(type_action);
 		Checks.checkTuple(parameters);
@@ -286,8 +289,11 @@ public class HTTPRequest {
 							} else if (fieldType.isEnum()) {
 								value = Enum.valueOf(fieldType, tmp.toUpperCase());
 							} else if (fieldType == FieldReference.class) {
-								String[] fieldId = tmp.split(":");
-								value = new FieldReference(fieldId[0], null, fieldId[1]);
+								String[] parts = tmp.split(":");
+								value = new FieldReference(parts[0], null, parts[1]);
+							} else if (fieldType == ActionReference.class) {
+								String[] parts = tmp.split(":");
+								value = new ActionReference(parts[0], parts[1], parts[2]);
 							} else if (fieldType == ZonedDateTime.class) {
 								value = ZonedDateTime.parse(tmp);
 							} else if (parameterName.equals(KeyWords.ORDER)) {
@@ -773,6 +779,10 @@ public class HTTPRequest {
 
 	public FieldReference getRef() {
 		return ref;
+	}
+	
+	public ActionReference getARef() {
+		return aref;
 	}
 
 	public String getSearch() {

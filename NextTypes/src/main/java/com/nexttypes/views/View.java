@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.FieldReference;
+import com.nexttypes.datatypes.ActionReference;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
@@ -136,8 +137,8 @@ public abstract class View extends Module {
 		throw new NotImplementedException();
 	}
 	
-	public Content getObjectsName(String type, String lang, String view, String search, Long offset,
-			Long limit) {
+	public Content getObjectsName(String type, String lang, String view, ActionReference aref,
+			String search, Long offset) {
 		throw new NotImplementedException();
 	}
 

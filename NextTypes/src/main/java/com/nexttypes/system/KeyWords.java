@@ -37,6 +37,7 @@ public class KeyWords {
 	public static final String ALTERED_INDEXES = "altered_indexes";
 	public static final String ALTERED_TYPES = "altered_types";
 	public static final String ANCHORS = "anchors";
+	public static final String AREF = "aref";
 	public static final String AUTH = "auth";
 	public static final String AUTH_ERRORS_PER_MINUTE_EXCEEDED = "auth_errors_per_minute_exceeded";
 	public static final String BACKLOG = "backlog";
@@ -244,6 +245,7 @@ public class KeyWords {
 	public static final String OBJECT_ALREADY_EXISTS = "object_already_exists";
 	public static final String OBJECT_ID_SUCCESSFULLY_UPDATED = "object_id_successfully_updated";
 	public static final String OBJECT_INPUT_MODE = "object_input_mode";
+	public static final String OBJECT_INPUT_LIMIT = "object_input_limit";
 	public static final String OBJECTS_INPUT_MODE = "objects_input_mode";
 	public static final String OBJECT_NOT_FOUND = "object_not_found";
 	public static final String OBJECT_SUCCESSFULLY_INSERTED = "object_successfully_inserted";

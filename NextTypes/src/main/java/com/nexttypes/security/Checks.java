@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import org.aspectj.lang.JoinPoint;
 
+import com.nexttypes.datatypes.ActionReference;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.NXObject;
@@ -225,6 +226,14 @@ public class Checks {
 			checkField(ref.getReferencingField());
 			checkType(ref.getReferencedType());
 			checkId(ref.getReferencedId());
+		}
+	}
+	
+	public static void checkARef(ActionReference aref) {
+		if (aref != null) {
+			checkType(aref.getReferencingType());
+			checkAction(aref.getReferencingAction());
+			checkField(aref.getReferencingField());
 		}
 	}
 

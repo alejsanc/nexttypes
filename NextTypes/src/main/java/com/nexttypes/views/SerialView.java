@@ -23,6 +23,7 @@ import org.apache.commons.lang.ArrayUtils;
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.FieldReference;
+import com.nexttypes.datatypes.ActionReference;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.Objects;
 import com.nexttypes.datatypes.Reference;
@@ -84,11 +85,30 @@ public class SerialView extends View {
 	}
 	
 	@Override
-	public Content getObjectsName(String type, String lang, String view, String search, Long offset,
-			Long limit) {
+	public Content getObjectsName(String type, String lang, String view, ActionReference aref,
+			String search, Long offset) {
 		
-		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, null, null, null, lang, 
-				search, offset, limit);
+		String referencingType = null;
+		String referencingAction = null;
+		String referencingField = null;
+		Long limit = null;
+		
+		if (aref != null) {
+		
+			referencingType = aref.getReferencingType();
+			referencingAction = aref.getReferencingAction();
+			referencingField = aref.getReferencingField();
+		}
+		
+		if (referencingType != null) {
+			limit = typeSettings.getActionFieldInt64(referencingType, referencingAction,
+					referencingField, KeyWords.OBJECT_INPUT_LIMIT);
+		} else {
+			limit = typeSettings.getActionInt64(type, referencingAction, KeyWords.OBJECT_INPUT_LIMIT);
+		}
+		
+		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, referencingType,
+				referencingAction, referencingField, lang, search, offset, limit);
 		
 		return content(names, view);
 	}

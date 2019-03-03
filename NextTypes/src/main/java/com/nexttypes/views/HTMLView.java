@@ -42,7 +42,6 @@ import org.apache.http.client.utils.URIBuilder;
 
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.nexttypes.datatypes.Anchor;
-import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.DocumentPreview;
 import com.nexttypes.datatypes.File;
@@ -2300,7 +2299,7 @@ public class HTMLView extends View {
 		
 		String mode = typeSettings.getActionFieldString(type, action, field, KeyWords.OBJECT_INPUT_MODE);
 		Integer	size = typeSettings.getActionFieldInt32(type, action, field, KeyWords.INPUT_SIZE);
-				
+						
 		return objectInput("@" + field, title, value, typeField.getType(), type, action, field,
 				typeField.isNotNull(), mode, size, lang);
 	}
@@ -2308,10 +2307,11 @@ public class HTMLView extends View {
 	public Element filterObjectInput(String name, String title, Object value, String type,
 			 boolean notNull, String lang) {
 		
-		String mode = typeSettings.gts(type, KeyWords.OBJECT_INPUT_MODE);
+		String mode = typeSettings.getActionString(type, Action.SEARCH, KeyWords.OBJECT_INPUT_MODE);
 		Integer size = typeSettings.getTypeInt32(type, KeyWords.ID_INPUT_SIZE);
-		
-		return objectInput(name, title, value, type, null, Action.SEARCH, null, notNull, mode, size, lang);
+				
+		return objectInput(name, title, value, type, null, Action.SEARCH, null, notNull, mode, size,
+				lang);
 	}
 	
 	public Element filterObjectTextInput(String name, String title, Object value, String type) {
@@ -2411,10 +2411,13 @@ public class HTMLView extends View {
 		
 		String listId = name + "-" + HTML.LIST;
 		
+		String url = url(referencedType, lang, Format.JSON.toString()) 
+				+ parameter(KeyWords.NAMES) + arefParameter(referencingType, referencingAction,
+						referencingField);
+		
 		Element input = inputGroup.appendInput(input(HTML.TEXT, name, title, value))
 				.addClass(OBJECT_LIST_INPUT).setAttribute(HTML.LIST, listId)
-				.setAttribute(DATA_URL, url(referencedType, lang, Format.JSON.toString()) 
-						+ parameter(KeyWords.NAMES));
+				.setAttribute(DATA_URL, url);
 				
 		if (size != null) {
 			input.setAttribute(HTML.SIZE, size);
@@ -3087,7 +3090,18 @@ public class HTMLView extends View {
 	public String refString(FieldReference ref) {
 		return ref.getReferencingField() + ":" + ref.getReferencedId();
 	}
-
+	
+	public String arefParameter(String referencingType, String referencingAction,
+			String referencingField) {
+		return referencingType != null || referencingAction != null || referencingField != null
+				? parameter(KeyWords.AREF, arefString(referencingType, referencingAction, 
+						referencingField)) : "";
+	}
+	
+	public String arefString(String referencingType, String referencingAction, String referencingField) {
+		return referencingType + ":" + referencingAction + ":" + referencingField;
+	}
+	
 	public String formParameter(String action) {
 		return parameter(KeyWords.FORM, action);
 	}

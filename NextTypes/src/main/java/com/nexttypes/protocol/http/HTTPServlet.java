@@ -200,7 +200,7 @@ public class HTTPServlet extends HttpServlet {
 								req.getView());
 					} else if (req.isNames()) {
 						content = view.getObjectsName(req.getType(), req.getLang(), req.getView(),
-								req.getSearch(), req.getOffset(), req.getLimit());
+								req.getARef(), req.getSearch(), req.getOffset());
 					} else if (req.isInfo()) {
 						content = view.getType(req.getType(), req.getLang(), req.getView());
 					} else if (req.isPreview()) {

@@ -19,6 +19,7 @@ package com.nexttypes.security;
 import java.util.LinkedHashMap;
 
 import com.nexttypes.datatypes.FieldReference;
+import com.nexttypes.datatypes.ActionReference;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.enums.Order;
 import com.nexttypes.system.Action;
@@ -239,11 +240,13 @@ public aspect ViewSecurity extends Checks {
     	checkPermissions(type, id, Action.GET, thisJoinPoint);
     }
     
-    before(String type, String lang, String view) : execution(* View.getObjectsName(..))
-    	&& args(type, lang, view, ..) {
+    before(String type, String lang, String view, ActionReference aref) 
+    	: execution(* View.getObjectsName(..))  && args(type, lang, view, aref, ..) {
+    	
     	checkType(type);
     	checkLang(lang);
     	checkView(view);
+    	checkARef(aref);
     	checkPermissions(type, Action.GET_OBJECTS_NAME, thisJoinPoint);
     }
 
