@@ -24,7 +24,6 @@ import java.util.LinkedHashMap;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.ICalendar;
 import com.nexttypes.datatypes.NXObject;
-import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Action;
@@ -83,6 +82,13 @@ public class ProjectController extends Controller {
 	@Override
 	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
 			String referencingField, String lang) {
+		return getObjectsName(referencingType, referencingAction, referencingField, lang,
+				null, null, null);
+	}
+	
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
+			String referencingField, String lang, String search, Long offset, Long limit) {
 		
 		String user = auth.getUser();
 		
@@ -142,14 +148,8 @@ public class ProjectController extends Controller {
 		
 		if (sql != null) {
 		
-			sql += " order by name";
-			objects = new LinkedHashMap<String, String>();
-		
-			Tuple[] tuples = nextNode.query(sql,  parameters);
-		
-			for (Tuple tuple : tuples) {
-				objects.put(tuple.getString(KeyWords.ID), tuple.getString(KeyWords.NAME));
-			}
+			objects = nextNode.getObjectsName(type, sql, parameters, lang, search, offset, limit);
+			
 		} else {
 			objects = getObjectsName(lang);
 		}

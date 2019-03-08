@@ -419,6 +419,18 @@ public class ControllersNode extends Node {
 	}
 	
 	@Override
+	public LinkedHashMap<String, String> getObjectsName(String type, String sql, Object[] parameters,
+			String lang, String search, Long offset, Long limit) {
+		return getController(type).getObjectsName(sql, parameters, lang, search, offset, limit);
+	}
+
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String type, StringBuilder sql,
+			ArrayList<Object> parameters, String lang, String search, Long offset, Long limit) {
+		return getController(type).getObjectsName(sql, parameters, lang, search, offset, limit);
+	}
+	
+	@Override
 	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingType,
 			String referencingAction, String referencingField, String lang) {
 		return getController(referencedType).getObjectsName(referencingType, referencingAction,
@@ -432,7 +444,7 @@ public class ControllersNode extends Node {
 		return getController(referencedType).getObjectsName(referencingType, referencingAction,
 				referencingField, lang, search, offset, limit);
 	}
-
+	
 	@Override
 	public LinkedHashMap<String, ObjectInfo[]> getObjectsInfo(String[] types) {
 		return nextNode.getObjectsInfo(types);

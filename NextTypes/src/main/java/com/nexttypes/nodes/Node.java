@@ -168,6 +168,12 @@ public abstract class Node extends Module {
 	public abstract LinkedHashMap<String, String> getObjectsName(String type, String lang, String search,
 			Long offset, Long limit);
 	
+	public abstract LinkedHashMap<String, String> getObjectsName(String type, String sql,
+			Object[] parameters, String lang, String search, Long offset, Long limit);
+	
+	public abstract LinkedHashMap<String, String> getObjectsName(String type, StringBuilder sql, 
+			ArrayList<Object> parameters, String lang, String search, Long offset, Long limit);
+	
 	public abstract LinkedHashMap<String, String> getObjectsName(String referencedType,
 			String referencingType, String referencingAction, String referencingField, String lang);
 	

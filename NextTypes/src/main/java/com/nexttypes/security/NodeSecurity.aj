@@ -327,8 +327,14 @@ public aspect NodeSecurity extends Checks {
     	checkLang(lang);
     }
 
-    before (String type, String lang) :	execution(* Node.getObjectsName(..))
-    	&& args(type, lang, ..) {
+    before (String type, String lang) :	execution(* Node.getObjectsName(..)) && args(type, lang) {
+    	
+    	checkType(type);
+    	checkLang(lang);
+    }
+    
+    before (String type, String lang, String search, Long offset, Long limit)
+    	: execution(* Node.getObjectsName(..)) && args(type, lang, search, offset, limit) {
     	
     	checkType(type);
     	checkLang(lang);
@@ -342,6 +348,20 @@ public aspect NodeSecurity extends Checks {
     	checkType(referencingType);
     	checkAction(referencingAction);
     	checkField(referencingField);
+    	checkLang(lang);
+    }
+    
+    before (String type, String sql, Object[] parameters, String lang)
+    	: execution(* Node.getObjectsName(..)) && args(type, sql, parameters, lang, ..) {
+    	
+    	checkType(type);
+    	checkLang(lang);
+    }
+    
+    before (String type, StringBuilder sql, ArrayList<Object> parameters, String lang)
+		: execution(* Node.getObjectsName(..)) && args(type, sql, parameters, lang, ..) {
+	
+    	checkType(type);
     	checkLang(lang);
     }
 

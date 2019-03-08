@@ -399,6 +399,16 @@ public class Controller {
 		return nextNode.getObjectsName(type, lang, search, offset, limit);
 	}
 	
+	public LinkedHashMap<String, String> getObjectsName(String sql, Object[] parameters, String lang,
+			String search, Long offset, Long limit) {
+		return nextNode.getObjectsName(type, sql, parameters, lang, search, offset, limit);
+	}
+
+	public LinkedHashMap<String, String> getObjectsName(StringBuilder sql, ArrayList<Object> parameters,
+			String lang, String search, Long offset, Long limit) {
+		return nextNode.getObjectsName(type, sql, parameters, lang, search, offset, limit);
+	}
+	
 	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
 			String referencingField, String lang) {
 		return nextNode.getObjectsName(type, referencingType, referencingAction, referencingField, lang);

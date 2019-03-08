@@ -1740,11 +1740,10 @@ public class PostgreSQLNode extends Node {
 	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
 		return getObjectsName(type, lang, (String) null, (Long) null, (Long) null);
 	}
-
-	@Override
+	
+	@Override 
 	public LinkedHashMap<String, String> getObjectsName(String type, String lang, String search,
 			Long offset, Long limit) {
-		
 		StringBuilder sql = new StringBuilder();
 		ArrayList<Object> parameters = new ArrayList<>();
 		String idName = typeSettings.gts(type, KeyWords.ID_NAME);
@@ -1759,6 +1758,21 @@ public class PostgreSQLNode extends Node {
 			sql.append("select type.id, type.id as name from \"" + type + "\" type");
 		}
 		
+		return getObjectsName(type, sql, parameters, lang, search, offset, limit);
+	}
+	
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String type, String sql,
+			Object[] parameters, String lang, String search, Long offset, Long limit) {
+		
+		return getObjectsName(type, new StringBuilder(sql), 
+				new ArrayList<Object>(Arrays.asList(parameters)), lang, search, offset, limit);
+	}
+
+	@Override
+	public LinkedHashMap<String, String> getObjectsName(String type, StringBuilder sql, 
+			ArrayList<Object> parameters, String lang, String search, Long offset, Long limit) {
+				
 		if (search != null) {
 			sql = new StringBuilder("select id, name from (" + sql.toString() + ") as names"
 					+ " where id ilike ? or name ilike ?");
