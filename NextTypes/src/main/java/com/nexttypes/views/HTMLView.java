@@ -2512,7 +2512,7 @@ public class HTMLView extends View {
 			option.appendText(objectName);
 		}
 		
-		if (offset + limit < names.getCount()) {
+		if (limit != null && (offset + limit < names.getCount())) {
 			input.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, "@" + KeyWords.NEXT)
 				.appendText(next + " >>>>");
 		}
