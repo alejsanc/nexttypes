@@ -124,6 +124,7 @@ function initEventListeners() {
 	addEventListeners(document, "select.months", "change", changeMonth);
 	addEventListeners(document, "input.binary", "change", binaryInputChange);
 	addEventListeners(document, "input.null", "change", nullInputChange);
+	addEventListeners(document, "select.object", "change", loadNames);
 	addSelectTableEventListeners(document);
 	addFilterEventListeners(document);
 	
@@ -276,6 +277,76 @@ function addTypeIndex(event) {
     addFormChangeEventListeners(row);
 }
 
+function loadNames(event) {
+	var select = event.currentTarget;
+	var value = select.options[select.selectedIndex].value;
+	var url = select.getAttribute("data-url");
+	var notNull = select.getAttribute("data-not-null");
+	var previous = select.getAttribute("data-strings-previous");
+	var next = select.getAttribute("data-strings-next");
+	
+	if (value == "@previous" || value == "@next") {
+		
+		var offset = Number(select.getAttribute("data-offset"));
+		var limit = Number(select.getAttribute("data-limit"));
+		
+		if (value == "@previous") {
+			offset = offset - limit;
+		} else if (value == "@next") {
+			offset = offset + limit;
+		}
+		
+		var request = new XMLHttpRequest();
+		request.open("GET", url + "&offset=" + offset, true);
+		request.onload = function(e) {
+			
+			if (request.status == 200) {
+				select.setAttribute("data-offset", offset);
+				
+				select.options.length = 0;
+				
+				var names = JSON.parse(request.responseText);
+				var items = names["items"];
+						
+				for (let id in items) {
+					var option = document.createElement("option");
+					option.appendChild(document.createTextNode(items[id]));
+					option.setAttribute("value", id);
+					select.appendChild(option);
+				}
+				
+				if (value == "@previous") {
+					select.options[select.length - 1].selected = true;
+				} else if (value == "@next") {
+					select.options[0].selected = true;
+				}
+				
+				if (offset > 0) {
+					var option = document.createElement("option");
+					option.value = "@previous";
+					option.appendChild(document.createTextNode("<<<< " + previous));
+					select.prepend(option);
+				} else if (!notNull) {
+					var option = document.createElement("option");
+					select.prepend(option);
+				}
+				
+				if (offset + limit < names["count"]) {
+					option = document.createElement("option");
+					option.value = "@next";
+					option.appendChild(document.createTextNode(next + " >>>>"));
+					select.appendChild(option);
+				}
+				
+			} else {
+				alert(request.responseText);
+			}
+		}
+		
+		request.send(null);
+	}
+}
+
 function addFilter(event) {
 	var table = document.getElementById("filters");
 	var body = table.tBodies[0];
@@ -379,12 +450,13 @@ function objectListInputChange(event) {
 		request.onload = function(e) {
 			
 			if (request.status == 200) {
-				var objects = JSON.parse(request.responseText);
+				var names = JSON.parse(request.responseText);
+				var items = names["items"];
 				
-				for (let id in objects) {
+				for (let id in items) {
 					var option = document.createElement("option");
 					option.appendChild(document.createTextNode(id));
-					option.setAttribute("label", objects[id]);
+					option.setAttribute("label", items[id]);
 					list.appendChild(option);
 				}
 			} else {

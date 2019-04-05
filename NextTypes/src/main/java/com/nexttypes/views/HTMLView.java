@@ -54,6 +54,7 @@ import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Menu;
 import com.nexttypes.datatypes.MenuSection;
 import com.nexttypes.datatypes.NXObject;
+import com.nexttypes.datatypes.Names;
 import com.nexttypes.datatypes.ObjectField;
 import com.nexttypes.datatypes.ObjectReference;
 import com.nexttypes.datatypes.Objects;
@@ -123,7 +124,9 @@ public class HTMLView extends View {
 	public static final String DATA_STRINGS_DROP_INDEX = "data-strings-drop-index";
 	public static final String DATA_STRINGS_TYPES_DROP_CONFIRMATION = "data-strings-types-drop-confirmation";
 	public static final String DATA_STRINGS_OBJECTS_DELETE_CONFIRMATION = "data-strings-objects-delete-confirmation";
-
+	public static final String DATA_STRINGS_PREVIOUS = "data-strings-previous";
+	public static final String DATA_STRINGS_NEXT = "data-strings-next";
+	
 	//Data Attributes
 	public static final String DATA_EDITOR = "data-editor";
 	public static final String DATA_SHOW_PROGRESS = "data-show-progress";
@@ -133,6 +136,9 @@ public class HTMLView extends View {
 	public static final String DATA_LANG = "data-lang";
 	public static final String DATA_COMPONENT = "data-component";
 	public static final String DATA_SIZE = "data-size";
+	public static final String DATA_LIMIT = "data-limit";
+	public static final String DATA_OFFSET = "data-offset";
+	public static final String DATA_NOT_NULL = "data-not-null";
 	
 	//Elements
 	public static final String USER_NAME = "user-name";
@@ -2290,28 +2296,32 @@ public class HTMLView extends View {
 		Boolean notNull = typeSettings.getActionBoolean(type, action, KeyWords.OBJECTS_INPUT_NOT_NULL);
 		String mode = typeSettings.getActionString(type, action, KeyWords.OBJECTS_INPUT_MODE);
 		Integer size = typeSettings.getActionInt32(type, action, KeyWords.OBJECTS_INPUT_SIZE);
+		Long limit = typeSettings.getActionInt64(type, action, KeyWords.OBJECTS_INPUT_LIMIT);
 		
-		return objectsInput(KeyWords.OBJECTS, title, null, type, action, notNull, mode, size, lang);
+		return objectsInput(KeyWords.OBJECTS, title, null, type, action, notNull, mode, size, limit,
+				lang);
 	}
 	
 	public Element objectFieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField, String lang) {
 		
 		String mode = typeSettings.getActionFieldString(type, action, field, KeyWords.OBJECT_INPUT_MODE);
+		Long limit = typeSettings.getActionFieldInt64(type, action, field, KeyWords.OBJECT_INPUT_LIMIT);
 		Integer	size = typeSettings.getActionFieldInt32(type, action, field, KeyWords.INPUT_SIZE);
-						
+								
 		return objectInput("@" + field, title, value, typeField.getType(), type, action, field,
-				typeField.isNotNull(), mode, size, lang);
+				typeField.isNotNull(), mode, size, limit, lang);
 	}
 	
 	public Element filterObjectInput(String name, String title, Object value, String type,
 			 boolean notNull, String lang) {
 		
 		String mode = typeSettings.getActionString(type, Action.SEARCH, KeyWords.OBJECT_INPUT_MODE);
+		Long limit = typeSettings.getActionInt64(type, Action.SEARCH, KeyWords.OBJECT_INPUT_LIMIT);
 		Integer size = typeSettings.getTypeInt32(type, KeyWords.ID_INPUT_SIZE);
 				
 		return objectInput(name, title, value, type, null, Action.SEARCH, null, notNull, mode, size,
-				lang);
+				limit, lang);
 	}
 	
 	public Element filterObjectTextInput(String name, String title, Object value, String type) {
@@ -2322,14 +2332,14 @@ public class HTMLView extends View {
 	
 	public Element objectInput(String name, String title, Object value, String referencedType,
 			String referencingType, String referencingAction, String referencingField,
-			boolean notNull, String mode, Integer size, String lang) {
+			boolean notNull, String mode, Integer size, Long limit, String lang) {
 
 		Element input = null;
 				
 		switch (mode) {
 		case HTML.SELECT:			
 			input = objectSelectInput(name, title, value, referencedType, referencingType, 
-						referencingAction, referencingField, notNull, lang);
+						referencingAction, referencingField, notNull, limit, lang);
 			break;
 			
 		case HTML.TEXT:		
@@ -2348,13 +2358,13 @@ public class HTMLView extends View {
 			
 		default:
 			throw new InvalidValueException(KeyWords.INVALID_OBJECT_INPUT_MODE, mode);
-		}		
+		}	
 		
 		return input;
 	}
 	
 	public Element objectsInput(String name, String title, Object value, String type,
-			String action, boolean notNull, String mode, Integer size, String lang) {
+			String action, boolean notNull, String mode, Integer size, Long limit, String lang) {
 
 		Element input = null;
 		
@@ -2368,7 +2378,8 @@ public class HTMLView extends View {
 			break;
 			
 		case HTML.SELECT:			
-			input = objectSelectInput(name, title, value, type, null, action, null, notNull, lang);
+			input = objectSelectInput(name, title, value, type, null, action, null, notNull, limit, 
+					lang);
 			break;
 			
 		case HTML.TEXT:		
@@ -2403,6 +2414,12 @@ public class HTMLView extends View {
 		return input;
 	}
 	
+	public String namesURL(String referencedType, String referencingType, String referencingAction,
+			String referencingField, String lang) {
+		return url(referencedType, lang, Format.JSON.toString()) + parameter(KeyWords.NAMES)
+			+ arefParameter(referencingType, referencingAction, referencingField);
+	}
+	
 	public Element objectListInput(String name, String title, Object value, String referencedType,
 			String referencingType, String referencingAction, String referencingField, Integer size,
 			String lang) {
@@ -2411,13 +2428,10 @@ public class HTMLView extends View {
 		
 		String listId = name + "-" + HTML.LIST;
 		
-		String url = url(referencedType, lang, Format.JSON.toString()) 
-				+ parameter(KeyWords.NAMES) + arefParameter(referencingType, referencingAction,
-						referencingField);
-		
 		Element input = inputGroup.appendInput(input(HTML.TEXT, name, title, value))
 				.addClass(OBJECT_LIST_INPUT).setAttribute(HTML.LIST, listId)
-				.setAttribute(DATA_URL, url);
+				.setAttribute(DATA_URL, namesURL(referencedType, referencingType, referencingAction,
+						referencingField, lang));
 				
 		if (size != null) {
 			input.setAttribute(HTML.SIZE, size);
@@ -2442,9 +2456,9 @@ public class HTMLView extends View {
 		Element input = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name)
 				.setAttribute(HTML.TITLE, title);
 
-		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, null, action, null, lang);
+		Names names = nextNode.getNames(type, null, action, null, lang);
 
-		for (Entry<String, String> entry : names.entrySet()) {
+		for (Entry<String, String> entry : names.getItems().entrySet()) {
 			String objectId = entry.getKey();
 			String objectName = entry.getValue();
 
@@ -2459,19 +2473,35 @@ public class HTMLView extends View {
 	
 	public Element objectSelectInput(String name, String title, Object value, String referencedType,
 			String referencingType, String referencingAction, String referencingField,
-			boolean notNull, String lang) {
+			boolean notNull, Long limit, String lang) {
+		
+		String previous = strings.gts(referencingType, KeyWords.PREVIOUS);
+		String next = strings.gts(referencingType, KeyWords.NEXT);
 		
 		Element input = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name)
-				.setAttribute(HTML.TITLE, title);
-
-		if (!notNull) {
+				.setAttribute(HTML.TITLE, title).addClass(KeyWords.OBJECT)
+				.setAttribute(DATA_URL, namesURL(referencedType, referencingType, referencingAction,
+						referencingField, lang))
+				.setAttribute(DATA_STRINGS_PREVIOUS, previous)
+				.setAttribute(DATA_STRINGS_NEXT, next);
+		
+		if (notNull) {
+			input.setAttribute(DATA_NOT_NULL);
+		} else {
 			input.appendElement(HTML.OPTION);
 		}
 
-		LinkedHashMap<String, String> names = nextNode.getObjectsName(referencedType, referencingType,
-				referencingAction, referencingField, lang);
-
-		for (Entry<String, String> entry : names.entrySet()) {
+		Names names = nextNode.getNames(referencedType, referencingType, referencingAction,
+				referencingField, lang, null, 0L, limit);
+		
+		Long offset = 0L;
+		
+		if (limit != null) {
+			input.setAttribute(DATA_OFFSET, offset);
+			input.setAttribute(DATA_LIMIT, limit);
+		}
+		
+		for (Entry<String, String> entry : names.getItems().entrySet()) {
 			String objectId = entry.getKey();
 			String objectName = entry.getValue();
 
@@ -2480,6 +2510,11 @@ public class HTMLView extends View {
 				option.setAttribute(HTML.SELECTED);
 			}
 			option.appendText(objectName);
+		}
+		
+		if (offset + limit < names.getCount()) {
+			input.appendElement(HTML.OPTION).setAttribute(HTML.VALUE, "@" + KeyWords.NEXT)
+				.appendText(next + " >>>>");
 		}
 		
 		return input;
@@ -2501,10 +2536,10 @@ public class HTMLView extends View {
 			
 		}
 		
-		LinkedHashMap<String, String> names = nextNode.getObjectsName(referencedType, referencingType,
+		Names names = nextNode.getNames(referencedType, referencingType,
 				referencingAction, referencingField, lang);
 		
-		for (Entry<String, String> entry : names.entrySet()) {
+		for (Entry<String, String> entry : names.getItems().entrySet()) {
 			String objectId = entry.getKey();
 			String objectName = entry.getValue();
 

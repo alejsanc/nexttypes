@@ -47,7 +47,7 @@ public @interface Action {
 	public static final String GET_ELEMENT = "get_element";
 	public static final String GET_FIELD = "get_field";
 	public static final String GET_FIELD_DEFAULT = "get_field_default";
-	public static final String GET_OBJECTS_NAME = "get_objects_name";
+	public static final String GET_NAMES = "get_names";
 	public static final String GET_REFERENCES = "get_references";
 	public static final String GET_TYPE = "get_type";
 	public static final String GET_TYPES_INFO = "get_types_info";

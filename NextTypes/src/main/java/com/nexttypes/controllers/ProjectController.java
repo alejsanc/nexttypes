@@ -19,11 +19,11 @@ package com.nexttypes.controllers;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.ICalendar;
 import com.nexttypes.datatypes.NXObject;
+import com.nexttypes.datatypes.Names;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Action;
@@ -80,27 +80,27 @@ public class ProjectController extends Controller {
 	}
 	
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
+	public Names getNames(String referencingType, String referencingAction,
 			String referencingField, String lang) {
-		return getObjectsName(referencingType, referencingAction, referencingField, lang,
+		return getNames(referencingType, referencingAction, referencingField, lang,
 				null, null, null);
 	}
 	
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
+	public Names getNames(String referencingType, String referencingAction,
 			String referencingField, String lang, String search, Long offset, Long limit) {
 		
 		String user = auth.getUser();
 		
 		if (auth.isGuest() || auth.isAdministrator()) {
-			return getObjectsName(lang);
+			return getNames(lang);
 		}
 		
 		if (Action.SEARCH.equals(referencingAction)) {
-			return getObjectsName(lang);
+			return getNames(lang);
 		}
 		
-		LinkedHashMap<String, String> objects = null;
+		Names names = null;
 		String sql = null;
 		Object[] parameters = null;
 		
@@ -148,13 +148,13 @@ public class ProjectController extends Controller {
 		
 		if (sql != null) {
 		
-			objects = nextNode.getObjectsName(type, sql, parameters, lang, search, offset, limit);
+			names = nextNode.getNames(type, sql, parameters, lang, search, offset, limit);
 			
 		} else {
-			objects = getObjectsName(lang);
+			names = getNames(lang);
 		}
 		
-		return objects;
+		return names;
 	}	
 	
 	public static String getNameField(String type) {

@@ -75,6 +75,7 @@ import com.nexttypes.datatypes.ImportObjectsResult;
 import com.nexttypes.datatypes.ImportTypesResult;
 import com.nexttypes.datatypes.JSON;
 import com.nexttypes.datatypes.NXObject;
+import com.nexttypes.datatypes.Names;
 import com.nexttypes.datatypes.ObjectField;
 import com.nexttypes.datatypes.ObjectInfo;
 import com.nexttypes.datatypes.ObjectReference;
@@ -1724,25 +1725,25 @@ public class PostgreSQLNode extends Node {
 	}
 	
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingAction,
+	public Names getNames(String referencedType, String referencingAction,
 			String referencingType, String referencingField, String lang) {
-		return getObjectsName(referencedType, lang, (String) null, (Long) null, (Long) null);
+		return getNames(referencedType, lang, (String) null, (Long) null, (Long) null);
 	}
 	
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingAction,
+	public Names getNames(String referencedType, String referencingAction,
 			String referencingType, String referencingField, String lang, String search, Long offset,
 			Long limit) {
-		return getObjectsName(referencedType, lang, search, offset, limit);
+		return getNames(referencedType, lang, search, offset, limit);
 	}
 	
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
-		return getObjectsName(type, lang, (String) null, (Long) null, (Long) null);
+	public Names getNames(String type, String lang) {
+		return getNames(type, lang, (String) null, (Long) null, (Long) null);
 	}
 	
 	@Override 
-	public LinkedHashMap<String, String> getObjectsName(String type, String lang, String search,
+	public Names getNames(String type, String lang, String search,
 			Long offset, Long limit) {
 		StringBuilder sql = new StringBuilder();
 		ArrayList<Object> parameters = new ArrayList<>();
@@ -1758,20 +1759,20 @@ public class PostgreSQLNode extends Node {
 			sql.append("select type.id, type.id as name from \"" + type + "\" type");
 		}
 		
-		return getObjectsName(type, sql, parameters, lang, search, offset, limit);
+		return getNames(type, sql, parameters, lang, search, offset, limit);
 	}
 	
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String type, String sql,
+	public Names getNames(String type, String sql,
 			Object[] parameters, String lang, String search, Long offset, Long limit) {
 		
-		return getObjectsName(type, new StringBuilder(sql), 
+		return getNames(type, new StringBuilder(sql), 
 				new ArrayList<Object>(Arrays.asList(parameters)), lang, search, offset, limit);
 	}
 
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String type, StringBuilder sql, 
-			ArrayList<Object> parameters, String lang, String search, Long offset, Long limit) {
+	public Names getNames(String type, StringBuilder sql, ArrayList<Object> parameters, String lang,
+			String search, Long offset, Long limit) {
 				
 		if (search != null) {
 			sql = new StringBuilder("select id, name from (" + sql.toString() + ") as names"
@@ -1785,8 +1786,10 @@ public class PostgreSQLNode extends Node {
 		if (order != null) {
 			sql.append(" order by " + order);
 		} else {
-			sql.append(" order by name");
+			sql.append(" order by name, id");
 		}	
+		
+		Long count = count(sql.toString(), parameters.toArray());
 		
 		if (offset != null) {
 			sql.append(" offset ?");
@@ -1798,7 +1801,7 @@ public class PostgreSQLNode extends Node {
 			parameters.add(limit);
 		}
 		
-		LinkedHashMap<String, String> objects = new LinkedHashMap<String, String>();
+		LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
 
 		Tuple[] tuples = query(sql.toString(), parameters.toArray());
 		
@@ -1810,10 +1813,10 @@ public class PostgreSQLNode extends Node {
 				name = id;
 			}
 
-			objects.put(id, name);
+			items.put(id, name);
 		}
 
-		return objects;
+		return new Names(items, count);
 	}
 
 	@Override

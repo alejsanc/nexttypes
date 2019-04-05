@@ -327,21 +327,21 @@ public aspect NodeSecurity extends Checks {
     	checkLang(lang);
     }
 
-    before (String type, String lang) :	execution(* Node.getObjectsName(..)) && args(type, lang) {
+    before (String type, String lang) :	execution(* Node.getNames(..)) && args(type, lang) {
     	
     	checkType(type);
     	checkLang(lang);
     }
     
     before (String type, String lang, String search, Long offset, Long limit)
-    	: execution(* Node.getObjectsName(..)) && args(type, lang, search, offset, limit) {
+    	: execution(* Node.getNames(..)) && args(type, lang, search, offset, limit) {
     	
     	checkType(type);
     	checkLang(lang);
     }
     
     before (String referencedType, String referencingType, String referencingAction, 
-    		String referencingField, String lang) : execution(* Node.getObjectsName(..))
+    		String referencingField, String lang) : execution(* Node.getNames(..))
     	&& args(referencedType, referencingType, referencingAction, referencingField, lang, ..) {
     	
     	checkType(referencedType);
@@ -352,14 +352,14 @@ public aspect NodeSecurity extends Checks {
     }
     
     before (String type, String sql, Object[] parameters, String lang)
-    	: execution(* Node.getObjectsName(..)) && args(type, sql, parameters, lang, ..) {
+    	: execution(* Node.getNames(..)) && args(type, sql, parameters, lang, ..) {
     	
     	checkType(type);
     	checkLang(lang);
     }
     
     before (String type, StringBuilder sql, ArrayList<Object> parameters, String lang)
-		: execution(* Node.getObjectsName(..)) && args(type, sql, parameters, lang, ..) {
+		: execution(* Node.getNames(..)) && args(type, sql, parameters, lang, ..) {
 	
     	checkType(type);
     	checkLang(lang);

@@ -41,6 +41,7 @@ import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.NXObject;
+import com.nexttypes.datatypes.Names;
 import com.nexttypes.datatypes.ObjectField;
 import com.nexttypes.datatypes.Objects;
 import com.nexttypes.datatypes.PT;
@@ -390,33 +391,33 @@ public class Controller {
 		return nextNode.getName(type, id, lang);
 	}
 	
-	public LinkedHashMap<String, String> getObjectsName(String lang) {
-		return nextNode.getObjectsName(type, lang);
+	public Names getNames(String lang) {
+		return nextNode.getNames(type, lang);
 	}
 
-	public LinkedHashMap<String, String> getObjectsName(String lang, String search, Long offset,
+	public Names getNames(String lang, String search, Long offset,
 			Long limit) {
-		return nextNode.getObjectsName(type, lang, search, offset, limit);
+		return nextNode.getNames(type, lang, search, offset, limit);
 	}
 	
-	public LinkedHashMap<String, String> getObjectsName(String sql, Object[] parameters, String lang,
+	public Names getNames(String sql, Object[] parameters, String lang,
 			String search, Long offset, Long limit) {
-		return nextNode.getObjectsName(type, sql, parameters, lang, search, offset, limit);
+		return nextNode.getNames(type, sql, parameters, lang, search, offset, limit);
 	}
 
-	public LinkedHashMap<String, String> getObjectsName(StringBuilder sql, ArrayList<Object> parameters,
+	public Names getNames(StringBuilder sql, ArrayList<Object> parameters,
 			String lang, String search, Long offset, Long limit) {
-		return nextNode.getObjectsName(type, sql, parameters, lang, search, offset, limit);
+		return nextNode.getNames(type, sql, parameters, lang, search, offset, limit);
 	}
 	
-	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
+	public Names getNames(String referencingType, String referencingAction,
 			String referencingField, String lang) {
-		return nextNode.getObjectsName(type, referencingType, referencingAction, referencingField, lang);
+		return nextNode.getNames(type, referencingType, referencingAction, referencingField, lang);
 	}
 	
-	public LinkedHashMap<String, String> getObjectsName(String referencingType, String referencingAction,
+	public Names getNames(String referencingType, String referencingAction,
 			String referencingField, String lang, String search, Long offset, Long limit) {
-		return nextNode.getObjectsName(type, referencingType, referencingAction, referencingField, lang,
+		return nextNode.getNames(type, referencingType, referencingAction, referencingField, lang,
 				search, offset, limit);
 	}
 

@@ -232,6 +232,7 @@ public class KeyWords {
 	public static final String NEW_NAME = "new_name";
 	public static final String NEW_PASSWORD = "new_password";
 	public static final String NEW_PASSWORD_REPEAT = "new_password_repeat";
+	public static final String NEXT = "next";
 	public static final String NEXT_NODE = "next_node";
 	public static final String NEXTTYPES = "nexttypes";
 	public static final String NO_OBJECTS_FOUND = "no_objects_found";
@@ -252,6 +253,7 @@ public class KeyWords {
 	public static final String OBJECT_SUCCESSFULLY_UPDATED = "object_successfully_updated";
 	public static final String OBJECTS = "objects";
 	public static final String OBJECTS_DELETE_CONFIRMATION = "objects_delete_confirmation";
+	public static final String OBJECTS_INPUT_LIMIT = "objects_input_limit";
 	public static final String OBJECTS_INPUT_SIZE = "objects_input_size";
 	public static final String OBJECTS_INPUT_NOT_NULL = "objects_input_not_null";
 	public static final String OBJECTS_SELECT = "objects_select";
@@ -276,6 +278,7 @@ public class KeyWords {
 	public static final String PREFIX = "prefix";
 	public static final String PREVIEW = "preview";
 	public static final String PREVIEW_TITLE = "preview_title";
+	public static final String PREVIOUS = "previous";
 	public static final String PRIMITIVE_TYPE_WITH_THE_SAME_NAME = "primitive_type_with_the_same_name";
 	public static final String PUB_DATE = "pub_date";
 	public static final String QRCODE = "qrcode";

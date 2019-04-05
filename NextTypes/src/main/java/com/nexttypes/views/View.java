@@ -137,7 +137,7 @@ public abstract class View extends Module {
 		throw new NotImplementedException();
 	}
 	
-	public Content getObjectsName(String type, String lang, String view, ActionReference aref,
+	public Content getNames(String type, String lang, String view, ActionReference aref,
 			String search, Long offset) {
 		throw new NotImplementedException();
 	}

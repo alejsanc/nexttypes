@@ -25,6 +25,7 @@ import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.ActionReference;
 import com.nexttypes.datatypes.NXObject;
+import com.nexttypes.datatypes.Names;
 import com.nexttypes.datatypes.Objects;
 import com.nexttypes.datatypes.Reference;
 import com.nexttypes.datatypes.Serial;
@@ -85,7 +86,7 @@ public class SerialView extends View {
 	}
 	
 	@Override
-	public Content getObjectsName(String type, String lang, String view, ActionReference aref,
+	public Content getNames(String type, String lang, String view, ActionReference aref,
 			String search, Long offset) {
 		
 		String referencingType = null;
@@ -107,7 +108,7 @@ public class SerialView extends View {
 			limit = typeSettings.getActionInt64(type, referencingAction, KeyWords.OBJECT_INPUT_LIMIT);
 		}
 		
-		LinkedHashMap<String, String> names = nextNode.getObjectsName(type, referencingType,
+		Names names = nextNode.getNames(type, referencingType,
 				referencingAction, referencingField, lang, search, offset, limit);
 		
 		return content(names, view);

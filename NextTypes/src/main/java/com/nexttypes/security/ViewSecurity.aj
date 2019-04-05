@@ -241,13 +241,13 @@ public aspect ViewSecurity extends Checks {
     }
     
     before(String type, String lang, String view, ActionReference aref) 
-    	: execution(* View.getObjectsName(..))  && args(type, lang, view, aref, ..) {
+    	: execution(* View.getNames(..))  && args(type, lang, view, aref, ..) {
     	
     	checkType(type);
     	checkLang(lang);
     	checkView(view);
     	checkARef(aref);
-    	checkPermissions(type, Action.GET_OBJECTS_NAME, thisJoinPoint);
+    	checkPermissions(type, Action.GET_NAMES, thisJoinPoint);
     }
 
     before(String type, String id, String field) : 

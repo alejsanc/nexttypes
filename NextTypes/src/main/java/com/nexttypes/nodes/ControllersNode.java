@@ -45,6 +45,7 @@ import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.ImportObjectsResult;
 import com.nexttypes.datatypes.ImportTypesResult;
 import com.nexttypes.datatypes.NXObject;
+import com.nexttypes.datatypes.Names;
 import com.nexttypes.datatypes.ObjectField;
 import com.nexttypes.datatypes.ObjectInfo;
 import com.nexttypes.datatypes.Objects;
@@ -408,40 +409,40 @@ public class ControllersNode extends Node {
 	}
 	
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String type, String lang) {
-		return getController(type).getObjectsName(lang);
+	public Names getNames(String type, String lang) {
+		return getController(type).getNames(lang);
 	}
 
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String type, String lang, String search,
+	public Names getNames(String type, String lang, String search,
 			Long offset, Long limit ) {
-		return getController(type).getObjectsName(lang, search, offset, limit);
+		return getController(type).getNames(lang, search, offset, limit);
 	}
 	
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String type, String sql, Object[] parameters,
+	public Names getNames(String type, String sql, Object[] parameters,
 			String lang, String search, Long offset, Long limit) {
-		return getController(type).getObjectsName(sql, parameters, lang, search, offset, limit);
+		return getController(type).getNames(sql, parameters, lang, search, offset, limit);
 	}
 
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String type, StringBuilder sql,
+	public Names getNames(String type, StringBuilder sql,
 			ArrayList<Object> parameters, String lang, String search, Long offset, Long limit) {
-		return getController(type).getObjectsName(sql, parameters, lang, search, offset, limit);
+		return getController(type).getNames(sql, parameters, lang, search, offset, limit);
 	}
 	
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingType,
+	public Names getNames(String referencedType, String referencingType,
 			String referencingAction, String referencingField, String lang) {
-		return getController(referencedType).getObjectsName(referencingType, referencingAction,
+		return getController(referencedType).getNames(referencingType, referencingAction,
 				referencingField, lang);
 	}
 	
 	@Override
-	public LinkedHashMap<String, String> getObjectsName(String referencedType, String referencingType,
+	public Names getNames(String referencedType, String referencingType,
 			String referencingAction, String referencingField, String lang, String search, Long offset,
 			Long limit) {
-		return getController(referencedType).getObjectsName(referencingType, referencingAction,
+		return getController(referencedType).getNames(referencingType, referencingAction,
 				referencingField, lang, search, offset, limit);
 	}
 	
