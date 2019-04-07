@@ -1702,7 +1702,7 @@ public class PostgreSQLNode extends Node {
 		String idName = typeSettings.gts(type, KeyWords.ID_NAME);
 
 		if (idName != null) {
-			String sql = idName + " where type.id = ?";
+			String sql = "select id, name from (" + idName + ") as id_name where id = ?";
 			Object[] parameters = null;
 
 			if (idName.contains("?")) {
@@ -1756,7 +1756,7 @@ public class PostgreSQLNode extends Node {
 				parameters.add(lang);
 			}
 		} else {
-			sql.append("select type.id, type.id as name from \"" + type + "\" type");
+			sql.append("select id, id as name from \"" + type + "\"");
 		}
 		
 		return getNames(type, sql, parameters, lang, search, offset, limit);
