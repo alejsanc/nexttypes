@@ -1930,7 +1930,7 @@ public class HTMLView extends View {
 		case PT.HTML:
 		case PT.JSON:
 		case PT.XML:
-			input = textareaFieldInput(type, action, field, title, value, typeField);
+			input = textAreaFieldInput(type, action, field, title, value, typeField);
 			break;
 		case PT.BINARY:
 		case PT.FILE:
@@ -2212,19 +2212,19 @@ public class HTMLView extends View {
 		}
 	}
 
-	public Element textareaOutput(Object value, boolean preview) {
-		String textareaClass = null;
+	public Element textAreaOutput(Object value, boolean preview) {
+		String textAreaClass = null;
 		if (preview) {
-			textareaClass = SMALL_TEXTAREA;
+			textAreaClass = SMALL_TEXTAREA;
 			value = value + " ...";
 		} else {
-			textareaClass = MEDIUM_TEXTAREA;
+			textAreaClass = MEDIUM_TEXTAREA;
 		}
 
-		Element textarea = document.createElement(HTML.TEXTAREA);
-		textarea.appendText(value);
-		textarea.addClass(textareaClass);
-		return textarea;
+		Element textArea = document.createElement(HTML.TEXTAREA);
+		textArea.appendText(value);
+		textArea.addClass(textAreaClass);
+		return textArea;
 	}
 
 	public Element documentFieldOutput(String type, String id, String field, Object value, String lang,
@@ -2233,28 +2233,28 @@ public class HTMLView extends View {
 		DocumentPreview docPrev = (DocumentPreview) value;
 
 		Element span = document.createElement(HTML.SPAN);
-		span.appendElement(textareaOutput(docPrev.getText(), preview));
+		span.appendElement(textAreaOutput(docPrev.getText(), preview));
 		span.appendElement(binaryFieldOutput(type, id, field, docPrev.getSize(), lang));
 
 		return span;
 	}
 	
-	public Element textareaFieldInput(String type, String action, String field, String title, Object value,
+	public Element textAreaFieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField) {
-		return textareaFieldInput(type, action, field, title, value, typeField.getType());
+		return textAreaFieldInput(type, action, field, title, value, typeField.getType());
 	}
 
-	public Element textareaFieldInput(String type, String action, String field, String title,
+	public Element textAreaFieldInput(String type, String action, String field, String title,
 			Object value, String fieldType) {
-		Element textarea = document.createElement(HTML.TEXTAREA).setAttribute(HTML.NAME, "@" + field)
+		Element textArea = document.createElement(HTML.TEXTAREA).setAttribute(HTML.NAME, "@" + field)
 				.setAttribute(HTML.TITLE, title);
 
 		if (value != null) {
-			textarea.appendText(value);
+			textArea.appendText(value);
 		}
 
 		if (fieldType != null) {
-			textarea.addClass(fieldType);
+			textArea.addClass(fieldType);
 		}
 
 		String[] modes = typeSettings.getActionFieldStringArray(type, action, field, KeyWords.EDITOR);
@@ -2273,7 +2273,7 @@ public class HTMLView extends View {
 		}
 
 		if (modes != null && modes.length > 0) {
-			textarea.setAttribute(DATA_EDITOR, modes[0]);
+			textArea.setAttribute(DATA_EDITOR, modes[0]);
 
 			for (String mode : modes) {
 				if (!VISUAL.equals(mode)) {
@@ -2289,7 +2289,7 @@ public class HTMLView extends View {
 			}
 		}
 
-		return textarea;
+		return textArea;
 	}
 	
 	public Element actionObjectsInput(String type, String action, String title, String lang) {
@@ -2370,7 +2370,7 @@ public class HTMLView extends View {
 		
 		switch(mode) {
 		case HTML.TEXTAREA:			
-			input = objectsTextareaInput(name, title);
+			input = objectsTextAreaInput(name, title);
 			break;
 			
 		case MULTIPLE_SELECT:
@@ -2442,7 +2442,7 @@ public class HTMLView extends View {
 		return inputGroup;
 	}
 	
-	public Element objectsTextareaInput(String name, String title) {
+	public Element objectsTextAreaInput(String name, String title) {
 		
 		return document.createElement(HTML.TEXTAREA)
 				.setAttribute(HTML.NAME, name)
@@ -3338,7 +3338,7 @@ public class HTMLView extends View {
 			case PT.TEXT:
 			case PT.JSON:
 			case PT.XML:
-				fieldElement = textareaOutput(value, preview);
+				fieldElement = textAreaOutput(value, preview);
 				break;
 			case PT.PASSWORD:
 				fieldElement = passwordOutput();
