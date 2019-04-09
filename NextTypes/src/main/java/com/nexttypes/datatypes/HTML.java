@@ -197,10 +197,57 @@ public class HTML extends XML {
 		return getElementByTagName(FOOTER);
 	}
 	
+	public class ListInput extends Element {
+		
+		protected Element input;
+		protected Element dataList;
+		
+		public ListInput(Element input) {
+			super(document.createElement(SPAN));
+			this.input = input;
+			appendElement(input);
+			dataList = appendElement(DATALIST);
+			setListId(input.getAttribute(NAME));
+		}
+		
+		@Override
+		public Element setAttribute(String name, Object value) {
+			if (ArrayUtils.contains(INPUT_ATTRIBUTES, name)) {
+				input.setAttribute(name, value);
+				if (HTML.NAME.equals(name)) {
+					setListId(value);
+				}				
+			} else {
+				super.setAttribute(name, value);
+			}
+			return this;
+		}
+		
+		@Override
+		public Element removeAttribute(String name) {
+			if (ArrayUtils.contains(INPUT_ATTRIBUTES, name)) {
+				input.removeAttribute(name);
+			} else {
+				super.removeAttribute(name);
+			}
+			return this;
+		}
+		
+		protected void setListId(Object name) {
+			String listId = name + "-list";
+			dataList.setId(listId);
+			input.setAttribute(LIST, listId);
+		}
+	}
+	
+	public ListInput createListInput(Element input) {
+		return new ListInput(input);
+	}
+	
 	public class InputGroup extends Element {
 						
 		protected ArrayList<Element> inputs = new ArrayList<>();
-		
+				
 		public InputGroup() {
 			super(document.createElement(HTML.SPAN));
 			addClass(INPUT_GROUP);
@@ -210,7 +257,7 @@ public class HTML extends XML {
 		public Element setAttribute(String name, Object value) {
 			if (ArrayUtils.contains(INPUT_ATTRIBUTES, name)) {
 				for (Element input : inputs) {
-					input.setAttribute(name, value);
+					input.setAttribute(name, value);				
 				}
 			} else {
 				super.setAttribute(name, value);

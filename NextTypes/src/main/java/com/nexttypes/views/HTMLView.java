@@ -2423,23 +2423,17 @@ public class HTMLView extends View {
 	public Element objectListInput(String name, String title, Object value, String referencedType,
 			String referencingType, String referencingAction, String referencingField, Integer size,
 			String lang) {
-		
-		InputGroup inputGroup = document.createInputGroup();
-		
-		String listId = name + "-" + HTML.LIST;
-		
-		Element input = inputGroup.appendInput(input(HTML.TEXT, name, title, value))
-				.addClass(OBJECT_LIST_INPUT).setAttribute(HTML.LIST, listId)
+				
+		Element input = input(HTML.TEXT, name, title, value)
+				.addClass(OBJECT_LIST_INPUT)
 				.setAttribute(DATA_URL, namesURL(referencedType, referencingType, referencingAction,
 						referencingField, lang));
 				
 		if (size != null) {
 			input.setAttribute(HTML.SIZE, size);
 		}
-		
-		inputGroup.appendElement(HTML.DATALIST).setAttribute(HTML.ID, listId);
-				
-		return inputGroup;
+						
+		return document.createListInput(input);
 	}
 	
 	public Element objectsTextAreaInput(String name, String title) {
