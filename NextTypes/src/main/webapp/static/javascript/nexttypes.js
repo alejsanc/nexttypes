@@ -449,7 +449,8 @@ function filterComparisonChange(event) {
 			filterInput.classList.add("hidden");
 			filterTextInput.classList.remove("hidden");
 			
-			if (filterInput.classList.contains("input-group")) {
+			if (filterInput.classList.contains("input-group")
+					|| filterInput.classList.contains("list-input")) {
 				var inputs = filterInput.querySelectorAll("input");
 								
 				for (let input of inputs) {
@@ -468,7 +469,8 @@ function filterComparisonChange(event) {
 			
 			filterTextInput.disabled = true;
 			
-			if (filterInput.classList.contains("input-group")) {
+			if (filterInput.classList.contains("input-group")
+					|| filterInput.classList.contains("list-input")) {
 				var inputs = filterInput.querySelectorAll("input");
 				
 				for (let input of inputs) {

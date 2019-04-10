@@ -130,6 +130,7 @@ public class HTML extends XML {
 	public static final String LIST = "list";
 	public static final String DATALIST = "datalist";
 	public static final String INPUT_GROUP = "input-group";
+	public static final String LIST_INPUT = "list-input";
 
 	public HTML() {
 		super();
@@ -204,6 +205,7 @@ public class HTML extends XML {
 		
 		public ListInput(Element input) {
 			super(document.createElement(SPAN));
+			addClass(LIST_INPUT);
 			this.input = input;
 			appendElement(input);
 			dataList = appendElement(DATALIST);
