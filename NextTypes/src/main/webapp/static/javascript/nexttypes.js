@@ -72,6 +72,8 @@ const COMPONENT = {
 	REFERENCE: "reference"
 };
 
+const NOT_INPUT_KEYS = ["ArrowDown", "ArrowLeft", "ArrowRight", "ArrowUp", "Dead", "Enter"];
+
 var fieldCount = 0;
 var indexCount = 0;
 var filterCount = 0;
@@ -81,7 +83,7 @@ var pageLang = document.documentElement.getAttribute("lang");
 	
 document.addEventListener("DOMContentLoaded", function() {
 	initEventListeners();
-	
+		
 	var fieldsTable = document.getElementById("fields");
 	var indexesTable = document.getElementById("indexes");
 	var filtersTable = document.getElementById("filters");
@@ -112,6 +114,45 @@ window.addEventListener("beforeunload", function(event) {
 		}
 	}
 });
+
+function objectListInput(input) {
+	var url = input.getAttribute("data-url");
+	var list = input.parentNode.querySelector("datalist");	
+	var worker = new Worker("/static/javascript/requestsqueue.js");
+	
+	worker.addEventListener("message", function(e) {
+		
+		list.innerHTML = "";
+		
+		var items = e.data["items"];
+		
+		for (let id in items) {
+			var option = document.createElement("option");
+			option.appendChild(document.createTextNode(id));
+			option.setAttribute("label", items[id]);
+			list.appendChild(option);
+		}
+	
+	}, false);
+	
+	worker.addEventListener("error", function(e) {
+		alert(e.message);
+	}, false);
+	
+	input.addEventListener("keyup", function(e) {
+		if (e.key !== undefined && !NOT_INPUT_KEYS.includes(e.key)) {
+			
+			var search = input.value;
+						
+			if (search != null && search.length > 0) {
+				worker.postMessage(url + "&search=" + search);
+			} else {
+				list.innerHTML = "";
+			}
+		}
+		
+	}, false);
+}
 
 function initEventListeners() {
 	addEventListeners(document, "button.add-field", "click", addTypeField);
@@ -152,7 +193,11 @@ function addSelectTableEventListeners(rootElement) {
 function addFilterEventListeners(rootElement) {
 	addEventListeners(rootElement, "select.filter-field", "change", changeFilterField);
 	addEventListeners(rootElement, "select.filter-comparison", "change", filterComparisonChange);
-	addEventListeners(rootElement, "input.object-list-input", "keyup", objectListInputChange);
+	
+	var inputs = rootElement.querySelectorAll("input.object-list-input");
+	for (let input of inputs) {
+		objectListInput(input);
+	}
 }
 
 function addEventListeners(rootElement, query, event, eventFunction) {
