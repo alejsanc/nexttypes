@@ -27,6 +27,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.mail.internet.InternetAddress;
 
@@ -402,6 +403,11 @@ public class ControllersNode extends Node {
 	public TypeInfo[] getTypesInfo() {
 		return nextNode.getTypesInfo();
 	}
+	
+	@Override
+	public TreeMap<String, TypeInfo> getTypesInfoOrderByName() {
+		return nextNode.getTypesInfoOrderByName();
+	}
 
 	@Override
 	public String getName(String type, String id, String lang) {
@@ -699,6 +705,11 @@ public class ControllersNode extends Node {
 	@Override
 	public Reference[] getReferences() {
 		return nextNode.getReferences();
+	}
+	
+	@Override
+	public TreeMap<String, TreeMap<String, TreeMap<String, Reference>>> getReferencesOrderByNames() {
+		return nextNode.getReferencesOrderByNames();
 	}
 
 	@Override

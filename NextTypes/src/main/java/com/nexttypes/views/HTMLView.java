@@ -33,6 +33,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -241,9 +242,10 @@ public class HTMLView extends View {
 	public Content getTypesInfo(String lang, String view) {
 		loadTemplate(null, lang, view);
 		setTitle(strings.gts(KeyWords.TYPES));
-		TypeInfo[] types = nextNode.getTypesInfo();
+		
+		TreeMap<String, TypeInfo> types = nextNode.getTypesInfoOrderByName();
 
-		if (types.length > 0) {
+		if (types.size() > 0) {
 			main.appendElement(typesTable(types, lang, view));
 		} else {
 			main.appendElement(HTML.P).appendText(strings.gts(KeyWords.NO_TYPES_FOUND));
@@ -763,7 +765,8 @@ public class HTMLView extends View {
 		loadTemplate(null, lang, view);
 		setTitle(strings.gts(KeyWords.REFERENCES));
 
-		Reference[] references = nextNode.getReferences();
+		TreeMap<String, TreeMap<String, TreeMap<String, Reference>>> references = nextNode
+				.getReferencesOrderByNames();
 
 		Element table = main.appendElement(HTML.TABLE);
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
@@ -771,37 +774,49 @@ public class HTMLView extends View {
 		header.appendElement(HTML.TH).appendText(strings.gts(KeyWords.REFERENCED_TYPE));
 		header.appendElement(HTML.TH).appendText(strings.gts(KeyWords.REFERENCING_TYPE));
 		header.appendElement(HTML.TH).appendText(strings.gts(KeyWords.REFERENCING_FIELD));
-
-		for (Reference reference : references) {
-			String referencedType = reference.getReferencedType();
-			String referencingType = reference.getReferencingType();
-			String referencingField = reference.getReferencingField();
+				
+		for (Map.Entry<String, TreeMap<String, TreeMap<String, Reference>>> referencedTypeEntry 
+				: references.entrySet()) {
 			
-			String referencedTypeName = strings.getTypeName(referencedType);
-			String referencingTypeName = strings.getTypeName(referencingType);
-			String referencingFieldName = strings.getFieldName(referencingType, referencingField);
-
-			Element row = body.appendElement(HTML.TR);
+			String referencedTypeName = referencedTypeEntry.getKey();
+			TreeMap<String, TreeMap<String, Reference>> referencingTypes = referencedTypeEntry.getValue();
 			
-			Element referencedTypeCell = row.appendElement(HTML.TD);
-			
-			if (permissions.isAllowed(referencedType, Action.GET_TYPE)) {
-				referencedTypeCell.appendElement(anchor(referencedTypeName, 
-						url(referencedType, lang, view) + parameter(KeyWords.INFO)));
-			} else {
-				referencedTypeCell.appendText(referencedTypeName);
+			for (Map.Entry<String, TreeMap<String, Reference>> referencingTypeEntry
+					: referencingTypes.entrySet()) {
+				
+				String referencingTypeName = referencingTypeEntry.getKey();
+				TreeMap<String, Reference> referencingFields = referencingTypeEntry.getValue();
+				
+				for (Map.Entry<String, Reference> referencingFieldEntry : referencingFields.entrySet()) {
+					
+					String referencingFieldName = referencingFieldEntry.getKey();
+					Reference reference = referencingFieldEntry.getValue();
+					String referencedType = reference.getReferencedType();
+					String referencingType = reference.getReferencingType();
+														
+					Element row = body.appendElement(HTML.TR);
+					
+					Element referencedTypeCell = row.appendElement(HTML.TD);
+					
+					if (permissions.isAllowed(referencedType, Action.GET_TYPE)) {
+						referencedTypeCell.appendElement(anchor(referencedTypeName, 
+								url(referencedType, lang, view) + parameter(KeyWords.INFO)));
+					} else {
+						referencedTypeCell.appendText(referencedTypeName);
+					}
+					
+					Element referencingTypeCell = row.appendElement(HTML.TD);
+					
+					if (permissions.isAllowed(referencingType, Action.GET_TYPE)) {
+						referencingTypeCell.appendElement(anchor(referencingTypeName,
+								url(referencingType, lang, view) + parameter(KeyWords.INFO)));
+					} else {
+						referencingTypeCell.appendText(referencingTypeName);
+					}
+					
+					row.appendElement(HTML.TD).appendText(referencingFieldName);
+				}
 			}
-			
-			Element referencingTypeCell = row.appendElement(HTML.TD);
-			
-			if (permissions.isAllowed(referencingType, Action.GET_TYPE)) {
-				referencingTypeCell.appendElement(anchor(referencingTypeName,
-						url(referencingType, lang, view) + parameter(KeyWords.INFO)));
-			} else {
-				referencingTypeCell.appendText(referencingTypeName);
-			}
-			
-			row.appendElement(HTML.TD).appendText(referencingFieldName);
 		}
 
 		return render();
@@ -1108,7 +1123,7 @@ public class HTMLView extends View {
 		return humanReadableBytes;
 	}
 
-	public Element typesTable(TypeInfo[] types, String lang, String view) {
+	public Element typesTable(TreeMap<String, TypeInfo> types, String lang, String view) {
 		
 		boolean disableDropButton = true;
 		boolean disableExportButton = true;
@@ -1129,10 +1144,11 @@ public class HTMLView extends View {
 		header.appendElement(HTML.TH);
 		header.appendElement(HTML.TH);
 		header.appendElement(HTML.TH);
-
-		for (TypeInfo typeInfo : types) {
+		
+		for (Map.Entry<String,TypeInfo> entry : types.entrySet()) {
+			String typeName = entry.getKey();
+			TypeInfo typeInfo = entry.getValue();
 			String type = typeInfo.getName();
-			String typeName = strings.getTypeName(type);
 			
 			boolean disableCheckbox = true;
 			

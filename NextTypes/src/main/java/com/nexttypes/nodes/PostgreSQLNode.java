@@ -39,9 +39,11 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -1685,6 +1687,17 @@ public class PostgreSQLNode extends Node {
 		}
 		return types;
 	}
+	
+	@Override
+	public TreeMap<String, TypeInfo> getTypesInfoOrderByName() {
+		TreeMap<String, TypeInfo> types = new TreeMap<>();
+		
+		for (TypeInfo type : getTypesInfo()) {
+			types.put(strings.getTypeName(type.getName()), type);
+		}
+		
+		return types;
+	}
 
 	@Override
 	public Boolean existsType(String type) {
@@ -1835,6 +1848,71 @@ public class PostgreSQLNode extends Node {
 	@Override
 	public Reference[] getReferences() {
 		return query(GET_REFERENCES_QUERY + " order by referenced_type, referencing_type", Reference.class);
+	}
+	
+	@Override
+	public TreeMap<String, TreeMap<String, TreeMap<String, Reference>>> getReferencesOrderByNames() {
+		TreeMap<String, TreeMap<String, TreeMap<String, Reference>>> references = new TreeMap<>();
+		
+		HashMap<String, String> referencedTypeNames = new HashMap<>();
+		HashMap<String, HashMap<String, String>> referencingTypeNamesMap = new HashMap<>();
+		HashMap<String, HashMap<String, TreeMap<String, Reference>>> referencingFieldNamesMapMap
+			= new HashMap<>();	
+		
+		for (Reference reference : getReferences()) {
+			
+			String referencedType = reference.getReferencedType();
+			String referencingType = reference.getReferencingType();
+			String referencingField = reference.getReferencingField();
+			
+			HashMap<String, String> referencingTypeNames = referencingTypeNamesMap.get(referencedType);
+			HashMap<String, TreeMap<String, Reference>> referencingFieldNamesMap
+				= referencingFieldNamesMapMap.get(referencedType);
+			
+			if (referencingTypeNames == null) {
+								
+				referencedTypeNames.put(referencedType, strings.getTypeName(referencedType));
+				
+				referencingTypeNames = new HashMap<>();
+				referencingTypeNamesMap.put(referencedType, referencingTypeNames);
+				
+				referencingFieldNamesMap = new HashMap<>();
+				referencingFieldNamesMapMap.put(referencedType, referencingFieldNamesMap);
+			}
+			
+			referencingTypeNames.put(referencingType, strings.getTypeName(referencingType));
+			
+			TreeMap<String, Reference> referencingFieldNames = referencingFieldNamesMap
+					.get(referencingType);
+			
+			if (referencingFieldNames == null) {
+				referencingFieldNames = new TreeMap<>();
+				referencingFieldNamesMap.put(referencingType, referencingFieldNames);
+			}
+			
+			referencingFieldNames.put(strings.getFieldName(referencingType, referencingField), 
+					reference);
+		}
+		
+		for (Map.Entry<String, String> referencedTypeEntry 	: referencedTypeNames.entrySet()) {
+			String referencedType = referencedTypeEntry.getKey();
+			String referencedTypeName = referencedTypeEntry.getValue();
+			
+			TreeMap<String, TreeMap<String, Reference>> referencingTypes = new TreeMap<>();
+			references.put(referencedTypeName, referencingTypes);		
+			
+			for (Map.Entry<String, String> referencingTypeEntry : referencingTypeNamesMap
+					.get(referencedType).entrySet()) {
+				
+				String referencingType = referencingTypeEntry.getKey();
+				String referencingTypeName = referencingTypeEntry.getValue();
+				
+				referencingTypes.put(referencingTypeName, referencingFieldNamesMapMap
+						.get(referencedType).get(referencingType));
+			}
+		}
+		
+		return references;
 	}
 
 	@Override

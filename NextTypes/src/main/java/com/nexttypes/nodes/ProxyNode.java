@@ -26,6 +26,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
 import javax.mail.internet.InternetAddress;
 
@@ -275,6 +276,11 @@ public class ProxyNode extends Node {
 	public TypeInfo[] getTypesInfo() {
 		return nextNode.getTypesInfo();
 	}
+	
+	@Override
+	public TreeMap<String, TypeInfo> getTypesInfoOrderByName() {
+		return nextNode.getTypesInfoOrderByName();
+	}
 
 	@Override
 	public Boolean existsType(String type) {
@@ -337,6 +343,11 @@ public class ProxyNode extends Node {
 	@Override
 	public Reference[] getReferences() {
 		return nextNode.getReferences();
+	}
+	
+	@Override
+	public TreeMap<String, TreeMap<String, TreeMap<String, Reference>>> getReferencesOrderByNames() {
+		return nextNode.getReferencesOrderByNames();
 	}
 
 	@Override

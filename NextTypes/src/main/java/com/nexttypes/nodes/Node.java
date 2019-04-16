@@ -26,6 +26,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
 import javax.mail.internet.InternetAddress;
 
@@ -157,6 +158,8 @@ public abstract class Node extends Module {
 	public abstract String[] getTypesName();
 
 	public abstract TypeInfo[] getTypesInfo();
+	
+	public abstract TreeMap<String, TypeInfo> getTypesInfoOrderByName();
 
 	public abstract Boolean existsType(String type);
 
@@ -185,6 +188,9 @@ public abstract class Node extends Module {
 	public abstract LinkedHashMap<String, ObjectInfo[]> getObjectsInfo(String[] types);
 
 	public abstract Reference[] getReferences();
+	
+	public abstract TreeMap<String, TreeMap<String, TreeMap<String, Reference>>>
+		getReferencesOrderByNames();
 
 	public abstract TypeReference[] getDownReferences(String type);
 
