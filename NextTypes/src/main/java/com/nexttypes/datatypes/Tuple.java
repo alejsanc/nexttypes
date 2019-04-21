@@ -63,6 +63,10 @@ public class Tuple {
 			put(field, value);
 		}
 	}
+	
+	public void remove(String key) {
+		fields.remove(key);
+	}
 
 	public boolean containsKey(String key) {
 		return fields.containsKey(key);

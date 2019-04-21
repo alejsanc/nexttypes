@@ -52,6 +52,7 @@ import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.HTML;
 import com.nexttypes.datatypes.HTML.InputGroup;
 import com.nexttypes.datatypes.HTMLFragment;
+import com.nexttypes.datatypes.Matrix;
 import com.nexttypes.datatypes.Menu;
 import com.nexttypes.datatypes.MenuSection;
 import com.nexttypes.datatypes.NXObject;
@@ -762,6 +763,7 @@ public class HTMLView extends View {
 
 	@Override
 	public Content getReferences(String lang, String view) {
+		
 		loadTemplate(null, lang, view);
 		setTitle(strings.gts(KeyWords.REFERENCES));
 

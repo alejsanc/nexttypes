@@ -43,6 +43,7 @@ import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.ImportObjectsResult;
 import com.nexttypes.datatypes.ImportTypesResult;
+import com.nexttypes.datatypes.Matrix;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.Names;
 import com.nexttypes.datatypes.ObjectField;
@@ -414,7 +415,7 @@ public abstract class Node extends Module {
 
 	public abstract Tuple getTuple(String sql, Object... parameters);
 
-	public abstract Tuple getMatrix(String sql, String[] axes, Object... parameters);
+	public abstract Matrix getMatrix(String sql, String[] axes, Object... parameters);
 
 	public abstract Tuple[] query(String sql, Object... parameters);
 

@@ -76,6 +76,7 @@ import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.ImportObjectsResult;
 import com.nexttypes.datatypes.ImportTypesResult;
 import com.nexttypes.datatypes.JSON;
+import com.nexttypes.datatypes.Matrix;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.Names;
 import com.nexttypes.datatypes.ObjectField;
@@ -3052,8 +3053,8 @@ public class PostgreSQLNode extends Node {
 	}
 
 	@Override
-	public Tuple getMatrix(String sql, String[] axes, Object... parameters) {
-		throw new NotImplementedException();
+	public Matrix getMatrix(String sql, String[] axes, Object... parameters) {
+		return new Matrix(query(sql, parameters), axes);
 	}
 
 	@Override

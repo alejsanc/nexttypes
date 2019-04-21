@@ -90,6 +90,7 @@ public class KeyWords {
 	public static final String DUPLICATE_INDEX = "duplicate_index";
 	public static final String EDITOR = "editor";
 	public static final String ELEMENT_NOT_FOUND = "element_not_found";
+	public static final String EMPTY_AXES_LIST = "empty_axes_list";
 	public static final String EMPTY_CURRENT_PASSWORD = "empty_current_password";
 	public static final String EMPTY_FIELD = "empty_field";
 	public static final String EMPTY_FIELD_NAME = "empty_field_name";
