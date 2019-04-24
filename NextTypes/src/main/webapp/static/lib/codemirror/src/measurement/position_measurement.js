@@ -1,16 +1,16 @@
-import { buildLineContent, LineView } from "../line/line_data"
-import { clipPos, Pos } from "../line/pos"
-import { collapsedSpanAtEnd, heightAtLine, lineIsHidden, visualLine } from "../line/spans"
-import { getLine, lineAtHeight, lineNo, updateLineHeight } from "../line/utils_line"
-import { bidiOther, getBidiPartAt, getOrder } from "../util/bidi"
-import { chrome, android, ie, ie_version } from "../util/browser"
-import { elt, removeChildren, range, removeChildrenAndAdd } from "../util/dom"
-import { e_target } from "../util/event"
-import { hasBadZoomedRects } from "../util/feature_detection"
-import { countColumn, findFirst, isExtendingChar, scrollerGap, skipExtendingChars } from "../util/misc"
-import { updateLineForChanges } from "../display/update_line"
+import { buildLineContent, LineView } from "../line/line_data.js"
+import { clipPos, Pos } from "../line/pos.js"
+import { collapsedSpanAround, heightAtLine, lineIsHidden, visualLine } from "../line/spans.js"
+import { getLine, lineAtHeight, lineNo, updateLineHeight } from "../line/utils_line.js"
+import { bidiOther, getBidiPartAt, getOrder } from "../util/bidi.js"
+import { chrome, android, ie, ie_version } from "../util/browser.js"
+import { elt, removeChildren, range, removeChildrenAndAdd } from "../util/dom.js"
+import { e_target } from "../util/event.js"
+import { hasBadZoomedRects } from "../util/feature_detection.js"
+import { countColumn, findFirst, isExtendingChar, scrollerGap, skipExtendingChars } from "../util/misc.js"
+import { updateLineForChanges } from "../display/update_line.js"
 
-import { widgetHeight } from "./widgets"
+import { widgetHeight } from "./widgets.js"
 
 // POSITION MEASUREMENT
 
@@ -430,12 +430,11 @@ export function coordsChar(cm, x, y) {
   let lineObj = getLine(doc, lineN)
   for (;;) {
     let found = coordsCharInner(cm, lineObj, lineN, x, y)
-    let merged = collapsedSpanAtEnd(lineObj)
-    let mergedPos = merged && merged.find(0, true)
-    if (merged && (found.ch > mergedPos.from.ch || found.ch == mergedPos.from.ch && found.xRel > 0))
-      lineN = lineNo(lineObj = mergedPos.to.line)
-    else
-      return found
+    let collapsed = collapsedSpanAround(lineObj, found.ch + (found.xRel > 0 ? 1 : 0))
+    if (!collapsed) return found
+    let rangeEnd = collapsed.find(1)
+    if (rangeEnd.line == lineN) return rangeEnd
+    lineObj = getLine(doc, lineN = rangeEnd.line)
   }
 }
 
@@ -559,6 +558,7 @@ function coordsBidiPartWrapped(cm, lineObj, _lineNo, preparedMeasure, order, x, 
   // wrapped line, and then do a flat search in which we discard any
   // spans that aren't on the line.
   let {begin, end} = wrappedLineExtent(cm, lineObj, preparedMeasure, y)
+  if (/\s/.test(lineObj.text.charAt(end - 1))) end--
   let part = null, closestDist = null
   for (let i = 0; i < order.length; i++) {
     let p = order[i]

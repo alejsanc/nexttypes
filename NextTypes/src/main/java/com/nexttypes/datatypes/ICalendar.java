@@ -18,12 +18,10 @@ package com.nexttypes.datatypes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.Constants;
@@ -41,7 +39,7 @@ import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
-import net.fortuna.ical4j.util.UidGenerator;
+import net.fortuna.ical4j.util.RandomUidGenerator;
 
 public class ICalendar {
 
@@ -52,8 +50,6 @@ public class ICalendar {
 		calendar.getProperties().add(new ProdId(KeyWords.NEXTTYPES));
 		calendar.getProperties().add(Version.VERSION_2_0);
 		calendar.getProperties().add(CalScale.GREGORIAN);
-
-		Random random = new Random();
 
 		try {
 			for (Tuple event : events) {
@@ -82,15 +78,14 @@ public class ICalendar {
 
 				vevent.getProperties().add(new Attach(new URI(url + id)));
 
-				UidGenerator ug = new UidGenerator(String.valueOf(random.nextInt()));
-				vevent.getProperties().add(ug.generateUid());
+				vevent.getProperties().add(new RandomUidGenerator().generateUid());
 
 				calendar.getComponents().add(vevent);
 			}
 
 			calendar.validate();
 
-		} catch (ParseException | URISyntaxException | SocketException e) {
+		} catch (ParseException | URISyntaxException  e) {
 			throw new NXException(e);
 		}
 	}

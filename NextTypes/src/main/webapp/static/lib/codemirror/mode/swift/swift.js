@@ -1,5 +1,5 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 // Swift mode created by Michael Kaminsky https://github.com/mkaminsky11
 
@@ -73,9 +73,8 @@
       stream.match("..")
       return "punctuation"
     }
-    if (ch == '"' || ch == "'") {
-      stream.next()
-      var tokenize = tokenString(ch)
+    if (ch = stream.match(/("{3}|"|')/)) {
+      var tokenize = tokenString(ch[0])
       state.tokenize.push(tokenize)
       return tokenize(stream, state)
     }
@@ -117,6 +116,7 @@
   }
 
   function tokenString(quote) {
+    var singleLine = quote.length == 1
     return function(stream, state) {
       var ch, escaped = false
       while (ch = stream.next()) {
@@ -126,20 +126,32 @@
             return "string"
           }
           escaped = false
-        } else if (ch == quote) {
-          break
+        } else if (stream.match(quote)) {
+          state.tokenize.pop()
+          return "string"
         } else {
           escaped = ch == "\\"
         }
       }
-      state.tokenize.pop()
+      if (singleLine) {
+        state.tokenize.pop()
+      }
       return "string"
     }
   }
 
   function tokenComment(stream, state) {
-    stream.match(/^(?:[^*]|\*(?!\/))*/)
-    if (stream.match("*/")) state.tokenize.pop()
+    var ch
+    while (true) {
+      stream.match(/^[^/*]+/, true)
+      ch = stream.next()
+      if (!ch) break
+      if (ch === "/" && stream.eat("*")) {
+        state.tokenize.push(tokenComment)
+      } else if (ch === "*" && stream.eat("/")) {
+        state.tokenize.pop()
+      }
+    }
     return "comment"
   }
 

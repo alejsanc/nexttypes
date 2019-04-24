@@ -1,12 +1,12 @@
-import { signalLater } from "../util/operation_group"
-import { ensureCursorVisible } from "../display/scrolling"
-import { clipPos, cmp, Pos } from "../line/pos"
-import { getLine } from "../line/utils_line"
-import { hasHandler, signal, signalCursorActivity } from "../util/event"
-import { lst, sel_dontScroll } from "../util/misc"
+import { signalLater } from "../util/operation_group.js"
+import { ensureCursorVisible } from "../display/scrolling.js"
+import { clipPos, cmp, Pos } from "../line/pos.js"
+import { getLine } from "../line/utils_line.js"
+import { hasHandler, signal, signalCursorActivity } from "../util/event.js"
+import { lst, sel_dontScroll } from "../util/misc.js"
 
-import { addSelectionToHistory } from "./history"
-import { normalizeSelection, Range, Selection, simpleSelection } from "./selection"
+import { addSelectionToHistory } from "./history.js"
+import { normalizeSelection, Range, Selection, simpleSelection } from "./selection.js"
 
 // The 'scroll' parameter given to many of these indicated whether
 // the new cursor position should be scrolled into view after
@@ -47,7 +47,7 @@ export function extendSelections(doc, heads, options) {
   let extend = doc.cm && (doc.cm.display.shift || doc.extend)
   for (let i = 0; i < doc.sel.ranges.length; i++)
     out[i] = extendRange(doc.sel.ranges[i], heads[i], null, extend)
-  let newSel = normalizeSelection(out, doc.sel.primIndex)
+  let newSel = normalizeSelection(doc.cm, out, doc.sel.primIndex)
   setSelection(doc, newSel, options)
 }
 
@@ -55,7 +55,7 @@ export function extendSelections(doc, heads, options) {
 export function replaceOneSelection(doc, i, range, options) {
   let ranges = doc.sel.ranges.slice(0)
   ranges[i] = range
-  setSelection(doc, normalizeSelection(ranges, doc.sel.primIndex), options)
+  setSelection(doc, normalizeSelection(doc.cm, ranges, doc.sel.primIndex), options)
 }
 
 // Reset the selection to a single range.
@@ -78,7 +78,7 @@ function filterSelectionChange(doc, sel, options) {
   }
   signal(doc, "beforeSelectionChange", doc, obj)
   if (doc.cm) signal(doc.cm, "beforeSelectionChange", doc.cm, obj)
-  if (obj.ranges != sel.ranges) return normalizeSelection(obj.ranges, obj.ranges.length - 1)
+  if (obj.ranges != sel.ranges) return normalizeSelection(doc.cm, obj.ranges, obj.ranges.length - 1)
   else return sel
 }
 
@@ -116,7 +116,8 @@ function setSelectionInner(doc, sel) {
   doc.sel = sel
 
   if (doc.cm) {
-    doc.cm.curOp.updateInput = doc.cm.curOp.selectionChanged = true
+    doc.cm.curOp.updateInput = 1
+    doc.cm.curOp.selectionChanged = true
     signalCursorActivity(doc.cm)
   }
   signalLater(doc, "cursorActivity", doc)
@@ -142,7 +143,7 @@ function skipAtomicInSelection(doc, sel, bias, mayClear) {
       out[i] = new Range(newAnchor, newHead)
     }
   }
-  return out ? normalizeSelection(out, sel.primIndex) : sel
+  return out ? normalizeSelection(doc.cm, out, sel.primIndex) : sel
 }
 
 function skipAtomicInner(doc, pos, oldPos, dir, mayClear) {

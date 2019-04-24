@@ -1,7 +1,7 @@
-import { flipCtrlCmd, mac, presto } from "../util/browser"
-import { map } from "../util/misc"
+import { flipCtrlCmd, mac, presto } from "../util/browser.js"
+import { map } from "../util/misc.js"
 
-import { keyNames } from "./keynames"
+import { keyNames } from "./keynames.js"
 
 export let keyMap = {}
 
@@ -24,7 +24,7 @@ keyMap.pcDefault = {
   "Ctrl-G": "findNext", "Shift-Ctrl-G": "findPrev", "Shift-Ctrl-F": "replace", "Shift-Ctrl-R": "replaceAll",
   "Ctrl-[": "indentLess", "Ctrl-]": "indentMore",
   "Ctrl-U": "undoSelection", "Shift-Ctrl-U": "redoSelection", "Alt-U": "redoSelection",
-  fallthrough: "basic"
+  "fallthrough": "basic"
 }
 // Very basic readline/emacs-style bindings, which are standard on Mac.
 keyMap.emacsy = {
@@ -42,7 +42,7 @@ keyMap.macDefault = {
   "Cmd-G": "findNext", "Shift-Cmd-G": "findPrev", "Cmd-Alt-F": "replace", "Shift-Cmd-Alt-F": "replaceAll",
   "Cmd-[": "indentLess", "Cmd-]": "indentMore", "Cmd-Backspace": "delWrappedLineLeft", "Cmd-Delete": "delWrappedLineRight",
   "Cmd-U": "undoSelection", "Shift-Cmd-U": "redoSelection", "Ctrl-Up": "goDocStart", "Ctrl-Down": "goDocEnd",
-  fallthrough: ["basic", "emacsy"]
+  "fallthrough": ["basic", "emacsy"]
 }
 keyMap["default"] = mac ? keyMap.macDefault : keyMap.pcDefault
 
@@ -137,6 +137,9 @@ export function keyName(event, noShift) {
   if (presto && event.keyCode == 34 && event["char"]) return false
   let name = keyNames[event.keyCode]
   if (name == null || event.altGraphKey) return false
+  // Ctrl-ScrollLock has keyCode 3, same as Ctrl-Pause,
+  // so we'll use event.code when available (Chrome 48+, FF 38+, Safari 10.1+)
+  if (event.keyCode == 3 && event.code) name = event.code
   return addModifierNames(name, event, noShift)
 }
 
