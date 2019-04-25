@@ -46,13 +46,13 @@ import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.Message;
 import com.nexttypes.datatypes.ObjectInfo;
 import com.nexttypes.datatypes.PT;
-import com.nexttypes.datatypes.RenameResponse;
+import com.nexttypes.datatypes.RenameResult;
 import com.nexttypes.datatypes.Serial;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.URL;
-import com.nexttypes.datatypes.UpdateIdResponse;
-import com.nexttypes.datatypes.UpdateResponse;
+import com.nexttypes.datatypes.UpdateIdResult;
+import com.nexttypes.datatypes.UpdateResult;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.exceptions.ActionNotFoundException;
@@ -356,7 +356,7 @@ public class HTTPServlet extends HttpServlet {
 			case Action.RENAME:
 				ZonedDateTime adate = nextNode.rename(req.getType(), req.getNewName());
 				content = new Content(
-						new RenameResponse(strings.gts(req.getType(), KeyWords.TYPE_SUCCESSFULLY_RENAMED), adate));
+						new RenameResult(strings.gts(req.getType(), KeyWords.TYPE_SUCCESSFULLY_RENAMED), adate));
 				break;
 
 			case Action.INSERT:
@@ -373,12 +373,12 @@ public class HTTPServlet extends HttpServlet {
 				udate = nextNode.update(req.readObject(nextNode.getTypeFields(req.getType(),fields)),
 						req.getUDate());
 				content = new Content(
-						new UpdateResponse(strings.gts(req.getType(), KeyWords.OBJECT_SUCCESSFULLY_UPDATED), udate));
+						new UpdateResult(strings.gts(req.getType(), KeyWords.OBJECT_SUCCESSFULLY_UPDATED), udate));
 				break;
 
 			case Action.UPDATE_ID:
-				UpdateIdResponse updateIdResponse = nextNode.updateId(req.getType(), req.getId(), req.getNewId());
-				content = new Content(updateIdResponse);
+				UpdateIdResult updateIdResult = nextNode.updateId(req.getType(), req.getId(), req.getNewId());
+				content = new Content(updateIdResult);
 				break;
 
 			case Action.UPDATE_PASSWORD:

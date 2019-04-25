@@ -21,11 +21,11 @@ import java.time.ZonedDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nexttypes.system.KeyWords;
 
-public class UpdateIdResponse extends UpdateResponse {
+public class UpdateIdResult extends UpdateResult {
 
 	protected String newId;
 
-	public UpdateIdResponse(String message, ZonedDateTime udate, String newId) {
+	public UpdateIdResult(String message, ZonedDateTime udate, String newId) {
 		super(message, udate);
 		this.newId = newId;
 	}

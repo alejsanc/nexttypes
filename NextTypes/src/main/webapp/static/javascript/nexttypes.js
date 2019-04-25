@@ -601,7 +601,7 @@ function submitForm(event) {
 		}
 		
 		request.onload = function(event) {
-			var response = null;
+			var result = null;
 			var message = null;
 			var dialogType = null;
 			var textAlign = "center";
@@ -641,11 +641,11 @@ function submitForm(event) {
 						break;
 				
 					case ACTION.ALTER:
-						response = JSON.parse(request.responseText);
-						message = response["message"];
+						result = JSON.parse(request.responseText);
+						message = result["message"];
 						
-						if (response["altered"]) {
-							form.elements["adate"].value = response["adate"];
+						if (result["altered"]) {
+							form.elements["adate"].value = result["adate"];
 							
 							var inputs = form.querySelectorAll("input[name$=':name']");
 							for (let input of inputs) {
@@ -659,8 +659,8 @@ function submitForm(event) {
 						break;
 						
 					case ACTION.RENAME:
-						response = JSON.parse(request.responseText);
-						message = response["message"];
+						result = JSON.parse(request.responseText);
+						message = result["message"];
 						
 						callback = function() {
 							var pathname = pageURL.pathname;
@@ -673,19 +673,19 @@ function submitForm(event) {
 						break;
 							
 					case ACTION.UPDATE:
-						response = JSON.parse(request.responseText);
-						message = response["message"];
+						result = JSON.parse(request.responseText);
+						message = result["message"];
 						
-						form.elements["udate"].value = response["udate"];
+						form.elements["udate"].value = result["udate"];
 						
 						resetBinaryInputs(form);
 						
 						break;			
 							
 					case ACTION.UPDATE_ID:
-						response = JSON.parse(request.responseText);
-						message = response["message"];
-						var newId = response["new_id"];
+						result = JSON.parse(request.responseText);
+						message = result["message"];
+						var newId = result["new_id"];
 						
 						callback = function() {
 							var pathname = pageURL.pathname;
@@ -729,8 +729,8 @@ function submitForm(event) {
 						break;
 						
 					default:
-						response = JSON.parse(request.responseText);
-						message = response["message"]; 
+						result = JSON.parse(request.responseText);
+						message = result["message"]; 
 						break;
 				}
 			} else {
@@ -738,7 +738,7 @@ function submitForm(event) {
 				dialogType = DIALOG.ERROR;
 			}
 			
-			result(message, dialogType, textAlign, callback, acceptString);
+			resultDialog(message, dialogType, textAlign, callback, acceptString);
 		}
 		
 		request.open("POST", form.action, true);
@@ -815,7 +815,7 @@ function langNumber(number, lang) {
 	return number.toLocaleString(lang, { maximumFractionDigits:2 })
 }
 
-function result(message, type, textAlign, callback, acceptString) {
+function resultDialog(message, type, textAlign, callback, acceptString) {
 	var iconName = null;
 				
 	switch (type) {

@@ -51,7 +51,7 @@ import com.nexttypes.datatypes.Type;
 import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.TypeReference;
-import com.nexttypes.datatypes.UpdateIdResponse;
+import com.nexttypes.datatypes.UpdateIdResult;
 import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.Order;
@@ -303,7 +303,7 @@ public class Controller {
 		return nextNode.update(object, udate);
 	}
 
-	public UpdateIdResponse updateId(String id, String newId) {
+	public UpdateIdResult updateId(String id, String newId) {
 		return nextNode.updateId(type, id, newId);
 	}
 

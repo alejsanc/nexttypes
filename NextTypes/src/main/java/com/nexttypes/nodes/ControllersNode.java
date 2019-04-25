@@ -60,7 +60,7 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.datatypes.TypeReference;
 import com.nexttypes.datatypes.URL;
-import com.nexttypes.datatypes.UpdateIdResponse;
+import com.nexttypes.datatypes.UpdateIdResult;
 import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.ImportAction;
@@ -292,7 +292,7 @@ public class ControllersNode extends Node {
 	}
 
 	@Override
-	public UpdateIdResponse updateId(String type, String id, String newId) {
+	public UpdateIdResult updateId(String type, String id, String newId) {
 		return getController(type).updateId(id, newId);
 	}
 

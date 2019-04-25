@@ -94,7 +94,7 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.datatypes.TypeReference;
 import com.nexttypes.datatypes.URL;
-import com.nexttypes.datatypes.UpdateIdResponse;
+import com.nexttypes.datatypes.UpdateIdResult;
 import com.nexttypes.datatypes.Video;
 import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
@@ -1340,7 +1340,7 @@ public class PostgreSQLNode extends Node {
 	}
 
 	@Override
-	public UpdateIdResponse updateId(String type, String id, String newId) {
+	public UpdateIdResult updateId(String type, String id, String newId) {
 		StringBuilder sql = new StringBuilder("update \"" + type + "\" set id = ");
 		ArrayList<Object> parameters = new ArrayList<>();
 		ZonedDateTime udate = ZonedDateTime.now(ZoneOffset.UTC);
@@ -1365,7 +1365,7 @@ public class PostgreSQLNode extends Node {
 		
 		String message = strings.gts(type, KeyWords.OBJECT_ID_SUCCESSFULLY_UPDATED);
 		
-		return new UpdateIdResponse(message, udate, newId);
+		return new UpdateIdResult(message, udate, newId);
 	}
 
 	@Override

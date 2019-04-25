@@ -21,14 +21,14 @@ import java.time.ZonedDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nexttypes.system.KeyWords;
 
-public class RenameResponse {
+public class UpdateResult {
 
 	protected String message;
-	protected ZonedDateTime adate;
+	protected ZonedDateTime udate;
 
-	public RenameResponse(String message, ZonedDateTime adate) {
+	public UpdateResult(String message, ZonedDateTime udate) {
 		this.message = message;
-		this.adate = adate;
+		this.udate = udate;
 	}
 
 	@JsonProperty(KeyWords.MESSAGE)
@@ -36,8 +36,8 @@ public class RenameResponse {
 		return message;
 	}
 
-	@JsonProperty(KeyWords.ADATE)
-	public ZonedDateTime getADate() {
-		return adate;
+	@JsonProperty(KeyWords.UDATE)
+	public ZonedDateTime getUDate() {
+		return udate;
 	}
 }
