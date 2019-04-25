@@ -84,7 +84,7 @@ public class ProxyNode extends Node {
 	public Node getNextNode(String type) {
 		Node node = null;
 
-		if (type.equals(this.type)) {
+		if (type == null || type.equals(this.type)) {
 			node = nextNode;
 		} else {
 			node = controllersNode;
