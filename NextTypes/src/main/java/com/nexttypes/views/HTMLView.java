@@ -52,7 +52,6 @@ import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.HTML;
 import com.nexttypes.datatypes.HTML.InputGroup;
 import com.nexttypes.datatypes.HTMLFragment;
-import com.nexttypes.datatypes.Matrix;
 import com.nexttypes.datatypes.Menu;
 import com.nexttypes.datatypes.MenuSection;
 import com.nexttypes.datatypes.NXObject;
@@ -4115,8 +4114,6 @@ public class HTMLView extends View {
 
 			head.appendElement(HTML.SCRIPT)
 				.setAttribute(HTML.SRC, "/static/lib/tinymce/js/tinymce/tinymce.min.js");
-
-			head.appendElement(HTML.SCRIPT).setAttribute(HTML.SRC, "/static/javascript/texteditors.js");
 
 			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET)
 				.setAttribute(HTML.TYPE, "text/css")
