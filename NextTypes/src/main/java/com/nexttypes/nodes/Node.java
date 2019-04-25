@@ -58,6 +58,7 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.datatypes.TypeReference;
 import com.nexttypes.datatypes.URL;
+import com.nexttypes.datatypes.UpdateIdResponse;
 import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.ImportAction;
@@ -103,7 +104,7 @@ public abstract class Node extends Module {
 
 	public abstract ZonedDateTime update(String type, String id, byte[] data);
 
-	public abstract ZonedDateTime updateId(String type, String id, String newId);
+	public abstract UpdateIdResponse updateId(String type, String id, String newId);
 
 	public abstract ZonedDateTime updateField(String type, String id, String field, Object value);
 

@@ -51,6 +51,7 @@ import com.nexttypes.datatypes.Serial;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.URL;
+import com.nexttypes.datatypes.UpdateIdResponse;
 import com.nexttypes.datatypes.UpdateResponse;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
@@ -376,9 +377,8 @@ public class HTTPServlet extends HttpServlet {
 				break;
 
 			case Action.UPDATE_ID:
-				udate = nextNode.updateId(req.getType(), req.getId(), req.getNewId());
-				content = new Content(new UpdateResponse(
-						strings.gts(req.getType(), KeyWords.OBJECT_ID_SUCCESSFULLY_UPDATED), udate));
+				UpdateIdResponse updateIdResponse = nextNode.updateId(req.getType(), req.getId(), req.getNewId());
+				content = new Content(updateIdResponse);
 				break;
 
 			case Action.UPDATE_PASSWORD:

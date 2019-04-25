@@ -94,6 +94,7 @@ import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.datatypes.TypeInfo;
 import com.nexttypes.datatypes.TypeReference;
 import com.nexttypes.datatypes.URL;
+import com.nexttypes.datatypes.UpdateIdResponse;
 import com.nexttypes.datatypes.Video;
 import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
@@ -1339,10 +1340,32 @@ public class PostgreSQLNode extends Node {
 	}
 
 	@Override
-	public ZonedDateTime updateId(String type, String id, String newId) {
+	public UpdateIdResponse updateId(String type, String id, String newId) {
+		StringBuilder sql = new StringBuilder("update \"" + type + "\" set id = ");
+		ArrayList<Object> parameters = new ArrayList<>();
 		ZonedDateTime udate = ZonedDateTime.now(ZoneOffset.UTC);
-		execute("update \"" + type + "\" set id = ?, udate = ? where id = ?", newId, udate, id);
-		return udate;
+		
+		if (newId == null) {
+			sql.append(UUID_FUNCTION);
+		} else {
+			sql.append("?");
+			parameters.add(newId);
+		}
+		
+		sql.append(", udate = ? where id = ?");
+		parameters.add(udate);
+		parameters.add(id);
+				
+		if (newId == null) {
+			sql.append(" returning id");
+			newId = getString(sql.toString(), parameters.toArray());
+		} else {
+			execute(sql.toString(), parameters.toArray());
+		}		
+		
+		String message = strings.gts(type, KeyWords.OBJECT_ID_SUCCESSFULLY_UPDATED);
+		
+		return new UpdateIdResponse(message, udate, newId);
 	}
 
 	@Override

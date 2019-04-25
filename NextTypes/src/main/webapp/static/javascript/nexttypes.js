@@ -685,10 +685,10 @@ function submitForm(event) {
 					case ACTION.UPDATE_ID:
 						response = JSON.parse(request.responseText);
 						message = response["message"];
+						var newId = response["new_id"];
 						
 						callback = function() {
 							var pathname = pageURL.pathname;
-							var newId = form.elements["new_id"].value;
 							pageURL.pathname = pathname.substr(0, pathname.lastIndexOf("/") + 1) + newId;
 							pageURL.searchParams.set("form", "update");
 							window.location = pageURL;
