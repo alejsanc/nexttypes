@@ -257,13 +257,18 @@ public class Context {
 	
 	public HTML getTemplate(String file, String lang) {
 		HTML document = templates.get(file);
+		HTML documentClone = null;
 		
 		if (document == null) {
 			document = new HTML(getFile(KeyWords.TEMPLATES + "/" + file), lang);
 			templates.putIfAbsent(file, document);
+			documentClone = document.clone();
+		} else {
+			documentClone = document.clone();
+			documentClone.setLang(lang);
 		}
 
-		return document.clone();
+		return documentClone;
 	}
 	
 	public byte[] getDefault(String file) {

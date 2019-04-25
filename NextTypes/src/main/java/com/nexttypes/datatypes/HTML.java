@@ -165,7 +165,7 @@ public class HTML extends XML {
 		setDocType(DOCTYPE);
 	}
 
-	protected void setLang(String lang) {
+	public void setLang(String lang) {
 		getDocumentElement().setAttribute("lang", lang);
 		getDocumentElement().setAttribute("xml:lang", lang);
 	}

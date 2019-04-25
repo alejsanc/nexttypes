@@ -1080,6 +1080,7 @@ function tinymceEditor(textarea) {
 	    target: textarea,
 	   	browser_spellcheck: true,
 		entity_encoding: "raw",
+		language: pageLang,
 	    setup : function(editor){
 	    	 editor.on("change", function(e){
 	    		 editor.save();
