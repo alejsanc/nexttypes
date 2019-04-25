@@ -40,7 +40,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.http.client.utils.URIBuilder;
 
-import com.nexttypes.datatypes.AlterResult;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.Message;
@@ -349,8 +348,7 @@ public class HTTPServlet extends HttpServlet {
 				break;
 
 			case Action.ALTER:
-				AlterResult alterResult = nextNode.alter(req.readType(), req.getADate());
-				content = new Content(alterResult);
+				content = new Content(nextNode.alter(req.readType(), req.getADate()));
 				break;
 
 			case Action.RENAME:
@@ -372,8 +370,8 @@ public class HTTPServlet extends HttpServlet {
 						Action.UPDATE, KeyWords.FIELDS);
 				udate = nextNode.update(req.readObject(nextNode.getTypeFields(req.getType(),fields)),
 						req.getUDate());
-				content = new Content(
-						new UpdateResult(strings.gts(req.getType(), KeyWords.OBJECT_SUCCESSFULLY_UPDATED), udate));
+				content = new Content(new UpdateResult(strings.gts(req.getType(), 
+						KeyWords.OBJECT_SUCCESSFULLY_UPDATED), udate));
 				break;
 
 			case Action.UPDATE_ID:
