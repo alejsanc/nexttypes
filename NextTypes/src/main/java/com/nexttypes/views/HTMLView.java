@@ -18,14 +18,19 @@ package com.nexttypes.views;
 
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.Year;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2643,13 +2648,27 @@ public class HTMLView extends View {
 
 		return select;
 	}
+	
+	public Element dateOutput(Object value, String lang) {
+		DateTimeFormatter format = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+				.withLocale(new Locale(lang));
+		return document.createElement(HTML.TIME).appendText(((LocalDate)value).format(format));
+	}
+	
+	public Element timeOutput(Object value, String lang) {
+		DateTimeFormatter format = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+				.withLocale(new Locale(lang));
+		return document.createElement(HTML.TIME).appendText(((LocalTime)value).format(format));
+	}
+	
+	public Element dateTimeOutput(Object value, String lang) {
+		DateTimeFormatter format = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+				.withLocale(new Locale(lang));
+		return document.createElement(HTML.TIME).appendText(((LocalDateTime)value).format(format));
+	}
 
 	public Element time(Object time) {
-		Element timeElement = document.createElement(HTML.TIME);
-		if (time != null) {
-			timeElement.appendText(time);
-		}
-		return timeElement;
+		return document.createElement(HTML.TIME).appendText(time);
 	}
 
 	public Element colorOutput(Object color) {
@@ -3307,6 +3326,8 @@ public class HTMLView extends View {
 			case PT.FLOAT32:
 			case PT.FLOAT64:
 			case PT.NUMERIC:
+				fieldElement = numericOutput(value, lang);
+				break;
 			case PT.STRING:
 			case PT.TIMEZONE:
 				fieldElement = textOutput(value);
@@ -3315,9 +3336,13 @@ public class HTMLView extends View {
 				fieldElement = booleanOutput(value);
 				break;
 			case PT.DATE:
+				fieldElement = dateOutput(value, lang);
+				break;
 			case PT.TIME:
+				fieldElement = timeOutput(value, lang);
+				break;
 			case PT.DATETIME:
-				fieldElement = time(value);
+				fieldElement = dateTimeOutput(value, lang);
 				break;
 			case PT.COLOR:
 				fieldElement = colorOutput(value);
@@ -3447,6 +3472,11 @@ public class HTMLView extends View {
 
 	public Element videoFieldOutput(String type, String id, String field, Object value) {
 		return mediaFieldOutput(type, id, field, value, HTML.VIDEO);
+	}
+	
+	public Element numericOutput(Object value, String lang) {
+		NumberFormat format =  NumberFormat.getNumberInstance(new Locale(lang));
+		return document.createElement(HTML.SPAN).appendText(format.format(value));
 	}
 
 	public Element textOutput(Object value) {
