@@ -960,7 +960,7 @@ function loadSelectTable(element, url, component) {
 }
 
 function binaryInputChange(event) {
-	var input = event.target;
+	var input = event.currentTarget;
 	var binaryInput = input.parentNode;
 	var file = input.files[0];
 	
@@ -972,8 +972,8 @@ function binaryInputChange(event) {
 }
 
 function nullInputChange(event) {
-	var nullInput = event.target;
-	var binaryInput = event.target.parentNode.parentNode;
+	var nullInput = event.currentTarget;
+	var binaryInput = nullInput.parentNode.parentNode;
 	var input = binaryInput.querySelector("input.binary");
 	input.disabled = nullInput.checked;
 }
