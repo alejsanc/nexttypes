@@ -207,8 +207,8 @@ function addFormChangeEventListeners(rootElement) {
 function addSelectTableEventListeners(rootElement) {
 	addEventListeners(rootElement, "button.submit-form", "click", submitForm);
 	addEventListeners(rootElement, "button.export", "click", exportFunction);
-	addEventListeners(rootElement, "a.select-header-anchor", "click", selectTableHeaderAnchor);
-	addEventListeners(rootElement, "a.offset", "click", selectTableIndexAnchor);
+	addEventListeners(rootElement, "a.select-header-anchor", "click", selectHeaderAnchor);
+	addEventListeners(rootElement, "a.offset", "click", selectIndexAnchor);
 	addEventListeners(rootElement, "input.all-checkbox", "change", checkUncheckAll);
 	addEventListeners(rootElement, "input.item-checkbox", "change", uncheckAll);
 	addEventListeners(rootElement, "select.limit", "change", changeLimit);
@@ -905,7 +905,7 @@ function setFormInput(form, name, value) {
 	formInput.value = value;
 }
 
-function selectTableIndexAnchor(event) {
+function selectIndexAnchor(event) {
 	var anchor = event.currentTarget;
 	var component = anchor.getAttribute("data-component");
 	
@@ -915,7 +915,7 @@ function selectTableIndexAnchor(event) {
 	}
 }
 
-function selectTableHeaderAnchor(event) {
+function selectHeaderAnchor(event) {
 	event.preventDefault();
 	
 	var anchor = event.currentTarget;
