@@ -19,6 +19,8 @@ package com.nexttypes.datatypes;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
@@ -33,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.KeyWords;
-import com.nexttypes.system.Utils;
 
 @JsonPropertyOrder({ KeyWords.CONTENT, KeyWords.CONTENT_TYPE })
 public class File extends PGobject{
@@ -123,7 +124,7 @@ public class File extends PGobject{
 
 	@Override
 	public String getValue() {
-		return "(" + Utils.hexEncode(content) + "," + contentType + ")";
+		return "(" + hexEncode(content) + "," + contentType + ")";
 	}
 
 	@Override
@@ -131,7 +132,7 @@ public class File extends PGobject{
 		if (value != null && value.length() > 0) {
 			int token = value.indexOf(',');
 
-			content = Utils.hexDecode(value.substring(1, token));
+			content = hexDecode(value.substring(1, token));
 			contentType = value.substring(token + 1, value.length() - 1);
 		}
 	}
@@ -148,5 +149,29 @@ public class File extends PGobject{
 	@JsonProperty(KeyWords.CONTENT_TYPE)
 	public String getContentType() {
 		return contentType;
+	}
+	
+	public static String hexEncode(byte[] input) {
+		String output = null;
+
+		if (input != null && input.length > 0) {
+			output = "\\\\x" + Hex.encodeHexString(input);
+		}
+
+		return output;
+	}
+
+	public static byte[] hexDecode(String input) {
+		byte[] output = null;
+
+		if (input != null && input.length() > 0) {
+			try {
+				output = Hex.decodeHex(input.substring(4, input.length() - 1).toCharArray());
+			} catch (DecoderException e) {
+				throw new NXException(e);
+			}
+		}
+
+		return output;
 	}
 }

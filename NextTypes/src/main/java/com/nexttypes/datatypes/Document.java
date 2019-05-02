@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.system.KeyWords;
-import com.nexttypes.system.Utils;
 
 @JsonPropertyOrder({ KeyWords.CONTENT, KeyWords.TEXT, KeyWords.CONTENT_TYPE })
 public class Document extends File {
@@ -81,7 +80,7 @@ public class Document extends File {
 	public String getValue() {
 		String textParameter = "\"" + text.replace("\"", "\"\"") + "\"";
 
-		return "(" + Utils.hexEncode(content) + "," + textParameter + "," + contentType + ")";
+		return "(" + hexEncode(content) + "," + textParameter + "," + contentType + ")";
 	}
 
 	@Override
@@ -90,7 +89,7 @@ public class Document extends File {
 			int token1 = value.indexOf(',');
 			int token2 = value.lastIndexOf(',');
 
-			content = Utils.hexDecode(value.substring(1, token1));
+			content = hexDecode(value.substring(1, token1));
 
 			if (value.charAt(token1 + 1) == '"') {
 				text = value.substring(token1 + 2, token2 - 1);

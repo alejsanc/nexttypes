@@ -33,8 +33,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Node;
@@ -123,30 +121,6 @@ public class Utils {
 		return output;
 	}
 
-	public static String hexEncode(byte[] input) {
-		String output = null;
-
-		if (input != null && input.length > 0) {
-			output = "\\\\x" + Hex.encodeHexString(input);
-		}
-
-		return output;
-	}
-
-	public static byte[] hexDecode(String input) {
-		byte[] output = null;
-
-		if (input != null && input.length() > 0) {
-			try {
-				output = Hex.decodeHex(input.substring(4, input.length() - 1).toCharArray());
-			} catch (DecoderException e) {
-				throw new NXException(e);
-			}
-		}
-
-		return output;
-	}
-	
 	public static String[] split(String input) {
 		return split(input, ",");
 	}

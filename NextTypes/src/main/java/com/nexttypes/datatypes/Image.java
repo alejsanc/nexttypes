@@ -31,7 +31,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.nexttypes.datatypes.JSON.JSONObject;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.KeyWords;
-import com.nexttypes.system.Utils;
 
 @JsonPropertyOrder({ KeyWords.CONTENT, KeyWords.THUMBNAIL, KeyWords.CONTENT_TYPE })
 public class Image extends File {
@@ -131,7 +130,7 @@ public class Image extends File {
 
 	@Override
 	public String getValue() {
-		return "(" + Utils.hexEncode(content) + "," + Utils.hexEncode(thumbnail) + "," + contentType + ")";
+		return "(" + hexEncode(content) + "," + hexEncode(thumbnail) + "," + contentType + ")";
 	}
 
 	@Override
@@ -140,8 +139,8 @@ public class Image extends File {
 			int token1 = value.indexOf(',');
 			int token2 = value.lastIndexOf(',');
 
-			content = Utils.hexDecode(value.substring(1, token1));
-			thumbnail = Utils.hexDecode(value.substring(token1 + 1, token2));
+			content = hexDecode(value.substring(1, token1));
+			thumbnail = hexDecode(value.substring(token1 + 1, token2));
 			contentType = value.substring(token2 + 1, value.length() - 1);
 		}
 	}
