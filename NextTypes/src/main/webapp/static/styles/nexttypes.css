@@ -19,6 +19,7 @@ main {
 	float: right;
 	width: 81%;
 	vertical-align: top;
+	font-size: 90%;
 }
 
 footer {
@@ -48,6 +49,8 @@ article h2:before { content: counter(h2counter) " - "; }
 article h3:before {	content: counter(h2counter) "." counter(h3counter) " - "; }
 article h4:before {	content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " - "; }
 article h5:before {	content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " - " }
+
+article h2.home:before { content: ""}
 
 a {
 	color: #0000e1;
