@@ -55,7 +55,7 @@ public class AlterIndexResult {
 	}
 
 	@JsonProperty(KeyWords.FIELDS_ALTERED)
-	public boolean arefieldsAltered() {
+	public boolean areFieldsAltered() {
 		return fields;
 	}
 }

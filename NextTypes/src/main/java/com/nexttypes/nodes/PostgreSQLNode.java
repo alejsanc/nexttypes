@@ -1120,7 +1120,7 @@ public class PostgreSQLNode extends Node {
 			result.setFieldsAltered();
 		}
 
-		if (result.isModeAltered() || result.arefieldsAltered()) {
+		if (result.isModeAltered() || result.areFieldsAltered()) {
 			dropIndex(type, index, false);
 			addIndex(type, index, typeIndex, false);
 		}
