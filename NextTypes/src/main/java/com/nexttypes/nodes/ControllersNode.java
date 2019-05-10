@@ -695,12 +695,23 @@ public class ControllersNode extends Node {
 	}
 	
 	@Override
+	public int execute(StringBuilder sql, Integer expectedRows, Object... parameters) {
+		return nextNode.execute(sql, expectedRows, parameters);
+	}
+	
+	@Override
 	public int execute(StringBuilder sql, Integer expectedRows, ArrayList<Object> parameters) {
 		return nextNode.execute(sql, expectedRows, parameters);
 	}
 
 	@Override
 	public int execute(String sql, boolean useSavepoint, Integer expectedRows, Object... parameters) {
+		return nextNode.execute(sql, useSavepoint, expectedRows, parameters);
+	}
+	
+	@Override
+	public int execute(StringBuilder sql, boolean useSavepoint, Integer expectedRows,
+			Object... parameters) {
 		return nextNode.execute(sql, useSavepoint, expectedRows, parameters);
 	}
 	

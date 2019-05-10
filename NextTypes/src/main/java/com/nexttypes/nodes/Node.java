@@ -308,9 +308,15 @@ public abstract class Node extends Module {
 
 	public abstract int execute(String sql, Integer expectedRows, Object... parameters);
 	
-	public abstract int execute(StringBuilder sql, Integer expectedRows, ArrayList<Object> parameters);
+	public abstract int execute(StringBuilder sql, Integer expectedRows, Object... parameters);
+	
+	public abstract int execute(StringBuilder sql, Integer expectedRows, 
+			ArrayList<Object> parameters);
 
 	public abstract int execute(String sql, boolean useSavepoint, Integer expectedRows, 
+			Object... parameters);
+	
+	public abstract int execute(StringBuilder sql, boolean useSavepoint, Integer expectedRows,
 			Object... parameters);
 	
 	public abstract int execute(StringBuilder sql, boolean useSavepoint, Integer expectedRows,

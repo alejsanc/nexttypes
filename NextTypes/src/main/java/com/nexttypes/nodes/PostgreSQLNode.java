@@ -2793,8 +2793,19 @@ public class PostgreSQLNode extends Node {
 	}
 	
 	@Override
+	public int execute(StringBuilder sql, Integer expectedRows, Object... parameters) {
+		return execute(sql.toString(), expectedRows, parameters);
+	}
+	
+	@Override
 	public int execute(StringBuilder sql, Integer expectedRows, ArrayList<Object> parameters) {
 		return execute(sql.toString(), expectedRows, parameters.toArray());
+	}
+	
+	@Override
+	public int execute(StringBuilder sql, boolean useSavepoint, Integer expectedRows,
+			Object... parameters) {
+		return execute(sql.toString(), useSavepoint, expectedRows, parameters);
 	}
 	
 	@Override
