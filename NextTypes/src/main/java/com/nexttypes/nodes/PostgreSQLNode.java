@@ -453,7 +453,7 @@ public class PostgreSQLNode extends Node {
 		sql.deleteCharAt(sql.length() - 1).append(" from \"" + type + "\" where id=?");
 		parameters.add(id);
 
-		return getTuple(sql.toString(), parameters.toArray());
+		return getTuple(sql, parameters);
 	}
 
 	@Override
@@ -502,7 +502,7 @@ public class PostgreSQLNode extends Node {
 
 		sql.append(")");
 
-		execute(sql.toString());
+		execute(sql);
 
 		String read_user = settings.getString(NodeMode.READ + "_" + KeyWords.USER);
 		String write_user = settings.getString(NodeMode.WRITE + "_" + KeyWords.USER);
@@ -564,7 +564,7 @@ public class PostgreSQLNode extends Node {
 			sql.append(" not null");
 		}
 
-		execute(sql.toString());
+		execute(sql);
 
 		setFieldType(type, field, fieldType);
 
@@ -636,7 +636,7 @@ public class PostgreSQLNode extends Node {
 
 		sql.delete(sql.length() - fieldSeparator.length(), sql.length()).append(afterFields);
 
-		execute(sql.toString());
+		execute(sql);
 
 		if (single) {
 			adate = updateTypeDates(type);
@@ -1057,7 +1057,7 @@ public class PostgreSQLNode extends Node {
 			sql.delete(sql.length() - 6, sql.length());
 			sql.append(" order by type, id");
 
-			Tuple[] references = query(sql.toString(), parameters.toArray());
+			Tuple[] references = query(sql, parameters);
 
 			LinkedHashMap<String, List<String>> referencesByType = Arrays.stream(references)
 					.collect(Collectors.groupingBy(reference -> reference.getString(KeyWords.TYPE), LinkedHashMap::new,
@@ -1256,7 +1256,7 @@ public class PostgreSQLNode extends Node {
 
 		sql.append(sqlFields.toString() + sqlValues.toString());
 
-		execute(sql.toString(), true, 1, parameters.toArray());
+		execute(sql, true, 1, parameters);
 
 		return udate;
 	}
@@ -1334,7 +1334,7 @@ public class PostgreSQLNode extends Node {
 		sql.deleteCharAt(sql.length() - 1).append(" where id = ?");
 		parameters.add(id);
 
-		execute(sql.toString(), true, 1, parameters.toArray(new Object[] {}));
+		execute(sql, true, 1, parameters);
 
 		return objectUDate;
 	}
@@ -1360,7 +1360,7 @@ public class PostgreSQLNode extends Node {
 			sql.append(" returning id");
 			newId = getString(sql.toString(), parameters.toArray());
 		} else {
-			execute(sql.toString(), parameters.toArray());
+			execute(sql, parameters);
 		}		
 		
 		String message = strings.gts(type, KeyWords.OBJECT_ID_SUCCESSFULLY_UPDATED);
@@ -1826,7 +1826,7 @@ public class PostgreSQLNode extends Node {
 			sql.append(" order by name, id");
 		}	
 		
-		Long count = count(sql.toString(), parameters.toArray());
+		Long count = count(sql, parameters);
 		
 		if (offset != null) {
 			sql.append(" offset ?");
@@ -1840,7 +1840,7 @@ public class PostgreSQLNode extends Node {
 		
 		LinkedHashMap<String, String> items = new LinkedHashMap<String, String>();
 
-		Tuple[] tuples = query(sql.toString(), parameters.toArray());
+		Tuple[] tuples = query(sql, parameters);
 		
 		for (Tuple tuple : tuples) {
 			String id = tuple.getString(KeyWords.ID);
@@ -2111,7 +2111,7 @@ public class PostgreSQLNode extends Node {
 
 		sql.deleteCharAt(sql.length() - 1);
 
-		execute(sql.toString());
+		execute(sql);
 	}
 
 	@Override
@@ -2268,7 +2268,7 @@ public class PostgreSQLNode extends Node {
 
 		sql.append(" from \"" + type + "\" where id = ?");
 
-		Tuple tuple = getTuple(sql.toString(), id);
+		Tuple tuple = getTuple(sql, id);
 		if (tuple == null) {
 			throw new ObjectNotFoundException(type, id);
 		}
@@ -2745,6 +2745,16 @@ public class PostgreSQLNode extends Node {
 	public Long count(String type) {
 		return getInt64("select count(*) from \"" + type + "\"");
 	}
+	
+	@Override
+	public Long count(StringBuilder sql, Object... parameters) {
+		return count(sql.toString(), parameters);
+	}
+	
+	@Override
+	public Long count(StringBuilder sql, ArrayList<Object> parameters) {
+		return count(sql.toString(), parameters.toArray());
+	}
 
 	@Override
 	public Long count(String sql, Object... parameters) {
@@ -2766,10 +2776,31 @@ public class PostgreSQLNode extends Node {
 	public int execute(String sql, Object... parameters) {
 		return execute(sql, false, null, parameters);
 	}
+	
+	@Override
+	public int execute(StringBuilder sql, Object... parameters) {
+		return execute(sql.toString(), parameters);
+	}
+	
+	@Override
+	public int execute(StringBuilder sql, ArrayList<Object> parameters) {
+		return execute(sql.toString(), parameters.toArray());
+	}
 
 	@Override
 	public int execute(String sql, Integer expectedRows, Object... parameters) {
 		return execute(sql, true, expectedRows, parameters);
+	}
+	
+	@Override
+	public int execute(StringBuilder sql, Integer expectedRows, ArrayList<Object> parameters) {
+		return execute(sql.toString(), expectedRows, parameters.toArray());
+	}
+	
+	@Override
+	public int execute(StringBuilder sql, boolean useSavepoint, Integer expectedRows,
+			ArrayList<Object> parameters) {
+		return execute(sql.toString(), useSavepoint, expectedRows, parameters.toArray());
 	}
 
 	@Override
@@ -3074,10 +3105,30 @@ public class PostgreSQLNode extends Node {
 		Tuple[] tuples = query(sql, parameters);
 		return tuples.length == 1 ? tuples[0] : null;
 	}
+	
+	@Override
+	public Tuple getTuple(StringBuilder sql, Object... parameters) {
+		return getTuple(sql.toString(), parameters);
+	}
+	
+	@Override
+	public Tuple getTuple(StringBuilder sql, ArrayList<Object> parameters) {
+		return getTuple(sql.toString(), parameters.toArray());
+	}
 
 	@Override
 	public Matrix getMatrix(String sql, String[] axes, Object... parameters) {
 		return new Matrix(query(sql, parameters), axes);
+	}
+	
+	@Override
+	public Tuple[] query(StringBuilder sql, ArrayList<Object> parameters) {
+		return query(sql.toString(), parameters.toArray());
+	}
+	
+	@Override
+	public Tuple[] query(StringBuilder sql, Object... parameters) {
+		return query(sql.toString(), parameters);
 	}
 
 	@Override
@@ -3633,7 +3684,7 @@ public class PostgreSQLNode extends Node {
 
 			sql.append(whereSQL);
 			
-			count = count(sql.toString(), parameters.toArray());
+			count = count(sql, parameters);
 			
 			if (count > 0) { 
 
@@ -3669,7 +3720,7 @@ public class PostgreSQLNode extends Node {
 
 			sql.append(whereSQL);
 			
-			count = count(sql.toString(), parameters.toArray());
+			count = count(sql, parameters);
 
 			if (count > 0) {
 				if (order != null) {
@@ -3836,7 +3887,7 @@ public class PostgreSQLNode extends Node {
 			sql = new StringBuilder("select \"" + type + "\".id,\"" + type + "\".cdate,\"" + type + "\".udate,\"" + type
 					+ "\".backup" + fieldsSQL + " from \"" + type + "\"" + joinSQL + whereSQL);
 
-			count = count(sql.toString(), parameters.toArray());
+			count = count(sql, parameters);
 
 			if (count > 0) {
 			

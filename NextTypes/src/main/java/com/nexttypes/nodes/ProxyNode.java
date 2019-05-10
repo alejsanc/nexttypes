@@ -586,9 +586,29 @@ public class ProxyNode extends Node {
 	public Long count(String sql, Object... parameters) {
 		return nextNode.count(sql, parameters);
 	}
+	
+	@Override
+	public Long count(StringBuilder sql, Object... parameters) {
+		return nextNode.count(sql, parameters);
+	}
+	
+	@Override
+	public Long count(StringBuilder sql, ArrayList<Object> parameters) {
+		return nextNode.count(sql, parameters);
+	}
 
 	@Override
 	public int execute(String sql, Object... parameters) {
+		return nextNode.execute(sql, parameters);
+	}
+	
+	@Override
+	public int execute(StringBuilder sql, Object... parameters) {
+		return nextNode.execute(sql, parameters);
+	}
+	
+	@Override
+	public int execute(StringBuilder sql, ArrayList<Object> parameters) {
 		return nextNode.execute(sql, parameters);
 	}
 
@@ -596,9 +616,20 @@ public class ProxyNode extends Node {
 	public int execute(String sql, Integer expectedRows, Object... parameters) {
 		return nextNode.execute(sql, expectedRows, parameters);
 	}
+	
+	@Override
+	public int execute(StringBuilder sql, Integer expectedRows, ArrayList<Object> parameters) {
+		return nextNode.execute(sql, expectedRows, parameters);
+	}
 
 	@Override
 	public int execute(String sql, boolean useSavepoint, Integer expectedRows, Object... parameters) {
+		return nextNode.execute(sql, useSavepoint, expectedRows, parameters);
+	}
+	
+	@Override
+	public int execute(StringBuilder sql, boolean useSavepoint, Integer expectedRows,
+			ArrayList<Object> parameters) {
 		return nextNode.execute(sql, useSavepoint, expectedRows, parameters);
 	}
 
@@ -888,10 +919,30 @@ public class ProxyNode extends Node {
 	public Tuple getTuple(String sql, Object... parameters) {
 		return nextNode.getTuple(sql, parameters);
 	}
+	
+	@Override
+	public Tuple getTuple(StringBuilder sql, Object... parameters) {
+		return nextNode.getTuple(sql, parameters);
+	}
+	
+	@Override
+	public Tuple getTuple(StringBuilder sql, ArrayList<Object> parameters) {
+		return nextNode.getTuple(sql, parameters);
+	}
 
 	@Override
 	public Matrix getMatrix(String sql, String[] axes, Object... parameters) {
 		return nextNode.getMatrix(sql, axes, parameters);
+	}
+	
+	@Override
+	public Tuple[] query(StringBuilder sql, ArrayList<Object> parameters) {
+		return nextNode.query(sql, parameters);
+	}
+	
+	@Override
+	public Tuple[] query(StringBuilder sql, Object... parameters) {
+		return nextNode.query(sql, parameters);
 	}
 
 	@Override

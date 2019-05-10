@@ -95,7 +95,7 @@ public class ArticleView extends HTMLView {
 			sql.append(" and " + typeFilters);
 		}
 
-		Tuple tuple = nextNode.getTuple(sql.toString(), lang, lang, id);
+		Tuple tuple = nextNode.getTuple(sql, lang, lang, id);
 
 		loadTemplate(type, lang, view);
 		
@@ -236,7 +236,7 @@ public class ArticleView extends HTMLView {
 			
 			sql.append(" order by a.cdate desc limit 10");
 				
-			Tuple[] tuples = nextNode.query(sql.toString(), parameters.toArray());
+			Tuple[] tuples = nextNode.query(sql, parameters);
 			RSS rss = new RSS(title, strings.gts(type, KeyWords.DESCRIPTION), type, lang,
 					request.getURLRoot(), tuples);
 			content = new Content(rss.toString(), Format.RSS);

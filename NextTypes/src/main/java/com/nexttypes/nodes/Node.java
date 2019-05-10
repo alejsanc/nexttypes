@@ -291,16 +291,30 @@ public abstract class Node extends Module {
 	public abstract Long count(String type);
 
 	public abstract Long count(String sql, Object... parameters);
+	
+	public abstract Long count(StringBuilder sql, Object... parameters);
+	
+	public abstract Long count(StringBuilder sql, ArrayList<Object> parameters);
 
 	public abstract boolean hasObjects(String type);
 
 	public abstract boolean hasNullValues(String type, String field);
-
+	
 	public abstract int execute(String sql, Object... parameters);
+	
+	public abstract int execute(StringBuilder sql, Object... parameters);
+	
+	public abstract int execute(StringBuilder sql, ArrayList<Object> parameters);
 
 	public abstract int execute(String sql, Integer expectedRows, Object... parameters);
+	
+	public abstract int execute(StringBuilder sql, Integer expectedRows, ArrayList<Object> parameters);
 
-	public abstract int execute(String sql, boolean useSavepoint, Integer expectedRows, Object... parameters);
+	public abstract int execute(String sql, boolean useSavepoint, Integer expectedRows, 
+			Object... parameters);
+	
+	public abstract int execute(StringBuilder sql, boolean useSavepoint, Integer expectedRows,
+			ArrayList<Object> parameters);
 
 	public abstract TypesStream exportTypes(String[] types, boolean includeObjects);
 
@@ -415,10 +429,18 @@ public abstract class Node extends Module {
 	public abstract <T> T[] getArray(String sql, Class<T> type, Object... parameters);
 
 	public abstract Tuple getTuple(String sql, Object... parameters);
+	
+	public abstract Tuple getTuple(StringBuilder sql, Object... parameters);
+	
+	public abstract Tuple getTuple(StringBuilder sql, ArrayList<Object> parameters);
 
 	public abstract Matrix getMatrix(String sql, String[] axes, Object... parameters);
 
 	public abstract Tuple[] query(String sql, Object... parameters);
+	
+	public abstract Tuple[] query(StringBuilder sql, Object... parameters);
+	
+	public abstract Tuple[] query(StringBuilder sql, ArrayList<Object> parameters);
 
 	public abstract <T> T[] query(String sql, Class<T> type, Object... parameters);
 
