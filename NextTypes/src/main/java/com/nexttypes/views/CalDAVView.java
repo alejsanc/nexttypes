@@ -171,11 +171,12 @@ public class CalDAVView extends WebDAVView {
 		} 
 
 		if (depth == DavConstants.DEPTH_1) {
-			String sql = typeSettings.gts(type, Constants.ICALENDAR_SELECT);
+			String sql = "select id, udate, summary, description, start_date, end_date"
+					+ " from (" + typeSettings.gts(type, Constants.ICALENDAR_SELECT) + ") as events";
 			Object[] parameters = null;
 
 			if (objects.size() > 0) {
-				sql += " where type.id in(?)";
+				sql += " where id in(?)";
 				parameters = new Object[] { objects.toArray() };
 			}
 
