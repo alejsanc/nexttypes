@@ -259,7 +259,7 @@ public class PostgreSQLNode extends Node {
 							+ " when i.indkey = '0' then"
 							+ " cast(array(select array_to_string(regexp_matches(i.indexprs, ':varattno (.)', 'g'),'')) as int[])"
 							+ " else i.indkey"
-						+ " end" + " )) as fields"
+						+ " end" + " ))::text[] as fields"
 
 			+ " from"
 				+ " pg_index i"
@@ -2060,7 +2060,7 @@ public class PostgreSQLNode extends Node {
 
 	@Override
 	public LinkedHashMap<String, TypeIndex> getTypeIndexes(String type) {
-
+		
 		LinkedHashMap<String, TypeIndex> indexes = null;
 
 		if (cacheEnabled) {

@@ -18,7 +18,7 @@ package com.nexttypes.views;
 
 import java.util.LinkedHashMap;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.Filter;

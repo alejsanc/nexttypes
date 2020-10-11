@@ -19,7 +19,7 @@ package com.nexttypes.datatypes;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.w3c.dom.Document;
 
 public class HTML extends XML {

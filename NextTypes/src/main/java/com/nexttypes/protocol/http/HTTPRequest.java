@@ -34,7 +34,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.nexttypes.datatypes.ActionReference;
 import com.nexttypes.datatypes.Audio;

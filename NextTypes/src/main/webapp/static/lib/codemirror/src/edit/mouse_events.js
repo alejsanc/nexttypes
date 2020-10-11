@@ -7,7 +7,7 @@ import { posFromMouse } from "../measurement/position_measurement.js"
 import { eventInWidget } from "../measurement/widgets.js"
 import { normalizeSelection, Range, Selection } from "../model/selection.js"
 import { extendRange, extendSelection, replaceOneSelection, setSelection } from "../model/selection_updates.js"
-import { captureRightClick, chromeOS, ie, ie_version, mac, webkit } from "../util/browser.js"
+import { captureRightClick, chromeOS, ie, ie_version, mac, webkit, safari } from "../util/browser.js"
 import { getOrder, getBidiPartAt } from "../util/bidi.js"
 import { activeElt } from "../util/dom.js"
 import { e_button, e_defaultPrevented, e_preventDefault, e_target, hasHandler, off, on, signal, signalDOMEvent } from "../util/event.js"
@@ -158,8 +158,8 @@ function leftButtonStartDrag(cm, event, pos, behavior) {
       if (!behavior.addNew)
         extendSelection(cm.doc, pos, null, null, behavior.extend)
       // Work around unexplainable focus problem in IE9 (#2127) and Chrome (#3081)
-      if (webkit || ie && ie_version == 9)
-        setTimeout(() => {display.wrapper.ownerDocument.body.focus(); display.input.focus()}, 20)
+      if ((webkit && !safari) || ie && ie_version == 9)
+        setTimeout(() => {display.wrapper.ownerDocument.body.focus({preventScroll: true}); display.input.focus()}, 20)
       else
         display.input.focus()
     }
@@ -305,8 +305,13 @@ function leftButtonSelect(cm, event, start, behavior) {
   function done(e) {
     cm.state.selectingText = false
     counter = Infinity
-    e_preventDefault(e)
-    display.input.focus()
+    // If e is null or undefined we interpret this as someone trying
+    // to explicitly cancel the selection rather than the user
+    // letting go of the mouse button.
+    if (e) {
+      e_preventDefault(e)
+      display.input.focus()
+    }
     off(display.wrapper.ownerDocument, "mousemove", move)
     off(display.wrapper.ownerDocument, "mouseup", up)
     doc.history.lastSelOrigin = null
@@ -375,12 +380,12 @@ function gutterEvent(cm, e, type, prevent) {
   if (mY > lineBox.bottom || !hasHandler(cm, type)) return e_defaultPrevented(e)
   mY -= lineBox.top - display.viewOffset
 
-  for (let i = 0; i < cm.options.gutters.length; ++i) {
+  for (let i = 0; i < cm.display.gutterSpecs.length; ++i) {
     let g = display.gutters.childNodes[i]
     if (g && g.getBoundingClientRect().right >= mX) {
       let line = lineAtHeight(cm.doc, mY)
-      let gutter = cm.options.gutters[i]
-      signal(cm, type, cm, line, gutter, e)
+      let gutter = cm.display.gutterSpecs[i]
+      signal(cm, type, cm, line, gutter.className, e)
       return e_defaultPrevented(e)
     }
   }
