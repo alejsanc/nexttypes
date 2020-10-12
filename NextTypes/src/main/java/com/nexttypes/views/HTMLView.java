@@ -3845,10 +3845,10 @@ public class HTMLView extends View {
 		images();
 
 		Content content = new Content(document.toString(), Format.XHTML);
-		/*content.setHeader(HTTPHeader.CONTENT_SECURITY_POLICY,
+		content.setHeader(HTTPHeader.CONTENT_SECURITY_POLICY,
 				typeSettings.gts(type, KeyWords.CONTENT_SECURITY_POLICY));
 		content.setHeader(HTTPHeader.REFERRER_POLICY,
-				typeSettings.gts(type, KeyWords.REFERRER_POLICY));*/
+				typeSettings.gts(type, KeyWords.REFERRER_POLICY));
 
 		return content;
 	}
@@ -4139,15 +4139,15 @@ public class HTMLView extends View {
 
 	public void textEditors() {
 		if (head != null) {
-			/*head.appendElement(HTML.SCRIPT)
-				.setAttribute(HTML.SRC, "/static/lib/codemirror/lib/codemirror.js");*/
+			head.appendElement(HTML.SCRIPT)
+				.setAttribute(HTML.SRC, "/static/lib/codemirror/lib/codemirror.js");
 
 			head.appendElement(HTML.SCRIPT)
 				.setAttribute(HTML.SRC, "/static/lib/tinymce/js/tinymce/tinymce.min.js");
 
-			/*head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET)
+			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET)
 				.setAttribute(HTML.TYPE, "text/css")
-				.setAttribute(HTML.HREF, "/static/lib/codemirror/lib/codemirror.css");*/
+				.setAttribute(HTML.HREF, "/static/lib/codemirror/lib/codemirror.css");
 		}
 	}
 
