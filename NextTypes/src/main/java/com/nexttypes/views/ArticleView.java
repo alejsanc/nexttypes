@@ -42,12 +42,9 @@ import com.nexttypes.system.KeyWords;
 public class ArticleView extends HTMLView {
 
 	public static final String ARTICLE = "article";
-	public static final String ARTICLE_DISCUSSION = "article_discussion";
-	public static final String[] ARTICLE_DISCUSSION_FIELDS = new String[] {"title", "link"};
 	public static final String AUTHORS = "authors";
 	public static final String CATEGORY = "category";
 	public static final String CATEGORIES = "categories";
-	public static final String SHOW_ARTICLE_DISCUSSIONS = "show_article_discussions";
 	public static final String SHOW_CATEGORIES = "show_categories";
 	public static final String SHOW_AUTHORS = "show_authors";
 	public static final String PUBLISHER = "publisher";
@@ -163,41 +160,7 @@ public class ArticleView extends HTMLView {
 				main.appendElement(categoriesListOutput(type, categories, lang, view));
 			}
 		}
-		
-		Boolean showArticleDiscussions = typeSettings.getTypeBoolean(type, SHOW_ARTICLE_DISCUSSIONS);
-		
-		if (showArticleDiscussions) {
-			
-			FieldReference articleReference = new FieldReference(ARTICLE, ARTICLE, id);
-			
-			main.appendElement(HTML.H2).appendText(strings.getReferenceName(ARTICLE_DISCUSSION,
-					articleReference));
-			
-			String discussionsSQL =
-					"select"
-						+ " title,"
-						+ " link"
-						
-					+ " from"
-						+ " article_discussion"
-						
-					+ " where"
-						+ " article = ?"
-						+ " and published = true";
-			
-			Tuple[] discussions = nextNode.query(discussionsSQL, id);
-		
-			for (Tuple discussion : discussions) {
-				URL link = discussion.getURL(KeyWords.LINK);
-			
-				main.appendElement(HTML.P).appendElement(anchor(link.getHost() + " - "
-					+ discussion.getString(HTML.TITLE), link));
-			}
-
-			main.appendElement(insertForm(ARTICLE_DISCUSSION, ARTICLE_DISCUSSION_FIELDS, lang, view,
-				articleReference, false, false, false, false, false));
-		}
-		
+				
 		String image = request.getURLRoot() + imageURL(tuple);
 				
 		String publisherLogo = request.getURLRoot() + typeSettings.gts(type, KeyWords.LOGO);
