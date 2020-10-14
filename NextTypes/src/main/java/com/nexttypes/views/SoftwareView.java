@@ -94,7 +94,7 @@ public class SoftwareView extends HTMLView {
 		String lastRelease = strings.getString(LAST_RELEASE);
 		if (version != null) {
 			article.appendElement(fieldOutput(lastRelease, anchor(version, tuple.getString("link")), " ",
-					anchor(strings.getString(ALL_RELEASES),
+					anchor(" - " + strings.getString(ALL_RELEASES),
 							url("software_release", lang, view) + "&ref=software:" + id + "&order=version:desc")));
 		} else {
 			article.appendElement(fieldOutput(lastRelease, strings.getString(NOT_RELEASED)));
