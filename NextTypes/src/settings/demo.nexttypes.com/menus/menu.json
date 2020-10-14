@@ -14,9 +14,6 @@
 		"text" : "installation",
 		"href" : "/article/installation"
 	}, {
-		"text" : "api",
-		"href" : "/static/doc/index.html"
-	}, {
 		"text" : "contact",
 		"href" : "/user"
 	} ]
