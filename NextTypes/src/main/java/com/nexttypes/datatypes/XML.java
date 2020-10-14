@@ -70,8 +70,7 @@ public class XML extends PGobject {
 	protected String lang;
 	protected LinkedHashMap<String, String[]> allowedTags;
 	protected boolean xmlDeclaration = true;
-	protected boolean indentation = true;
-
+	
 	public XML() {
 		type = PT.XML;
 
@@ -198,10 +197,6 @@ public class XML extends PGobject {
 
 	public void setXMLDeclaration(boolean xmlDeclaration) {
 		this.xmlDeclaration = xmlDeclaration;
-	}
-
-	public void setIndentation(boolean indentation) {
-		this.indentation = indentation;
 	}
 
 	public void setDocType(String docType) {
@@ -334,10 +329,6 @@ public class XML extends PGobject {
 
 			if (docType != null) {
 				value.append(docType + "\n");
-			}
-
-			if (indentation) {
-				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			}
 
 			StreamResult result = new StreamResult(new StringWriter());
