@@ -18,6 +18,7 @@ package com.nexttypes.enums;
 
 public enum Format {
 	BINARY("binary", "application/octet-stream", "bin"),
+	HTML("html", "text/html", "html"),
 	ICALENDAR("icalendar", "text/calendar", "ics"),
 	IMAGES("images", "image/*", "*"),
 	JAVASCRIPT("javascript", "application/javascript", "js"),

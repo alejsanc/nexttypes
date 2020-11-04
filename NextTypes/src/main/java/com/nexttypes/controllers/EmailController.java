@@ -26,12 +26,14 @@ import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 
 import com.nexttypes.datatypes.Auth;
+import com.nexttypes.datatypes.HTML;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.URL;
 import com.nexttypes.enums.Format;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.system.KeyWords;
+import com.nexttypes.system.Constants;
 import com.nexttypes.system.Controller;
 
 public class EmailController extends Controller {
@@ -58,7 +60,8 @@ public class EmailController extends Controller {
 			message.setFrom(object.getEmail(FROM));
 			message.addRecipient(Message.RecipientType.TO, object.getEmail(TO));
 			message.setSubject(object.getString(SUBJECT));
-			message.setContent(object.getHTML(KeyWords.MESSAGE).toString(), Format.XHTML.getContentType());
+			message.setContent(object.getHTML(KeyWords.MESSAGE).toString(), Format.HTML.getContentType()
+					+ "; " + HTML.CHARSET + "=" + Constants.UTF_8_CHARSET);
 			Transport.send(message);
 
 		} catch (MessagingException e) {
