@@ -39,13 +39,22 @@ import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.util.MapTimeZoneCache;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 
 public class ICalendar {
 
 	protected Calendar calendar;
+	
+	protected void init() {
+		System.setProperty("net.fortuna.ical4j.timezone.cache.impl",
+				MapTimeZoneCache.class.getName());
+	}
 
 	public ICalendar(String url, Tuple... events) {
+		
+		init();
+		
 		calendar = new Calendar();
 		calendar.getProperties().add(new ProdId(KeyWords.NEXTTYPES));
 		calendar.getProperties().add(Version.VERSION_2_0);
@@ -91,6 +100,9 @@ public class ICalendar {
 	}
 
 	public ICalendar(byte[] data) {
+		
+		init();
+		
 		try {
 			CalendarBuilder builder = new CalendarBuilder();
 			calendar = builder.build(new ByteArrayInputStream(data));
@@ -105,17 +117,7 @@ public class ICalendar {
 	}
 
 	public VEvent getFirstEvent() {
-		VEvent event = null;
-
-		ComponentList<CalendarComponent> components = calendar.getComponents();
-
-		for (CalendarComponent component : components) {
-			if (component instanceof VEvent) {
-				event = (VEvent) component;
-			}
-		}
-
-		return event;
+		return (VEvent) calendar.getComponents("VEVENT").get(0);
 	}
 
 	public ComponentList<CalendarComponent> getComponents() {
