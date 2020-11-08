@@ -103,7 +103,6 @@ public class HTML extends XML {
 	public static final String DISABLED = "disabled";
 	public static final String CHECKED = "checked";
 	public static final String META = "meta";
-	public static final String CHARSET = "charset";
 	public static final String VIEWPORT = "viewport";
 	public static final String CONTENT = "content";
 	public static final String DESCRIPTION = "description";

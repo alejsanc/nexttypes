@@ -38,7 +38,12 @@ public class Email {
 	
 	protected MimeMessage message;
 	
-	public Email(Tuple tuple) {
+	public Email(Tuple tuple, Format format) {
+		this(tuple, format.getContentType());
+	}
+	
+	public Email(Tuple tuple, String contentType) {
+		
 		Properties properties = System.getProperties();
 		properties.setProperty(MAIL_SMTP_HOST, URL.LOCALHOST);
 		Session session = Session.getDefaultInstance(properties);
@@ -47,10 +52,10 @@ public class Email {
 		
 		try {
 			message.setFrom(tuple.getEmail(FROM));
-			message.addRecipient(Message.RecipientType.TO, tuple.getEmail(TO));
-			message.setSubject(tuple.getString(SUBJECT));
-			message.setContent(tuple.getHTML(KeyWords.MESSAGE).toString(), Format.HTML.getContentType()
-					+ "; " + HTML.CHARSET + "=" + Constants.UTF_8_CHARSET);	
+			message.addRecipients(Message.RecipientType.TO, tuple.getString(TO));
+			message.setSubject(tuple.getString(SUBJECT), Constants.UTF_8_CHARSET);
+			message.setContent(tuple.getHTML(KeyWords.MESSAGE).toString(), contentType
+					+ "; " + KeyWords.CHARSET + "=" + Constants.UTF_8_CHARSET);	
 		} catch (MessagingException e) {
 			throw new NXException(e);
 		}

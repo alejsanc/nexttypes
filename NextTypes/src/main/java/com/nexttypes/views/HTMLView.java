@@ -3879,7 +3879,7 @@ public class HTMLView extends View {
 
 	public void head(String type, String lang, String view) {
 		if (head != null) {
-			head.appendElement(HTML.META).setAttribute(HTML.CHARSET, Constants.UTF_8_CHARSET);
+			head.appendElement(HTML.META).setAttribute(KeyWords.CHARSET, Constants.UTF_8_CHARSET);
 
 			head.appendElement(HTML.META).setAttribute(HTML.NAME, HTML.VIEWPORT)
 				.setAttribute(HTML.CONTENT, "width=device-width, initial-scale=1");

@@ -53,6 +53,7 @@ public class KeyWords {
 	public static final String CDATE = "cdate";
 	public static final String CERTIFICATE_NOT_FOUND = "certificate_not_found";
 	public static final String CHANNEL = "channel";
+	public static final String CHARSET = "charset";
 	public static final String CHECK_UNCHECK_ALL = "check_uncheck_all";
 	public static final String CLEAR = "clear";
 	public static final String COLOR = "color";

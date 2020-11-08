@@ -21,6 +21,7 @@ import java.time.ZonedDateTime;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Email;
 import com.nexttypes.datatypes.NXObject;
+import com.nexttypes.enums.Format;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.system.Controller;
 
@@ -34,7 +35,7 @@ public class EmailController extends Controller {
 	public ZonedDateTime insert(NXObject object) {
 		
 		ZonedDateTime udate = nextNode.insert(object);
-		new Email(object).send();
+		new Email(object, Format.HTML).send();
 		return udate;
 	}
 }
