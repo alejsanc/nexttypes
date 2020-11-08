@@ -17,57 +17,24 @@
 package com.nexttypes.controllers;
 
 import java.time.ZonedDateTime;
-import java.util.Properties;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.MimeMessage;
 
 import com.nexttypes.datatypes.Auth;
-import com.nexttypes.datatypes.HTML;
+import com.nexttypes.datatypes.Email;
 import com.nexttypes.datatypes.NXObject;
-import com.nexttypes.datatypes.URL;
-import com.nexttypes.enums.Format;
-import com.nexttypes.exceptions.NXException;
 import com.nexttypes.nodes.Node;
-import com.nexttypes.system.KeyWords;
-import com.nexttypes.system.Constants;
 import com.nexttypes.system.Controller;
 
 public class EmailController extends Controller {
 
-	public static final String MAIL_SMTP_HOST = "mail.smtp.host";
-	public static final String FROM = "from";
-	public static final String TO = "to";
-	public static final String SUBJECT = "subject";
-	
 	public EmailController(String type, Auth auth, Node nextNode) {
 		super(type, auth, nextNode);
 	}
 
 	@Override
 	public ZonedDateTime insert(NXObject object) {
-		Properties properties = System.getProperties();
-		properties.setProperty(MAIL_SMTP_HOST, URL.LOCALHOST);
-		Session session = Session.getDefaultInstance(properties);
-
+		
 		ZonedDateTime udate = nextNode.insert(object);
-
-		try {
-			MimeMessage message = new MimeMessage(session);
-			message.setFrom(object.getEmail(FROM));
-			message.addRecipient(Message.RecipientType.TO, object.getEmail(TO));
-			message.setSubject(object.getString(SUBJECT));
-			message.setContent(object.getHTML(KeyWords.MESSAGE).toString(), Format.HTML.getContentType()
-					+ "; " + HTML.CHARSET + "=" + Constants.UTF_8_CHARSET);
-			Transport.send(message);
-
-		} catch (MessagingException e) {
-			throw new NXException(e);
-		}
-
+		new Email(object).send();
 		return udate;
 	}
 }
