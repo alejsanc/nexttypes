@@ -46,14 +46,14 @@ public class ICalendar {
 
 	protected Calendar calendar;
 	
-	protected void init() {
+	protected ICalendar() {
 		System.setProperty("net.fortuna.ical4j.timezone.cache.impl",
 				MapTimeZoneCache.class.getName());
 	}
 
 	public ICalendar(String url, Tuple... events) {
 		
-		init();
+		this();
 		
 		calendar = new Calendar();
 		calendar.getProperties().add(new ProdId(KeyWords.NEXTTYPES));
@@ -101,7 +101,7 @@ public class ICalendar {
 
 	public ICalendar(byte[] data) {
 		
-		init();
+		this();
 		
 		try {
 			CalendarBuilder builder = new CalendarBuilder();
