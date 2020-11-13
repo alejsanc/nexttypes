@@ -396,8 +396,8 @@ public class HTTPServlet extends HttpServlet {
 				break;
 
 			case Action.IMPORT_OBJECTS:
-				content = new Content(nextNode.importObjects(req.getDataStream(), 
-						req.getExistingObjectsAction()), Format.JSON);
+				nextNode.importObjects(req.getDataStream(), req.getExistingObjectsAction());
+				content = new Content(strings.gts(KeyWords.OBJECTS_SUCCESSFULLY_IMPORTED));
 				break;
 
 			case Action.IMPORT_TYPES:

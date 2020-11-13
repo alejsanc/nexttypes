@@ -170,7 +170,8 @@ public class Console {
 				case IMPORT_OBJECTS:
 					existingObjectsAction = ImportAction
 							.valueOf(command.getOptionValue(EXISTING_OBJECTS_ACTION).toUpperCase());
-					result = nextNode.importObjects(System.in, existingObjectsAction);
+					nextNode.importObjects(System.in, existingObjectsAction);
+					result = strings.gts(KeyWords.OBJECTS_SUCCESSFULLY_IMPORTED);
 					break;
 
 				case EXPORT_OBJECTS:

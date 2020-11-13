@@ -260,6 +260,7 @@ public class KeyWords {
 	public static final String OBJECTS_INPUT_NOT_NULL = "objects_input_not_null";
 	public static final String OBJECTS_SELECT = "objects_select";
 	public static final String OBJECTS_SUCCESSFULLY_DELETED = "objects_successfully_deleted";
+	public static final String OBJECTS_SUCCESSFULLY_IMPORTED = "objects_successfully_imported";
 	public static final String OFFSET = "offset";
 	public static final String OFFSET_TEXT_MODE = "offset_text_mode";
 	public static final String OLD_NAME = "old_name";

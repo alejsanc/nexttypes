@@ -27,10 +27,7 @@ public class ImportTypesResult {
 	protected ArrayList<String> importedTypes = new ArrayList<>();
 	protected ArrayList<String> ignoredTypes = new ArrayList<>();
 	protected LinkedHashMap<String, AlterResult> alteredTypes = new LinkedHashMap<>();
-	protected LinkedHashMap<String, ArrayList<String>> importedObjects = new LinkedHashMap<>();
-	protected LinkedHashMap<String, ArrayList<String>> ignoredObjects = new LinkedHashMap<>();
-	protected LinkedHashMap<String, ArrayList<String>> updatedObjects = new LinkedHashMap<>();
-
+	
 	public void addImportedType(String type) {
 		importedTypes.add(type);
 	}
@@ -42,40 +39,7 @@ public class ImportTypesResult {
 	public void addAlteredType(String type, AlterResult result) {
 		alteredTypes.put(type, result);
 	}
-
-	public void addImportedObject(String type, String id) {
-		ArrayList<String> objects = importedObjects.get(type);
-		if (objects == null) {
-			objects = new ArrayList<>();
-			importedObjects.put(type, objects);
-		}
-		objects.add(id);
-	}
-
-	public void addIgnoredObject(String type, String id) {
-		ArrayList<String> objects = ignoredObjects.get(type);
-		if (objects == null) {
-			objects = new ArrayList<>();
-			ignoredObjects.put(type, objects);
-		}
-		objects.add(id);
-	}
-
-	public void addUpdatedObject(String type, String id) {
-		ArrayList<String> objects = updatedObjects.get(type);
-		if (objects == null) {
-			objects = new ArrayList<>();
-			updatedObjects.put(type, objects);
-		}
-		objects.add(id);
-	}
-
-	public void addResult(ImportObjectsResult result) {
-		importedObjects.putAll(result.getImportedObjects());
-		ignoredObjects.putAll(result.getIgnoredObjects());
-		updatedObjects.putAll(result.getUpdatedObjects());
-	}
-
+	
 	@JsonProperty(KeyWords.IMPORTED_TYPES)
 	public ArrayList<String> getImportedTypes() {
 		return importedTypes;
@@ -89,20 +53,5 @@ public class ImportTypesResult {
 	@JsonProperty(KeyWords.ALTERED_TYPES)
 	public LinkedHashMap<String, AlterResult> getAlteredTypes() {
 		return alteredTypes;
-	}
-
-	@JsonProperty(KeyWords.IMPORTED_OBJECTS)
-	public LinkedHashMap<String, ArrayList<String>> getImportedObjects() {
-		return importedObjects;
-	}
-
-	@JsonProperty(KeyWords.IGNORED_OBJECTS)
-	public LinkedHashMap<String, ArrayList<String>> getIgnoredObjects() {
-		return ignoredObjects;
-	}
-
-	@JsonProperty(KeyWords.UPDATED_OBJECTS)
-	public LinkedHashMap<String, ArrayList<String>> getUpdatedObjects() {
-		return updatedObjects;
 	}
 }
