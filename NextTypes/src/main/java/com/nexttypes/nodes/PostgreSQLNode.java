@@ -41,11 +41,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
@@ -85,7 +83,6 @@ import com.nexttypes.datatypes.ObjectReference;
 import com.nexttypes.datatypes.Objects;
 import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Reference;
-import com.nexttypes.datatypes.Serial;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Tuples;
 import com.nexttypes.datatypes.Type;
@@ -1030,42 +1027,6 @@ public class PostgreSQLNode extends Node {
 		for (Map.Entry<String, TypeIndex> entry : indexes.entrySet()) {
 			if (ArrayUtils.contains(entry.getValue().getFields(), field)) {
 				throw new FieldException(type, field, KeyWords.FIELD_IS_PART_OF_INDEX, entry.getKey());
-			}
-		}
-	}
-
-	protected void checkMissingReferences(LinkedHashMap<String, ArrayList<String>> objects) {
-		if (objects.size() == 0) {
-			return;
-		}
-
-		StringBuilder sql = new StringBuilder();
-		ArrayList<Object> parameters = new ArrayList<>();
-
-		for (Reference reference : getUpReferences(objects.keySet().toArray(new String[] {}))) {
-			String referencingType = reference.getReferencingType();
-			String referencingField = reference.getReferencingField();
-			String referencedType = reference.getReferencedType();
-
-			sql.append("select distinct '" + referencedType + "' as type, \"" + referencingField + "\" as id"
-					+ " from \"" + referencingType + "\" where \"" + referencingField + "\""
-					+ " not in(select id from \"" + referencedType + "\") and id in(?) union ");
-			parameters.add(objects.get(referencingType).toArray());
-		}
-
-		if (sql.length() > 0) {
-			sql.delete(sql.length() - 6, sql.length());
-			sql.append(" order by type, id");
-
-			Tuple[] references = query(sql, parameters);
-
-			LinkedHashMap<String, List<String>> referencesByType = Arrays.stream(references)
-					.collect(Collectors.groupingBy(reference -> reference.getString(KeyWords.TYPE), LinkedHashMap::new,
-							Collectors.mapping(reference -> reference.getString(KeyWords.ID), Collectors.toList())));
-
-			if (referencesByType != null && referencesByType.size() > 0) {
-				throw new StringException(
-						strings.gts(KeyWords.MISSING_REFERENCES) + ": " + new Serial(referencesByType, Format.JSON));
 			}
 		}
 	}
@@ -2671,8 +2632,6 @@ public class PostgreSQLNode extends Node {
 						result.getImportedTypes()));
 			}
 
-			checkMissingReferences(result.getImportedObjects());
-
 			setDeferredConstraints(false);
 		}
 
@@ -2734,7 +2693,6 @@ public class PostgreSQLNode extends Node {
 		}
 
 		if (deferredConstraints) {
-			checkMissingReferences(result.getImportedObjects());
 			setDeferredConstraints(false);
 		}
 

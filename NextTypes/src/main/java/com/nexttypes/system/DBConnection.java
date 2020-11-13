@@ -122,7 +122,7 @@ public class DBConnection {
 		
 		String url = "jdbc:" + schema + "://" + host + ":" + port + "/" + database;
 		
-		if (parameters != null & parameters.length() > 0 ) {
+		if (parameters != null && parameters.length() > 0 ) {
 			url += "?" + parameters;
 		}
 		
