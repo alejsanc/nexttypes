@@ -118,7 +118,15 @@ public class DBConnection {
 		String host = settings.getString(KeyWords.HOST);
 		String port = settings.getString(KeyWords.PORT);
 		String database = settings.getString(KeyWords.DATABASE);
-		return "jdbc:" + schema + "://" + host + ":" + port + "/" + database;
+		String parameters = settings.getString(KeyWords.PARAMETERS);
+		
+		String url = "jdbc:" + schema + "://" + host + ":" + port + "/" + database;
+		
+		if (parameters != null & parameters.length() > 0 ) {
+			url += "?" + parameters;
+		}
+		
+		return url;
 	}
 
 	public static Connection getConnection(Settings settings, String schema, NodeMode mode) {

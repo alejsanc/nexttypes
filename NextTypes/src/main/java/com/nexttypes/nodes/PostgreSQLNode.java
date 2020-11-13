@@ -2665,7 +2665,7 @@ public class PostgreSQLNode extends Node {
 					}
 				}
 			}
-
+			
 			while (t.next()) {
 				result.addResult(importObjects(t.getObjectsStream(), existingObjectsAction, false,
 						result.getImportedTypes()));
@@ -3288,10 +3288,10 @@ public class PostgreSQLNode extends Node {
 			throwException(e);
 		}
 	}
-
+	
 	@Override
 	public void close() {
-
+		
 		try {
 			if (connection != null) {
 				connection.close();
