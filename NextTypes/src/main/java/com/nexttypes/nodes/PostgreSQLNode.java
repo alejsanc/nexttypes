@@ -2639,8 +2639,8 @@ public class PostgreSQLNode extends Node {
 			}
 			
 			while (t.next()) {
-				importObjects(t.getObjectsStream(), existingObjectsAction, false, 
-						result.getImportedTypes());
+				result.addResult(importObjects(t.getObjectsStream(), existingObjectsAction, false, 
+						result.getImportedTypes()));
 			}
 
 			setDeferredConstraints(false);

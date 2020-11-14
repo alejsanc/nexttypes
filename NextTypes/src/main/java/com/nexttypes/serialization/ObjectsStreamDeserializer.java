@@ -131,12 +131,8 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 			
 			type = parser.getText();
 			
-			if (nextNode.existsType(type)) {
-				typeFields = nextNode.getTypeFields(type);
-			} else {
-				throw new TypeNotFoundException(type);
-			}
-			
+			typeFields = nextNode.getTypeFields(type);
+						
 			parser.nextToken();
 			parser.nextToken();
 			
