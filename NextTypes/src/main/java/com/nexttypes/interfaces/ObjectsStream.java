@@ -16,12 +16,19 @@
 
 package com.nexttypes.interfaces;
 
+import java.util.LinkedHashMap;
+
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.nexttypes.datatypes.NXObject;
+import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.serialization.ObjectsStreamSerializer;
 
 @JsonSerialize(using = ObjectsStreamSerializer.class)
 public interface ObjectsStream extends Stream {
+	
+	public String getType();
+	
+	public LinkedHashMap<String, TypeField> getTypeFields();
 	
 	public NXObject getItem();
 
