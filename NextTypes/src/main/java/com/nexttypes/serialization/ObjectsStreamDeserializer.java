@@ -44,6 +44,7 @@ import com.nexttypes.system.KeyWords;
 
 public class ObjectsStreamDeserializer extends StreamDeserializer implements ObjectsStream {
 	protected String version;
+	protected String type;
 	protected Long count;
 	protected NXObject item;
 	protected LinkedHashMap<String, TypeField> typeFields;
@@ -79,6 +80,16 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 	@Override
 	public String getVersion() {
 		return version;
+	}
+	
+	@Override
+	public String getType() {
+		return type;
+	}
+	
+	@Override
+	public LinkedHashMap<String, TypeField> getTypeFields() {
+		return typeFields;
 	}
 
 	@Override
@@ -116,6 +127,19 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 			parser.nextToken();
 			parser.nextToken();
 			
+			checkTag(KeyWords.TYPE);
+			
+			type = parser.getText();
+			
+			if (nextNode.existsType(type)) {
+				typeFields = nextNode.getTypeFields(type);
+			} else {
+				throw new TypeNotFoundException(type);
+			}
+			
+			parser.nextToken();
+			parser.nextToken();
+			
 			checkTag(KeyWords.COUNT);
 
 			count = parser.getLongValue();
@@ -146,13 +170,6 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 					switch (parser.getCurrentName()) {
 					case KeyWords.TYPE:
 						type = parser.getText();
-						if (typeFields == null) {
-							if (nextNode.existsType(type)) {
-								typeFields = nextNode.getTypeFields(type);
-							} else {
-								throw new TypeNotFoundException(type);
-							}
-						}
 						break;
 					case KeyWords.ID:
 						id = parser.getText();

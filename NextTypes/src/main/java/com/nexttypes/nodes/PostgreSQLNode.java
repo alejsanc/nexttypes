@@ -2675,10 +2675,10 @@ public class PostgreSQLNode extends Node {
 			setDeferredConstraints(true);
 		}
 		
-		LinkedHashMap<String, TypeField> typeFields = null;
-
 		try (ObjectsStream o = objects) {
 			o.exec();
+			
+			LinkedHashMap<String, TypeField> typeFields = o.getTypeFields();
 
 			while (o.next()) {
 				NXObject item = o.getItem();
@@ -2687,10 +2687,6 @@ public class PostgreSQLNode extends Node {
 				String type = item.getType();
 				String id = item.getId();
 				
-				if (typeFields == null) {
-					typeFields = getTypeFields(type);
-				}
-
 				boolean importedType = importedTypes != null && importedTypes.contains(type);
 
 				if (!importedType && existsObject(type, id)) {
@@ -3435,6 +3431,16 @@ public class PostgreSQLNode extends Node {
 			this.referencesName = referencesName;
 			this.count = count;
 			this.tuples = tuples;
+		}
+		
+		@Override
+		public String getType() {
+			return type;
+		}
+		
+		@Override
+		public LinkedHashMap<String, TypeField> getTypeFields() {
+			return typeFields;
 		}
 		
 		@Override
