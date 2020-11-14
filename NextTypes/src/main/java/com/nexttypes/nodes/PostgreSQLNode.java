@@ -2524,6 +2524,8 @@ public class PostgreSQLNode extends Node {
 	public TypesStream exportTypes(String[] types, Filter[] filters, boolean includeObjects) {
 
 		checkTypes(types);
+		
+		Arrays.sort(types);
 
 		TypesStream export = new PostgreSQLTypesStream();
 
