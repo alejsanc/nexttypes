@@ -27,14 +27,10 @@ public class ImportTypesResult {
 	protected ArrayList<String> importedTypes = new ArrayList<>();
 	protected ArrayList<String> ignoredTypes = new ArrayList<>();
 	protected LinkedHashMap<String, AlterResult> alteredTypes = new LinkedHashMap<>();
-<<<<<<< HEAD
-	
-=======
 	protected LinkedHashMap<String, Long> importedObjects = new LinkedHashMap<>();
 	protected LinkedHashMap<String, Long> ignoredObjects = new LinkedHashMap<>();
 	protected LinkedHashMap<String, Long> updatedObjects = new LinkedHashMap<>();
 
->>>>>>> branch 'master' of https://github.com/alejsanc/nexttypes.git
 	public void addImportedType(String type) {
 		importedTypes.add(type);
 	}
@@ -45,11 +41,7 @@ public class ImportTypesResult {
 
 	public void addAlteredType(String type, AlterResult result) {
 		alteredTypes.put(type, result);
-<<<<<<< HEAD
 	}
-	
-=======
-	}	
 
 	public void addResult(ImportObjectsResult result) {
 		importedObjects.putAll(result.getImportedObjects());
@@ -57,7 +49,6 @@ public class ImportTypesResult {
 		updatedObjects.putAll(result.getUpdatedObjects());
 	}
 
->>>>>>> branch 'master' of https://github.com/alejsanc/nexttypes.git
 	@JsonProperty(KeyWords.IMPORTED_TYPES)
 	public ArrayList<String> getImportedTypes() {
 		return importedTypes;
@@ -72,8 +63,6 @@ public class ImportTypesResult {
 	public LinkedHashMap<String, AlterResult> getAlteredTypes() {
 		return alteredTypes;
 	}
-<<<<<<< HEAD
-=======
 
 	@JsonProperty(KeyWords.IMPORTED_OBJECTS)
 	public LinkedHashMap<String, Long> getImportedObjects() {
@@ -89,5 +78,5 @@ public class ImportTypesResult {
 	public LinkedHashMap<String, Long> getUpdatedObjects() {
 		return updatedObjects;
 	}
->>>>>>> branch 'master' of https://github.com/alejsanc/nexttypes.git
+
 }

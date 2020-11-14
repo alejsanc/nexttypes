@@ -42,6 +42,7 @@ import com.nexttypes.datatypes.FieldRange;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
+import com.nexttypes.datatypes.ImportObjectsResult;
 import com.nexttypes.datatypes.ImportTypesResult;
 import com.nexttypes.datatypes.Matrix;
 import com.nexttypes.datatypes.NXObject;
@@ -686,13 +687,13 @@ public class ProxyNode extends Node {
 	}
 
 	@Override
-	public void importObjects(InputStream objects, ImportAction existingObjectsAction) {
-		nextNode.importObjects(objects, existingObjectsAction);
+	public ImportObjectsResult importObjects(InputStream objects, ImportAction existingObjectsAction) {
+		return nextNode.importObjects(objects, existingObjectsAction);
 	}
 
 	@Override
-	public void importObjects(ObjectsStream objects, ImportAction existingObjectsAction) {
-		nextNode.importObjects(objects, existingObjectsAction);
+	public ImportObjectsResult importObjects(ObjectsStream objects, ImportAction existingObjectsAction) {
+		return nextNode.importObjects(objects, existingObjectsAction);
 	}
 
 	@Override

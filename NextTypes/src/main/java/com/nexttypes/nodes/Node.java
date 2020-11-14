@@ -41,6 +41,7 @@ import com.nexttypes.datatypes.FieldRange;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Image;
+import com.nexttypes.datatypes.ImportObjectsResult;
 import com.nexttypes.datatypes.ImportTypesResult;
 import com.nexttypes.datatypes.Matrix;
 import com.nexttypes.datatypes.NXObject;
@@ -337,9 +338,9 @@ public abstract class Node extends Module {
 	public abstract ImportTypesResult importTypes(TypesStream types, ImportAction existingTypesAction,
 			ImportAction existingObjectsAction);
 
-	public abstract void importObjects(InputStream objects, ImportAction existingObjectsAction);
+	public abstract ImportObjectsResult importObjects(InputStream objects, ImportAction existingObjectsAction);
 
-	public abstract void importObjects(ObjectsStream objects, ImportAction existingObjectsAction);
+	public abstract ImportObjectsResult importObjects(ObjectsStream objects, ImportAction existingObjectsAction);
 
 	public abstract Short getInt16(String sql, Object... parameters);
 

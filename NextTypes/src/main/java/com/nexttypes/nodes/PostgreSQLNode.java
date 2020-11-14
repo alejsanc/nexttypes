@@ -71,6 +71,7 @@ import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.IdFilter;
 import com.nexttypes.datatypes.Image;
+import com.nexttypes.datatypes.ImportObjectsResult;
 import com.nexttypes.datatypes.ImportTypesResult;
 import com.nexttypes.datatypes.JSON;
 import com.nexttypes.datatypes.Matrix;
@@ -1135,11 +1136,7 @@ public class PostgreSQLNode extends Node {
 	}
 
 	public ZonedDateTime insert(NXObject object, boolean single,
-<<<<<<< HEAD
 			LinkedHashMap<String, TypeField> typeFields) {
-=======
-			LinkedHashMap<String, TypeField> typeFields ) {
->>>>>>> branch 'master' of https://github.com/alejsanc/nexttypes.git
 		
 		String id = object.getId();
 		String type = object.getType();
@@ -1242,10 +1239,7 @@ public class PostgreSQLNode extends Node {
 
 	public ZonedDateTime update(NXObject object, ZonedDateTime udate, boolean single,
 			LinkedHashMap<String, TypeField> typeFields) {
-<<<<<<< HEAD
-=======
-		
->>>>>>> branch 'master' of https://github.com/alejsanc/nexttypes.git
+
 		String type = object.getType();
 
 		checkType(type);
@@ -2656,34 +2650,31 @@ public class PostgreSQLNode extends Node {
 	}
 
 	@Override
-	public void importObjects(InputStream objects, ImportAction existingObjectsAction) {
-		importObjects(new ObjectsStreamDeserializer(objects, lang, false, this, typeSettings),
+	public ImportObjectsResult importObjects(InputStream objects, ImportAction existingObjectsAction) {
+		return importObjects(new ObjectsStreamDeserializer(objects, lang, false, this, typeSettings),
 				existingObjectsAction);
 	}
 
-	protected void importObjects(InputStream objects, ImportAction existingObjectsAction,
+	protected ImportObjectsResult importObjects(InputStream objects, ImportAction existingObjectsAction,
 			boolean deferredConstraints) {
-		importObjects(new ObjectsStreamDeserializer(objects, lang, false, this, typeSettings),
+		return importObjects(new ObjectsStreamDeserializer(objects, lang, false, this, typeSettings),
 				existingObjectsAction, deferredConstraints, null);
 	}
 
 	@Override
-	public void importObjects(ObjectsStream objects, ImportAction existingObjectsAction) {
-		importObjects(objects, existingObjectsAction, true, null);
+	public ImportObjectsResult importObjects(ObjectsStream objects, ImportAction existingObjectsAction) {
+		return importObjects(objects, existingObjectsAction, true, null);
 	}
 
-	protected void importObjects(ObjectsStream objects, ImportAction existingObjectsAction,
+	protected ImportObjectsResult importObjects(ObjectsStream objects, ImportAction existingObjectsAction,
 			boolean deferredConstraints, ArrayList<String> importedTypes) {
+		
+		ImportObjectsResult result = new ImportObjectsResult();
 
 		if (deferredConstraints) {
 			setDeferredConstraints(true);
 		}
 		
-<<<<<<< HEAD
-		LinkedHashMap<String, TypeField> typeFields = null;
-
-=======
->>>>>>> branch 'master' of https://github.com/alejsanc/nexttypes.git
 		try (ObjectsStream o = objects) {
 			o.exec();
 			
@@ -2696,37 +2687,24 @@ public class PostgreSQLNode extends Node {
 				String type = item.getType();
 				String id = item.getId();
 				
-<<<<<<< HEAD
 				if (typeFields == null) {
 					typeFields = getTypeFields(type);
 				}
 
-=======
->>>>>>> branch 'master' of https://github.com/alejsanc/nexttypes.git
 				boolean importedType = importedTypes != null && importedTypes.contains(type);
 				
 				if (!importedType && existsObject(type, id)) {
 					if (ImportAction.IGNORE.equals(existingObjectsAction)) {
-<<<<<<< HEAD
-						
-=======
 						result.addIgnoredObject(type);
->>>>>>> branch 'master' of https://github.com/alejsanc/nexttypes.git
 					} else if (ImportAction.UPDATE.equals(existingObjectsAction)) {
 						update(item, null, false, typeFields);
-<<<<<<< HEAD
-=======
 						result.addUpdatedObject(type);
->>>>>>> branch 'master' of https://github.com/alejsanc/nexttypes.git
 					} else {
 						throw new ObjectException(type, id, KeyWords.OBJECT_ALREADY_EXISTS);
 					}
 				} else {
 					insert(item, false, typeFields);
-<<<<<<< HEAD
-=======
 					result.addImportedObject(type);
->>>>>>> branch 'master' of https://github.com/alejsanc/nexttypes.git
 				}
 			}
 		}
@@ -2734,6 +2712,8 @@ public class PostgreSQLNode extends Node {
 		if (deferredConstraints) {
 			setDeferredConstraints(false);
 		}
+		
+		return result;
 	}
 
 	@Override
