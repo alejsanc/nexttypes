@@ -2687,10 +2687,6 @@ public class PostgreSQLNode extends Node {
 				String type = item.getType();
 				String id = item.getId();
 				
-				if (typeFields == null) {
-					typeFields = getTypeFields(type);
-				}
-
 				boolean importedType = importedTypes != null && importedTypes.contains(type);
 				
 				if (!importedType && existsObject(type, id)) {
