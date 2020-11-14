@@ -1046,9 +1046,8 @@ public class PostgreSQLNode extends Node {
 		}
 	}
 	
-	protected void checkFieldRange(String type, String field, Object value) {
-		String fieldType = getFieldType(type, field);
-		
+	protected void checkFieldRange(String type, String field, String fieldType, Object value) {
+				
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
 			FieldRange range = getFieldRange(type, field);
 			if (range != null && !range.isInRange(value)) {
@@ -1133,10 +1132,12 @@ public class PostgreSQLNode extends Node {
 
 	@Override
 	public ZonedDateTime insert(NXObject object) {
-		return insert(object, true);
+		return insert(object, true, null);
 	}
 
-	public ZonedDateTime insert(NXObject object, boolean single) {
+	public ZonedDateTime insert(NXObject object, boolean single,
+			LinkedHashMap<String, TypeField> typeFields ) {
+		
 		String id = object.getId();
 		String type = object.getType();
 
@@ -1145,8 +1146,12 @@ public class PostgreSQLNode extends Node {
 		if (id != null && single && existsObject(type, id)) {
 			throw new ObjectException(type, id, KeyWords.OBJECT_ALREADY_EXISTS);
 		}
+		
+		if (typeFields == null) {
+			typeFields = getTypeFields(type);
+		}
 
-		for (Map.Entry<String, TypeField> entry : getTypeFields(type).entrySet()) {
+		for (Map.Entry<String, TypeField> entry : typeFields.entrySet()) {
 			String field = entry.getKey();
 			TypeField typeField = entry.getValue();
 			String fieldType = typeField.getType();
@@ -1169,7 +1174,7 @@ public class PostgreSQLNode extends Node {
 			}	
 
 			if (value != null) {
-				checkFieldRange(type, field, value);
+				checkFieldRange(type, field, typeFields.get(field).getType(), value);
 				checkFileField(type, field, value);
 			}
 		}
@@ -1224,15 +1229,17 @@ public class PostgreSQLNode extends Node {
 
 	@Override
 	public ZonedDateTime update(NXObject object) {
-		return update(object, null, true);
+		return update(object, null, true, null);
 	}
 
 	@Override
 	public ZonedDateTime update(NXObject object, ZonedDateTime udate) {
-		return update(object, udate, true);
+		return update(object, udate, true, null);
 	}
 
-	public ZonedDateTime update(NXObject object, ZonedDateTime udate, boolean single) {
+	public ZonedDateTime update(NXObject object, ZonedDateTime udate, boolean single,
+			LinkedHashMap<String, TypeField> typeFields) {
+		
 		String type = object.getType();
 
 		checkType(type);
@@ -1240,8 +1247,12 @@ public class PostgreSQLNode extends Node {
 		String id = object.getId();
 
 		checkId(type, id);
+		
+		if (typeFields == null) {
+			typeFields = getTypeFields(type);
+		}
 
-		for (Map.Entry<String, TypeField> entry : getTypeFields(type).entrySet()) {
+		for (Map.Entry<String, TypeField> entry : typeFields.entrySet()) {
 			String field = entry.getKey();
 			TypeField typeField = entry.getValue();
 
@@ -1252,7 +1263,7 @@ public class PostgreSQLNode extends Node {
 			Object value = object.get(field);
 
 			if (value != null) {
-				checkFieldRange(type, field, value);
+				checkFieldRange(type, field, typeFields.get(field).getType(), value);
 				checkFileField(type, field, value);
 			}
 		}
@@ -2663,6 +2674,8 @@ public class PostgreSQLNode extends Node {
 		if (deferredConstraints) {
 			setDeferredConstraints(true);
 		}
+		
+		LinkedHashMap<String, TypeField> typeFields = null;
 
 		try (ObjectsStream o = objects) {
 			o.exec();
@@ -2673,21 +2686,25 @@ public class PostgreSQLNode extends Node {
 
 				String type = item.getType();
 				String id = item.getId();
+				
+				if (typeFields == null) {
+					typeFields = getTypeFields(type);
+				}
 
 				boolean importedType = importedTypes != null && importedTypes.contains(type);
 
 				if (!importedType && existsObject(type, id)) {
 					if (ImportAction.IGNORE.equals(existingObjectsAction)) {
-						result.addIgnoredObject(type, id);
+						result.addIgnoredObject(type);
 					} else if (ImportAction.UPDATE.equals(existingObjectsAction)) {
-						update(item, null, false);
-						result.addUpdatedObject(type, id);
+						update(item, null, false, typeFields);
+						result.addUpdatedObject(type);
 					} else {
 						throw new ObjectException(type, id, KeyWords.OBJECT_ALREADY_EXISTS);
 					}
 				} else {
-					insert(item, false);
-					result.addImportedObject(type, id);
+					insert(item, false, typeFields);
+					result.addImportedObject(type);
 				}
 			}
 		}

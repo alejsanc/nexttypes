@@ -16,7 +16,6 @@
 
 package com.nexttypes.datatypes;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,49 +23,46 @@ import com.nexttypes.system.KeyWords;
 
 public class ImportObjectsResult {
 
-	protected LinkedHashMap<String, ArrayList<String>> importedObjects = new LinkedHashMap<>();
-	protected LinkedHashMap<String, ArrayList<String>> ignoredObjects = new LinkedHashMap<>();
-	protected LinkedHashMap<String, ArrayList<String>> updatedObjects = new LinkedHashMap<>();
+	protected LinkedHashMap<String, Long> importedObjects = new LinkedHashMap<>();
+	protected LinkedHashMap<String, Long> ignoredObjects = new LinkedHashMap<>();
+	protected LinkedHashMap<String, Long> updatedObjects = new LinkedHashMap<>();
 
-	public void addImportedObject(String type, String id) {
-		ArrayList<String> objects = importedObjects.get(type);
+	public void addImportedObject(String type) {
+		Long objects = importedObjects.get(type);
 		if (objects == null) {
-			objects = new ArrayList<>();
-			importedObjects.put(type, objects);
+			objects = 0L;
 		}
-		objects.add(id);
+		importedObjects.put(type, ++objects);
 	}
 
-	public void addIgnoredObject(String type, String id) {
-		ArrayList<String> objects = ignoredObjects.get(type);
+	public void addIgnoredObject(String type) {
+		Long objects = ignoredObjects.get(type);
 		if (objects == null) {
-			objects = new ArrayList<>();
-			ignoredObjects.put(type, objects);
+			objects = 0L;
 		}
-		objects.add(id);
+		ignoredObjects.put(type, ++objects);
 	}
 
-	public void addUpdatedObject(String type, String id) {
-		ArrayList<String> objects = updatedObjects.get(type);
+	public void addUpdatedObject(String type) {
+		Long objects = updatedObjects.get(type);
 		if (objects == null) {
-			objects = new ArrayList<>();
-			updatedObjects.put(type, objects);
+			objects = 0L;
 		}
-		objects.add(id);
+		updatedObjects.put(type, ++objects);
 	}
 
 	@JsonProperty(KeyWords.IMPORTED_OBJECTS)
-	public LinkedHashMap<String, ArrayList<String>> getImportedObjects() {
+	public LinkedHashMap<String, Long> getImportedObjects() {
 		return importedObjects;
 	}
 
 	@JsonProperty(KeyWords.IGNORED_OBJECTS)
-	public LinkedHashMap<String, ArrayList<String>> getIgnoredObjects() {
+	public LinkedHashMap<String, Long> getIgnoredObjects() {
 		return ignoredObjects;
 	}
 
 	@JsonProperty(KeyWords.UPDATED_OBJECTS)
-	public LinkedHashMap<String, ArrayList<String>> getUpdatedObjects() {
+	public LinkedHashMap<String, Long> getUpdatedObjects() {
 		return updatedObjects;
 	}
 }
