@@ -53,7 +53,7 @@ article h5:before {	content: counter(h2counter) "." counter(h3counter) "." count
 article h2.home:before { content: ""}
 
 a[href] {
-	color: #0000e1;
+	color: #0000e1; 
 	text-decoration: none;
 }
 
