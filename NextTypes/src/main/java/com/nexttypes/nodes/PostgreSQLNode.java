@@ -1474,7 +1474,8 @@ public class PostgreSQLNode extends Node {
 	}
 
 	@Override
-	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order) {
+	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, 
+			String filters, String order) {
 
 		Tuple[] tuples = null;
 		
