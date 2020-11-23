@@ -306,14 +306,6 @@ public aspect NodeSecurity extends Checks {
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
 
-    before (String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
-	    String[] searchFields, String[] groupFields, String order) : (execution(* Node.select(..)))
-		&& args(type, sql, parameters, filters, search, searchFields, groupFields, order, ..) {
-    	
-    	checkType(type);
-    	checkPermissions(type, Action.SELECT, thisJoinPoint);
-    }
-
     before (String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order) :
 		(execution(* Node.select(..))) && args(type, sql, parameters, filters, order) {
     	
@@ -426,7 +418,7 @@ public aspect NodeSecurity extends Checks {
 	    execution(* Node.getFieldDefault(..)) ||
 	    execution(* Node.getFieldRange(..)) ||
 	    execution(* Node.hasNullValues(..)) 
-	    )&& args(type, field, ..) {
+	    )&& args(type, field) {
     	
     	checkType(type);
     	checkField(field);
