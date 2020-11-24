@@ -52,6 +52,12 @@ article h5:before {	content: counter(h2counter) "." counter(h3counter) "." count
 
 article h2.home:before { content: ""}
 
+th a {
+	display: block;
+	width: 100%;
+	color: black !important;
+}
+
 a[href] {
 	color: #0000e1;
 	text-decoration: none;
@@ -90,12 +96,6 @@ th {
 	background-color: #d7d7d7;
 	min-width: 20px;
 	text-align: left;
-}
-
-th a {
-	display: block;
-	width: 100%;
-	color: black;
 }
 
 form {
