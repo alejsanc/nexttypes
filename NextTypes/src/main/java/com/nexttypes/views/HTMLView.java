@@ -18,7 +18,7 @@ package com.nexttypes.views;
 
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -3475,8 +3475,14 @@ public class HTMLView extends View {
 	}
 	
 	public Element numericOutput(Object value, String lang) {
-		NumberFormat format =  NumberFormat.getNumberInstance(new Locale(lang));
-		return document.createElement(HTML.SPAN).appendText(format.format(value));
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale(lang));
+		char separator = symbols.getDecimalSeparator();
+				
+		if (separator != '.') {
+			value = value.toString().replace('.', separator);
+		}	
+				
+		return document.createElement(HTML.SPAN).appendText(value);
 	}
 
 	public Element textOutput(Object value) {
