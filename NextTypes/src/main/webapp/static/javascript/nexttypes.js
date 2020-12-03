@@ -818,7 +818,7 @@ function progressText(loaded, total, speed, lang) {
 	return humanReadableBytes(loaded, lang)
 			+ " / " + humanReadableBytes(total, lang)
 			+ " - " + humanReadableBytes(speed, lang) + "/s" 
-			+ " - " + langNumber(loaded * 100 / total, lang) + "%";
+			+ " - " + localeNumeric(loaded * 100 / total, lang) + "%";
 }
 
 function humanReadableBytes(bytes, lang) {
@@ -829,14 +829,14 @@ function humanReadableBytes(bytes, lang) {
 	} else {
 		var exponent = Math.trunc((Math.log(bytes) / Math.log(1024)));
 		var unit = "KMGTPEZY".charAt(exponent - 1) + "iB";
-		humanReadableBytes = langNumber((bytes / Math.pow(1024, exponent)), lang) + " " + unit;
+		humanReadableBytes = localeNumeric((bytes / Math.pow(1024, exponent)), lang) + " " + unit;
 	}
 	
 	return humanReadableBytes;
 }
 
-function langNumber(number, lang) {
-	return number.toLocaleString(lang, { maximumFractionDigits:2 })
+function localeNumeric(value, lang) {
+	return value.toLocaleString(lang, { maximumFractionDigits:2 })
 }
 
 function resultDialog(message, type, textAlign, callback, acceptString) {

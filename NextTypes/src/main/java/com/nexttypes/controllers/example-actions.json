@@ -81,7 +81,7 @@
 		"date": {
 			"type": "date",
 			"range": {
-				"min": "1950-01-01"
+				"min": "1950-05-01"
 			},
 			"not_null": false
 		},

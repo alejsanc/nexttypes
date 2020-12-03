@@ -619,7 +619,7 @@ public class HTMLView extends View {
 			cell.appendElement(fieldInput(type, action, field, fieldName, null, typeField, lang));
 			
 			if (showRange) {
-				appendFieldRange(cell, typeField);
+				appendFieldRange(type, cell, typeField, lang);
 			}
 		}
 
@@ -1887,7 +1887,7 @@ public class HTMLView extends View {
 		cell.appendElement(input);
 		
 		if (showRange) {
-			appendFieldRange(cell, typeField);
+			appendFieldRange(type, cell, typeField, lang);
 		}
 		
 		return cell;
@@ -1897,17 +1897,18 @@ public class HTMLView extends View {
 			TypeField typeField, String lang, String view, boolean showRange) {
 		Element cell = document.createElement(HTML.TD);
 		Element input = null;
+		String type = object.getType();
 		
 		if (typeField.getType().equals(PT.PASSWORD)) {
-			input = passwordFieldOutput(object.getType(), object.getId(), field, lang, view);
+			input = passwordFieldOutput(type, object.getId(), field, lang, view);
 		} else {
-			input = fieldInput(object.getType(), Action.UPDATE, field, title, value, typeField, lang);
+			input = fieldInput(type, Action.UPDATE, field, title, value, typeField, lang);
 		}
 
 		cell.appendElement(input);
 		
 		if (showRange) {
-			appendFieldRange(cell, typeField);
+			appendFieldRange(type, cell, typeField, lang);
 		}
 		
 		return cell;
@@ -2160,7 +2161,7 @@ public class HTMLView extends View {
 		return input;
 	}
 	
-	public void appendFieldRange(Element element, TypeField typeField) {
+	public void appendFieldRange(String type, Element element, TypeField typeField, String lang) {
 		FieldRange range = typeField.getRange();
 		
 		if (range != null) {
@@ -2168,14 +2169,41 @@ public class HTMLView extends View {
 			Object max = range.getMax();
 		
 			if (min != null || max != null) {
-				element.appendElement(fieldRange(min, max));
+				element.appendElement(fieldRange(type, min, max, typeField.getType(), lang));
 			}
 		}
 	}
 	
-	public Element fieldRange(Object min, Object max) {
+	public Element fieldRange(String type, Object min, Object max, String fieldType, String lang) {
 		Element span = document.createElement(HTML.SPAN)
-				.addClass(FIELD_RANGE);
+				.addClass(FIELD_RANGE);		
+
+		switch(fieldType) {
+		case PT.DATE:
+			min = localeDate(type, min);
+			max = localeDate(type, max);
+			break;
+		
+		case PT.TIME:
+			min = localeTime(type, min);
+			max = localeTime(type, max);
+			break;
+		
+		case PT.DATETIME:
+			min = localeDateTime(type, min);
+			max = localeDateTime(type, max);
+			break;
+		
+		case PT.INT16:
+		case PT.INT32:
+		case PT.INT64:
+		case PT.FLOAT32:
+		case PT.FLOAT64:
+		case PT.NUMERIC:
+			min = localeNumeric(min, lang);
+			max = localeNumeric(max, lang);
+			break;
+		}
 		
 		if (min != null) {
 			span.appendText(min);
@@ -2649,27 +2677,51 @@ public class HTMLView extends View {
 	}
 	
 	public Element dateOutput(String type, Object value) {
-		String pattern = strings.gts(type, KeyWords.DATE_FORMAT);
+		return time(localeDate(type, value));
+	}
+	
+	public Object localeDate(String type, Object value) {
+		if (value != null) {
+			String pattern = strings.gts(type, KeyWords.DATE_FORMAT);
+			
+			DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+			
+			value = ((LocalDate)value).format(format);
+		}
 		
-		DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
-		
-		return time(((LocalDate)value).format(format));
+		return value;
 	}
 	
 	public Element timeOutput(String type, Object value) {
-		String pattern = strings.gts(type, KeyWords.TIME_FORMAT);
+		return time(localeTime(type, value));
+	}
+	
+	public Object localeTime(String type, Object value) {
+		if (value != null) {
+			String pattern = strings.gts(type, KeyWords.TIME_FORMAT);
+			
+			DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+			
+			value = ((LocalTime)value).format(format);
+		}
 		
-		DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
-		
-		return time(((LocalTime)value).format(format));
+		return value;
 	}
 	
 	public Element dateTimeOutput(String type, Object value) {
-		String pattern = strings.gts(type, KeyWords.DATETIME_FORMAT);
+		return time(localeDateTime(type, value));
+	}
+	
+	public Object localeDateTime(String type, Object value) {
+		if (value != null) {
+			String pattern = strings.gts(type, KeyWords.DATETIME_FORMAT);
+			
+			DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+		   	    
+			value = ((LocalDateTime)value).format(format);
+		}
 		
-		DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
-	   	    
-		return time(((LocalDateTime)value).format(format));
+		return value;
 	}
 
 	public Element time(Object time) {
@@ -3480,14 +3532,21 @@ public class HTMLView extends View {
 	}
 	
 	public Element numericOutput(Object value, String lang) {
-		DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale(lang));
-		char separator = symbols.getDecimalSeparator();
+					
+		return document.createElement(HTML.SPAN).appendText(localeNumeric(value, lang));
+	}
+	
+	public Object localeNumeric(Object value, String lang) {
+		if (value != null) {
+			DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale(lang));
+			char separator = symbols.getDecimalSeparator();
 				
-		if (separator != '.') {
-			value = value.toString().replace('.', separator);
-		}	
-				
-		return document.createElement(HTML.SPAN).appendText(value);
+			if (separator != '.') {
+				value = value.toString().replace('.', separator);
+			}	
+		}
+		
+		return value;
 	}
 
 	public Element textOutput(Object value) {
