@@ -71,6 +71,8 @@ public class KeyWords {
 	public static final String CURRENT_PASSWORD = "current_password";
 	public static final String DATA = "data";
 	public static final String DATE = "date";
+	public static final String DATE_FORMAT = "date_format";
+	public static final String DATETIME_FORMAT = "datetime_format";
 	public static final String DATABASE = "database";
 	public static final String DEBUG = "debug";
 	public static final String DEFAULT = "default";
@@ -332,6 +334,7 @@ public class KeyWords {
 	public static final String TEMPLATES = "templates";
 	public static final String TEXT = "text";
 	public static final String THUMBNAIL = "thumbnail";
+	public static final String TIME_FORMAT = "time_format";
 	public static final String TITLE = "title";
 	public static final String TRUE = "true";
 	public static final String TYPE = "type";

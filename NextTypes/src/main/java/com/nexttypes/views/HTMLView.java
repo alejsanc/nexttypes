@@ -30,7 +30,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2649,22 +2648,28 @@ public class HTMLView extends View {
 		return select;
 	}
 	
-	public Element dateOutput(Object value, String lang) {
-		DateTimeFormatter format = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-				.withLocale(new Locale(lang));
-		return document.createElement(HTML.TIME).appendText(((LocalDate)value).format(format));
+	public Element dateOutput(String type, Object value) {
+		String pattern = strings.gts(type, KeyWords.DATE_FORMAT);
+		
+		DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+		
+		return time(((LocalDate)value).format(format));
 	}
 	
-	public Element timeOutput(Object value, String lang) {
-		DateTimeFormatter format = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-				.withLocale(new Locale(lang));
-		return document.createElement(HTML.TIME).appendText(((LocalTime)value).format(format));
+	public Element timeOutput(String type, Object value) {
+		String pattern = strings.gts(type, KeyWords.TIME_FORMAT);
+		
+		DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+		
+		return time(((LocalTime)value).format(format));
 	}
 	
-	public Element dateTimeOutput(Object value, String lang) {
-		DateTimeFormatter format = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-				.withLocale(new Locale(lang));
-		return document.createElement(HTML.TIME).appendText(((LocalDateTime)value).format(format));
+	public Element dateTimeOutput(String type, Object value) {
+		String pattern = strings.gts(type, KeyWords.DATETIME_FORMAT);
+		
+		DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
+	   	    
+		return time(((LocalDateTime)value).format(format));
 	}
 
 	public Element time(Object time) {
@@ -3336,13 +3341,13 @@ public class HTMLView extends View {
 				fieldElement = booleanOutput(value);
 				break;
 			case PT.DATE:
-				fieldElement = dateOutput(value, lang);
+				fieldElement = dateOutput(object.getType(), value);
 				break;
 			case PT.TIME:
-				fieldElement = timeOutput(value, lang);
+				fieldElement = timeOutput(object.getType(), value);
 				break;
 			case PT.DATETIME:
-				fieldElement = dateTimeOutput(value, lang);
+				fieldElement = dateTimeOutput(object.getType(), value);
 				break;
 			case PT.COLOR:
 				fieldElement = colorOutput(value);
