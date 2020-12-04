@@ -108,7 +108,7 @@ public class PT {
 	}
 	
 	public static BigDecimal numericMaxValue(Integer precision, Integer scale) {
-						
+		
 		StringBuilder max = new StringBuilder();
 		int left = precision - scale;
 							

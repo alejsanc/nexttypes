@@ -94,7 +94,7 @@ public class TypeField {
 		
 		if (range != null) {
 			range.parse(type, precision, scale);
-		} else if (PT.isNumericType(type)) {
+		} else if (PT.isNumericType(type) && precision != null) {
 			range = new FieldRange(type, precision, scale);
 		}
 		
