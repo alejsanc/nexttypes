@@ -35,7 +35,6 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.Video;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.exceptions.TypeNotFoundException;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Strings;
