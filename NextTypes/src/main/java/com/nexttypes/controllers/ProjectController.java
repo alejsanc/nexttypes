@@ -42,6 +42,9 @@ public class ProjectController extends Controller {
 	public static final String PROJECT_DOCUMENT_CHAPTER = "project_document_chapter";
 	public static final String PROJECT_MEETING_PARTICIPANT = "project_meeting_participant";
 	public static final String PROJECT_TICKET_MESSAGE = "project_ticket_message";
+	public static final String DOCUMENT = "document";
+	public static final String MEETING = "meeting";
+	public static final String TICKET = "ticket";
 	
 	public ProjectController(String type, Auth auth, Node nextNode) {
 		super(type, auth, nextNode);
@@ -198,15 +201,15 @@ public class ProjectController extends Controller {
 
 		switch (type) {
 		case PROJECT_DOCUMENT_CHAPTER:
-			referencingField = PROJECT_DOCUMENT;
+			referencingField = DOCUMENT;
 			break;
 
 		case PROJECT_MEETING_PARTICIPANT:
-			referencingField = PROJECT_MEETING;
+			referencingField = MEETING;
 			break;
 
 		case PROJECT_TICKET_MESSAGE:
-			referencingField = PROJECT_TICKET;
+			referencingField = TICKET;
 			break;
 		}
 
