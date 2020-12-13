@@ -19,7 +19,7 @@ package com.nexttypes.system;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Permissions;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 
 public abstract class Module implements AutoCloseable {
@@ -27,7 +27,7 @@ public abstract class Module implements AutoCloseable {
 
 	public abstract Context getContext();
 
-	public abstract Strings getStrings();
+	public abstract LanguageSettings getLanguageSettings();
 
 	public abstract TypeSettings getTypeSettings();
 	

@@ -64,7 +64,7 @@ import com.nexttypes.exceptions.NXException;
 import com.nexttypes.security.Checks;
 import com.nexttypes.security.Security;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.KeyWords;
@@ -85,7 +85,7 @@ public class HTTPRequest {
 
 	protected Settings settings;
 	protected TypeSettings typeSettings;
-	protected Strings strings;
+	protected LanguageSettings languageSettings;
 	protected HttpServletRequest request;
 	protected URL url;
 	protected Auth auth;
@@ -141,11 +141,11 @@ public class HTTPRequest {
 	protected LinkedHashMap<String, LinkedHashMap<String, HashMap<String, String>>> compositeParameters;
 
 	public HTTPRequest(HttpServletRequest request, Settings settings, Context context, String lang, 
-			Strings strings, Auth auth, URL url) {
+			LanguageSettings languageSettings, Auth auth, URL url) {
 		this.request = request;
 		this.settings = settings;
 		this.context = context;
-		this.strings = strings;
+		this.languageSettings = languageSettings;
 		this.lang = lang;
 		this.auth = auth;
 		this.url = url;
@@ -829,8 +829,8 @@ public class HTTPRequest {
 		return typeSettings;
 	}
 
-	public Strings getStrings() {
-		return strings;
+	public LanguageSettings getLanguageSettings() {
+		return languageSettings;
 	}
 
 	public String getRemoteAddress() {

@@ -31,7 +31,7 @@ import com.nexttypes.exceptions.NotImplementedException;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.nodes.Node;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
 
@@ -42,15 +42,15 @@ public class TypesStreamDeserializer extends StreamDeserializer implements Types
 	protected String lang;
 	protected Node nextNode;
 	protected TypeSettings typeSettings;
-	protected Strings strings;
+	protected LanguageSettings languageSettings;
 
 	public TypesStreamDeserializer(InputStream input, String lang, Node nextNode, TypeSettings typeSettings,
-			Strings strings) {
+			LanguageSettings languageSettings) {
 		super(input);
 		this.lang = lang;
 		this.nextNode = nextNode;
 		this.typeSettings = typeSettings;
-		this.strings = strings;
+		this.languageSettings = languageSettings;
 	}
 	
 	@Override
@@ -123,7 +123,7 @@ public class TypesStreamDeserializer extends StreamDeserializer implements Types
 
 	@Override
 	public ObjectsStream getObjectsStream() {
-		return new ObjectsStreamDeserializer(parser, lang, true, nextNode, typeSettings, strings);
+		return new ObjectsStreamDeserializer(parser, lang, true, nextNode, typeSettings, languageSettings);
 	}
 
 	@Override

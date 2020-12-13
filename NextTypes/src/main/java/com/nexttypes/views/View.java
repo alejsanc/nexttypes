@@ -36,7 +36,7 @@ import com.nexttypes.nodes.Node;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
@@ -51,7 +51,7 @@ public abstract class View extends Module {
 	protected Node nextNode;
 	protected Settings settings;
 	protected TypeSettings typeSettings;
-	protected Strings strings;
+	protected LanguageSettings languageSettings;
 	protected Auth auth;
 
 	public View() {
@@ -72,7 +72,7 @@ public abstract class View extends Module {
 		}
 		
 		typeSettings = request.getTypeSettings();
-		strings = request.getStrings();
+		languageSettings = request.getLanguageSettings();
 
 		auth = request.getAuth();
 	}
@@ -82,11 +82,11 @@ public abstract class View extends Module {
 	}
 
 	public Content notFound(String type, String lang, String view, NotFoundException e) {
-		return new Content(e.getMessage(request.getStrings()), Format.TEXT, HTTPStatus.NOT_FOUND);
+		return new Content(e.getMessage(request.getLanguageSettings()), Format.TEXT, HTTPStatus.NOT_FOUND);
 	}
 
 	public Content unauthorized(String type, String lang, String view, UnauthorizedException e) {
-		return new Content(e.getMessage(request.getStrings()), Format.TEXT, HTTPStatus.UNAUTHORIZED);
+		return new Content(e.getMessage(request.getLanguageSettings()), Format.TEXT, HTTPStatus.UNAUTHORIZED);
 	}
 
 	@Override
@@ -112,8 +112,8 @@ public abstract class View extends Module {
 	}
 
 	@Override
-	public Strings getStrings() {
-		return request.getStrings();
+	public LanguageSettings getLanguageSettings() {
+		return request.getLanguageSettings();
 	}
 
 	@Override

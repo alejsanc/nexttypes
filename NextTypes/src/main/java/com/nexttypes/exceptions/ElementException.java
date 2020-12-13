@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class ElementException extends FieldException {
 	protected static final long serialVersionUID = 1L;
@@ -33,10 +33,10 @@ public class ElementException extends FieldException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
-		String fieldName = strings.getFieldName(type, field);
+	public String getMessage(LanguageSettings languageSettings) {
+		String typeName = languageSettings.getTypeName(type);
+		String fieldName = languageSettings.getFieldName(type, field);
 		
-		return strings.gts(type, setting) + ": " + typeName + "::" + fieldName + "::" + element;
+		return languageSettings.gts(type, setting) + ": " + typeName + "::" + fieldName + "::" + element;
 	}
 }

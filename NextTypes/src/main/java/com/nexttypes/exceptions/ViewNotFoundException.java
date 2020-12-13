@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class ViewNotFoundException extends NXException {
@@ -34,9 +34,9 @@ public class ViewNotFoundException extends NXException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
+	public String getMessage(LanguageSettings languageSettings) {
+		String typeName = languageSettings.getTypeName(type);
 		
-		return strings.gts(type, KeyWords.VIEW_NOT_FOUND) + ": " + typeName + "::" + view;
+		return languageSettings.gts(type, KeyWords.VIEW_NOT_FOUND) + ": " + typeName + "::" + view;
 	}
 }

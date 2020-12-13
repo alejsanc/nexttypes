@@ -29,7 +29,7 @@ import com.nexttypes.exceptions.NXException;
 import com.nexttypes.logging.Logger;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Loader;
@@ -37,7 +37,7 @@ import com.nexttypes.system.Loader;
 public class SMTPServerConnection extends Thread {
 	protected String host;
 	protected Settings settings;
-	protected Strings strings;
+	protected LanguageSettings languageSettings;
 	protected Socket socket;
 	protected String remoteAddress;
 	protected Context context;
@@ -50,12 +50,12 @@ public class SMTPServerConnection extends Thread {
 	protected StringBuilder rcptTo = new StringBuilder();
 	protected StringBuilder data = new StringBuilder();
 
-	public SMTPServerConnection(Socket socket, Context context, Settings settings, Strings strings, Logger logger) {
+	public SMTPServerConnection(Socket socket, Context context, Settings settings, LanguageSettings languageSettings, Logger logger) {
 		this.socket = socket;
 		this.remoteAddress = socket.getRemoteSocketAddress().toString();
 		this.context = context;
 		this.settings = settings;
-		this.strings = strings;
+		this.languageSettings = languageSettings;
 		this.logger = logger;
 
 		host = settings.getString(KeyWords.HOST);
@@ -130,7 +130,7 @@ public class SMTPServerConnection extends Thread {
 			ok();
 		} catch (NXException e) {
 			logger.severe(Auth.SMTP, remoteAddress, e);
-			error(e.getMessage(strings));
+			error(e.getMessage(languageSettings));
 		}
 	}
 

@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class TypeNotFoundException extends NotFoundException {
@@ -33,8 +33,8 @@ public class TypeNotFoundException extends NotFoundException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String message = strings.gts(type, KeyWords.TYPE_NOT_FOUND) + ": ";
+	public String getMessage(LanguageSettings languageSettings) {
+		String message = languageSettings.gts(type, KeyWords.TYPE_NOT_FOUND) + ": ";
 
 		if (type != null) {
 			message += type;

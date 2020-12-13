@@ -70,7 +70,7 @@ import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
@@ -1067,8 +1067,8 @@ public class ControllersNode extends Node {
 	}
 
 	@Override
-	public Strings getStrings() {
-		return nextNode.getStrings();
+	public LanguageSettings getLanguageSettings() {
+		return nextNode.getLanguageSettings();
 	}
 
 	@Override

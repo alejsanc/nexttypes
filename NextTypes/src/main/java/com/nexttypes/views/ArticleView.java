@@ -28,7 +28,6 @@ import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.RSS;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.Tuples;
-import com.nexttypes.datatypes.URL;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.datatypes.JSONLD;
 import com.nexttypes.enums.Order;
@@ -134,7 +133,7 @@ public class ArticleView extends HTMLView {
 		Tuple[] authors = nextNode.query(authorsSQL, id);
 		
 		if (showAuthors && authors != null && authors.length > 0) {
-			main.appendElement(listFieldOutput(type, strings.gts(type, AUTHORS), authors,
+			main.appendElement(listFieldOutput(type, languageSettings.gts(type, AUTHORS), authors,
 					KeyWords.USER, lang, view));
 		}
 		
@@ -166,7 +165,7 @@ public class ArticleView extends HTMLView {
 		String publisherLogo = request.getURLRoot() + typeSettings.gts(type, KeyWords.LOGO);
 		
 		head.appendElement(HTML.SCRIPT).setAttribute(HTML.TYPE, Format.JSON_LD.getContentType())
-			.appendText(new JSONLD().article(title, image, authors, strings.gts(type, PUBLISHER),
+			.appendText(new JSONLD().article(title, image, authors, languageSettings.gts(type, PUBLISHER),
 					publisherLogo, cdate, udate));
 		
 		return render(type);
@@ -183,7 +182,7 @@ public class ArticleView extends HTMLView {
 					
 			String category = request.getParameters().getString(CATEGORY);
 			String typeFilters = typeSettings.gts(type, KeyWords.FILTERS);
-			String title = strings.getTypeName(ARTICLE);
+			String title = languageSettings.getTypeName(ARTICLE);
 			ArrayList<Object> parameters = new ArrayList<>();
 			parameters.add(lang);
 			
@@ -200,7 +199,7 @@ public class ArticleView extends HTMLView {
 			sql.append(" order by a.cdate desc limit 10");
 				
 			Tuple[] tuples = nextNode.query(sql, parameters);
-			RSS rss = new RSS(title, strings.gts(type, KeyWords.DESCRIPTION), type, lang,
+			RSS rss = new RSS(title, languageSettings.gts(type, KeyWords.DESCRIPTION), type, lang,
 					request.getURLRoot(), tuples);
 			content = new Content(rss.toString(), Format.RSS);
 			
@@ -278,7 +277,7 @@ public class ArticleView extends HTMLView {
 		parameters.add(lang);
 		parameters.add(lang);
 
-		String previewTitle = strings.gts(type, KeyWords.PREVIEW_TITLE);
+		String previewTitle = languageSettings.gts(type, KeyWords.PREVIEW_TITLE);
 		
 		category = request.getParameters().getString(CATEGORY);
 		
@@ -332,14 +331,14 @@ public class ArticleView extends HTMLView {
 				
 				if (text != null) {
 					article.appendElement(HTML.P).appendText(text + " ... ")
-						.appendElement(anchor(strings.gts(type, KeyWords.READ_MORE), url));
+						.appendElement(anchor(languageSettings.gts(type, KeyWords.READ_MORE), url));
 				}
 				
 				if (showAuthors) {
 					String[][] authors = (String[][]) tuple.getArray(AUTHORS);
 					
 					if (authors != null) {
-						article.appendElement(listFieldOutput(type, strings.gts(type, AUTHORS), authors,
+						article.appendElement(listFieldOutput(type, languageSettings.gts(type, AUTHORS), authors,
 								KeyWords.USER, lang, view));
 					}
 				}
@@ -357,7 +356,7 @@ public class ArticleView extends HTMLView {
 					tuples.getCount(), tuples.getOffset(), tuples.getLimit(), tuples.getMinLimit(),
 					tuples.getMaxLimit(), tuples.getLimitIncrement(), Component.TYPE));
 		} else {
-			main.appendElement(HTML.P).appendText(strings.gts(KeyWords.NO_OBJECTS_FOUND));
+			main.appendElement(HTML.P).appendText(languageSettings.gts(KeyWords.NO_OBJECTS_FOUND));
 		}
 
 		return render(type);
@@ -391,7 +390,7 @@ public class ArticleView extends HTMLView {
 	}
 	
 	public Element categoriesListOutput(String type, Object[] categories, String lang, String view) {
-		return listFieldOutput(type, strings.gts(type, CATEGORIES), categories,
+		return listFieldOutput(type, languageSettings.gts(type, CATEGORIES), categories,
 				category -> url(type, lang, view) + "&" + Action.PREVIEW + parameter(CATEGORY, category));
 	}
 	

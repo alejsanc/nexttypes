@@ -66,7 +66,7 @@ import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.Order;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.Context;
 
@@ -1007,8 +1007,8 @@ public class ProxyNode extends Node {
 	}
 
 	@Override
-	public Strings getStrings() {
-		return nextNode.getStrings();
+	public LanguageSettings getLanguageSettings() {
+		return nextNode.getLanguageSettings();
 	}
 
 	@Override

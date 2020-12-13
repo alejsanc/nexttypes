@@ -87,28 +87,28 @@ public class SoftwareView extends HTMLView {
 		document.getTitle().appendText(title);
 		article.appendElement(HTML.H1).appendText(title);
 
-		article.appendElement(fieldOutput(strings.getString(LICENSE), anchor(tuple.getString("license_name"),
+		article.appendElement(fieldOutput(languageSettings.getString(LICENSE), anchor(tuple.getString("license_name"),
 				url("software_license", tuple.getString("license_id"), lang, view))));
 
 		String version = tuple.getString("version");
-		String lastRelease = strings.getString(LAST_RELEASE);
+		String lastRelease = languageSettings.getString(LAST_RELEASE);
 		if (version != null) {
 			article.appendElement(fieldOutput(lastRelease, anchor(version, tuple.getString("link")), " ",
-					anchor(" - " + strings.getString(ALL_RELEASES),
+					anchor(" - " + languageSettings.getString(ALL_RELEASES),
 							url("software_release", lang, view) + "&ref=software:" + id + "&order=version:desc")));
 		} else {
-			article.appendElement(fieldOutput(lastRelease, strings.getString(NOT_RELEASED)));
+			article.appendElement(fieldOutput(lastRelease, languageSettings.getString(NOT_RELEASED)));
 		}
 
 		String sourceCode = tuple.getString("source_code");
 		if (sourceCode != null) {
-			article.appendElement(fieldOutput(strings.getString(SOURCE_CODE), anchor(sourceCode)));
+			article.appendElement(fieldOutput(languageSettings.getString(SOURCE_CODE), anchor(sourceCode)));
 		}
 
 		HTMLFragment description = tuple.getHTML("description", lang,
 				typeSettings.getFieldString(type, "description", KeyWords.HTML_ALLOWED_TAGS));
 		if (description != null) {
-			article.appendElement(fieldOutput(strings.getString(DESCRIPTION), description));
+			article.appendElement(fieldOutput(languageSettings.getString(DESCRIPTION), description));
 		}
 
 		main.appendElement(dates(type, tuple.getUTCDateTime(KeyWords.CDATE), tuple.getUTCDateTime(KeyWords.UDATE)));

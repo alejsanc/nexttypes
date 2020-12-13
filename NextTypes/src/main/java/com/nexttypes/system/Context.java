@@ -44,7 +44,7 @@ import com.nexttypes.logging.Logger;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Permissions;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 
 public class Context {
@@ -151,8 +151,8 @@ public class Context {
 		return new TypeSettings(properties);
 	}
 
-	public Strings getStrings(String lang) {
-		return new Strings(getProperties(KeyWords.LANG + "/" + lang + ".properties"));
+	public LanguageSettings getLanguageSettings(String lang) {
+		return new LanguageSettings(getProperties(KeyWords.LANG + "/" + lang + ".properties"));
 	}
 	
 	public Permissions getPermissions(Module module) {

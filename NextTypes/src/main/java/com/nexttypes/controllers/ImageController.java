@@ -52,6 +52,6 @@ public class ImageController extends Controller {
 
 		String message = objects.length == 1 ? IMAGE_SUCCESSFULLY_RESIZED : IMAGES_SUCCESSFULLY_RESIZED;
 
-		return new ActionResult(strings.gts(type, message));
+		return new ActionResult(languageSettings.gts(type, message));
 	}
 }

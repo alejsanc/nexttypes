@@ -18,7 +18,7 @@ package com.nexttypes.exceptions;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class UnauthorizedActionException extends UnauthorizedException {
@@ -57,14 +57,14 @@ public class UnauthorizedActionException extends UnauthorizedException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		StringBuilder message = new StringBuilder(strings.gts(type, KeyWords.UNAUTHORIZED_ACTION) + ": ");
+	public String getMessage(LanguageSettings languageSettings) {
+		StringBuilder message = new StringBuilder(languageSettings.gts(type, KeyWords.UNAUTHORIZED_ACTION) + ": ");
 		
 		if (type != null) {
-			message.append(strings.getTypeName(type) + "::");
+			message.append(languageSettings.getTypeName(type) + "::");
 		}
 		
-		message.append(strings.getActionName(type, action));
+		message.append(languageSettings.getActionName(type, action));
 		
 		if (objects != null && objects.length > 0) {
 			message.append(" -> " + StringUtils.join(objects, ","));

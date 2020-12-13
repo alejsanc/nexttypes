@@ -42,7 +42,7 @@ public aspect ArticleMenu {
 			if (menuElement != null) {
 
 				menuElement.appendElement(HTML.DIV).addClass(HTMLView.MENU_TITLE)
-						.appendText(target.getStrings().gts(type, ArticleView.CATEGORIES) + ":");
+						.appendText(target.getLanguageSettings().gts(type, ArticleView.CATEGORIES) + ":");
 
 				String sql = "select name, category from category_language where language = ? order by name";
 				Tuple[] tuples = target.getNextNode().query(sql, lang);

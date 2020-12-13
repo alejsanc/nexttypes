@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class UnauthorizedReferenceException extends UnauthorizedException {
@@ -60,12 +60,12 @@ public class UnauthorizedReferenceException extends UnauthorizedException {
 	}	
 	
 	@Override
-	public String getMessage(Strings strings) {
-		String referencingTypeName = strings.getTypeName(referencingType);
-		String referencingFieldName = strings.getFieldName(referencingType, referencingField);
-		String referencedTypeName = strings.getTypeName(referencedType);
+	public String getMessage(LanguageSettings languageSettings) {
+		String referencingTypeName = languageSettings.getTypeName(referencingType);
+		String referencingFieldName = languageSettings.getFieldName(referencingType, referencingField);
+		String referencedTypeName = languageSettings.getTypeName(referencedType);
 		
-		StringBuilder message = new StringBuilder(strings.gts(type, KeyWords.UNAUTHORIZED_REFERENCE)
+		StringBuilder message = new StringBuilder(languageSettings.gts(type, KeyWords.UNAUTHORIZED_REFERENCE)
 				+ ": " + referencingTypeName);
 		
 		if (referencingId != null) {

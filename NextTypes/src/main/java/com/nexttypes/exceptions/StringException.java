@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class StringException extends NXException {
 	private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public class StringException extends NXException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
+	public String getMessage(LanguageSettings languageSettings) {
 		return message;
 	}
 }

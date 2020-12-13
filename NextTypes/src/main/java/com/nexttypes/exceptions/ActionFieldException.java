@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class ActionFieldException extends ActionException {
 	protected static final long serialVersionUID = 1L;
@@ -43,12 +43,12 @@ public class ActionFieldException extends ActionException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
-		String actionName = strings.getActionName(type,  action);
-		String fieldName = strings.getActionFieldName(type, action, field);
+	public String getMessage(LanguageSettings languageSettings) {
+		String typeName = languageSettings.getTypeName(type);
+		String actionName = languageSettings.getActionName(type,  action);
+		String fieldName = languageSettings.getActionFieldName(type, action, field);
 
-		String message = strings.gts(type, setting) + ": " + typeName + "::" + actionName + "::" + fieldName;
+		String message = languageSettings.gts(type, setting) + ": " + typeName + "::" + actionName + "::" + fieldName;
 
 		if (value != null) {
 			message += " -> " + value;

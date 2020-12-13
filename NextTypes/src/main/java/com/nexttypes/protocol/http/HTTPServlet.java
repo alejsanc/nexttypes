@@ -68,7 +68,7 @@ import com.nexttypes.interfaces.Stream;
 import com.nexttypes.logging.Logger;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.KeyWords;
@@ -273,7 +273,8 @@ public class HTTPServlet extends HttpServlet {
 		return content;
 	}
 
-	protected void exportTypes(HTTPRequest req, Node nextNode, HttpServletResponse response, Strings strings)
+	protected void exportTypes(HTTPRequest req, Node nextNode, HttpServletResponse response,
+			LanguageSettings languageSettings)
 			throws IOException {
 
 		try (Stream stream = nextNode.exportTypes(req.getTypes(), req.includeObjects())) {
@@ -285,7 +286,8 @@ public class HTTPServlet extends HttpServlet {
 		}
 	}
 
-	protected void exportObjects(HTTPRequest req, Node nextNode, HttpServletResponse response, Strings strings)
+	protected void exportObjects(HTTPRequest req, Node nextNode, HttpServletResponse response,
+			LanguageSettings languageSettings)
 			throws IOException {
 
 		try (Stream stream = nextNode.exportObjects(req.getType(), req.getObjects(), req.getOrder())) {
@@ -337,14 +339,14 @@ public class HTTPServlet extends HttpServlet {
 		}
 
 		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), req, mode)) {
-			Strings strings = context.getStrings(req.getLang());
+			LanguageSettings languageSettings = context.getLanguageSettings(req.getLang());
 			ZonedDateTime udate = null;
 			String[] fields = null;
 
 			switch (req.getAction()) {
 			case Action.CREATE:
 				nextNode.create(req.readType());
-				content = new Content(strings.gts(req.getType(), KeyWords.TYPE_SUCCESSFULLY_CREATED));
+				content = new Content(languageSettings.gts(req.getType(), KeyWords.TYPE_SUCCESSFULLY_CREATED));
 				break;
 
 			case Action.ALTER:
@@ -354,14 +356,14 @@ public class HTTPServlet extends HttpServlet {
 			case Action.RENAME:
 				ZonedDateTime adate = nextNode.rename(req.getType(), req.getNewName());
 				content = new Content(
-						new RenameResult(strings.gts(req.getType(), KeyWords.TYPE_SUCCESSFULLY_RENAMED), adate));
+						new RenameResult(languageSettings.gts(req.getType(), KeyWords.TYPE_SUCCESSFULLY_RENAMED), adate));
 				break;
 
 			case Action.INSERT:
 				fields = req.getTypeSettings().getActionStringArray(req.getType(),
 						Action.INSERT, KeyWords.FIELDS);
 				nextNode.insert(req.readObject(nextNode.getTypeFields(req.getType(), fields)));
-				content = new Content(strings.gts(req.getType(), KeyWords.OBJECT_SUCCESSFULLY_INSERTED));
+				content = new Content(languageSettings.gts(req.getType(), KeyWords.OBJECT_SUCCESSFULLY_INSERTED));
 				insertRequest(req);
 				break;
 
@@ -370,7 +372,7 @@ public class HTTPServlet extends HttpServlet {
 						Action.UPDATE, KeyWords.FIELDS);
 				udate = nextNode.update(req.readObject(nextNode.getTypeFields(req.getType(),fields)),
 						req.getUDate());
-				content = new Content(new UpdateResult(strings.gts(req.getType(), 
+				content = new Content(new UpdateResult(languageSettings.gts(req.getType(), 
 						KeyWords.OBJECT_SUCCESSFULLY_UPDATED), udate));
 				break;
 
@@ -382,17 +384,17 @@ public class HTTPServlet extends HttpServlet {
 			case Action.UPDATE_PASSWORD:
 				nextNode.updatePassword(req.getType(), req.getId(), req.getField(), req.getCurrentPassword(),
 						req.getNewPassword(), req.getNewPasswordRepeat());
-				content = new Content(strings.gts(req.getType(), KeyWords.PASSWORD_SUCCESSFULLY_UPDATED));
+				content = new Content(languageSettings.gts(req.getType(), KeyWords.PASSWORD_SUCCESSFULLY_UPDATED));
 				break;
 
 			case Action.DELETE:
 				nextNode.delete(req.getType(), req.getObjects());
-				content = new Content(strings.gts(req.getType(), KeyWords.OBJECTS_SUCCESSFULLY_DELETED));
+				content = new Content(languageSettings.gts(req.getType(), KeyWords.OBJECTS_SUCCESSFULLY_DELETED));
 				break;
 
 			case Action.DROP:
 				nextNode.drop(req.getTypes());
-				content = new Content(strings.gts(KeyWords.TYPES_SUCCESSFULLY_DROPPED));
+				content = new Content(languageSettings.gts(KeyWords.TYPES_SUCCESSFULLY_DROPPED));
 				break;
 
 			case Action.IMPORT_OBJECTS:
@@ -406,19 +408,19 @@ public class HTTPServlet extends HttpServlet {
 				break;
 
 			case Action.EXPORT_TYPES:
-				exportTypes(req, nextNode, response, strings);
+				exportTypes(req, nextNode, response, languageSettings);
 				break;
 
 			case Action.EXPORT_OBJECTS:
-				exportObjects(req, nextNode, response, strings);
+				exportObjects(req, nextNode, response, languageSettings);
 				break;
 
 			case Action.LOGIN:
-				content = login(req, nextNode, strings);
+				content = login(req, nextNode, languageSettings);
 				break;
 
 			case Action.LOGOUT:
-				content = logout(req, strings);
+				content = logout(req, languageSettings);
 				break;
 
 			default:
@@ -446,7 +448,7 @@ public class HTTPServlet extends HttpServlet {
 		return content;
 	}
 
-	protected Content login(HTTPRequest req, Node nextNode, Strings strings) {
+	protected Content login(HTTPRequest req, Node nextNode, LanguageSettings languageSettings) {
 		String remoteAddress = req.getRemoteAddress();
 
 		checkAuthErrors(remoteAddress);
@@ -469,7 +471,7 @@ public class HTTPServlet extends HttpServlet {
 			HttpSession session = req.getSession();
 			session.setAttribute(KeyWords.AUTH, new Auth(user, groups, true));
 
-			content = new Content(strings.gts(KeyWords.SUCCESSFUL_LOGIN) + ".");
+			content = new Content(languageSettings.gts(KeyWords.SUCCESSFUL_LOGIN) + ".");
 			logger.info(this, user, remoteAddress, new Message(KeyWords.SUCCESSFUL_LOGIN, user));
 		} else {
 			authError(remoteAddress);
@@ -479,7 +481,7 @@ public class HTTPServlet extends HttpServlet {
 		return content;
 	}
 
-	protected Content logout(HTTPRequest req, Strings strings) {
+	protected Content logout(HTTPRequest req, LanguageSettings languageSettings) {
 		Content content = null;
 		HttpServletRequest request = req.getServletRequest();
 		HttpSession session = request.getSession();
@@ -488,7 +490,7 @@ public class HTTPServlet extends HttpServlet {
 
 		if (auth != null) {
 			session.removeAttribute(KeyWords.AUTH);
-			content = new Content(strings.gts(KeyWords.SUCCESSFUL_LOGOUT));
+			content = new Content(languageSettings.gts(KeyWords.SUCCESSFUL_LOGOUT));
 			logger.info(this, auth.getUser(), remoteAddress, new Message(KeyWords.SUCCESSFUL_LOGOUT));
 		} else {
 			throw new NXException(KeyWords.USER_NOT_LOGGED_IN);
@@ -943,7 +945,7 @@ public class HTTPServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) {
 		
 		String lang = null;
-		Strings strings = null;
+		LanguageSettings languageSettings = null;
 		String user = Auth.GUEST;
 
 		try {
@@ -959,7 +961,7 @@ public class HTTPServlet extends HttpServlet {
 			if (content == null) {
 
 				lang = readLang(request);
-				strings = context.getStrings(lang);
+				languageSettings = context.getLanguageSettings(lang);
 				Auth auth = auth(request);
 				user = auth.getUser();
 
@@ -976,7 +978,7 @@ public class HTTPServlet extends HttpServlet {
 						content = sitemap(request, lang, auth);
 					} else {
 						HTTPRequest req = new HTTPRequest(request, settings, context, lang, 
-								strings, auth, url);
+								languageSettings, auth, url);
 
 						switch (req.getRequestMethod()) {
 						case GET:
@@ -1010,12 +1012,12 @@ public class HTTPServlet extends HttpServlet {
 			writeContent(content, response);
 
 		} catch (Exception e) {
-			writeException(e, request, response, strings, user);
+			writeException(e, request, response, languageSettings, user);
 		}
 	}
 
 	protected void writeException(Exception e, HttpServletRequest request, HttpServletResponse response,
-			Strings strings, String user) {
+			LanguageSettings languageSettings, String user) {
 		
 		HTTPStatus status = null;
 		String message = null;
@@ -1047,7 +1049,7 @@ public class HTTPServlet extends HttpServlet {
 		}
 
 		if (e instanceof NXException) {
-			message = ((NXException) e).getMessage(strings);
+			message = ((NXException) e).getMessage(languageSettings);
 		} else {
 			message = NXException.getMessage(e);
 		}
@@ -1153,7 +1155,7 @@ public class HTTPServlet extends HttpServlet {
 				} else {
 				
 					if (requests.requests >= maxInserts) {
-						String message = req.getStrings().gts(type, KeyWords.MAX_INSERTS_EXCEEDED);
+						String message = req.getLanguageSettings().gts(type, KeyWords.MAX_INSERTS_EXCEEDED);
 
 						content = new Content(message, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
 

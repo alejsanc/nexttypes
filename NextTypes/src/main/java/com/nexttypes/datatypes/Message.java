@@ -16,7 +16,7 @@
 
 package com.nexttypes.datatypes;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class Message {
 	protected String setting;
@@ -31,8 +31,8 @@ public class Message {
 		this.value = value;
 	}
 
-	public String getMessage(Strings strings) {
-		String message = strings.gts(setting);
+	public String getMessage(LanguageSettings languageSettings) {
+		String message = languageSettings.gts(setting);
 
 		if (value != null) {
 			message += ": " + value;

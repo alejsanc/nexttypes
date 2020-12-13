@@ -22,9 +22,9 @@ import java.util.Properties;
 import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.system.KeyWords;
 
-public class Strings extends TypeSettings {
+public class LanguageSettings extends TypeSettings {
 
-	public Strings(ArrayList<Properties> settings) {
+	public LanguageSettings(ArrayList<Properties> settings) {
 		super(settings);
 	}
 

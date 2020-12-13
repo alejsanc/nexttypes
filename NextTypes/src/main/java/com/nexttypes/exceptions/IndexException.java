@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class IndexException extends TypeException {
 	protected static final long serialVersionUID = 1L;
@@ -33,9 +33,9 @@ public class IndexException extends TypeException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
+	public String getMessage(LanguageSettings languageSettings) {
+		String typeName = languageSettings.getTypeName(type);
 		
-		return strings.gts(type, setting) + ": " + typeName + "::" + index;
+		return languageSettings.gts(type, setting) + ": " + typeName + "::" + index;
 	}
 }

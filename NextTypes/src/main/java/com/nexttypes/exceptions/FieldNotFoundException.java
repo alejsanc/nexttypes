@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class FieldNotFoundException extends NotFoundException {
@@ -39,11 +39,11 @@ public class FieldNotFoundException extends NotFoundException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String message = strings.gts(type, KeyWords.FIELD_NOT_FOUND) + ": ";
+	public String getMessage(LanguageSettings languageSettings) {
+		String message = languageSettings.gts(type, KeyWords.FIELD_NOT_FOUND) + ": ";
 
 		if (type != null) {
-			String typeName = strings.getTypeName(type);
+			String typeName = languageSettings.getTypeName(type);
 						
 			message += typeName + "::" + field;
 		} else {

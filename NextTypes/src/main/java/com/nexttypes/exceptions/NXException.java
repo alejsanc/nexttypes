@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class NXException extends RuntimeException {
 	protected static final long serialVersionUID = 1L;
@@ -51,12 +51,12 @@ public class NXException extends RuntimeException {
 		return setting;
 	}
 
-	public String getMessage(Strings strings) {
+	public String getMessage(LanguageSettings languageSettings) {
 		String message = null;
 		Throwable cause = getCause();
 		
 		if (cause == null) {
-			message = strings.gts(type, setting);
+			message = languageSettings.gts(type, setting);
 		} else {			
 			message = getMessage(cause);
 		}

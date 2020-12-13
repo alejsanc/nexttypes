@@ -23,13 +23,13 @@ import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.URL;
 import com.nexttypes.logging.Logger;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 
 public class SMTPServer extends Thread {
 	protected Settings settings;
-	protected Strings strings;
+	protected LanguageSettings languageSettings;
 	protected ServerSocket socket;
 	protected Context context;
 	protected Logger logger;
@@ -40,7 +40,7 @@ public class SMTPServer extends Thread {
 			this.context = context;
 			logger = context.getLogger();
 			settings = context.getSettings(Settings.SMTP_SETTINGS);
-			strings = context.getStrings(settings.getString(KeyWords.LANG));
+			languageSettings = context.getLanguageSettings(settings.getString(KeyWords.LANG));
 			socket = new ServerSocket(settings.getInt32(KeyWords.PORT), settings.getInt32(KeyWords.BACKLOG),
 					InetAddress.getByName((settings.getString(KeyWords.BIND_ADDRESS))));
 			open = true;
@@ -52,7 +52,7 @@ public class SMTPServer extends Thread {
 	public void run() {
 		while (!socket.isClosed()) {
 			try {
-				SMTPServerConnection connection = new SMTPServerConnection(socket.accept(), context, settings, strings,
+				SMTPServerConnection connection = new SMTPServerConnection(socket.accept(), context, settings, languageSettings,
 						logger);
 				connection.start();
 			} catch (Exception e) {

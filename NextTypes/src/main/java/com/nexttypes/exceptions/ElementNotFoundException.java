@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class ElementNotFoundException extends NotFoundException {
@@ -45,11 +45,11 @@ public class ElementNotFoundException extends NotFoundException {
 		return element;
 	}
 
-	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
-		String fieldName = strings.getFieldName(type, field);
+	public String getMessage(LanguageSettings languageSettings) {
+		String typeName = languageSettings.getTypeName(type);
+		String fieldName = languageSettings.getFieldName(type, field);
 		
-		return strings.gts(type, KeyWords.ELEMENT_NOT_FOUND)
+		return languageSettings.gts(type, KeyWords.ELEMENT_NOT_FOUND)
 				+ ": " + typeName + "::" + id + "::" + fieldName + "::" + element;
 	}
 }

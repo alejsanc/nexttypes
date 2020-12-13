@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class ActionException extends NXException {
 	protected static final long serialVersionUID = 1L;
@@ -38,10 +38,10 @@ public class ActionException extends NXException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
-		String actionName = strings.getActionName(type,  action);
+	public String getMessage(LanguageSettings languageSettings) {
+		String typeName = languageSettings.getTypeName(type);
+		String actionName = languageSettings.getActionName(type,  action);
 		
-		return strings.gts(type, setting) + ": " + typeName + "::" + actionName;
+		return languageSettings.gts(type, setting) + ": " + typeName + "::" + actionName;
 	}
 }

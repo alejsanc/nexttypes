@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class ObjectException extends TypeException {
 	protected static final long serialVersionUID = 1L;
@@ -33,9 +33,9 @@ public class ObjectException extends TypeException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
+	public String getMessage(LanguageSettings languageSettings) {
+		String typeName = languageSettings.getTypeName(type);
 		
-		return strings.gts(type, setting) + ": " + typeName + "::" + id;
+		return languageSettings.gts(type, setting) + ": " + typeName + "::" + id;
 	}
 }

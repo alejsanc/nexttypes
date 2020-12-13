@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class MethodNotAllowedException extends NXException {
@@ -35,7 +35,7 @@ public class MethodNotAllowedException extends NXException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		return strings.gts(KeyWords.METHOD_NOT_ALLOWED) + ": " + method;
+	public String getMessage(LanguageSettings languageSettings) {
+		return languageSettings.gts(KeyWords.METHOD_NOT_ALLOWED) + ": " + method;
 	}
 }

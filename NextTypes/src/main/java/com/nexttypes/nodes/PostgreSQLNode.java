@@ -124,7 +124,7 @@ import com.nexttypes.security.Security;
 import com.nexttypes.serialization.ObjectsStreamDeserializer;
 import com.nexttypes.serialization.TypesStreamDeserializer;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Constants;
@@ -284,7 +284,7 @@ public class PostgreSQLNode extends Node {
 	protected PGConnection pgConnection;
 	protected Settings settings;
 	protected TypeSettings typeSettings;
-	protected Strings strings;
+	protected LanguageSettings languageSettings;
 	protected String remoteAddress;
 	protected Context context;
 	protected Logger logger;
@@ -335,7 +335,7 @@ public class PostgreSQLNode extends Node {
 
 		this.lang = lang;
 				
-		strings = context.getStrings(lang);
+		languageSettings = context.getLanguageSettings(lang);
 
 		if (useConnectionPool) {
 			connectionPool = context.getDatabaseConnectionPool(settings.getString(KeyWords.POOL));
@@ -981,10 +981,10 @@ public class PostgreSQLNode extends Node {
 			}
 			updateTypeDates(typeName, typeADate);
 			result.setADate(typeADate);
-			result.setMessage(strings.gts(typeName, KeyWords.TYPE_SUCCESSFULLY_ALTERED));
+			result.setMessage(languageSettings.gts(typeName, KeyWords.TYPE_SUCCESSFULLY_ALTERED));
 		} else {
 			result.setADate(getADate(typeName));
-			result.setMessage(strings.gts(typeName, KeyWords.TYPE_NOT_ALTERED));
+			result.setMessage(languageSettings.gts(typeName, KeyWords.TYPE_NOT_ALTERED));
 		}
 
 		return result;
@@ -1335,7 +1335,7 @@ public class PostgreSQLNode extends Node {
 			execute(sql, parameters);
 		}		
 		
-		String message = strings.gts(type, KeyWords.OBJECT_ID_SUCCESSFULLY_UPDATED);
+		String message = languageSettings.gts(type, KeyWords.OBJECT_ID_SUCCESSFULLY_UPDATED);
 		
 		return new UpdateIdResult(message, udate, newId);
 	}
@@ -1690,7 +1690,7 @@ public class PostgreSQLNode extends Node {
 		TreeMap<String, TypeInfo> types = new TreeMap<>();
 		
 		for (TypeInfo type : getTypesInfo()) {
-			types.put(strings.getTypeName(type.getName()), type);
+			types.put(languageSettings.getTypeName(type.getName()), type);
 		}
 		
 		return types;
@@ -1868,7 +1868,7 @@ public class PostgreSQLNode extends Node {
 			
 			if (referencingTypeNames == null) {
 								
-				referencedTypeNames.put(referencedType, strings.getTypeName(referencedType));
+				referencedTypeNames.put(referencedType, languageSettings.getTypeName(referencedType));
 				
 				referencingTypeNames = new HashMap<>();
 				referencingTypeNamesMap.put(referencedType, referencingTypeNames);
@@ -1877,7 +1877,7 @@ public class PostgreSQLNode extends Node {
 				referencingFieldNamesMapMap.put(referencedType, referencingFieldNamesMap);
 			}
 			
-			referencingTypeNames.put(referencingType, strings.getTypeName(referencingType));
+			referencingTypeNames.put(referencingType, languageSettings.getTypeName(referencingType));
 			
 			TreeMap<String, Reference> referencingFieldNames = referencingFieldNamesMap
 					.get(referencingType);
@@ -1887,7 +1887,7 @@ public class PostgreSQLNode extends Node {
 				referencingFieldNamesMap.put(referencingType, referencingFieldNames);
 			}
 			
-			referencingFieldNames.put(strings.getFieldName(referencingType, referencingField), 
+			referencingFieldNames.put(languageSettings.getFieldName(referencingType, referencingField), 
 					reference);
 		}
 		
@@ -2344,7 +2344,7 @@ public class PostgreSQLNode extends Node {
 	protected Object getFieldDefault(String type, String field, String fieldType) {
 		Object value = null;
 		
-		String setting = strings.getFieldString(type, field, KeyWords.DEFAULT);
+		String setting = languageSettings.getFieldString(type, field, KeyWords.DEFAULT);
 		
 		if (setting == null) {
 			setting = typeSettings.getFieldString(type, field, KeyWords.DEFAULT);
@@ -2566,8 +2566,8 @@ public class PostgreSQLNode extends Node {
 	@Override
 	public ImportTypesResult importTypes(InputStream types, ImportAction existingTypesAction,
 			ImportAction existingObjectsAction) {
-		return importTypes(new TypesStreamDeserializer(types, lang, this, typeSettings, strings), existingTypesAction,
-				existingObjectsAction);
+		return importTypes(new TypesStreamDeserializer(types, lang, this, typeSettings, languageSettings),
+				existingTypesAction, existingObjectsAction);
 	}
 
 	@Override
@@ -4252,8 +4252,8 @@ public class PostgreSQLNode extends Node {
 	}
 
 	@Override
-	public Strings getStrings() {
-		return strings;
+	public LanguageSettings getLanguageSettings() {
+		return languageSettings;
 	}
 
 	@Override

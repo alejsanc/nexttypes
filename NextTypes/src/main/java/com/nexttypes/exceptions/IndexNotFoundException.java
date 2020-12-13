@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class IndexNotFoundException extends NotFoundException {
@@ -34,9 +34,9 @@ public class IndexNotFoundException extends NotFoundException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
+	public String getMessage(LanguageSettings languageSettings) {
+		String typeName = languageSettings.getTypeName(type);
 		
-		return strings.gts(type, KeyWords.INDEX_NOT_FOUND) + ": " + typeName + "::" + index;
+		return languageSettings.gts(type, KeyWords.INDEX_NOT_FOUND) + ": " + typeName + "::" + index;
 	}
 }

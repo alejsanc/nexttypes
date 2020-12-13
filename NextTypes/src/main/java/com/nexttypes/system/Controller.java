@@ -62,7 +62,7 @@ import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.nodes.Node;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 
 public class Controller {
@@ -73,7 +73,7 @@ public class Controller {
 	protected Auth auth;
 	protected Context context;
 	protected TypeSettings typeSettings;
-	protected Strings strings;
+	protected LanguageSettings languageSettings;
 
 	public Controller(String type, Auth auth, Node nextNode) {
 		this.nextNode = nextNode;
@@ -82,7 +82,7 @@ public class Controller {
 		
 		context = nextNode.getContext();
 		typeSettings = nextNode.getTypeSettings();
-		strings = nextNode.getStrings();
+		languageSettings = nextNode.getLanguageSettings();
 		
 	}
 	

@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class ActionNotFoundException extends NotFoundException {
@@ -34,9 +34,9 @@ public class ActionNotFoundException extends NotFoundException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
+	public String getMessage(LanguageSettings languageSettings) {
+		String typeName = languageSettings.getTypeName(type);
 
-		return strings.gts(type, KeyWords.ACTION_NOT_FOUND) + ": " + typeName + "::" + action;
+		return languageSettings.gts(type, KeyWords.ACTION_NOT_FOUND) + ": " + typeName + "::" + action;
 	}
 }

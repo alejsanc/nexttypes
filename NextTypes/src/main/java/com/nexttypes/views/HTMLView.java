@@ -97,7 +97,7 @@ import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.security.Security;
 import com.nexttypes.settings.Permissions;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.Constants;
@@ -223,7 +223,7 @@ public class HTMLView extends View {
 		context = parent.getContext();
 		settings = parent.getSettings();
 		typeSettings = parent.getTypeSettings();
-		strings = parent.getStrings();
+		languageSettings = parent.getLanguageSettings();
 		auth = parent.getAuth();
 		permissions = context.getPermissions(type, this);
 	}
@@ -245,14 +245,14 @@ public class HTMLView extends View {
 	@Override
 	public Content getTypesInfo(String lang, String view) {
 		loadTemplate(null, lang, view);
-		setTitle(strings.gts(KeyWords.TYPES));
+		setTitle(languageSettings.gts(KeyWords.TYPES));
 		
 		TreeMap<String, TypeInfo> types = nextNode.getTypesInfoOrderByName();
 
 		if (types.size() > 0) {
 			main.appendElement(typesTable(types, lang, view));
 		} else {
-			main.appendElement(HTML.P).appendText(strings.gts(KeyWords.NO_TYPES_FOUND));
+			main.appendElement(HTML.P).appendText(languageSettings.gts(KeyWords.NO_TYPES_FOUND));
 		}
 
 		return render();
@@ -261,8 +261,8 @@ public class HTMLView extends View {
 	@Override
 	public Content insertForm(String type, String lang, String view, FieldReference ref) {
 		loadTemplate(type, lang, view);
-		String title = strings.gts(type, KeyWords.INSERT_TITLE);
-		String typeName = strings.getTypeName(type);
+		String title = languageSettings.gts(type, KeyWords.INSERT_TITLE);
+		String typeName = languageSettings.getTypeName(type);
 
 		String[] fields = typeSettings.getActionStringArray(type, Action.INSERT, KeyWords.FIELDS);
 		
@@ -277,7 +277,7 @@ public class HTMLView extends View {
 	@Override
 	public Content createForm(String lang, String view) {
 		loadTemplate(null, lang, view);
-		setTitle(strings.gts(KeyWords.CREATE_TYPE));
+		setTitle(languageSettings.gts(KeyWords.CREATE_TYPE));
 
 		Element form = typeForm(null, lang, view);
 		main.appendElement(form);
@@ -289,8 +289,8 @@ public class HTMLView extends View {
 	public Content alterForm(String type, String lang, String view) {
 		loadTemplate(type, lang, view);
 
-		String title = strings.gts(type, KeyWords.ALTER_TITLE);
-		String typeName = strings.getTypeName(type);
+		String title = languageSettings.gts(type, KeyWords.ALTER_TITLE);
+		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
 		Element form = typeForm(type, lang, view);
@@ -300,14 +300,14 @@ public class HTMLView extends View {
 	}
 
 	public Element typeForm(String type, String lang, String view) {
-		String fields = strings.gts(type, KeyWords.FIELDS);
-		String typeString = strings.gts(type, KeyWords.TYPE);
-		String name = strings.gts(type, KeyWords.NAME);
-		String parameters = strings.gts(type, KeyWords.PARAMETERS);
-		String notNull = strings.gts(type, KeyWords.NOT_NULL);
-		String mode = strings.gts(type, KeyWords.MODE);
-		String dropIndex = strings.getActionName(type, Action.DROP_INDEX);
-		String dropField = strings.getActionName(type, Action.DROP_FIELD);
+		String fields = languageSettings.gts(type, KeyWords.FIELDS);
+		String typeString = languageSettings.gts(type, KeyWords.TYPE);
+		String name = languageSettings.gts(type, KeyWords.NAME);
+		String parameters = languageSettings.gts(type, KeyWords.PARAMETERS);
+		String notNull = languageSettings.gts(type, KeyWords.NOT_NULL);
+		String mode = languageSettings.gts(type, KeyWords.MODE);
+		String dropIndex = languageSettings.getActionName(type, Action.DROP_INDEX);
+		String dropField = languageSettings.getActionName(type, Action.DROP_FIELD);
 		
 		String action = null;
 		String icon = null;
@@ -324,7 +324,7 @@ public class HTMLView extends View {
 				.setAttribute(DATA_STRINGS_DROP_FIELD, dropField)
 				.setAttribute(DATA_STRINGS_DROP_INDEX, dropIndex);
 
-		String typeName = strings.gts(KeyWords.TYPE_NAME);
+		String typeName = languageSettings.gts(KeyWords.TYPE_NAME);
 		typeForm.appendElement(HTML.STRONG).appendText(typeName + ": ");
 
 		if (type != null) {
@@ -337,7 +337,7 @@ public class HTMLView extends View {
 			typeForm.appendText(type);
 			
 			if (permissions.isAllowed(type, Action.RENAME_FORM)) {
-				typeForm.appendElement(iconAnchor(strings.getActionName(type, Action.RENAME),
+				typeForm.appendElement(iconAnchor(languageSettings.getActionName(type, Action.RENAME),
 					url(type, lang, view) + formParameter(Action.RENAME), Icon.PENCIL));
 			}
 				
@@ -352,7 +352,7 @@ public class HTMLView extends View {
 		
 		boolean disableAction = !permissions.isAllowed(type, action);
 		
-		String addFieldActionName = strings.getActionName(type, Action.ADD_FIELD);
+		String addFieldActionName = languageSettings.getActionName(type, Action.ADD_FIELD);
 
 		typeForm.appendElement(HTML.H2).appendText(fields + ":");
 		Element addFieldButton = typeForm.appendElement(HTML.P)
@@ -390,7 +390,7 @@ public class HTMLView extends View {
 				Element row = fieldsBody.appendElement(HTML.TR);
 
 				row.appendElement(HTML.TD).appendElement(select(field + ":"
-						+ KeyWords.TYPE, strings.gts(type, KeyWords.TYPE), types, fieldType));
+						+ KeyWords.TYPE, languageSettings.gts(type, KeyWords.TYPE), types, fieldType));
 												
 				Element nameCell = row.appendElement(HTML.TD);
 				nameCell.appendElement(input(HTML.TEXT, field + ":" + KeyWords.NAME, name, fieldName));
@@ -414,9 +414,9 @@ public class HTMLView extends View {
 			}
 		}
 
-		String addIndexActionName = strings.getActionName(type, Action.ADD_INDEX);
+		String addIndexActionName = languageSettings.getActionName(type, Action.ADD_INDEX);
 
-		typeForm.appendElement(HTML.H2).appendText(strings.gts(type, KeyWords.INDEXES) + ":");
+		typeForm.appendElement(HTML.H2).appendText(languageSettings.gts(type, KeyWords.INDEXES) + ":");
 		Element addIndexButton = typeForm.appendElement(HTML.P)
 				.appendElement(button(addIndexActionName, null, Icon.PLUS, ADD_INDEX));
 		
@@ -469,7 +469,7 @@ public class HTMLView extends View {
 		}
 
 		
-		String actionName = strings.getActionName(type, action);
+		String actionName = languageSettings.getActionName(type, action);
 
 		Element actionButton = typeForm.appendElement(HTML.P)
 				.appendElement(button(actionName, action, icon, SUBMIT_FORM));
@@ -485,29 +485,29 @@ public class HTMLView extends View {
 	@Override
 	public Content renameForm(String type, String lang, String view) {
 		loadTemplate(type, lang, view);
-		String title = strings.gts(type, KeyWords.RENAME_TITLE);
-		String typeName = strings.getTypeName(type);
+		String title = languageSettings.gts(type, KeyWords.RENAME_TITLE);
+		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 		main.appendElement(renameFormElement(type, lang, view));
 		return render(type);
 	}
 
 	public Element renameFormElement(String type, String lang, String view) {
-		String newName = strings.gts(type, KeyWords.NEW_NAME);
+		String newName = languageSettings.gts(type, KeyWords.NEW_NAME);
 
 		Element form = form(type, lang, view);
 		Element table = form.appendElement(HTML.TABLE);
 		Element body = table.appendElement(HTML.TBODY);
 
 		Element row = body.appendElement(HTML.TR);
-		row.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.TYPE) + ":");
+		row.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.TYPE) + ":");
 		row.appendElement(HTML.TD).appendText(type);
 
 		row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(newName + ":");
 		row.appendElement(HTML.TD).appendElement(input(HTML.TEXT, KeyWords.NEW_NAME, newName));
 
-		String actionName = strings.getActionName(type, Action.RENAME);
+		String actionName = languageSettings.getActionName(type, Action.RENAME);
 
 		Element actionButton = form.appendElement(button(actionName, Action.RENAME, Icon.PENCIL,
 				SUBMIT_FORM));
@@ -531,9 +531,9 @@ public class HTMLView extends View {
 			return notFound(type, lang, view, new ActionNotFoundException(type, action));
 		}
 
-		String title = strings.gts(type, KeyWords.EXECUTE_ACTION_TITLE);
-		String typeName = strings.getTypeName(type);
-		String actionName = strings.getActionName(type, action);
+		String title = languageSettings.gts(type, KeyWords.EXECUTE_ACTION_TITLE);
+		String typeName = languageSettings.getTypeName(type);
+		String actionName = languageSettings.getActionName(type, action);
 		setTitle(Utils.format(title, actionName, typeName));
 
 		textEditors();
@@ -576,11 +576,11 @@ public class HTMLView extends View {
 
 		if (showHeader) {
 			if (showType) {
-				header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.TYPE));
+				header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.TYPE));
 			}
 
-			header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.NAME));
-			header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.VALUE));
+			header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.NAME));
+			header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.VALUE));
 		}
 
 		Element row = body.appendElement(HTML.TR);
@@ -591,11 +591,11 @@ public class HTMLView extends View {
 
 		if (id != null) {
 			if (showId) {
-				row.appendElement(HTML.TD).appendText(strings.getIdName(type));
+				row.appendElement(HTML.TD).appendText(languageSettings.getIdName(type));
 				row.appendElement(HTML.TD).appendText(id);
 			}
 		} else {
-			String objectsName = strings.getObjectsName(type);
+			String objectsName = languageSettings.getObjectsName(type);
 			
 			row.appendElement(HTML.TD).appendText(objectsName);
 			row.appendElement(HTML.TD).appendElement(actionObjectsInput(type, action, objectsName, lang));
@@ -605,7 +605,7 @@ public class HTMLView extends View {
 			String field = entry.getKey();
 			TypeField typeField = entry.getValue();
 
-			String fieldName = strings.getActionFieldName(type, action, field);
+			String fieldName = languageSettings.getActionFieldName(type, action, field);
 
 			row = body.appendElement(HTML.TR);
 
@@ -636,10 +636,10 @@ public class HTMLView extends View {
 	public Content importTypesForm(String lang, String view) {
 		loadTemplate(null, lang, view);
 
-		String title = strings.gts(Action.IMPORT_TYPES);
-		String existingTypesAction = strings.gts(KeyWords.EXISTING_TYPES_ACTION);
-		String existingObjectsAction = strings.gts(KeyWords.EXISTING_OBJECTS_ACTION);
-		String file = strings.gts(KeyWords.FILE);
+		String title = languageSettings.gts(Action.IMPORT_TYPES);
+		String existingTypesAction = languageSettings.gts(KeyWords.EXISTING_TYPES_ACTION);
+		String existingObjectsAction = languageSettings.gts(KeyWords.EXISTING_OBJECTS_ACTION);
+		String file = languageSettings.gts(KeyWords.FILE);
 		boolean showProgress = typeSettings.getActionBoolean(null, Action.IMPORT_TYPES, KeyWords.SHOW_PROGRESS);
 
 		setTitle(title);
@@ -657,19 +657,19 @@ public class HTMLView extends View {
 		Element row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(existingTypesAction + ":");
 		row.appendElement(HTML.TD).appendElement(select(KeyWords.EXISTING_TYPES_ACTION, existingTypesAction,
-				strings.getTypeTuple(null, KeyWords.EXISTING_TYPES_ACTIONS)));
+				languageSettings.getTypeTuple(null, KeyWords.EXISTING_TYPES_ACTIONS)));
 
 		row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(existingObjectsAction + ":");
 		row.appendElement(HTML.TD).appendElement(select(KeyWords.EXISTING_OBJECTS_ACTION, existingObjectsAction,
-				strings.getTypeTuple(null, KeyWords.EXISTING_OBJECTS_ACTIONS)));
+				languageSettings.getTypeTuple(null, KeyWords.EXISTING_OBJECTS_ACTIONS)));
 
 		row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(file + ":");
 		row.appendElement(HTML.TD)
 				.appendElement(binaryInput(KeyWords.DATA, title, Format.JSON.getContentType(), lang));
 
-		Element actionButton = form.appendElement(button(strings.gts(KeyWords.IMPORT),
+		Element actionButton = form.appendElement(button(languageSettings.gts(KeyWords.IMPORT),
 				Action.IMPORT_TYPES, Icon.UNSHARE_BOXED, SUBMIT_FORM));
 		if (!permissions.isAllowed(Action.IMPORT_TYPES)) {
 			actionButton.setAttribute(HTML.DISABLED);
@@ -682,9 +682,9 @@ public class HTMLView extends View {
 	public Content importObjectsForm(String lang, String view) {
 		loadTemplate(null, lang, view);
 
-		String title = strings.gts(Action.IMPORT_OBJECTS);
-		String existingObjectsAction = strings.gts(KeyWords.EXISTING_OBJECTS_ACTION);
-		String file = strings.gts(KeyWords.FILE);
+		String title = languageSettings.gts(Action.IMPORT_OBJECTS);
+		String existingObjectsAction = languageSettings.gts(KeyWords.EXISTING_OBJECTS_ACTION);
+		String file = languageSettings.gts(KeyWords.FILE);
 		boolean showProgress = typeSettings.getActionBoolean(null, Action.IMPORT_OBJECTS, KeyWords.SHOW_PROGRESS);
 
 		setTitle(title);
@@ -702,14 +702,14 @@ public class HTMLView extends View {
 		Element row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(existingObjectsAction + ":");
 		row.appendElement(HTML.TD).appendElement(select(KeyWords.EXISTING_OBJECTS_ACTION, existingObjectsAction,
-				strings.getTypeTuple(null, KeyWords.EXISTING_OBJECTS_ACTIONS)));
+				languageSettings.getTypeTuple(null, KeyWords.EXISTING_OBJECTS_ACTIONS)));
 
 		row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(file + ":");
 		row.appendElement(HTML.TD)
 				.appendElement(binaryInput(KeyWords.DATA, title, Format.JSON.getContentType(), lang));
 
-		Element actionButton = form.appendElement(button(strings.gts(KeyWords.IMPORT),
+		Element actionButton = form.appendElement(button(languageSettings.gts(KeyWords.IMPORT),
 				Action.IMPORT_OBJECTS, Icon.UNSHARE_BOXED, SUBMIT_FORM));
 		if (!permissions.isAllowed(Action.IMPORT_OBJECTS)) {
 			actionButton.setAttribute(HTML.DISABLED);
@@ -722,10 +722,10 @@ public class HTMLView extends View {
 	public Content loginForm(String lang, String view) {
 		loadTemplate(null, lang, view);
 
-		String user = strings.gts(KeyWords.USER);
-		String password = strings.gts(KeyWords.PASSWORD);
+		String user = languageSettings.gts(KeyWords.USER);
+		String password = languageSettings.gts(KeyWords.PASSWORD);
 
-		setTitle(strings.gts(KeyWords.LOGIN_TITLE));
+		setTitle(languageSettings.gts(KeyWords.LOGIN_TITLE));
 		Element form = form(lang, view);
 		main.appendElement(form);
 
@@ -740,7 +740,7 @@ public class HTMLView extends View {
 		row.appendElement(HTML.TH).appendText(password + ":");
 		row.appendElement(HTML.TD).appendElement(input(HTML.PASSWORD, KeyWords.LOGIN_PASSWORD, password));
 
-		String actionName = strings.getActionName(null, Action.LOGIN);
+		String actionName = languageSettings.getActionName(null, Action.LOGIN);
 
 		Element actionButton = form.appendElement(button(actionName, Action.LOGIN, Icon.ACCOUNT_LOGIN,
 				SUBMIT_FORM));
@@ -754,7 +754,7 @@ public class HTMLView extends View {
 	@Override
 	public Content getType(String type, String lang, String view) {
 		loadTemplate(type, lang, view);
-		setTitle(strings.gts(type, KeyWords.TYPE) + ": " + type);
+		setTitle(languageSettings.gts(type, KeyWords.TYPE) + ": " + type);
 
 		Type typeObject = nextNode.getType(type);
 
@@ -768,7 +768,7 @@ public class HTMLView extends View {
 	public Content getReferences(String lang, String view) {
 		
 		loadTemplate(null, lang, view);
-		setTitle(strings.gts(KeyWords.REFERENCES));
+		setTitle(languageSettings.gts(KeyWords.REFERENCES));
 
 		TreeMap<String, TreeMap<String, TreeMap<String, Reference>>> references = nextNode
 				.getReferencesOrderByNames();
@@ -776,9 +776,9 @@ public class HTMLView extends View {
 		Element table = main.appendElement(HTML.TABLE);
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
 		Element body = table.appendElement(HTML.TBODY);
-		header.appendElement(HTML.TH).appendText(strings.gts(KeyWords.REFERENCED_TYPE));
-		header.appendElement(HTML.TH).appendText(strings.gts(KeyWords.REFERENCING_TYPE));
-		header.appendElement(HTML.TH).appendText(strings.gts(KeyWords.REFERENCING_FIELD));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(KeyWords.REFERENCED_TYPE));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(KeyWords.REFERENCING_TYPE));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(KeyWords.REFERENCING_FIELD));
 				
 		for (Map.Entry<String, TreeMap<String, TreeMap<String, Reference>>> referencedTypeEntry 
 				: references.entrySet()) {
@@ -851,7 +851,7 @@ public class HTMLView extends View {
 			String view) {
 		Element article = document.createElement(HTML.ARTICLE);
 
-		String typeName = strings.getTypeName(object.getType());
+		String typeName = languageSettings.getTypeName(object.getType());
 
 		article.appendElement(HTML.H1).appendText(typeName + ": " + object.getName());
 		document.getTitle().appendText(typeName + ": " + object.getName());
@@ -984,8 +984,8 @@ public class HTMLView extends View {
 		
 		loadTemplate(type, lang, view);
 				
-		String title = strings.gts(type, KeyWords.SELECT_TITLE);
-		String typeName = strings.getTypeName(type);
+		String title = languageSettings.gts(type, KeyWords.SELECT_TITLE);
+		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
 		if (ref != null) {
@@ -1008,7 +1008,7 @@ public class HTMLView extends View {
 		if (search != null) {
 			String[] searchTypes = typeSettings.getTypeStringArray(type, KeyWords.FULLTEXT_SEARCH_TYPES);
 			if (searchTypes != null) {
-				main.appendElement(HTML.H2).appendText(strings.gts(type, KeyWords.OTHER_TYPES));
+				main.appendElement(HTML.H2).appendText(languageSettings.gts(type, KeyWords.OTHER_TYPES));
 				
 				for (String searchType : searchTypes) {
 					main.appendElement(selectElement(searchType, lang, view, null, null, search, null,
@@ -1023,12 +1023,12 @@ public class HTMLView extends View {
 	public Element searchOutput(String type, String lang, String view, FieldReference ref,
 			Filter[] filters, String search, LinkedHashMap<String, Order> order) {
 		Element div = document.createElement(HTML.DIV).addClass(SEARCH_OUTPUT);
-		div.appendElement(HTML.STRONG).appendText(strings.gts(type, KeyWords.SEARCH) + ": ");
+		div.appendElement(HTML.STRONG).appendText(languageSettings.gts(type, KeyWords.SEARCH) + ": ");
 		div.appendText(search);
 		
 		String url = deleteSearchURL(type, lang, view, ref, filters, order);
 		
-		div.appendElement(iconAnchor(strings.gts(type, KeyWords.DELETE_SEARCH), url, Icon.DELETE));
+		div.appendElement(iconAnchor(languageSettings.gts(type, KeyWords.DELETE_SEARCH), url, Icon.DELETE));
 		return div;
 	}
 	
@@ -1049,8 +1049,8 @@ public class HTMLView extends View {
 			return objectNotFound(type, id, lang, view);
 		}
 
-		String title = strings.gts(type, KeyWords.UPDATE_TITLE);
-		String typeName = strings.getTypeName(type);
+		String title = languageSettings.gts(type, KeyWords.UPDATE_TITLE);
+		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
 		textEditors();
@@ -1063,8 +1063,8 @@ public class HTMLView extends View {
 	@Override
 	public Content updateIdForm(String type, String id, String lang, String view) {
 		loadTemplate(type, lang, view);
-		String title = strings.gts(type, KeyWords.UPDATE_ID_TITLE);
-		String typeName = strings.getTypeName(type);
+		String title = languageSettings.gts(type, KeyWords.UPDATE_ID_TITLE);
+		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 		main.appendElement(updateIdFormElement(type, id, lang, view));
 		return render(type);
@@ -1073,8 +1073,8 @@ public class HTMLView extends View {
 	@Override
 	public Content updatePasswordForm(String type, String id, String field, String lang, String view) {
 		loadTemplate(type, lang, view);
-		String title = strings.gts(type, KeyWords.UPDATE_PASSWORD_TITLE);
-		String typeName = strings.getTypeName(type);
+		String title = languageSettings.gts(type, KeyWords.UPDATE_PASSWORD_TITLE);
+		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 		main.appendElement(updatePasswordFormElement(type, id, field, lang, view));
 		return render(type);
@@ -1097,8 +1097,8 @@ public class HTMLView extends View {
 		return typeSettings;
 	}
 
-	public Strings getStrings() {
-		return strings;
+	public LanguageSettings getLanguageSettings() {
+		return languageSettings;
 	}
 
 	public HTTPRequest getRequest() {
@@ -1135,7 +1135,7 @@ public class HTMLView extends View {
 		
 		Element form = form(lang, view);
 		form.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF).setAttribute(DATA_STRINGS_TYPES_DROP_CONFIRMATION,
-				strings.gts(KeyWords.TYPES_DROP_CONFIRMATION));
+				languageSettings.gts(KeyWords.TYPES_DROP_CONFIRMATION));
 
 		Element table = form.appendElement(HTML.TABLE);
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
@@ -1143,9 +1143,9 @@ public class HTMLView extends View {
 
 		Element allCheckbox = header.appendElement(HTML.TH).appendElement(allCheckbox());
 		
-		header.appendElement(HTML.TH).appendText(strings.gts(KeyWords.NAME));
-		header.appendElement(HTML.TH).appendText(strings.gts(KeyWords.OBJECTS));
-		header.appendElement(HTML.TH).appendText(strings.gts(KeyWords.SIZE));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(KeyWords.NAME));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(KeyWords.OBJECTS));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(KeyWords.SIZE));
 		header.appendElement(HTML.TH);
 		header.appendElement(HTML.TH);
 		header.appendElement(HTML.TH);
@@ -1190,21 +1190,21 @@ public class HTMLView extends View {
 			Element insertCell = row.appendElement(HTML.TD);
 			
 			if (permissions.isAllowed(type, Action.INSERT_FORM)) {
-				insertCell.appendElement(iconAnchor(strings.getActionName(type, Action.INSERT),
+				insertCell.appendElement(iconAnchor(languageSettings.getActionName(type, Action.INSERT),
 					url(type, lang, view) + formParameter(Action.INSERT), Icon.PLUS));
 			}
 			
 			Element alterCell = row.appendElement(HTML.TD);
 			
 			if (permissions.isAllowed(type, Action.ALTER_FORM)) {
-				alterCell.appendElement(iconAnchor(strings.getActionName(type, Action.ALTER),
+				alterCell.appendElement(iconAnchor(languageSettings.getActionName(type, Action.ALTER),
 						url(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
 			}
 			
 			Element infoCell = row.appendElement(HTML.TD);
 			
 			if (permissions.isAllowed(type, Action.GET_TYPE)) {
-				infoCell.appendElement(iconAnchor(strings.gts(type, KeyWords.TYPE),
+				infoCell.appendElement(iconAnchor(languageSettings.gts(type, KeyWords.TYPE),
 						url(type, lang, view) + parameter(KeyWords.INFO), Icon.INFO));
 			}
 		}
@@ -1213,7 +1213,7 @@ public class HTMLView extends View {
 			allCheckbox.setAttribute(HTML.DISABLED);
 		}
 
-		String actionName = strings.getActionName(null, Action.DROP);
+		String actionName = languageSettings.getActionName(null, Action.DROP);
 
 		Element actionButton = form.appendElement(button(actionName, Action.DROP, Icon.MINUS,
 				SUBMIT_FORM));
@@ -1232,7 +1232,7 @@ public class HTMLView extends View {
 	public Element allCheckbox(String type) {
 		return document.createElement(HTML.INPUT)
 				.setAttribute(HTML.TYPE, HTML.CHECKBOX)
-				.setAttribute(HTML.TITLE, strings.gts(type, KeyWords.CHECK_UNCHECK_ALL))
+				.setAttribute(HTML.TITLE, languageSettings.gts(type, KeyWords.CHECK_UNCHECK_ALL))
 				.addClass(ALL_CHECKBOX);
 	}
 	
@@ -1272,11 +1272,11 @@ public class HTMLView extends View {
 
 		if (showHeader) {
 			if (showType) {
-				header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.TYPE));
+				header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.TYPE));
 			}
 
-			header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.NAME));
-			header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.VALUE));
+			header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.NAME));
+			header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.VALUE));
 		}
 
 		if (showId) {
@@ -1286,7 +1286,7 @@ public class HTMLView extends View {
 				row.appendElement(HTML.TD).appendText(PT.STRING);
 			}
 			
-			String idName = strings.getIdName(type);
+			String idName = languageSettings.getIdName(type);
 			
 			row.appendElement(HTML.TD).appendText(idName);
 			row.appendElement(HTML.TD).appendElement(idInput(type, KeyWords.ID, idName));
@@ -1306,7 +1306,7 @@ public class HTMLView extends View {
 			String field = entry.getKey();
 			TypeField typeField = entry.getValue();
 
-			String fieldName = strings.getFieldName(type, field);
+			String fieldName = languageSettings.getFieldName(type, field);
 
 			Element row = body.appendElement(HTML.TR);
 
@@ -1335,7 +1335,7 @@ public class HTMLView extends View {
 					showRange));
 		}
 		
-		String actionName = strings.getActionName(type, Action.INSERT);
+		String actionName = languageSettings.getActionName(type, Action.INSERT);
 
 		Element actionButton = form.appendElement(button(actionName, Action.INSERT, Icon.PLUS,
 				SUBMIT_FORM));
@@ -1377,8 +1377,8 @@ public class HTMLView extends View {
 
 	public Element form(String type, String id, String field, String lang, String view) {
 		return form(url(type, id, field, lang, view))
-				.setAttribute(DATA_STRINGS_ACCEPT, strings.gts(type, KeyWords.ACCEPT))
-				.setAttribute(DATA_STRINGS_CANCEL, strings.gts(type, KeyWords.CANCEL));
+				.setAttribute(DATA_STRINGS_ACCEPT, languageSettings.gts(type, KeyWords.ACCEPT))
+				.setAttribute(DATA_STRINGS_CANCEL, languageSettings.gts(type, KeyWords.CANCEL));
 	}
 
 	public Element form(String action) {
@@ -1401,7 +1401,7 @@ public class HTMLView extends View {
 
 	public void loadTemplate(String type, String lang, String view, String template) {
 		if (template == null) {
-			template = strings.gts(type, KeyWords.TEMPLATE);
+			template = languageSettings.gts(type, KeyWords.TEMPLATE);
 			
 			if (template == null) {
 				template = typeSettings.gts(type, KeyWords.TEMPLATE);
@@ -1484,7 +1484,7 @@ public class HTMLView extends View {
 					component));
 		} else {
 			htmlView = this;
-			select.appendElement(HTML.P).appendText(" " + count + " " + strings.gts(type, KeyWords.OBJECTS));		
+			select.appendElement(HTML.P).appendText(" " + count + " " + languageSettings.gts(type, KeyWords.OBJECTS));		
 		}
 
 		if (objects != null && objects.length > 0) {
@@ -1502,10 +1502,10 @@ public class HTMLView extends View {
 		Element selectHeader = document.createElement(HTML.DIV)
 				.addClass(SELECT_HEADER);
 		
-		String referenceName = strings.getReferenceName(type, ref);
+		String referenceName = languageSettings.getReferenceName(type, ref);
 		
 		selectHeader.appendElement(HTML.STRONG).appendText(referenceName);
-		selectHeader.appendText(" " + count + " " + strings.gts(type, KeyWords.OBJECTS));
+		selectHeader.appendText(" " + count + " " + languageSettings.gts(type, KeyWords.OBJECTS));
 		selectHeader.appendElement(HTML.NAV).addClass(SELECT_MENU)
 				.appendElements(typeMenuElements(type, null, lang, view, ref, search, component));
 		
@@ -1532,16 +1532,16 @@ public class HTMLView extends View {
 		
 		Element div = document.createElement(HTML.DIV);
 		
-		div.appendElement(HTML.STRONG).appendText(strings.gts(type, KeyWords.FILTERS) + ": ");
-		div.appendElement(button(strings.gts(type, KeyWords.ADD_FILTER), ADD_FILTER));
-		div.appendElement(submitButton(strings.gts(type, KeyWords.SEARCH)))
+		div.appendElement(HTML.STRONG).appendText(languageSettings.gts(type, KeyWords.FILTERS) + ": ");
+		div.appendElement(button(languageSettings.gts(type, KeyWords.ADD_FILTER), ADD_FILTER));
+		div.appendElement(submitButton(languageSettings.gts(type, KeyWords.SEARCH)))
 				.setAttribute(HTML.FORM, KeyWords.SEARCH);
 		
 		Element table = div.appendElement(HTML.TABLE).setAttribute(HTML.ID, KeyWords.FILTERS);
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
-		header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.FIELD));
-		header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.COMPARISON));
-		header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.VALUE));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.FIELD));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.COMPARISON));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.VALUE));
 		header.appendElement(HTML.TH);
 		
 		Element body = table.appendElement(HTML.TBODY);
@@ -1568,7 +1568,7 @@ public class HTMLView extends View {
 				
 		Element option = fieldSelect.appendElement(HTML.OPTION)
 				.setAttribute(HTML.VALUE, KeyWords.ID)
-				.appendText(strings.getIdName(type));
+				.appendText(languageSettings.getIdName(type));
 		
 		if (KeyWords.ID.equals(filterField)) {
 			option.setAttribute(HTML.SELECTED);
@@ -1581,7 +1581,7 @@ public class HTMLView extends View {
 				String field = entry.getKey();
 				option = fieldSelect.appendElement(HTML.OPTION)
 						.setAttribute(HTML.VALUE, field)
-						.appendText(strings.getFieldName(type, field));
+						.appendText(languageSettings.getFieldName(type, field));
 			
 				if (field.equals(filterField)) {
 					option.setAttribute(HTML.SELECTED);
@@ -1597,7 +1597,7 @@ public class HTMLView extends View {
 		for (Comparison comparison : Comparison.values()) {
 			option = comparisonSelect.appendElement(HTML.OPTION)
 				.setAttribute(HTML.VALUE, comparison)
-				.appendText(strings.getComparisonName(type, comparison.toString()));
+				.appendText(languageSettings.getComparisonName(type, comparison.toString()));
 			
 			if (comparison.equals(filter.getComparison())) {
 				option.setAttribute(HTML.SELECTED);
@@ -1610,7 +1610,7 @@ public class HTMLView extends View {
 		String valueName = KeyWords.FILTERS + ":" + count + ":" + KeyWords.VALUE;
 				
 		if (KeyWords.ID.equals(filterField)) {
-			String idName = strings.getIdName(type);
+			String idName = languageSettings.getIdName(type);
 			
 			filterInput = filterObjectInput(valueName, idName, filterValue, type, true, lang);
 			
@@ -1622,7 +1622,7 @@ public class HTMLView extends View {
 				typeField = typeField.getStringTypeField();
 			} 
 			
-			String filterFieldName = strings.getFieldName(type, filterField);
+			String filterFieldName = languageSettings.getFieldName(type, filterField);
 			filterInput = fieldInput(type, Action.SEARCH, filterField, filterFieldName,
 					filterValue, typeField, lang).setAttribute(HTML.NAME, valueName);
 			
@@ -1661,7 +1661,7 @@ public class HTMLView extends View {
 			}
 		}
 		
-		String dropFilter = strings.gts(type, KeyWords.DROP_FILTER);
+		String dropFilter = languageSettings.gts(type, KeyWords.DROP_FILTER);
 		
 		row.appendElement(HTML.TD).appendElement(smallButton(dropFilter, Icon.MINUS, DELETE_ROW))
 			.setAttribute(HTML.FORM, KeyWords.SEARCH);
@@ -1675,14 +1675,14 @@ public class HTMLView extends View {
 		String referencedType = nextNode.getTypeField(type, ref.getReferencingField()).getType();
 
 		Element div = document.createElement(HTML.DIV).addClass(REFERENCE_OUTPUT);
-		div.appendElement(HTML.STRONG).appendText(strings.getFieldName(type, ref.getReferencingField())
+		div.appendElement(HTML.STRONG).appendText(languageSettings.getFieldName(type, ref.getReferencingField())
 				+ ": ");
 		div.appendElement(anchor(nextNode.getName(referencedType, ref.getReferencedId(), lang),
 				url(referencedType, ref.getReferencedId(), lang, view)));
 		
 		String url = url(type, lang, view) + filtersParameters(filters) + searchParameter(search)
 			+ orderParameter(order) + calendarParameter(request.isCalendar());
-		div.appendElement(iconAnchor(strings.gts(type, KeyWords.DELETE_REFERENCE), url, Icon.DELETE));
+		div.appendElement(iconAnchor(languageSettings.gts(type, KeyWords.DELETE_REFERENCE), url, Icon.DELETE));
 		
 		return div;
 	}
@@ -1739,11 +1739,11 @@ public class HTMLView extends View {
 
 		if (showHeader) {
 			if (showType) {
-				header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.TYPE));
+				header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.TYPE));
 			}
 
-			header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.NAME));
-			header.appendElement(HTML.TH).appendText(strings.gts(type, KeyWords.VALUE));
+			header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.NAME));
+			header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.VALUE));
 		}
 
 		form.appendElement(input(HTML.HIDDEN, KeyWords.UDATE, KeyWords.UDATE, object.getUDate()));
@@ -1755,14 +1755,14 @@ public class HTMLView extends View {
 		}
 
 		if (showId) {
-			row.appendElement(HTML.TD).appendText(strings.getIdName(type));
+			row.appendElement(HTML.TD).appendText(languageSettings.getIdName(type));
 			
 			Element idCell = row.appendElement(HTML.TD);
 			idCell.appendText(object.getId());
 			
 			if (permissions.isAllowed(type, object.getId(), Action.UPDATE_ID_FORM)) {
 				idCell.appendText(" ");
-				idCell.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_ID),
+				idCell.appendElement(iconAnchor(languageSettings.getActionName(type, Action.UPDATE_ID),
 						url(object.getType(), object.getId(), lang, view)
 							+ formParameter(Action.UPDATE_ID), Icon.PENCIL));
 			}
@@ -1775,7 +1775,7 @@ public class HTMLView extends View {
 			Object value = entry.getValue();
 			TypeField typeField = typeFields.get(field);
 
-			String fieldName = strings.getFieldName(object.getType(), field);
+			String fieldName = languageSettings.getFieldName(object.getType(), field);
 
 			row = body.appendElement(HTML.TR);
 
@@ -1795,7 +1795,7 @@ public class HTMLView extends View {
 					showRange));
 		}
 
-		String actionName = strings.getActionName(object.getType(), Action.UPDATE);
+		String actionName = languageSettings.getActionName(object.getType(), Action.UPDATE);
 
 		Element actionButton = form.appendElement(button(actionName, Action.UPDATE, Icon.PENCIL,
 				SUBMIT_FORM));
@@ -1807,21 +1807,21 @@ public class HTMLView extends View {
 	}
 
 	public Element updateIdFormElement(String type, String id, String lang, String view) {
-		String newId = strings.gts(type, KeyWords.NEW_ID);
+		String newId = languageSettings.gts(type, KeyWords.NEW_ID);
 
 		Element form = form(type, id, lang, view);
 		Element table = form.appendElement(HTML.TABLE);
 		Element body = table.appendElement(HTML.TBODY);
 
 		Element row = body.appendElement(HTML.TR);
-		row.appendElement(HTML.TH).appendText(strings.getIdName(type) + ":");
+		row.appendElement(HTML.TH).appendText(languageSettings.getIdName(type) + ":");
 		row.appendElement(HTML.TD).appendText(id);
 
 		row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(newId + ":");
 		row.appendElement(HTML.TD).appendElement(idInput(type, KeyWords.NEW_ID, newId));
 
-		String actionName = strings.getActionName(type, Action.UPDATE_ID);
+		String actionName = languageSettings.getActionName(type, Action.UPDATE_ID);
 
 		Element actionButton = form.appendElement(button(actionName, Action.UPDATE_ID, Icon.PENCIL,
 				SUBMIT_FORM));
@@ -1837,12 +1837,12 @@ public class HTMLView extends View {
 		Element table = form.appendElement(HTML.TABLE);
 		Element body = table.appendElement(HTML.TBODY);
 
-		String currentPassword = strings.gts(type, KeyWords.CURRENT_PASSWORD);
-		String newPassword = strings.gts(type, KeyWords.NEW_PASSWORD);
-		String repeatNewPassword = strings.gts(type, KeyWords.NEW_PASSWORD_REPEAT);
+		String currentPassword = languageSettings.gts(type, KeyWords.CURRENT_PASSWORD);
+		String newPassword = languageSettings.gts(type, KeyWords.NEW_PASSWORD);
+		String repeatNewPassword = languageSettings.gts(type, KeyWords.NEW_PASSWORD_REPEAT);
 
 		Element row = body.appendElement(HTML.TR);
-		row.appendElement(HTML.TH).appendText(strings.getIdName(type) + ":");
+		row.appendElement(HTML.TH).appendText(languageSettings.getIdName(type) + ":");
 		row.appendElement(HTML.TD).appendText(id);
 
 		row = body.appendElement(HTML.TR);
@@ -1858,7 +1858,7 @@ public class HTMLView extends View {
 		row.appendElement(HTML.TD)
 				.appendElement(input(HTML.PASSWORD, KeyWords.NEW_PASSWORD_REPEAT, repeatNewPassword));
 
-		String actionName = strings.getActionName(type, Action.UPDATE_PASSWORD);
+		String actionName = languageSettings.getActionName(type, Action.UPDATE_PASSWORD);
 
 		Element actionButton = form.appendElement(button(actionName, Action.UPDATE_PASSWORD, Icon.PENCIL,
 				SUBMIT_FORM));
@@ -1919,7 +1919,7 @@ public class HTMLView extends View {
 		password.appendText(Security.HIDDEN_PASSWORD + " ");
 		
 		if (permissions.isAllowed(type, id, Action.UPDATE_PASSWORD_FORM)) {
-			password.appendElement(iconAnchor(strings.getActionName(type, Action.UPDATE_PASSWORD),
+			password.appendElement(iconAnchor(languageSettings.getActionName(type, Action.UPDATE_PASSWORD),
 				url(type, id, field, lang, view) + formParameter(Action.UPDATE_PASSWORD), Icon.PENCIL));
 		}
 		
@@ -1994,7 +1994,7 @@ public class HTMLView extends View {
 		}
 
 		Element input = binaryInput("@" + field, title, value, allowedContentTypes, lang);
-		Element clearAnchor = iconAnchor(strings.gts(type, KeyWords.CLEAR), null, Icon.DELETE)
+		Element clearAnchor = iconAnchor(languageSettings.gts(type, KeyWords.CLEAR), null, Icon.DELETE)
 				.addClasses(CLEAR_BINARY_INPUT, HTML.HIDDEN);
 		
 		input.appendElement(clearAnchor);
@@ -2009,7 +2009,7 @@ public class HTMLView extends View {
 	public Element nullFieldInput(String type, String field, Object value) {
 		Element nullFieldInput = document.createElement(HTML.SPAN).addClass(NULL_FIELD_INPUT);
 		
-		String nullName = strings.gts(type, KeyWords.NULL);
+		String nullName = languageSettings.gts(type, KeyWords.NULL);
 		
 		nullFieldInput.appendText(" | " + nullName + ":");
 	
@@ -2057,7 +2057,7 @@ public class HTMLView extends View {
 		input.appendElement(input(HTML.PASSWORD, "@" + field, title))
 			.setAttribute(HTML.MAXLENGTH, Security.BCRYPT_MAX_PASSWORD_LENGTH);
 
-		input.appendText(strings.gts(type, KeyWords.REPEAT) + ": ");
+		input.appendText(languageSettings.gts(type, KeyWords.REPEAT) + ": ");
 
 		input.appendElement(input(HTML.PASSWORD, "@" + field + "_" + KeyWords.REPEAT, title))
 			.setAttribute(HTML.MAXLENGTH, Security.BCRYPT_MAX_PASSWORD_LENGTH);
@@ -2518,8 +2518,8 @@ public class HTMLView extends View {
 			String referencingType, String referencingAction, String referencingField,
 			boolean notNull, Long limit, String lang) {
 		
-		String previous = strings.gts(referencingType, KeyWords.PREVIOUS);
-		String next = strings.gts(referencingType, KeyWords.NEXT);
+		String previous = languageSettings.gts(referencingType, KeyWords.PREVIOUS);
+		String next = languageSettings.gts(referencingType, KeyWords.NEXT);
 		
 		Element input = document.createElement(HTML.SELECT).setAttribute(HTML.NAME, name)
 				.setAttribute(HTML.TITLE, title).addClass(KeyWords.OBJECT)
@@ -2571,7 +2571,7 @@ public class HTMLView extends View {
 		inputGroup.addClass(OBJECT_RADIO_INPUT);
 		
 		if (!notNull) {
-			String nullName = strings.gts(referencedType, KeyWords.NULL);
+			String nullName = languageSettings.gts(referencedType, KeyWords.NULL);
 			
 			inputGroup.appendInput(input(HTML.RADIO, name, nullName, ""));
 			
@@ -2682,7 +2682,7 @@ public class HTMLView extends View {
 	
 	public Object localeDate(String type, Object value) {
 		if (value != null) {
-			String pattern = strings.gts(type, KeyWords.DATE_FORMAT);
+			String pattern = languageSettings.gts(type, KeyWords.DATE_FORMAT);
 			
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
 			
@@ -2698,7 +2698,7 @@ public class HTMLView extends View {
 	
 	public Object localeTime(String type, Object value) {
 		if (value != null) {
-			String pattern = strings.gts(type, KeyWords.TIME_FORMAT);
+			String pattern = languageSettings.gts(type, KeyWords.TIME_FORMAT);
 			
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
 			
@@ -2714,7 +2714,7 @@ public class HTMLView extends View {
 	
 	public Object localeDateTime(String type, Object value) {
 		if (value != null) {
-			String pattern = strings.gts(type, KeyWords.DATETIME_FORMAT);
+			String pattern = languageSettings.gts(type, KeyWords.DATETIME_FORMAT);
 			
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
 		   	    
@@ -2739,7 +2739,7 @@ public class HTMLView extends View {
 			Long offset, Long limit, Component component) {
 
 		Element cell = document.createElement(HTML.TH);
-		String fieldName = KeyWords.ID.equals(field) ? strings.getIdName(type) : strings.getFieldName(type, field);
+		String fieldName = KeyWords.ID.equals(field) ? languageSettings.getIdName(type) : languageSettings.getFieldName(type, field);
 		String orderLinkString = "";
 		LinkedHashMap<String, Order> fieldOrder = new LinkedHashMap<>();
 		StringBuilder multiOrderParameter = new StringBuilder();
@@ -2857,7 +2857,7 @@ public class HTMLView extends View {
 				.setAttribute(DATA_URL, selectTableURL(type, lang, view, ref, filters, search, order,
 						offset, limit))
 				.setAttribute(DATA_STRINGS_OBJECTS_DELETE_CONFIRMATION,
-						strings.gts(type, KeyWords.OBJECTS_DELETE_CONFIRMATION));
+						languageSettings.gts(type, KeyWords.OBJECTS_DELETE_CONFIRMATION));
 
 		form.appendElement(input(HTML.HIDDEN, KeyWords.ORDER, KeyWords.ORDER, orderString(order)));
 
@@ -2895,7 +2895,7 @@ public class HTMLView extends View {
 			Element row = body.appendElement(HTML.TR);
 
 			Element checkbox = row.appendElement(HTML.TD).appendElement(
-					input(HTML.CHECKBOX, KeyWords.OBJECTS, strings.getObjectsName(type), id)
+					input(HTML.CHECKBOX, KeyWords.OBJECTS, languageSettings.getObjectsName(type), id)
 							.addClass(ITEM_CHECKBOX));
 			if (ArrayUtils.contains(deleteDisallowedObjects, id)
 					&& ArrayUtils.contains(exportDisallowedObjects, id)) {
@@ -2937,7 +2937,7 @@ public class HTMLView extends View {
 			}
 
 			if (!ArrayUtils.contains(updateDisallowedObjects, id)) {
-				String updateActionName = strings.getActionName(object.getType(), Action.UPDATE);
+				String updateActionName = languageSettings.getActionName(object.getType(), Action.UPDATE);
 				
 				row.appendElement(HTML.TD).appendElement(iconAnchor(updateActionName,
 					url(object.getType(), id, lang, view)
@@ -2950,7 +2950,7 @@ public class HTMLView extends View {
 		Element div = form.appendElement(HTML.DIV);
 		div.addClass(SELECT_BUTTONS);
 
-		String actionName = strings.getActionName(type, Action.DELETE);
+		String actionName = languageSettings.getActionName(type, Action.DELETE);
 
 		Element actionButton = button(actionName, Action.DELETE, Icon.MINUS, SUBMIT_FORM);
 		if (objects.length == deleteDisallowedObjects.length) {
@@ -2980,7 +2980,7 @@ public class HTMLView extends View {
 		if (type == null) {
 			action = Action.EXPORT_TYPES;
 			
-			String includeObjects = strings.gts(KeyWords.INCLUDE_OBJECTS);
+			String includeObjects = languageSettings.gts(KeyWords.INCLUDE_OBJECTS);
 			buttons.appendText(includeObjects);
 			
 			Element includeObjectsCheckbox = buttons.appendElement(
@@ -2994,7 +2994,7 @@ public class HTMLView extends View {
 			action = Action.EXPORT_OBJECTS;			
 		}
 
-		Element actionButton = buttons.appendElement(button(strings.gts(type, KeyWords.EXPORT), 
+		Element actionButton = buttons.appendElement(button(languageSettings.gts(type, KeyWords.EXPORT), 
 				action, Icon.SHARE_BOXED, KeyWords.EXPORT));
 		if (disabled) {
 			actionButton.setAttribute(HTML.DISABLED);
@@ -3357,7 +3357,7 @@ public class HTMLView extends View {
 		output.addClass(FIELD_OUTPUT);
 		
 		String fieldType = typeField.getType();
-		String fieldName = strings.getFieldName(object.getType(), field);
+		String fieldName = languageSettings.getFieldName(object.getType(), field);
 		output.appendElement(HTML.STRONG).appendText(fieldName + ": ");
 		
 		if (value != null && !PT.isPrimitiveType(fieldType) && !getPermissions(fieldType)
@@ -3593,7 +3593,7 @@ public class HTMLView extends View {
 	}
 
 	public Element logoAnchor(String type, String lang, String view) {
-		return imageAnchor(strings.gts(type, KeyWords.LOGO_TEXT),
+		return imageAnchor(languageSettings.gts(type, KeyWords.LOGO_TEXT),
 				hrefURL(typeSettings.gts(type, KeyWords.LOGO_URL), lang, view),
 				typeSettings.gts(type, KeyWords.LOGO));
 	}
@@ -3681,7 +3681,7 @@ public class HTMLView extends View {
 		String searchParameter = parameter(KeyWords.SEARCH, search);
 
 		if (id != null && form != null && permissions.isAllowed(type, id, Action.GET)) {
-			elements.add(iconAnchor(strings.gts(type, KeyWords.VIEW), url(type, id, lang, view)
+			elements.add(iconAnchor(languageSettings.gts(type, KeyWords.VIEW), url(type, id, lang, view)
 					+ refParameter, Icon.MAGNIFYING_GLASS));
 		}
 
@@ -3690,7 +3690,7 @@ public class HTMLView extends View {
 						|| typeSettings.getFieldBoolean(type, ref.getReferencingField(), 
 								KeyWords.SHOW_INSERT_FORM_BUTTON))) {
 			
-			elements.add(iconAnchor(strings.getActionName(type, Action.INSERT),
+			elements.add(iconAnchor(languageSettings.getActionName(type, Action.INSERT),
 					url(type, lang, view) + formParameter(Action.INSERT) + refParameter, Icon.PLUS));
 		}
 
@@ -3700,7 +3700,7 @@ public class HTMLView extends View {
 
 			String url = url(type, lang, view) + refParameter + searchParameter;
 
-			elements.add(iconAnchor(strings.gts(type, KeyWords.LIST), url, Icon.LIST));
+			elements.add(iconAnchor(languageSettings.gts(type, KeyWords.LIST), url, Icon.LIST));
 		}
 
 		if (typeSettings.getTypeBoolean(type, KeyWords.SHOW_PREVIEW) && !request.isPreview()
@@ -3708,22 +3708,22 @@ public class HTMLView extends View {
 			
 			String url = url(type, lang, view) + previewParameter() + searchParameter;
 							
-			elements.add(iconAnchor(strings.getActionName(type, Action.PREVIEW), url, Icon.LIST_RICH));
+			elements.add(iconAnchor(languageSettings.getActionName(type, Action.PREVIEW), url, Icon.LIST_RICH));
 		}
 
 		if (id == null && !Action.ALTER.equals(form) && permissions.isAllowed(type, Action.ALTER_FORM)) {
-			elements.add(iconAnchor(strings.getActionName(type, Action.ALTER),
+			elements.add(iconAnchor(languageSettings.getActionName(type, Action.ALTER),
 					url(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
 		}
 
 		if (id != null && !Action.UPDATE.equals(form)
 				&& permissions.isAllowed(type, id, Action.UPDATE_FORM)) {
-			elements.add(iconAnchor(strings.getActionName(type, Action.UPDATE),
+			elements.add(iconAnchor(languageSettings.getActionName(type, Action.UPDATE),
 					url(type, id, lang, view) + formParameter(Action.UPDATE), Icon.PENCIL));
 		}
 
 		if (!request.isInfo() && permissions.isAllowed(type, Action.GET_TYPE)) {
-			elements.add(iconAnchor(strings.gts(type, KeyWords.TYPE), url(type, lang, view)
+			elements.add(iconAnchor(languageSettings.gts(type, KeyWords.TYPE), url(type, lang, view)
 					+ parameter(KeyWords.INFO), Icon.INFO));
 		}
 
@@ -3745,7 +3745,7 @@ public class HTMLView extends View {
 			if (calendarSelect != null) {
 				String url = url(type, lang, view) + calendarParameter() + refParameter;
 
-				elements.add(iconAnchor(strings.getActionName(type, Action.CALENDAR), url, Icon.CALENDAR));
+				elements.add(iconAnchor(languageSettings.getActionName(type, Action.CALENDAR), url, Icon.CALENDAR));
 			}
 		}
 
@@ -3808,12 +3808,12 @@ public class HTMLView extends View {
 		Element dates = document.createElement(HTML.DIV);
 		Element creation = dates.appendElement(HTML.P);
 		creation.addClass(KeyWords.DATE);
-		creation.appendElement(HTML.STRONG).appendText(strings.gts(type, KeyWords.CREATION_DATE) + ": ");
+		creation.appendElement(HTML.STRONG).appendText(languageSettings.gts(type, KeyWords.CREATION_DATE) + ": ");
 		creation.appendElement(time(cdate));
 
 		Element updating = dates.appendElement(HTML.P);
 		updating.addClass(KeyWords.DATE);
-		updating.appendElement(HTML.STRONG).appendText(strings.gts(type, KeyWords.UPDATING_DATE) + ": ");
+		updating.appendElement(HTML.STRONG).appendText(languageSettings.gts(type, KeyWords.UPDATING_DATE) + ": ");
 		updating.appendElement(time(udate));
 
 		return dates;
@@ -3827,7 +3827,7 @@ public class HTMLView extends View {
 	public Content notFound(String type, String lang, String view, NotFoundException e) {
 		Content content = null;
 
-		String message = e.getMessage(strings);
+		String message = e.getMessage(languageSettings);
 
 		if (document != null) {
 			document.getTitle().appendText(message);
@@ -3845,7 +3845,7 @@ public class HTMLView extends View {
 	public Content unauthorized(String type, String lang, String view, UnauthorizedException e) {
 		Content content = null;
 
-		String message = e.getMessage(strings);
+		String message = e.getMessage(languageSettings);
 
 		if (request.getField() == null && request.getElement() == null) {
 
@@ -3954,7 +3954,7 @@ public class HTMLView extends View {
 			head.appendElement(HTML.META).setAttribute(HTML.NAME, HTML.VIEWPORT)
 				.setAttribute(HTML.CONTENT, "width=device-width, initial-scale=1");
 
-			String description = strings.gts(type, KeyWords.DESCRIPTION);
+			String description = languageSettings.gts(type, KeyWords.DESCRIPTION);
 			if (description != null) {
 				head.appendElement(HTML.META).setAttribute(HTML.NAME, HTML.DESCRIPTION)
 					.setAttribute(HTML.CONTENT, description);
@@ -4041,12 +4041,12 @@ public class HTMLView extends View {
 	
 	public Element menuTitle(String type, String title) {
 		return document.createElement(HTML.DIV).addClass(MENU_TITLE)
-				.appendText(strings.gts(type, title) + ":");
+				.appendText(languageSettings.gts(type, title) + ":");
 	}
 	
 	public Element menuListItem(String type, String text, String href, String lang, String view) {
 		Element li = document.createElement(HTML.LI);
-		li.appendElement(anchor(strings.gts(type, text), hrefURL(href, lang, view)));
+		li.appendElement(anchor(languageSettings.gts(type, text), hrefURL(href, lang, view)));
 		return li;
 	}
 
@@ -4087,12 +4087,12 @@ public class HTMLView extends View {
 
 			Element form = userElement.appendElement(form(lang, view));
 
-			form.appendText(strings.gts(type, KeyWords.USER) + ": ");
+			form.appendText(languageSettings.gts(type, KeyWords.USER) + ": ");
 
 			Element userName = form.appendElement(HTML.SPAN).setId(USER_NAME);
 			userName.appendText(user);
 
-			Element button = button(strings.gts(type, KeyWords.LOGOUT), Action.LOGOUT, Icon.ACCOUNT_LOGOUT,
+			Element button = button(languageSettings.gts(type, KeyWords.LOGOUT), Action.LOGOUT, Icon.ACCOUNT_LOGOUT,
 					SUBMIT_FORM).setId(LOGOUT_BUTTON);
 			
 			form.appendElement(button);
@@ -4112,7 +4112,7 @@ public class HTMLView extends View {
 			if (form != null) {
 				form.setAttribute(HTML.ACTION, "/" + type).setAttribute(HTML.METHOD, HTML.GET);
 
-				String searchName = strings.gts(type, KeyWords.SEARCH);
+				String searchName = languageSettings.gts(type, KeyWords.SEARCH);
 				
 				form.appendElement(input(HTML.HIDDEN, KeyWords.LANG, KeyWords.LANG, lang));
 				form.appendElement(input(HTML.HIDDEN, KeyWords.VIEW, KeyWords.VIEW, view));
@@ -4185,7 +4185,7 @@ public class HTMLView extends View {
 						for (Map.Entry<String, LinkedHashMap<String, TypeField>> entry : actions.entrySet()) {
 							String action = entry.getKey();
 
-							String actionName = strings.getActionName(type, action);
+							String actionName = languageSettings.getActionName(type, action);
 
 							String actionParameters = formParameter(Action.EXECUTE_ACTION)
 									+ parameter(KeyWords.TYPE_ACTION, action);
@@ -4341,7 +4341,7 @@ public class HTMLView extends View {
 	public void footer(String type) {
 
 		if (footer != null) {
-			footer.appendFragment(strings.gts(type, KeyWords.FOOTER));
+			footer.appendFragment(languageSettings.gts(type, KeyWords.FOOTER));
 		}
 	}
 
@@ -4350,8 +4350,8 @@ public class HTMLView extends View {
 			Month month) {
 		loadTemplate(type, lang, view);
 
-		String title = strings.gts(type, KeyWords.CALENDAR_TITLE);
-		String typeName = strings.getTypeName(type);
+		String title = languageSettings.gts(type, KeyWords.CALENDAR_TITLE);
+		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
 		ZoneId timeZone = nextNode.getTimeZone("select time_zone from \"user\" where id=?",

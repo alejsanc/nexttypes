@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class InvalidValueException extends NXException {
 	private static final long serialVersionUID = 1L;
@@ -34,8 +34,8 @@ public class InvalidValueException extends NXException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		return strings.gts(type, setting) + ": " + value;
+	public String getMessage(LanguageSettings languageSettings) {
+		return languageSettings.gts(type, setting) + ": " + value;
 	}
 
 	public Object getValue() {

@@ -21,20 +21,20 @@ import java.util.logging.Level;
 import com.nexttypes.datatypes.Message;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 
 public class Logger extends java.util.logging.Logger {
 
 	protected Settings settings;
-	protected Strings strings;
+	protected LanguageSettings languageSettings;
 	protected FileHandler handler;
 
 	public Logger(Context context) {
 		super(null, null);
 		settings = context.getSettings(Settings.LOGGER_SETTINGS);
-		strings = context.getStrings(settings.getString(KeyWords.LANG));
+		languageSettings = context.getLanguageSettings(settings.getString(KeyWords.LANG));
 		setLevel(Level.parse(settings.getString(KeyWords.LEVEL).toUpperCase()));
 		handler = new FileHandler(settings);
 		addHandler(handler);
@@ -84,7 +84,7 @@ public class Logger extends java.util.logging.Logger {
 		String message = null;
 
 		if (e instanceof NXException) {
-			message = ((NXException) e).getMessage(strings);
+			message = ((NXException) e).getMessage(languageSettings);
 		} else {
 			message = NXException.getMessage(e);
 		}
@@ -102,7 +102,7 @@ public class Logger extends java.util.logging.Logger {
 	}
 
 	public void log(Level level, Object source, String user, String remoteAddress, Message message) {
-		log(level, source.getClass().getName(), user, remoteAddress, message.getMessage(strings));
+		log(level, source.getClass().getName(), user, remoteAddress, message.getMessage(languageSettings));
 	}
 
 	public void log(Level level, String sourceClass, String user, String remoteAddress, String message) {

@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class CertificateNotFoundException extends NXException {
@@ -34,7 +34,7 @@ public class CertificateNotFoundException extends NXException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		return strings.gts(KeyWords.CERTIFICATE_NOT_FOUND) + ": " + subject;
+	public String getMessage(LanguageSettings languageSettings) {
+		return languageSettings.gts(KeyWords.CERTIFICATE_NOT_FOUND) + ": " + subject;
 	}
 }

@@ -37,7 +37,7 @@ import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.nodes.Node;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
 
@@ -59,7 +59,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 	}
 
 	public ObjectsStreamDeserializer(JsonParser parser, String lang, boolean sharedParser, Node nextNode,
-			TypeSettings typeSettings, Strings strings) {
+			TypeSettings typeSettings, LanguageSettings languageSettings) {
 		super(parser);
 		setParameters(lang, sharedParser, nextNode, typeSettings);
 	}

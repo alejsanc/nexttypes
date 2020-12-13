@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class DisallowedAttributeException extends InvalidValueException {
@@ -34,7 +34,7 @@ public class DisallowedAttributeException extends InvalidValueException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		return strings.gts(KeyWords.DISALLOWED_ATTRIBUTE) + ": " + tag + "::" + value;
+	public String getMessage(LanguageSettings languageSettings) {
+		return languageSettings.gts(KeyWords.DISALLOWED_ATTRIBUTE) + ": " + tag + "::" + value;
 	}
 }

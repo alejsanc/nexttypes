@@ -18,7 +18,7 @@ package com.nexttypes.exceptions;
 
 import org.xml.sax.SAXParseException;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class XMLException extends NXException {
 	private static final long serialVersionUID = 1L;
@@ -48,7 +48,7 @@ public class XMLException extends NXException {
 	}
 	
 	@Override
-	public String getMessage(Strings strings) {
+	public String getMessage(LanguageSettings languageSettings) {
 		return getMessage();
 	}
 }

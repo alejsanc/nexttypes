@@ -39,7 +39,7 @@ import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.interfaces.TypesStream;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Settings;
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 
 public class Console {
 	public static final String PROGRAM_NAME = "com.nexttypes.system.Console";
@@ -54,7 +54,7 @@ public class Console {
 	protected Options options;
 	protected Context context;
 	protected Settings settings;
-	protected Strings strings;
+	protected LanguageSettings languageSettings;
 
 	public Console(String args[]) {
 		try {
@@ -114,7 +114,7 @@ public class Console {
 			settings = context.getSettings(Settings.CONSOLE_SETTINGS);
 			String lang = command.hasOption(KeyWords.LANG) ? command.getOptionValue(KeyWords.LANG)
 					: settings.getString(KeyWords.DEFAULT_LANG);
-			strings = context.getStrings(lang);
+			languageSettings = context.getLanguageSettings(lang);
 			NodeMode mode = null;
 
 			switch (method) {
@@ -193,7 +193,7 @@ public class Console {
 				nextNode.commit();
 			}
 		} catch (NXException e) {
-			System.out.println(e.getMessage(strings));
+			System.out.println(e.getMessage(languageSettings));
 		} catch (ParseException e) {
 			System.out.println(e.getMessage());
 			printHelp();

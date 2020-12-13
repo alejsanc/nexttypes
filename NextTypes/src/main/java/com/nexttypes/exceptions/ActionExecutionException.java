@@ -16,7 +16,7 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.settings.Strings;
+import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
 public class ActionExecutionException extends ActionException {
@@ -27,13 +27,13 @@ public class ActionExecutionException extends ActionException {
 	}
 
 	@Override
-	public String getMessage(Strings strings) {
-		String typeName = strings.getTypeName(type);
-		String actionName = strings.getActionName(type, action);
+	public String getMessage(LanguageSettings languageSettings) {
+		String typeName = languageSettings.getTypeName(type);
+		String actionName = languageSettings.getActionName(type, action);
 		
 		String message = getMessage(getCause());
 		
-		return strings.gts(type, KeyWords.ACTION_EXECUTION_ERROR) + ": "
+		return languageSettings.gts(type, KeyWords.ACTION_EXECUTION_ERROR) + ": "
 			+ typeName + "::" + actionName + ": " + message;
 	}
 }
