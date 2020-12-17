@@ -19,6 +19,8 @@ package com.nexttypes.datatypes;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.nexttypes.enums.IndexMode;
 import com.nexttypes.system.KeyWords;
 
@@ -49,6 +51,8 @@ public class TypeIndex {
 		return mode;
 	}
 
+	@JacksonXmlElementWrapper(localName = KeyWords.FIELDS)
+	@JacksonXmlProperty(localName = KeyWords.FIELD)
 	@JsonProperty(KeyWords.FIELDS)
 	public String[] getFields() {
 		return fields;

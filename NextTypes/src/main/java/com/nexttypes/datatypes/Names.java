@@ -20,8 +20,10 @@ import java.util.LinkedHashMap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nexttypes.system.KeyWords;
 
+@JacksonXmlRootElement(localName = KeyWords.NAMES)
 @JsonPropertyOrder({ KeyWords.COUNT, KeyWords.ITEMS })
 public class Names {
 	protected LinkedHashMap<String, String> items;

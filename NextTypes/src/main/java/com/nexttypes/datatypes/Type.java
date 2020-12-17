@@ -24,9 +24,11 @@ import java.util.LinkedHashMap;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.system.KeyWords;
 
+@JacksonXmlRootElement(localName = KeyWords.TYPE)
 @JsonPropertyOrder({ KeyWords.NAME, KeyWords.CDATE, KeyWords.ADATE, KeyWords.FIELDS, KeyWords.INDEXES,
 		KeyWords.ACTIONS })
 public class Type {
