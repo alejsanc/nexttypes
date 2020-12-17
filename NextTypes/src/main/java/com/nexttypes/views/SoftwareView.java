@@ -33,7 +33,6 @@ public class SoftwareView extends HTMLView {
 	protected final String DESCRIPTION = SETTINGS_ROOT + "description";
 	protected final String DOCUMENTATION = SETTINGS_ROOT + "documentation";
 	protected final String SOURCE_CODE = SETTINGS_ROOT + "source_code";
-	protected final String API_DOC = SETTINGS_ROOT + "api_doc";
 	protected final String SOFTWARE_RELEASE = "software_release";
 	protected final String VERSION = "version";
 
@@ -53,6 +52,7 @@ public class SoftwareView extends HTMLView {
 				"select"
 						+ " s.id,"
 						+ " s.source_code,"
+						+ " s.api,"
 						+ " s.cdate,"
 						+ " greatest(s.udate, sl.udate, sli.udate, sr.udate) as udate,"
 						+ " coalesce(sl.title, s.id) as title,"
@@ -103,6 +103,11 @@ public class SoftwareView extends HTMLView {
 		String sourceCode = tuple.getString("source_code");
 		if (sourceCode != null) {
 			article.appendElement(fieldOutput(languageSettings.getString(SOURCE_CODE), anchor(sourceCode)));
+		}
+		
+		String api = tuple.getString("api");
+		if (api != null) {
+			article.appendElement(fieldOutput("API", anchor(api)));
 		}
 
 		HTMLFragment description = tuple.getHTML("description", lang,
