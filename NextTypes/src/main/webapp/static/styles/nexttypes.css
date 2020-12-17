@@ -52,6 +52,12 @@ article h5:before {	content: counter(h2counter) "." counter(h3counter) "." count
 
 article h2.home:before { content: ""}
 
+article h4, h5 {
+	font-size: 1.17em;
+	margin-top: 1em;
+ 	margin-bottom: 1em;
+}
+
 th a {
 	display: block;
 	width: 100%;
