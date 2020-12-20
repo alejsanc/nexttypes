@@ -41,7 +41,8 @@ public class Type {
 	public static final int DEFAULT_STRING_LENGTH = 250;
 
 	public static final String[] SYSTEM_TYPES = new String[] { "language", "language_language", "user",
-			"user_certificate", "group", "group_user", "group_language" };
+			"user_certificate", "group", "group_user", "group_language", "image_link",
+			"image_link_language" };
 
 	protected String name;
 	protected ZonedDateTime cdate;

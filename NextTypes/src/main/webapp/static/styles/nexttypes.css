@@ -43,16 +43,18 @@ article h1 { counter-reset: h2counter; }
 article h2 { counter-increment: h2counter; counter-reset: h3counter; }
 article h3 { counter-increment: h3counter; counter-reset: h4counter; }
 article h4 { counter-increment: h4counter; counter-reset: h5counter; }
-article h5 { counter-increment: h5counter; }
+article h5 { counter-increment: h5counter; counter-reset: h6counter; }
+article h6 { counter-increment: h6counter;  }
 
 article h2:before { content: counter(h2counter) " - "; }
 article h3:before {	content: counter(h2counter) "." counter(h3counter) " - "; }
 article h4:before {	content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " - "; }
 article h5:before {	content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) " - " }
+article h6:before {	content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter)" - " }
 
 article h2.home:before { content: ""}
 
-article h4, h5 {
+article h4, h5, h6 {
 	font-size: 1.17em;
 	margin-top: 1em;
  	margin-bottom: 1em;

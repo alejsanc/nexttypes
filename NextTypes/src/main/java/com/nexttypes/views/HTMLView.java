@@ -4269,14 +4269,15 @@ public class HTMLView extends View {
 					Element image = document.createElement(HTML.IMG)
 							.setAttribute(HTML.SRC, imageURL(tuple))
 							.setAttribute(HTML.ALT, tuple.getString(HTML.ALT));
+					
+					String title = tuple.getString(HTML.TITLE);
+					if (title != null) {
+						image.setAttribute(HTML.TITLE, title);
+					}
 
 					String link = tuple.getString(KeyWords.LINK);
 					if (link != null) {
 						Element anchor = document.createElement(HTML.A).setAttribute(HTML.HREF, link);
-						String title = tuple.getString(HTML.TITLE);
-						if (title != null) {
-							anchor.setAttribute(HTML.TITLE, title);
-						}
 						anchor.appendElement(image);
 						image = anchor;
 					}

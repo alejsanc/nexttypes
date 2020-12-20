@@ -300,15 +300,17 @@ public class PostgreSQLNode extends Node {
 				NodeMode.ADMIN, lang, URL.LOCALHOST, context, true)) {
 
 			if (node.getTypesName().length == 0) {
-				node.importTypes(node.getClass()
-						.getResourceAsStream("/com/nexttypes/system/system-types.json"), 
-						ImportAction.ABORT, ImportAction.ABORT);
-
 				node.execute(FILE_TYPE);
 				node.execute(IMAGE_TYPE);
 				node.execute(DOCUMENT_TYPE);
 				node.execute(AUDIO_TYPE);
 				node.execute(VIDEO_TYPE);
+				
+				node.importTypes(node.getClass()
+						.getResourceAsStream("/com/nexttypes/system/system-types.json"), 
+						ImportAction.ABORT, ImportAction.ABORT);
+
+				
 			}
 			
 			node.commit();
