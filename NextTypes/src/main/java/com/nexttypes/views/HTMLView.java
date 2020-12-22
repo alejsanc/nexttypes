@@ -213,7 +213,6 @@ public class HTMLView extends View {
 	protected Element main;
 	protected Element footer;
 	protected DecimalFormat humanReadableBytesFormat;
-	protected ArrayList<String> textEditorModes;
 	protected Permissions permissions;
 	
 	public HTMLView(String type, HTMLView parent) {
@@ -2306,36 +2305,23 @@ public class HTMLView extends View {
 			textArea.addClass(fieldType);
 		}
 
-		String[] modes = typeSettings.getActionFieldStringArray(type, action, field, KeyWords.EDITOR);
+		String mode = typeSettings.getActionFieldString(type, action, field, KeyWords.EDITOR);
 		
-		if (modes == null || modes.length == 0) {
+		if (mode == null || mode.length() == 0) {
 			switch (fieldType) {
 			case PT.JSON:
-				modes = new String[] { JSON };
+				mode =  JSON;
 				break;
 
 			case PT.XML:
 			case PT.HTML:
-				modes = new String[] { XML };
+				mode = XML;
 				break;
 			}
 		}
 
-		if (modes != null && modes.length > 0) {
-			textArea.setAttribute(DATA_EDITOR, modes[0]);
-
-			for (String mode : modes) {
-				if (!VISUAL.equals(mode)) {
-					if (textEditorModes == null) {
-						textEditorModes = new ArrayList<>();
-					}
-
-					if (!textEditorModes.contains(mode)) {
-						textEditorModes.add(mode);
-						head.appendElement(textEditorMode(mode));
-					}
-				}
-			}
+		if (mode != null && mode.length() > 0) {
+			textArea.setAttribute(DATA_EDITOR, mode);
 		}
 
 		return textArea;
@@ -4218,16 +4204,13 @@ public class HTMLView extends View {
 			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET)
 				.setAttribute(HTML.TYPE, "text/css")
 				.setAttribute(HTML.HREF, "/static/lib/codemirror/lib/codemirror.css");
+			
+			head.appendElement(HTML.SCRIPT)
+				.setAttribute(HTML.SRC, "/static/lib/codemirror/mode/xml/xml.js");
+			
+			head.appendElement(HTML.SCRIPT)
+				.setAttribute(HTML.SRC, "/static/lib/codemirror/mode/javascript/javascript.js");
 		}
-	}
-
-	public Element textEditorMode(String mode) {
-		if (JSON.equals(mode)) {
-			mode = JAVASCRIPT;
-		}
-
-		return document.createElement(HTML.SCRIPT)
-				.setAttribute(HTML.SRC, "/static/lib/codemirror/mode/" + mode + "/" + mode + ".js");
 	}
 
 	public void images() {

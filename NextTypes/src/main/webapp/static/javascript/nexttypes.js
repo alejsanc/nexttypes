@@ -130,7 +130,7 @@ window.addEventListener("load", function (){
 			} else {
 				
 				if (editorMode == "json") {
-					editorMode = {name: "javascript", jsonld: true};
+					editorMode = {name: "javascript", json: true};
 				} 
 				
 				codemirrorEditor(textarea, editorMode);
