@@ -3972,7 +3972,7 @@ public class HTMLView extends View {
 			String file = typeSettings.gts(type, KeyWords.MENU);
 			
 			if (file != null) {
-				Menu menu = context.getMenu(typeSettings.gts(type, KeyWords.MENU));
+				Menu menu = context.getMenu(file);
 
 				for (MenuSection section : menu.getSections()) {
 					menuElement.appendElement(menuTitle(type, section.getTitle()));
