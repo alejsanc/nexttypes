@@ -3813,17 +3813,16 @@ public class HTMLView extends View {
 	public Content notFound(String type, String lang, String view, NotFoundException e) {
 		Content content = null;
 
-		String message = e.getMessage(languageSettings);
-
-		if (document != null) {
-			document.getTitle().appendText(message);
-			main.appendElement(HTML.P).addClass(KeyWords.MESSAGE).appendText(message);
-			content = render(type);
-			content.setStatus(HTTPStatus.NOT_FOUND);
-		} else {
-			content = new Content(message, Format.TEXT, HTTPStatus.NOT_FOUND);
+		if (document == null) {
+			loadTemplate(type, lang, view);
 		}
 
+		String message = e.getMessage(languageSettings);
+		document.getTitle().appendText(message);
+		main.appendElement(HTML.P).addClass(KeyWords.MESSAGE).appendText(message);
+		content = render(type);
+		content.setStatus(HTTPStatus.NOT_FOUND);
+		
 		return content;
 	}
 
