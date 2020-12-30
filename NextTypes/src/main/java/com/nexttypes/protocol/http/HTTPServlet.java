@@ -913,17 +913,22 @@ public class HTTPServlet extends HttpServlet {
 		}
 	}
 	
-	protected void debug(HttpServletResponse response, Content content) {
+	protected void debug(HttpServletResponse response) {
 		Debug.httpResponse();
-			
-		Debug.text("Status: " + content.getStatus());
-		Debug.text(HTTPHeader.CONTENT_TYPE + ": " + content.getContentType());
-			
+		
+		Debug.text("Status: " + response.getStatus());
+		Debug.text(HTTPHeader.CONTENT_TYPE + ": " + response.getContentType());
+		
 		Debug.headers();
-			
+		
 		for (String header : response.getHeaderNames()) {
 			Debug.text(header + ": " + response.getHeader(header));
 		}
+	}
+	
+	protected void debug(HttpServletResponse response, Content content) {
+		
+		debug(response);
 
 		Debug.body();
 		
@@ -1047,6 +1052,9 @@ public class HTTPServlet extends HttpServlet {
 		} else {
 			status = HTTPStatus.INTERNAL_SERVER_ERROR;
 		}
+		
+		response.setStatus(status.toInt32());
+		response.setContentType(Format.TEXT.getContentType());
 
 		if (e instanceof NXException) {
 			message = ((NXException) e).getMessage(languageSettings);
@@ -1055,6 +1063,7 @@ public class HTTPServlet extends HttpServlet {
 		}
 		
 		if (debug) {
+			debug(response);
 			Debug.exception(message, e);
 		}
 
@@ -1062,8 +1071,6 @@ public class HTTPServlet extends HttpServlet {
 
 		try {
 			logException(e, user, remoteAddress);
-			response.setStatus(status.toInt32());
-			response.setContentType(Format.TEXT.getContentType());
 			response.getWriter().write(message);
 		} catch (Exception e2) {
 			logger.severe(user, remoteAddress, e2);
