@@ -94,9 +94,10 @@ public class HTTPServlet extends HttpServlet {
 	protected int binaryDebugLimit;
 	protected ConcurrentHashMap<String, Requests> requestsMap = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Requests> authErrorsMap = new ConcurrentHashMap<>();
-	protected ConcurrentHashMap<String, Requests> insertRequestsMap = new ConcurrentHashMap<>();
+	protected ConcurrentHashMap<String, ConcurrentHashMap<String, Requests>> insertRequestsMap
+		= new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Requests>[] requestsMaps = new ConcurrentHashMap[] { requestsMap,
-			authErrorsMap, insertRequestsMap };
+			authErrorsMap };
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
@@ -111,29 +112,47 @@ public class HTTPServlet extends HttpServlet {
 		binaryDebugLimit = settings.getInt32(KeyWords.BINARY_DEBUG_LIMIT);
 		logger = context.getLogger();
 				
-		requestsMapsThread();
+		purgeRequestsMapsThread();
 	}
 	
-	protected void requestsMapsThread() {
+	protected void purgeRequestsMapsThread() {
 		
 		new Thread () {
-			public void run() {
-				try {
-					sleep(Constants.MINUTE_MILLISECONDS);
-				} catch (InterruptedException e) {
-					throw new NXException(e);
+			
+			protected void purge (long now, ConcurrentHashMap<String, Requests> requestsMap, 
+					Map.Entry<String, Requests> entry) {
+				if (now - entry.getValue().firstRequestTime > Constants.MINUTE_MILLISECONDS) {
+					requestsMap.remove(entry.getKey());
 				}
-				
+			}
+			
+			public void run() {
 				while (true) {
+					try {
+						sleep(Constants.MINUTE_MILLISECONDS);
+					} catch (InterruptedException e) {
+						throw new NXException(e);
+					}
+					
 					long now = System.currentTimeMillis();
 					
-					for (ConcurrentHashMap<String, Requests> map : requestsMaps) {
+					for (ConcurrentHashMap<String, Requests> requestsMap : requestsMaps) {
+						for (Map.Entry<String, Requests> entry : requestsMap.entrySet()) {
+							purge(now, requestsMap, entry);
+						}
+					}
+					
+					for (Map.Entry<String, ConcurrentHashMap<String, Requests>> entry
+							: insertRequestsMap.entrySet()) {
 						
-						for (Map.Entry<String, Requests> entry : map.entrySet()) {
-							if (entry.getValue().firstRequestTime + Constants.MINUTE_MILLISECONDS 
-									< now) {
-								map.remove(entry.getKey());
-							}
+						ConcurrentHashMap<String, Requests> typesRequests = entry.getValue();
+						
+						for (Map.Entry<String, Requests> typeEntry : typesRequests.entrySet()) {
+							purge(now, typesRequests, typeEntry);
+						}
+						
+						if (typesRequests.size() == 0) {
+							insertRequestsMap.remove(entry.getKey());
 						}
 					}
 				}
@@ -1152,24 +1171,30 @@ public class HTTPServlet extends HttpServlet {
 			
 			String remoteAddress = req.getRemoteAddress();
 
-			Requests requests = insertRequestsMap.get(remoteAddress);
+			ConcurrentHashMap<String, Requests> typesRequests = insertRequestsMap.get(remoteAddress);
+			
+			if (typesRequests != null) {
+			
+				Requests requests = typesRequests.get(type);
 
-			if (requests != null) {
-				long now = System.currentTimeMillis();
+				if (requests != null) {
+					long now = System.currentTimeMillis();
 
-				if (requests.firstRequestTime + Constants.MINUTE_MILLISECONDS < now) {
-					insertRequestsMap.remove(remoteAddress);
-				} else {
+					if (now - requests.firstRequestTime > Constants.MINUTE_MILLISECONDS) {
+						typesRequests.remove(type);
+					} else {
 				
-					if (requests.requests >= maxInserts) {
-						String message = req.getLanguageSettings().gts(type, KeyWords.MAX_INSERTS_EXCEEDED);
+						if (requests.requests >= maxInserts) {
+							String message = req.getLanguageSettings().gts(type,
+									KeyWords.MAX_INSERTS_EXCEEDED);
 
-						content = new Content(message, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
+							content = new Content(message, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
 
-						if (!requests.logged) {
-							logger.severe(this, req.getAuth().getUser(), remoteAddress,
+							if (!requests.logged) {
+								logger.severe(this, req.getAuth().getUser(), remoteAddress,
 									new Message(KeyWords.MAX_INSERTS_EXCEEDED));
-							requests.logged = true;
+								requests.logged = true;
+							}
 						}
 					}
 				}
@@ -1190,7 +1215,7 @@ public class HTTPServlet extends HttpServlet {
 			if (requests != null) {
 				long now = System.currentTimeMillis();
 
-				if (requests.firstRequestTime + Constants.MINUTE_MILLISECONDS < now) {
+				if (now - requests.firstRequestTime > Constants.MINUTE_MILLISECONDS) {
 					requests.requests = 1;
 					requests.firstRequestTime = now;
 					requests.logged = false;
@@ -1227,12 +1252,19 @@ public class HTTPServlet extends HttpServlet {
 		if (maxInserts > 0) {
 			
 			String remoteAddress = req.getRemoteAddress();
+			
+			ConcurrentHashMap<String, Requests> typesRequests = insertRequestsMap.get(remoteAddress);
+			
+			if (typesRequests == null) {
+				typesRequests = new ConcurrentHashMap<>();
+				insertRequestsMap.putIfAbsent(remoteAddress, typesRequests);
+			}
 
-			Requests requests = insertRequestsMap.get(remoteAddress);
+			Requests requests = typesRequests.get(type);
 
 			if (requests == null) {
 				requests = new Requests();
-				insertRequestsMap.putIfAbsent(remoteAddress, requests);
+				typesRequests.putIfAbsent(type, requests);
 			} else {
 				requests.requests += 1;
 			}
@@ -1264,7 +1296,7 @@ public class HTTPServlet extends HttpServlet {
 	
 				long now = System.currentTimeMillis();
 	
-				if (authErrors.firstRequestTime + Constants.MINUTE_MILLISECONDS < now) {
+				if (now - authErrors.firstRequestTime > Constants.MINUTE_MILLISECONDS) {
 					authErrorsMap.remove(remoteAddress);
 				} else {
 	
