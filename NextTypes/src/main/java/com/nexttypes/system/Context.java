@@ -62,10 +62,6 @@ public class Context {
 	protected ConcurrentHashMap<String, Properties> files = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Properties> resourcesAndFiles[]
 		= new ConcurrentHashMap[] { resources, files };
-	protected ConcurrentHashMap<String, LinkedHashMap<String, TypeField>> fields
-		= new ConcurrentHashMap<>();
-	protected ConcurrentHashMap<String, LinkedHashMap<String, TypeIndex>> indexes
-		= new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, HTML> templates = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, byte[]> defaults = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Menu> menus = new ConcurrentHashMap<>();
@@ -125,14 +121,6 @@ public class Context {
 	
 	public Logger getLogger() {
 		return logger;
-	}
-
-	public ConcurrentHashMap<String, LinkedHashMap<String, TypeField>> getFieldsCache() {
-		return fields;
-	}
-
-	public ConcurrentHashMap<String, LinkedHashMap<String, TypeIndex>> getIndexesCache() {
-		return indexes;
 	}
 
 	public TypeSettings getTypeSettings(Auth auth) {
