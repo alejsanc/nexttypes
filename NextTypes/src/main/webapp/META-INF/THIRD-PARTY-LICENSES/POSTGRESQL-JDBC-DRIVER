@@ -1,7 +1,18 @@
-PostgreSQL JDBC Driver - BSD 2-clause "Simplified" License
-https://jdbc.postgresql.org/
+POSTGRESQL JDBC DRIVER
+----------------------
 
---------------------------------------------------------------------------
+URL: https://jdbc.postgresql.org/
+
+postgresql-42.2.18.jar
+
+--------------------------------------------------------------------------------
+
+BSD 2-clause "Simplified" License
+
+The PostgreSQL JDBC Driver is distributed under the BSD-2-Clause License. The
+simplest explanation of the licensing terms is that you can do whatever you want
+with the product and source code as long as you don't claim you wrote it or sue
+us. You should give it a read though, it's only half a page. 
 
 Copyright (c) 1997, PostgreSQL Global Development Group
 All rights reserved.
