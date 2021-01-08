@@ -147,6 +147,14 @@ URL: https://github.com/google/error-prone
 error_prone_annotations-2.3.4.jar
 
 
+FINDBUGS JSR305
+---------------
+
+URL: https://github.com/findbugsproject/findbugs
+
+jsr305-3.0.2.jar
+
+
 GOOGLE GSON
 -----------
 
@@ -257,6 +265,30 @@ JODA TIME
 URL: https://www.joda.org/joda-time/
 
 joda-time-2.2.jar
+
+
+JSON SIMPLE
+-----------
+
+URL: https://code.google.com/archive/p/json-simple/
+
+json-simple-1.1.1.jar
+
+
+METADATA EXTRACTOR
+------------------
+
+URL: https://github.com/drewnoakes/metadata-extractor
+
+metadata-extractor-2.13.0.jar
+
+
+OPENJSON
+--------
+
+URL: https://github.com/openjson/openjson
+
+openjson-1.0.12.jar
 
 
 ROME
