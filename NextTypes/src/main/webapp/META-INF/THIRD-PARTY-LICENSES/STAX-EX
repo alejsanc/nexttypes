@@ -1,14 +1,13 @@
-JAKARTA EDL 1.0
----------------
+STAX EX
+-------
 
-jakarta.activation-1.2.1.jar
-jakarta.activation-api-1.2.1.jar
-jakarta.xml.bind-api-2.3.2.jar
-saaj-impl-1.4.0-b03.jar
+URL: https://javaee.github.io/metro-stax-ex/
+
+stax-ex-1.8.1.jar
 
 --------------------------------------------------------------------------------
-    
-    Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.
+
+    Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved.
    
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions

@@ -69,6 +69,14 @@ apache-mime4j-core-0.8.3.jar
 apache-mime4j-dom-0.8.3.jar
 
 
+APACHE OPENNLP
+--------------
+
+URL: https://opennlp.apache.org/
+
+opennlp-tools-1.9.2.jar
+
+
 APACHE PDFBOX
 -------------
 
@@ -78,6 +86,7 @@ fontbox-2.0.19.jar
 jempbox-1.8.16.jar
 pdfbox-2.0.19.jar
 pdfbox-tools-2.0.19.jar
+preflight-2.0.19.jar
 xmpbox-2.0.19.jar
 
 
@@ -121,6 +130,30 @@ URL: https://tika.apache.org/
 
 tika-core-1.24.1.jar
 tika-parsers-1.24.1.jar
+
+
+APACHE XERCES 2
+---------------
+
+URL: http://xerces.apache.org/xerces2-j/
+
+xercesImpl-2.12.0.jar
+
+
+APACHE XMLBEANS
+---------------
+
+URL: https://xmlbeans.apache.org/
+
+xmlbeans-3.1.0.jar
+
+
+APACHE XMLSCHEMA
+----------------
+
+URL: https://ws.apache.org/xmlschema/
+
+xmlschema-core-2.2.5.jar
 
 
 BOILERPIPE
@@ -226,6 +259,10 @@ jackson-dataformat-xml-2.11.3.jar
 jackson-datatype-jsr310-2.11.3.jar
 jackson-module-jaxb-annotations-2.11.3.jar
 
+URL: https://github.com/FasterXML/woodstox
+
+woodstox-core-6.2.1.jar
+
 
 JAVA LIBPST
 -----------
@@ -291,6 +328,22 @@ URL: https://github.com/openjson/openjson
 openjson-1.0.12.jar
 
 
+PARSO
+-----
+
+URL: https://github.com/epam/parso
+
+parso-2.0.11.jar
+
+
+QUARTZ
+------
+
+URL: https://www.quartz-scheduler.org/
+
+quartz-2.3.2.jar
+
+
 ROME
 ----
 
@@ -298,6 +351,30 @@ URL: https://github.com/rometools/rome
 
 rome-1.12.2.jar
 rome-utils-1.12.2.jar
+
+
+SENTIMENT ANALYSIS PARSER
+-------------------------
+
+URL: https://github.com/USCDataScience/SentimentAnalysisParser
+
+sentiment-analysis-parser-0.1.jar
+
+
+SPARSE BIT SET
+--------------
+
+URL: https://github.com/brettwooldridge/SparseBitSet
+
+SparseBitSet-1.2.jar
+
+
+TAG SOUP
+--------
+
+URL: https://github.com/orbeon/tagsoup
+
+tagsoup-1.2.1.jar
 
 
 VORBIS JAVA
