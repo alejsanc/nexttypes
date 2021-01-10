@@ -3,8 +3,11 @@ JAKARTA EDL 1.0
 
 jakarta.activation-1.2.1.jar
 jakarta.activation-api-1.2.1.jar
+jakarta.jws-api-2.1.0.jar
 jakarta.xml.bind-api-2.3.2.jar
-saaj-impl-1.4.0-b03.jar
+jakarta.xml.soap-api-1.4.2.jar
+jakarta.xml.ws-api-2.3.3.jar
+saaj-impl-1.5.2.jar
 
 --------------------------------------------------------------------------------
     

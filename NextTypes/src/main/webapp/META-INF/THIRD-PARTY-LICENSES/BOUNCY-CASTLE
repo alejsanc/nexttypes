@@ -3,9 +3,9 @@ BOUNCY CASTLE
 
 URL: https://www.bouncycastle.org/
 
-bcmail-jdk15on-1.65.jar
-bcpkix-jdk15on-1.65.jar
-bcprov-jdk15on-1.66.jar
+bcmail-jdk15on-1.67.jar
+bcpkix-jdk15on-1.67.jar
+bcprov-jdk15on-1.68.jar
 
 --------------------------------------------------------------------------------
 

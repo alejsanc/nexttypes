@@ -22,11 +22,11 @@ APACHE CXF
 
 URL: https://cxf.apache.org/
 
-cxf-core-3.3.6.jar
-cxf-rt-frontend-jaxrs-3.3.6.jar
-cxf-rt-rs-client-3.3.6.jar
-cxf-rt-security-3.3.6.jar
-cxf-rt-transports-http-3.3.6.jar
+cxf-core-3.4.1.jar
+cxf-rt-frontend-jaxrs-3.4.1.jar
+cxf-rt-rs-client-3.4.1.jar
+cxf-rt-security-3.4.1.jar
+cxf-rt-transports-http-3.4.1.jar
 
 
 APACHE GERONIMO
@@ -35,7 +35,6 @@ APACHE GERONIMO
 URL: https://geronimo.apache.org/
 
 geronimo-jta_1.1_spec-1.1.1.jar
-geronimo-ws-metadata_2.0_spec-1.1.3.jar
 
 
 APACHE HTTPCOMPONENTS
@@ -43,9 +42,9 @@ APACHE HTTPCOMPONENTS
 
 URL: https://hc.apache.org/
 
-httpclient-4.5.12.jar
+httpclient-4.5.13.jar
 httpcore-4.4.13.jar
-httpmime-4.5.12.jar
+httpmime-4.5.13.jar
 
 
 APACHE JACKRABBIT
@@ -53,11 +52,11 @@ APACHE JACKRABBIT
 
 URL: https://jackrabbit.apache.org/jcr/index.html
 
-jackrabbit-jcr-commons-2.18.6.jar
-jackrabbit-jcr-server-2.18.6.jar
-jackrabbit-spi-2.18.6.jar
-jackrabbit-spi-commons-2.18.6.jar
-jackrabbit-webdav-2.18.6.jar
+jackrabbit-jcr-commons-2.20.2.jar
+jackrabbit-jcr-server-2.20.2.jar
+jackrabbit-spi-2.20.2.jar
+jackrabbit-spi-commons-2.20.2.jar
+jackrabbit-webdav-2.20.2.jar
 
 
 APACHE JAMES MIME4J
@@ -74,7 +73,7 @@ APACHE OPENNLP
 
 URL: https://opennlp.apache.org/
 
-opennlp-tools-1.9.2.jar
+opennlp-tools-1.9.3.jar
 
 
 APACHE PDFBOX
@@ -82,12 +81,12 @@ APACHE PDFBOX
 
 URL: https://pdfbox.apache.org/
 
-fontbox-2.0.19.jar
+fontbox-2.0.21.jar
 jempbox-1.8.16.jar
-pdfbox-2.0.19.jar
-pdfbox-tools-2.0.19.jar
-preflight-2.0.19.jar
-xmpbox-2.0.19.jar
+pdfbox-2.0.21.jar
+pdfbox-tools-2.0.21.jar
+preflight-2.0.21.jar
+xmpbox-2.0.21.jar
 
 
 APACHE POI
@@ -119,8 +118,8 @@ APACHE TOMCAT JDBC CONNECTION POOL
 
 URL: https://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html
 
-tomcat-jdbc-9.0.39.jar
-tomcat-juli-9.0.39.jar
+tomcat-jdbc-9.0.41.jar
+tomcat-juli-9.0.41.jar
 
 
 APACHE TIKA
@@ -128,8 +127,8 @@ APACHE TIKA
 
 URL: https://tika.apache.org/
 
-tika-core-1.24.1.jar
-tika-parsers-1.24.1.jar
+tika-core-1.25.jar
+tika-parsers-1.25.jar
 
 
 APACHE XERCES 2
@@ -202,7 +201,7 @@ GUAVA
 URL: https://github.com/google/guava
 
 failureaccess-1.0.1.jar
-guava-28.2-jre.jar
+guava-30.0-jre.jar
 
 
 HIKARICP
@@ -226,7 +225,7 @@ ISOPARSER
 
 URL: https://github.com/sannies/mp4parser
 
-isoparser-1.9.41.2.jar
+isoparser-1.9.41.4.jar
 
 
 J2OBJC
@@ -242,7 +241,7 @@ JACKCESS
 
 URL: https://jackcess.sourceforge.io/
 
-jackcess-3.0.1.jar
+jackcess-3.5.1.jar
 jackcess-encrypt-3.0.0.jar
 
 
@@ -251,17 +250,17 @@ JACKSON
 
 URL: https://github.com/FasterXML/jackson
 
-jackson-annotations-2.11.3.jar
-jackson-core-2.11.3.jar
-jackson-databind-2.11.3.jar
-jackson-dataformat-smile-2.11.3.jar
-jackson-dataformat-xml-2.11.3.jar
-jackson-datatype-jsr310-2.11.3.jar
-jackson-module-jaxb-annotations-2.11.3.jar
+jackson-annotations-2.12.0.jar
+jackson-core-2.12.0.jar
+jackson-databind-2.12.0.jar
+jackson-dataformat-smile-2.12.0.jar
+jackson-dataformat-xml-2.12.0.jar
+jackson-datatype-jsr310-2.12.0.jar
+jackson-module-jaxb-annotations-2.12.0.jar
 
 URL: https://github.com/FasterXML/woodstox
 
-woodstox-core-6.2.1.jar
+woodstox-core-6.2.3.jar
 
 
 JAVA LIBPST
@@ -317,7 +316,7 @@ METADATA EXTRACTOR
 
 URL: https://github.com/drewnoakes/metadata-extractor
 
-metadata-extractor-2.13.0.jar
+metadata-extractor-2.15.0.1.jar
 
 
 OPENJSON
@@ -333,7 +332,7 @@ PARSO
 
 URL: https://github.com/epam/parso
 
-parso-2.0.11.jar
+parso-2.0.12.jar
 
 
 QUARTZ
@@ -349,8 +348,8 @@ ROME
 
 URL: https://github.com/rometools/rome
 
-rome-1.12.2.jar
-rome-utils-1.12.2.jar
+rome-1.15.0.jar
+rome-utils-1.15.0.jar
 
 
 SENTIMENT ANALYSIS PARSER
@@ -391,7 +390,7 @@ XMP CORE SHADED
 
 URL: https://github.com/tballison/xmpcore-shaded
 
-xmpcore-shaded-6.1.10.jar
+xmpcore-shaded-6.1.11.jar
 
 
 ZXING
