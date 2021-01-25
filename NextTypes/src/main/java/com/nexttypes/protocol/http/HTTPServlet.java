@@ -215,8 +215,8 @@ public class HTTPServlet extends HttpServlet {
 					} else if (Action.RENAME.equals(form)) {
 						content = view.renameForm(req.getType(), req.getLang(), req.getView());
 					} else if (Action.EXECUTE_ACTION.equals(form)) {
-						content = view.executeActionForm(req.getType(), null, req.getAction(), req.getLang(),
-								req.getView());
+						content = view.executeActionForm(req.getType(), null, req.getAction(),
+								req.getLang(), req.getView());
 					} else if (req.isNames()) {
 						content = view.getNames(req.getType(), req.getLang(), req.getView(),
 								req.getARef(), req.getSearch(), req.getOffset());
@@ -249,8 +249,8 @@ public class HTTPServlet extends HttpServlet {
 					} else if (Action.UPDATE_ID.equals(form)) {
 						content = view.updateIdForm(req.getType(), req.getId(), req.getLang(), req.getView());
 					} else if (Action.EXECUTE_ACTION.equals(form)) {
-						content = view.executeActionForm(req.getType(), req.getId(), req.getAction(), req.getLang(),
-								req.getView());
+						content = view.executeActionForm(req.getType(), req.getId(),
+								req.getAction(), req.getLang(), req.getView());
 					} else {
 						content = view.get(req.getType(), req.getId(), req.getLang(), req.getView(), req.getETag());
 					}
@@ -455,8 +455,8 @@ public class HTTPServlet extends HttpServlet {
 				
 				Object[] values = req.readActionFields(typeFields);
 
-				Object actionResult = nextNode.executeAction(req.getType(), objects, req.getAction(),
-						values);
+				Object actionResult = nextNode.executeAction(req.getType(), objects,
+						req.getAction(), values);
 				content = new Content(actionResult, Format.JSON);
 				break;
 			}

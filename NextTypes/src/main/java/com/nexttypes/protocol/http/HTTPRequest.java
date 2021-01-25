@@ -79,7 +79,7 @@ public class HTTPRequest {
 			KeyWords.OFFSET, KeyWords.LIMIT, KeyWords.ORDER, KeyWords.SEARCH,
 			KeyWords.CURRENT_PASSWORD, KeyWords.NEW_PASSWORD, KeyWords.NEW_PASSWORD_REPEAT,
 			KeyWords.VIEW, KeyWords.REF, KeyWords.AREF, KeyWords.FORM, KeyWords.YEAR, KeyWords.MONTH,
-			KeyWords.TYPE_ACTION, KeyWords.LOGIN_USER, KeyWords.LOGIN_PASSWORD, 
+			KeyWords.REQUEST_ACTION, KeyWords.LOGIN_USER, KeyWords.LOGIN_PASSWORD, 
 			KeyWords.COMPONENT, KeyWords.INCLUDE_OBJECTS, KeyWords.VERSION, KeyWords.INFO, KeyWords.NAMES,
 			KeyWords.CALENDAR, KeyWords.PREVIEW, KeyWords.REFERENCES, Action.FILTER_COMPONENT};
 
@@ -110,7 +110,7 @@ public class HTTPRequest {
 	protected ActionReference aref;
 	protected String search;
 	protected LinkedHashMap<String, Order> order;
-	protected String type_action;
+	protected String request_action;
 	protected Tuple parameters;
 	protected Tuple fields;
 	protected ZonedDateTime udate;
@@ -196,7 +196,7 @@ public class HTTPRequest {
 		Checks.checkRef(ref);
 		Checks.checkARef(aref);
 		Checks.checkOrder(order);
-		Checks.checkAction(type_action);
+		Checks.checkAction(request_action);
 		Checks.checkTuple(parameters);
 		Checks.checkTuple(fields);
 	}
@@ -383,7 +383,7 @@ public class HTTPRequest {
 
 			} else if (fields.containsKey(field)) {
 
-				if (PT.PASSWORD.equals(fieldType) && Action.UPDATE.equals(type_action)) {
+				if (PT.PASSWORD.equals(fieldType) && Action.UPDATE.equals(request_action)) {
 					throw new FieldException(type, field, KeyWords.PASSWORD_FIELD_UPDATE);
 				}
 
@@ -802,7 +802,7 @@ public class HTTPRequest {
 	}
 
 	public String getAction() {
-		return type_action;
+		return request_action;
 	}
 
 	public Tuple getParameters() {

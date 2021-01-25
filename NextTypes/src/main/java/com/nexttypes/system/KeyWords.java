@@ -300,6 +300,7 @@ public class KeyWords {
 	public static final String RENAMED_FIELDS = "renamed_fields";
 	public static final String RENAMED_INDEXES = "renamed_indexes";
 	public static final String REPEAT = "repeat";
+	public static final String REQUEST_ACTION = "request_action";
 	public static final String SCALE = "scale";
 	public static final String SEARCH = "search";
 	public static final String SELECT_STRING_NOT_FOUND = "select_string_not_found";
@@ -338,7 +339,6 @@ public class KeyWords {
 	public static final String TITLE = "title";
 	public static final String TRUE = "true";
 	public static final String TYPE = "type";
-	public static final String TYPE_ACTION = "type_action";
 	public static final String TYPE_ALREADY_EXISTS = "type_already_exists";
 	public static final String TYPE_ALREADY_HAS_OBJECTS = "type_already_has_objects";
 	public static final String TYPE_ALTERED = "type_altered";

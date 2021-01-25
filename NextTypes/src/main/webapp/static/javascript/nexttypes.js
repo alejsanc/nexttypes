@@ -602,7 +602,7 @@ function submitForm(event) {
 	}
 	
 	if (execute) {
-		setFormInput(form, "type_action", action);
+		setFormInput(form, "request_action", action);
 		
 		var request = new XMLHttpRequest();
 		
@@ -890,7 +890,7 @@ function exportFunction(event) {
 	var action = button.value;
 	var form = button.form;
 		
-	setFormInput(form, "type_action", action);
+	setFormInput(form, "request_action", action);
 		
 	form.method = "POST";
 	form.submit();

@@ -4173,7 +4173,7 @@ public class HTMLView extends View {
 							String actionName = languageSettings.getActionName(type, action);
 
 							String actionParameters = formParameter(Action.EXECUTE_ACTION)
-									+ parameter(KeyWords.TYPE_ACTION, action);
+									+ parameter(KeyWords.REQUEST_ACTION, action);
 
 							actionsElement.appendElement(anchor(actionName, url(type, id, lang, view)
 									+ actionParameters));
