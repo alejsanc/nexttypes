@@ -20,6 +20,7 @@ public class KeyWords {
 	
 	public static final String ACCEPT = "accept";
 	public static final String ACTION = "action";
+	public static final String _ACTION = "_action";
 	public static final String ACTION_EXECUTION_ERROR = "action_execution_error";
 	public static final String ACTION_NAME_TOO_LONG = "action_name_too_long";
 	public static final String ACTION_NOT_FOUND = "action_not_found";
@@ -300,7 +301,6 @@ public class KeyWords {
 	public static final String RENAMED_FIELDS = "renamed_fields";
 	public static final String RENAMED_INDEXES = "renamed_indexes";
 	public static final String REPEAT = "repeat";
-	public static final String REQUEST_ACTION = "request_action";
 	public static final String SCALE = "scale";
 	public static final String SEARCH = "search";
 	public static final String SELECT_STRING_NOT_FOUND = "select_string_not_found";
