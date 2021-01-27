@@ -419,13 +419,12 @@ function loadNames(event) {
 function addFilter(event) {
 	var table = document.getElementById("filters");
 	var body = table.tBodies[0];
-	
 	var rowCount = body.rows.length;
-	filterCount++;
-	
 	var row = body.insertRow(rowCount);
 	
 	loadFilter(row, null);	
+	
+	filterCount++;
 }
 
 function loadFilter(row, field) {
