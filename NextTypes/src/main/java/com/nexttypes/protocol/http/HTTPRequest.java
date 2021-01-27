@@ -198,6 +198,7 @@ public class HTTPRequest {
 		Checks.checkARef(aref);
 		Checks.checkOrder(order);
 		Checks.checkAction(action);
+		Checks.checkAction(_action);
 		Checks.checkTuple(parameters);
 		Checks.checkTuple(fields);
 	}
