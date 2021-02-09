@@ -308,7 +308,6 @@ public class KeyWords {
 	public static final String SESSION = "session";
 	public static final String SESSION_EXPIRED = "session_expired";
 	public static final String SESSION_PARAMETER_NOT_FOUND = "session_parameter_not_found";
-	public static final String SESSION_TOKEN = "session_token";
 	public static final String SETTINGS = "settings";
 	public static final String SETTINGS_DIRECTORY = "settings_directory";
 	public static final String SHOW_CONTROL_PANEL = "show_control_panel";

@@ -229,13 +229,13 @@ public class HTTPRequest {
 	}
 
 	protected void setSessionToken() {
-		if (session.getAttribute(KeyWords.SESSION_TOKEN) == null) {
-			session.setAttribute(KeyWords.SESSION_TOKEN, Security.randomString());
+		if (session.getAttribute(KeyWords.SESSION) == null) {
+			session.setAttribute(KeyWords.SESSION, Security.randomString());
 		}
 	}
 
 	public String getSessionToken() {
-		return (String) session.getAttribute(KeyWords.SESSION_TOKEN);
+		return (String) session.getAttribute(KeyWords.SESSION);
 	}
 
 	protected void parseURLPath() {
