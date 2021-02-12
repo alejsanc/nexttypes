@@ -60,7 +60,6 @@ public class HTML extends XML {
 	public static final String PRE = "pre";
 	public static final String ARTICLE = "article";
 	public static final String CHECKBOX = "checkbox";
-	public static final String ENCTYPE = "enctype";
 	public static final String FORM = "form";
 	public static final String ACTION = "action";
 	public static final String DIV = "div";
@@ -122,7 +121,6 @@ public class HTML extends XML {
 	public static final String FIGCAPTION = "figcaption";
 	public static final String ALTERNATE = "alternate";
 	public static final String ACCEPT = "accept";
-	public static final String MULTIPART_FORM_DATA = "multipart/form-data";
 	public static final String BACKGROUND_COLOR = "background-color";
 	public static final String RADIO = "radio";
 	public static final String READONLY = "readonly";

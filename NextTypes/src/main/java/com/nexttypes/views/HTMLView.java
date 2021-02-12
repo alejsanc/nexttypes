@@ -643,7 +643,7 @@ public class HTMLView extends View {
 
 		setTitle(title);
 
-		Element form = multipartForm(lang, view);
+		Element form = form(lang, view);
 		main.appendElement(form);
 
 		if (showProgress) {
@@ -688,7 +688,7 @@ public class HTMLView extends View {
 
 		setTitle(title);
 
-		Element form = multipartForm(lang, view);
+		Element form = form(lang, view);
 		main.appendElement(form);
 
 		if (showProgress) {
@@ -1254,7 +1254,7 @@ public class HTMLView extends View {
 		
 		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
 		
-		Element form = multipartForm(type, lang, view);
+		Element form = form(type, lang, view);
 		if (showProgress) {
 			form.setAttribute(DATA_SHOW_PROGRESS);
 		}
@@ -1346,22 +1346,6 @@ public class HTMLView extends View {
 		return form;
 	}
 
-	public Element multipartForm(String lang, String view) {
-		return multipartForm(null, null, null, lang, view);
-	}
-
-	public Element multipartForm(String type, String lang, String view) {
-		return multipartForm(type, null, null, lang, view);
-	}
-
-	public Element multipartForm(String type, String id, String lang, String view) {
-		return multipartForm(type, id, null, lang, view);
-	}
-
-	public Element multipartForm(String type, String id, String field, String lang, String view) {
-		return form(type, id, field, lang, view).setAttribute(HTML.ENCTYPE, HTML.MULTIPART_FORM_DATA);
-	}
-
 	public Element form(String lang, String view) {
 		return form(null, null, null, lang, view);
 	}
@@ -1388,10 +1372,6 @@ public class HTMLView extends View {
 		}
 
 		return form;
-	}
-
-	public Element multipartForm(String action) {
-		return form(action).setAttribute(HTML.ENCTYPE, HTML.MULTIPART_FORM_DATA);
 	}
 
 	public void loadTemplate(String type, String lang, String view) {
@@ -1720,7 +1700,7 @@ public class HTMLView extends View {
 		String type = object.getType();
 		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
 		
-		Element form = multipartForm(type, object.getId(), lang, view).addClass(UNLOAD_CONFIRMATION)
+		Element form = form(type, object.getId(), lang, view).addClass(UNLOAD_CONFIRMATION)
 				.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF);
 
 		if (showProgress) {
