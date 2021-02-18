@@ -118,8 +118,8 @@ APACHE TOMCAT JDBC CONNECTION POOL
 
 URL: https://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html
 
-tomcat-jdbc-9.0.41.jar
-tomcat-juli-9.0.41.jar
+tomcat-jdbc-9.0.43.jar
+tomcat-juli-9.0.43.jar
 
 
 APACHE TIKA
