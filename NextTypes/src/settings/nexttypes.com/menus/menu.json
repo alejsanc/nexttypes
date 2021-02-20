@@ -1,0 +1,19 @@
+[{
+	"title" : "project",
+	"anchors" : [ {
+		"text" : "home",
+		"href" : "/article/home"
+	}, {
+		"text" : "system",
+		"href" : "/article/system"
+	}, {
+		"text" : "software",
+		"href" : "/software/nexttypes"
+	}, {
+		"text" : "installation",
+		"href" : "/article/installation"
+	}, {
+		"text" : "contact",
+		"href" : "/user"
+	} ]
+}]
