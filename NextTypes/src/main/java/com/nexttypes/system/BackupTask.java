@@ -97,24 +97,26 @@ public class BackupTask extends Task {
 					}
 				}
 			}
+		} else {
+			count = incremental;
 		}
 	}
 
 	public void run() {
 		try {
-			long initTime;
-
+			
 			if (previousFileTime > 0) {
+				
+				long initTime;
+				
 				if (previousFileTime >= interval) {
 					initTime = 0;
 				} else {
 					initTime = interval - previousFileTime;
 				}
-			} else {
-				initTime = interval;
-			}
-
-			sleep(initTime);
+				
+				sleep(initTime);
+			} 		
 
 			backup();
 

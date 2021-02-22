@@ -3971,7 +3971,7 @@ public class HTMLView extends View {
 	}
 	
 	public Element controlPanel(String type, String lang, String view) {
-		Element section = document.createElement(HTML.SPAN).addClass(CONTROL_PANEL);
+		Element section = document.createElement(HTML.DIV).addClass(CONTROL_PANEL);
 	
 		section.appendElement(menuTitle(type, KeyWords.CONTROL_PANEL));
 		
