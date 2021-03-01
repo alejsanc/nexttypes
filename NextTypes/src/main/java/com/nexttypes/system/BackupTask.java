@@ -71,7 +71,7 @@ public class BackupTask extends Task {
 		try (DirectoryStream<Path> files = Files.newDirectoryStream(Paths.get(directory))) {
 			for (Path file : files) {
 				String fileName = file.getFileName().toString();
-				filesByDate.add(fileName.substring(prefix.length(), prefix.length() + 29));
+				filesByDate.add(fileName.substring(prefix.length(), prefix.length() + 32));
 			}
 		} catch (IOException e) {
 			throw new NXException(e);
@@ -81,7 +81,7 @@ public class BackupTask extends Task {
 
 			filesByDate.sort(Collections.reverseOrder());
 
-			previousFileTime = Duration.between(ZonedDateTime.parse(filesByDate.get(0).substring(0, 24)),
+			previousFileTime = Duration.between(ZonedDateTime.parse(filesByDate.get(0).substring(0, 27)),
 					ZonedDateTime.now(ZoneOffset.UTC)).toMillis();
 
 			if (incremental > 0) {
