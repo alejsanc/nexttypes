@@ -1,2 +1,9 @@
+Version 1.2
+	Move confirmation message to submit button in data-confirmation-message attribute.
+	Move progress dialog code to createProgress function.
+	Check if clear-binary-input element is not null before remove hidden class. 
+	Change setFormInput to setFormAction.
+	Add select data-url-parameter. Use changeURLParameter for lang, month, year and limit parameters.
+
 Version 1.1
 	Fix backup files date parse.

@@ -115,7 +115,7 @@ public class HTMLView extends View {
 	public static final String HTML5 = "HTML5";
 	public static final String CSS = "CSS";
 	public static final String WCAG = "WCAG";
-		
+			
 	//Data Strings Attributes
 	public static final String DATA_STRINGS_ACCEPT = "data-strings-accept";
 	public static final String DATA_STRINGS_CANCEL = "data-strings-cancel";
@@ -127,8 +127,6 @@ public class HTMLView extends View {
 	public static final String DATA_STRINGS_MODE = "data-strings-mode";
 	public static final String DATA_STRINGS_DROP_FIELD = "data-strings-drop-field";
 	public static final String DATA_STRINGS_DROP_INDEX = "data-strings-drop-index";
-	public static final String DATA_STRINGS_TYPES_DROP_CONFIRMATION = "data-strings-types-drop-confirmation";
-	public static final String DATA_STRINGS_OBJECTS_DELETE_CONFIRMATION = "data-strings-objects-delete-confirmation";
 	public static final String DATA_STRINGS_PREVIOUS = "data-strings-previous";
 	public static final String DATA_STRINGS_NEXT = "data-strings-next";
 	
@@ -137,6 +135,7 @@ public class HTMLView extends View {
 	public static final String DATA_SHOW_PROGRESS = "data-show-progress";
 	public static final String DATA_MULTI_ORDER = "data-multi-order";
 	public static final String DATA_URL = "data-url";
+	public static final String DATA_URL_PARAMETER = "data-url-parameter";
 	public static final String DATA_ID = "data-id";
 	public static final String DATA_LANG = "data-lang";
 	public static final String DATA_COMPONENT = "data-component";
@@ -144,6 +143,7 @@ public class HTMLView extends View {
 	public static final String DATA_LIMIT = "data-limit";
 	public static final String DATA_OFFSET = "data-offset";
 	public static final String DATA_NOT_NULL = "data-not-null";
+	public static final String DATA_CONFIRMATION_MESSAGE = "data-confirmation-message";
 	
 	//Elements
 	public static final String USER_NAME = "user-name";
@@ -1133,8 +1133,7 @@ public class HTMLView extends View {
 		boolean disableExportButton = true;
 		
 		Element form = form(lang, view);
-		form.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF).setAttribute(DATA_STRINGS_TYPES_DROP_CONFIRMATION,
-				languageSettings.gts(KeyWords.TYPES_DROP_CONFIRMATION));
+		form.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF);
 
 		Element table = form.appendElement(HTML.TABLE);
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
@@ -1215,7 +1214,8 @@ public class HTMLView extends View {
 		String actionName = languageSettings.getActionName(null, Action.DROP);
 
 		Element actionButton = form.appendElement(button(actionName, Action.DROP, Icon.MINUS,
-				SUBMIT_FORM));
+				SUBMIT_FORM)).setAttribute(DATA_CONFIRMATION_MESSAGE, 
+						languageSettings.gts(KeyWords.TYPES_DROP_CONFIRMATION));
 		if (disableDropButton) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
@@ -2431,7 +2431,7 @@ public class HTMLView extends View {
 	
 	public String namesURL(String referencedType, String referencingType, String referencingAction,
 			String referencingField, String lang) {
-		return url(referencedType, lang, Format.JSON.toString()) + parameter(KeyWords.NAMES)
+		return request.getURLRoot() + url(referencedType, lang, Format.JSON.toString()) + parameter(KeyWords.NAMES)
 			+ arefParameter(referencingType, referencingAction, referencingField);
 	}
 	
@@ -2820,10 +2820,8 @@ public class HTMLView extends View {
 		LinkedHashMap<String, String[]> disallowedReferences = disallowedReferences(objects, typeFields);
 		
 		Element form = form(type, lang, view).setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
-				.setAttribute(DATA_URL, selectTableURL(type, lang, view, ref, filters, search, order,
-						offset, limit))
-				.setAttribute(DATA_STRINGS_OBJECTS_DELETE_CONFIRMATION,
-						languageSettings.gts(type, KeyWords.OBJECTS_DELETE_CONFIRMATION));
+				.setAttribute(DATA_URL, request.getURLRoot() + selectTableURL(type, lang, view, ref, filters, search, order,
+						offset, limit));
 
 		form.appendElement(input(HTML.HIDDEN, KeyWords.ORDER, KeyWords.ORDER, orderString(order)));
 
@@ -2918,7 +2916,9 @@ public class HTMLView extends View {
 
 		String actionName = languageSettings.getActionName(type, Action.DELETE);
 
-		Element actionButton = button(actionName, Action.DELETE, Icon.MINUS, SUBMIT_FORM);
+		Element actionButton = button(actionName, Action.DELETE, Icon.MINUS, SUBMIT_FORM)
+				.setAttribute(DATA_CONFIRMATION_MESSAGE, languageSettings.gts(type,
+						KeyWords.OBJECTS_DELETE_CONFIRMATION));
 		if (objects.length == deleteDisallowedObjects.length) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
@@ -3123,7 +3123,8 @@ public class HTMLView extends View {
 
 	public Element selectTableLimitSelect(String type, Long count, Long limit, Long minLimit, Long maxLimit,
 			Long limitIncrement, Component component) {
-		Element select = document.createElement(HTML.SELECT).addClass(KeyWords.LIMIT);
+		Element select = document.createElement(HTML.SELECT).addClass(KeyWords.LIMIT)
+				.setAttribute(DATA_URL_PARAMETER, KeyWords.LIMIT);
 
 		if (Component.REFERENCE.equals(component)) {
 			select.setAttribute(DATA_COMPONENT, component);
@@ -4022,7 +4023,8 @@ public class HTMLView extends View {
 			Tuple langs = settings.getTuple(KeyWords.LANGS);
 
 			if (langs != null) {
-				Element select = langsElement.appendElement(HTML.SELECT).addClass(KeyWords.LANGS);
+				Element select = langsElement.appendElement(HTML.SELECT)
+						.setAttribute(DATA_URL_PARAMETER, KeyWords.LANG);
 
 				for (Map.Entry<String, Object> entry : langs.getFields().entrySet()) {
 					String id = entry.getKey();
@@ -4410,7 +4412,8 @@ public class HTMLView extends View {
 			+ parameter(KeyWords.YEAR, before.getYear()) + parameter(KeyWords.MONTH, 
 					before.getMonthValue()) + refParameter(ref)));
 
-		Element yearSelect = navigator.appendElement(HTML.SELECT).addClass(YEARS);
+		Element yearSelect = navigator.appendElement(HTML.SELECT).addClass(YEARS)
+				.setAttribute(DATA_URL_PARAMETER, KeyWords.YEAR);
 		for (int year = date.minusYears(10).getYear(); year <= date.plusYears(10).getYear(); year++) {
 			Element option = yearSelect.appendElement(HTML.OPTION)
 					.setAttribute(HTML.VALUE, year).appendText(year);
@@ -4421,7 +4424,8 @@ public class HTMLView extends View {
 
 		}
 
-		Element monthSelect = navigator.appendElement(HTML.SELECT).addClass(MONTHS);
+		Element monthSelect = navigator.appendElement(HTML.SELECT).addClass(MONTHS)
+				.setAttribute(DATA_URL_PARAMETER, KeyWords.MONTH);
 		for (Month month : Month.values()) {
 			Element option = monthSelect.appendElement(HTML.OPTION)
 					.setAttribute(HTML.VALUE, month.getValue())
