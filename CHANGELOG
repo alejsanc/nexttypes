@@ -4,6 +4,7 @@ Version 1.2
 	Check if clear-binary-input element is not null before remove hidden class. 
 	Change setFormInput to setFormAction.
 	Add select data-url-parameter. Use changeURLParameter for lang, month, year and limit parameters.
+	Change unload-confirmation class to data-show-unload-warning attribute. Add unload warning to insert form.
 
 Version 1.1
 	Fix backup files date parse.

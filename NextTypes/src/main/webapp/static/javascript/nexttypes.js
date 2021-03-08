@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 window.addEventListener("beforeunload", function(event) {
-	var forms = document.querySelectorAll("form.unload-confirmation");
+	var forms = document.querySelectorAll("form[data-show-unload-warning]");
 	
 	for (let form of forms) {
 		var changed = form.getAttribute("data-changed");
@@ -191,7 +191,7 @@ function initEventListeners() {
 	addSelectTableEventListeners(document);
 	addFilterEventListeners(document);
 	
-	var forms = document.querySelectorAll("form.unload-confirmation");
+	var forms = document.querySelectorAll("form[data-show-unload-warning]");
 	for (let form of forms) {
 		addFormChangeEventListeners(form);
 	}

@@ -133,6 +133,7 @@ public class HTMLView extends View {
 	//Data Attributes
 	public static final String DATA_EDITOR = "data-editor";
 	public static final String DATA_SHOW_PROGRESS = "data-show-progress";
+	public static final String DATA_SHOW_UNLOAD_WARNING = "data-show-unload-warning";
 	public static final String DATA_MULTI_ORDER = "data-multi-order";
 	public static final String DATA_URL = "data-url";
 	public static final String DATA_URL_PARAMETER = "data-url-parameter";
@@ -169,7 +170,6 @@ public class HTMLView extends View {
 	public static final String SELECT_MENU = "select-menu";
 	public static final String SELECT_BUTTONS = "select-buttons";
 	public static final String SELECT_INDEX = "select-index";
-	public static final String UNLOAD_CONFIRMATION = "unload-confirmation";
 	public static final String ADD_FIELD = "add-field";
 	public static final String ADD_INDEX = "add-index";
 	public static final String DELETE_ROW = "delete-row";
@@ -312,7 +312,7 @@ public class HTMLView extends View {
 		String icon = null;
 
 		Element typeForm = form(type, lang, view)
-				.addClass(UNLOAD_CONFIRMATION)
+				.setAttribute(DATA_SHOW_UNLOAD_WARNING)
 				.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF)
 				.setAttribute(DATA_STRINGS_FIELDS, fields)
 				.setAttribute(DATA_STRINGS_TYPE, typeString)
@@ -1254,7 +1254,9 @@ public class HTMLView extends View {
 		
 		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
 		
-		Element form = form(type, lang, view);
+		Element form = form(type, lang, view)
+				.setAttribute(DATA_SHOW_UNLOAD_WARNING);
+		
 		if (showProgress) {
 			form.setAttribute(DATA_SHOW_PROGRESS);
 		}
@@ -1700,7 +1702,8 @@ public class HTMLView extends View {
 		String type = object.getType();
 		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
 		
-		Element form = form(type, object.getId(), lang, view).addClass(UNLOAD_CONFIRMATION)
+		Element form = form(type, object.getId(), lang, view)
+				.setAttribute(DATA_SHOW_UNLOAD_WARNING)
 				.setAttribute(HTML.AUTOCOMPLETE, HTML.OFF);
 
 		if (showProgress) {
