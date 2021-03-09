@@ -1948,7 +1948,11 @@ public class HTMLView extends View {
 			input = timeZoneFieldInput(field, title, value, typeField);
 			break;
 		case PT.BOOLEAN:
-			input = booleanFieldInput(field, title, value);
+			if (typeField.isNotNull()) { 
+				input = booleanFieldInput(field, title, value);
+			} else {
+				input = nullableBooleanFieldInput(type, action, field, title, value);
+			}
 			break;
 		case PT.PASSWORD:
 			input = passwordFieldInput(type, field, title);
@@ -1982,16 +1986,16 @@ public class HTMLView extends View {
 		input.appendElement(clearAnchor);
 		
 		if ((Action.INSERT.equals(action) || Action.UPDATE.equals(action)) && !typeField.isNotNull()) {
-			input.appendElement(nullFieldInput(type, field, value));
+			input.appendElement(nullFieldInput(type, action, field, value));
 		}
 		
 		return input;
 	}
 	
-	public Element nullFieldInput(String type, String field, Object value) {
+	public Element nullFieldInput(String type, String action, String field, Object value) {
 		Element nullFieldInput = document.createElement(HTML.SPAN).addClass(NULL_FIELD_INPUT);
 		
-		String nullName = languageSettings.gts(type, KeyWords.NULL);
+		String nullName = languageSettings.getActionFieldString(type, action, field, KeyWords.NULL);
 		
 		nullFieldInput.appendText(" | " + nullName + ":");
 	
@@ -2540,7 +2544,8 @@ public class HTMLView extends View {
 		inputGroup.addClass(OBJECT_RADIO_INPUT);
 		
 		if (!notNull) {
-			String nullName = languageSettings.gts(referencedType, KeyWords.NULL);
+			String nullName = languageSettings.getActionFieldString(referencingType, referencingAction,
+					referencingField, KeyWords.NULL);
 			
 			inputGroup.appendInput(input(HTML.RADIO, name, nullName, ""));
 			
@@ -3772,6 +3777,35 @@ public class HTMLView extends View {
 		group.appendInput(input(HTML.HIDDEN, "@" + field, title, KeyWords.FALSE));
 
 		return group;
+	}
+	
+	public Element nullableBooleanFieldInput(String type, String action, String field, String title,
+			Object value) {
+		
+		InputGroup group = document.createInputGroup();
+		
+		Element trueInput = group.appendInput(input(HTML.RADIO, "@" + field, title, KeyWords.TRUE));
+		group.appendText(languageSettings.getActionFieldString(type, action, field, KeyWords.TRUE));
+		
+		Element falseInput = group.appendInput(input(HTML.RADIO, "@" + field, title, KeyWords.FALSE));
+		group.appendText(languageSettings.getActionFieldString(type, action, field, KeyWords.FALSE));
+		
+		Element nullInput = group.appendInput(input(HTML.RADIO, "@" + field, title, ""));
+		group.appendText(languageSettings.getActionFieldString(type, action, field, KeyWords.NULL));
+		
+		Element checkedInput = null;
+		
+		if (value == null) {
+			checkedInput = nullInput;
+		} else if ((boolean)value) {
+			checkedInput = trueInput;
+		} else {
+			checkedInput = falseInput;
+		}
+		
+		checkedInput.setAttribute(HTML.CHECKED);
+		
+		return group;		
 	}
 
 	public Element dates(String type, ZonedDateTime cdate, ZonedDateTime udate) {
