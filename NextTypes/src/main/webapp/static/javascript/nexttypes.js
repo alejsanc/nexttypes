@@ -207,6 +207,7 @@ function addSelectTableEventListeners(rootElement) {
 	addEventListeners(rootElement, "button.export", "click", exportFunction);
 	addEventListeners(rootElement, "a.select-header-anchor", "click", selectHeaderAnchor);
 	addEventListeners(rootElement, "a.offset", "click", selectIndexAnchor);
+	addEventListeners(rootElement, "a.near-selected-offset", "click", selectIndexAnchor);
 	addEventListeners(rootElement, "input.all-checkbox", "change", checkUncheckAll);
 	addEventListeners(rootElement, "input.item-checkbox", "change", uncheckAll);
 	addEventListeners(rootElement, "select[data-url-parameter", "change", changeURLParameter);
