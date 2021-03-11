@@ -164,6 +164,7 @@ public class HTMLView extends View {
 	public static final String OBJECT_LIST_INPUT = "object-list-input";
 	public static final String OBJECTS_TEXTAREA_INPUT = "objects-textarea-input";
 	public static final String REFERENCE_OUTPUT = "reference-output";
+	public static final String SEARCH_BUTTON = "search-button";
 	public static final String SEARCH_OUTPUT = "search-output";
 	public static final String SELECT_HEADER = "select-header";
 	public static final String SELECT_HEADER_ANCHOR = "select-header-anchor";
@@ -207,7 +208,7 @@ public class HTMLView extends View {
 	
 	//Objects Input Modes
 	public static final String MULTIPLE_SELECT = "multiple_select";
-		
+			
 	protected HTML document;
 	protected Element head;
 	protected Element main;
@@ -2043,7 +2044,7 @@ public class HTMLView extends View {
 		input.appendElement(input(HTML.PASSWORD, "@" + field, title))
 			.setAttribute(HTML.MAXLENGTH, Security.BCRYPT_MAX_PASSWORD_LENGTH);
 
-		input.appendText(languageSettings.gts(type, KeyWords.REPEAT) + ": ");
+		input.appendText(" " + languageSettings.gts(type, KeyWords.REPEAT) + ": ");
 
 		input.appendElement(input(HTML.PASSWORD, "@" + field + "_" + KeyWords.REPEAT, title))
 			.setAttribute(HTML.MAXLENGTH, Security.BCRYPT_MAX_PASSWORD_LENGTH);
@@ -4143,7 +4144,7 @@ public class HTMLView extends View {
 					form.appendElement(input(HTML.HIDDEN, KeyWords.LIMIT, KeyWords.LIMIT, limit));
 				}
 
-				form.appendElement(submitButton(searchName));
+				form.appendElement(submitButton(searchName)).setClasses(SEARCH_BUTTON);
 			}
 		}
 	}

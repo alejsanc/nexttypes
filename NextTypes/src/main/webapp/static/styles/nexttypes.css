@@ -93,6 +93,8 @@ td {
 	border-color: black;
 	border-width: 1px;
 	border-style: solid;
+	padding-left: 2px;
+	padding-right: 2px;
 }
 
 th {
@@ -104,6 +106,8 @@ th {
 	background-color: #d7d7d7;
 	min-width: 20px;
 	text-align: left;
+	padding-left: 2px;
+	padding-right: 2px;
 }
 
 form {
@@ -357,7 +361,8 @@ p {
 .icon {
 	width: 16px;
 	margin-top: 2px;
-	margin-right: 5px;
+	margin-right: 3px;
+	margin-left: 3px;
 }
 
 .icon img {
@@ -540,6 +545,19 @@ p {
 
 .field-range {
 	font-size: 70%;
+	margin-left: 5px;
+}
+
+.clear-binary-input {
+	margin-left: 5px;
+}
+
+.binary-input-size {
+	margin-left: 5px;
+}
+
+.search-button {
+	margin-left: 5px;
 }
 
 .CodeMirror {
