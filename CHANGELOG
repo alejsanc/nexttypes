@@ -6,6 +6,7 @@ Version 1.2
 	Add select data-url-parameter. Use changeURLParameter for lang, month, year and limit parameters.
 	Change unload-confirmation class to data-show-unload-warning attribute. Add unload warning to insert form.
 	Add nullable boolean field input.
+	Add margins to field ranges, icons and search button.
 
 Version 1.1
 	Fix backup files date parse.
