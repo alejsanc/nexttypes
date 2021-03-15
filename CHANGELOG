@@ -8,6 +8,7 @@ Version 1.2
 	Add nullable boolean field input.
 	Add margins to field ranges, icons and search button.
 	Add selectIndexAnchor event to near-selected-offset anchors.
+	Add methods to TypeSettings.
 
 Version 1.1
 	Fix backup files date parse.
