@@ -33,7 +33,13 @@ public class TypeSettings extends Settings {
 	public TypeSettings(ArrayList<Properties> settings) {
 		super(settings);
 	}
+	
+	public String getView(String type, String view) {
+		return getTypeString(type, KeyWords.VIEWS + "." + view);
+	}
 
+	//Type Methods
+	
 	public String gts(String setting) {
 		return gts(null, setting);
 	}
@@ -50,7 +56,7 @@ public class TypeSettings extends Settings {
 		return getTypeString(type, new String[] { setting });
 	}
 
-	public String getTypeString(String type, String[] setting) {
+	protected String getTypeString(String type, String[] setting) {
 		String value = null;
 
 		if (type == null) {
@@ -86,56 +92,7 @@ public class TypeSettings extends Settings {
 		String value = getTypeString(type, setting);
 		return value != null ? value : defaultValue;
 	}
-
-	public String getFieldString(String type, String field, String setting) {
-		return getTypeString(type, new String[] {
-				KeyWords.FIELDS + "." + field + "." + setting,
-				KeyWords.FIELDS + "." + setting
-		});
-	}
-
-	public String getActionString(String type, String action, String setting) {
-		return getTypeString(type, new String[] {
-				KeyWords.ACTIONS + "." + action + "." + setting,
-				KeyWords.ACTIONS + "." + setting
-		});
-	}
-
-	public String getActionFieldString(String type, String action, String field, String setting) {
-		return getTypeString(type, new String[] {
-				KeyWords.ACTIONS + "." + action + "." + KeyWords.FIELDS + "." + field + "." + setting,
-				KeyWords.ACTIONS + "." + action + "." + KeyWords.FIELDS + "." + setting,
-				KeyWords.ACTIONS + "." + KeyWords.FIELDS + "." + field + "." + setting,
-				KeyWords.ACTIONS + "." + KeyWords.FIELDS + "." + setting
-		});
-	}
-
-	public String getFieldString(String type, String field, String setting, String defaultValue) {
-		return getTypeString(type, KeyWords.FIELDS + "." + field + "." + setting, defaultValue);
-	}
-
-	public String getActionString(String type, String action, String setting, String defaultValue) {
-		return getTypeString(type, KeyWords.ACTIONS + "." + action + "." + setting, defaultValue);
-	}
-
-	public String getActionFieldString(String type, String action, String field, String setting, String defaultValue) {
-		return getTypeString(type, KeyWords.ACTIONS + "." + action + "." + KeyWords.FIELDS + "."
-				+ field + "." + setting, defaultValue);
-	}
-
-	public String[] getTypeStringArray(String type, String setting) {
-		return Utils.split(getTypeString(type, setting));
-	}
-
-	public String[] getTypeStringArray(String type, String[] settings) {
-		return Utils.split(getTypeString(type, settings));
-	}
-
-	public String[] getTypeStringArray(String type, String setting, String[] defaultValues) {
-		String[] values = getTypeStringArray(type, setting);
-		return values != null ? values : defaultValues;
-	}
-
+	
 	public Short getTypeInt16(String type, String setting) {
 		return Tuple.parseInt16(getTypeString(type, setting));
 	}
@@ -159,19 +116,61 @@ public class TypeSettings extends Settings {
 	public BigDecimal getTypeNumeric(String type, String setting) {
 		return Tuple.parseNumeric(getTypeString(type, setting));
 	}
+	
+	public BigDecimal getTypeNumeric(String type, String setting, BigDecimal min, BigDecimal max) {
+		return Tuple.parseNumeric(getTypeString(type, setting), min, max);
+	}
+	
+	public BigDecimal getTypeNumeric(String type, String setting, TypeField typeField) {
+		return Tuple.parseNumeric(getTypeString(type, setting), typeField);
+	}
 
 	public Boolean getTypeBoolean(String type, String setting) {
 		return Tuple.parseBoolean(getTypeString(type, setting));
+	}
+	
+	public LocalDate getTypeDate(String type, String setting) {
+		return Tuple.parseDate(getTypeString(type, setting));
+	}
+	
+	public LocalTime getTypeTime(String type, String setting) {
+		return Tuple.parseTime(getTypeString(type, setting));
+	}
+	
+	public LocalDateTime getTypeDateTime(String type, String setting) {
+		return Tuple.parseDateTime(getTypeString(type, setting));
 	}
 
 	public Tuple getTypeTuple(String type, String setting) {
 		return Tuple.parseTuple(getTypeString(type, setting));
 	}
-
-	public String getView(String type, String view) {
-		return getTypeString(type, KeyWords.VIEWS + "." + view);
+	
+	public String[] getTypeStringArray(String type, String setting) {
+		return Utils.split(getTypeString(type, setting));
 	}
 
+	public String[] getTypeStringArray(String type, String[] settings) {
+		return Utils.split(getTypeString(type, settings));
+	}
+
+	public String[] getTypeStringArray(String type, String setting, String[] defaultValues) {
+		String[] values = getTypeStringArray(type, setting);
+		return values != null ? values : defaultValues;
+	}
+	
+	//Fields Methods
+
+	public String getFieldString(String type, String field, String setting) {
+		return getTypeString(type, new String[] {
+				KeyWords.FIELDS + "." + field + "." + setting,
+				KeyWords.FIELDS + "." + setting
+		});
+	}
+	
+	public String getFieldString(String type, String field, String setting, String defaultValue) {
+		return getTypeString(type, KeyWords.FIELDS + "." + field + "." + setting, defaultValue);
+	}
+	
 	public Short getFieldInt16(String type, String field, String setting) {
 		return Tuple.parseInt16(getFieldString(type, field, setting));
 	}
@@ -220,13 +219,36 @@ public class TypeSettings extends Settings {
 	public LocalDateTime getFieldDateTime(String type, String field, String setting) {
 		return Tuple.parseDateTime(getFieldString(type, field, setting));
 	}
-
-	public String[] getActionStringArray(String type, String action, String setting) {
-		return Utils.split(getActionString(type, action, setting));
+	
+	public Tuple getFieldTuple(String type, String field, String setting) {
+		return Tuple.parseTuple(getFieldString(type, field, setting));
+	}
+	
+	public String[] getFieldStringArray(String type, String field, String setting) {
+		return Utils.split(getFieldString(type, field, setting));
+	}
+	
+	public String[] getFieldStringArray(String type, String field, String setting, 
+			String[] defaultValues) {
+		String[] values = getFieldStringArray(type, field, setting);
+		return values != null ? values : defaultValues;
+	}
+	
+	//Actions Methods
+	
+	public String getActionString(String type, String action, String setting) {
+		return getTypeString(type, new String[] {
+				KeyWords.ACTIONS + "." + action + "." + setting,
+				KeyWords.ACTIONS + "." + setting
+		});
+	}
+	
+	public String getActionString(String type, String action, String setting, String defaultValue) {
+		return getTypeString(type, KeyWords.ACTIONS + "." + action + "." + setting, defaultValue);
 	}
 
-	public Boolean getActionBoolean(String type, String action, String setting) {
-		return Tuple.parseBoolean(getActionString(type, action, setting));
+	public Short getActionInt16(String type, String action, String setting) {
+		return Tuple.parseInt16(getActionString(type, action, setting));
 	}
 
 	public Integer getActionInt32(String type, String action, String setting) {
@@ -236,22 +258,73 @@ public class TypeSettings extends Settings {
 	public Long getActionInt64(String type, String action, String setting) {
 		return Tuple.parseInt64(getActionString(type, action, setting));
 	}
+	
+	public Float getActionFloat32(String type, String action, String setting) {
+		return Tuple.parseFloat32(getActionString(type, action, setting));
+	}
+	
+	public Double getActionFloat64(String type, String action, String setting) {
+		return Tuple.parseFloat64(getActionString(type, action, setting));
+	}
 
 	public BigDecimal getActionNumeric(String type, String action, String setting) {
 		return Tuple.parseNumeric(getActionString(type, action, setting));
 	}
-
-	public String[] getFieldStringArray(String type, String field, String setting) {
-		return Utils.split(getFieldString(type, field, setting));
+	
+	public BigDecimal getActionNumeric(String type, String action, String setting, BigDecimal min,
+			BigDecimal max) {
+		return Tuple.parseNumeric(getActionString(type, action, setting), min, max);
 	}
-
-	public String[] getFieldStringArray(String type, String field, String setting, String[] defaultValues) {
-		String[] values = getFieldStringArray(type, field, setting);
+	
+	public BigDecimal getActionNumeric(String type, String action, String setting, TypeField typeField) {
+		return Tuple.parseNumeric(getActionString(type, action, setting), typeField);
+	}
+	
+	public Boolean getActionBoolean(String type, String action, String setting) {
+		return Tuple.parseBoolean(getActionString(type, action, setting));
+	}
+	
+	public LocalDate getActionDate(String type, String action, String setting) {
+		return Tuple.parseDate(getActionString(type, action, setting));
+	}
+	
+	public LocalTime getActionTime(String type, String action, String setting) {
+		return Tuple.parseTime(getActionString(type, action, setting));
+	}
+	
+	public LocalDateTime getActionDateTime(String type, String action, String setting) {
+		return Tuple.parseDateTime(getActionString(type, action, setting));
+	}
+	
+	public Tuple getActionTuple(String type, String field, String setting) {
+		return Tuple.parseTuple(getActionString(type, field, setting));
+	}
+	
+	public String[] getActionStringArray(String type, String action, String setting) {
+		return Utils.split(getActionString(type, action, setting));
+	}
+	
+	public String[] getActionStringArray(String type, String action, String setting, 
+			String[] defaultValues) {
+		String[] values = getActionStringArray(type, action, setting);
 		return values != null ? values : defaultValues;
 	}
-
-	public String[] getActionFieldStringArray(String type, String action, String field, String setting) {
-		return Utils.split(getActionFieldString(type, action, field, setting));
+	
+	//Actions Fields Methods
+	
+	public String getActionFieldString(String type, String action, String field, String setting) {
+		return getTypeString(type, new String[] {
+				KeyWords.ACTIONS + "." + action + "." + KeyWords.FIELDS + "." + field + "." + setting,
+				KeyWords.ACTIONS + "." + action + "." + KeyWords.FIELDS + "." + setting,
+				KeyWords.ACTIONS + "." + KeyWords.FIELDS + "." + field + "." + setting,
+				KeyWords.ACTIONS + "." + KeyWords.FIELDS + "." + setting
+		});
+	}
+	
+	public String getActionFieldString(String type, String action, String field, String setting,
+			String defaultValue) {
+		return getTypeString(type, KeyWords.ACTIONS + "." + action + "." + KeyWords.FIELDS + "."
+				+ field + "." + setting, defaultValue);
 	}
 
 	public Short getActionFieldInt16(String type, String action, String field, String setting) {
@@ -296,7 +369,23 @@ public class TypeSettings extends Settings {
 		return Tuple.parseTime(getActionFieldString(type, action, field, setting));
 	}
 	
-	public LocalDateTime getActionFieldDateTime(String type, String action, String field, String setting) {
+	public LocalDateTime getActionFieldDateTime(String type, String action, String field,
+			String setting) {
 		return Tuple.parseDateTime(getActionFieldString(type, action, field, setting));
 	}
+	
+	public Tuple getActionFieldTuple(String type, String action, String field, String setting) {
+		return Tuple.parseTuple(getActionFieldString(type, action, field, setting));
+	}
+	
+	public String[] getActionFieldStringArray(String type, String action, String field, String setting) {
+		return Utils.split(getActionFieldString(type, action, field, setting));
+	}
+	
+	public String[] getActionFieldStringArray(String type, String action, String field, String setting,
+			String[] defaultValues) {
+		String[] values = getActionFieldStringArray(type, action, field, setting);
+		return values != null ? values : defaultValues;
+	}
 }
+
