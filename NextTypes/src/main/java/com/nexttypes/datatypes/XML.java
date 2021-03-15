@@ -584,6 +584,12 @@ public class XML extends PGobject {
 			}
 			return firstChild;
 		}
+		
+		public Element getElementByTagName(String tag) {
+			NodeList nodes = element.getElementsByTagName(tag);
+			return nodes != null && nodes.getLength() > 0 ? 
+					new Element((org.w3c.dom.Element) nodes.item(0)) : null;
+		}
 
 		public Element clone() {
 			return new Element((org.w3c.dom.Element) element.cloneNode(true));

@@ -195,6 +195,7 @@ public class KeyWords {
 	public static final String INVALID_VIEW_NAME = "invalid_view_name";
 	public static final String ITEM = "item";
 	public static final String ITEMS = "items";
+	public static final String JAVASCRIPT_DISABLED_WARNING = "javascript_disabled_warning";
 	public static final String LANG = "lang";
 	public static final String LANGS = "langs";
 	public static final String LANGUAGE = "language";

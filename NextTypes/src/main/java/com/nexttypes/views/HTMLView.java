@@ -191,6 +191,7 @@ public class HTMLView extends View {
 	public static final String FIELD_OUTPUT = "field-output";
 	public static final String ICON = "icon";
 	public static final String SMALL_ICON = "small-icon";
+	public static final String BIG_ICON = "big-icon";
 	public static final String IMAGE = "image";
 	public static final String CALENDAR = "calendar";
 	public static final String CALENDAR_MONTH = "calendar-month";
@@ -199,6 +200,7 @@ public class HTMLView extends View {
 	public static final String YEARS = "years";
 	public static final String MONTHS = "months";
 	public static final String READONLY = "readonly";
+	public static final String JAVASCRIPT_DISABLED_WARNING = "javascript-disabled-warning";
 
 	//Text Editor Modes
 	public static final String JSON = "json";
@@ -208,7 +210,7 @@ public class HTMLView extends View {
 	
 	//Objects Input Modes
 	public static final String MULTIPLE_SELECT = "multiple_select";
-			
+					
 	protected HTML document;
 	protected Element head;
 	protected Element main;
@@ -1409,6 +1411,7 @@ public class HTMLView extends View {
 		menu(type, lang, view);
 		typeMenu(type, request.getId(), lang, view, request.getRef(), request.getSearch(), 
 				request.getComponent());
+		javascriptDisabledWarning(type);
 		rss(type, lang);
 		actions(type, request.getId(), lang, view);
 		qrcode(type, request.getId());
@@ -3564,8 +3567,15 @@ public class HTMLView extends View {
 		return anchor;
 	}
 
-	public Element iconAnchor(String text, String href, String icon) {
-		return imageAnchor(text, href, "/static/icons/" + icon + ".svg").addClass(ICON);
+	public Element iconAnchor(String text, String href, String image) {
+		Element anchor =  document.createElement(HTML.A);
+		
+		if (href !=null) {
+			anchor.setAttribute(HTML.HREF, href);
+		}
+		
+		anchor.appendElement(normalIcon(text, image));
+		return anchor;
 	}
 
 	public Element logoAnchor(String type, String lang, String view) {
@@ -3601,6 +3611,10 @@ public class HTMLView extends View {
 
 	public Element normalIcon(String text, String image) {
 		return icon(text, image).addClass(ICON);
+	}
+	
+	public Element bigIcon(String text, String image) {
+		return icon(text, image).addClass(BIG_ICON);
 	}
 
 	public Element icon(String text, String image) {
@@ -4157,6 +4171,16 @@ public class HTMLView extends View {
 			if (typeMenu != null) {
 				typeMenu.appendElements(typeMenuElements(type, id, lang, view, ref, search, component));
 			}
+		}
+	}
+	
+	public void javascriptDisabledWarning(String type) {
+		Element noscript = main.getElementByTagName(HTML.NOSCRIPT);
+		
+		if (noscript != null) {
+			Element warning = noscript.appendElement(HTML.DIV).addClass(JAVASCRIPT_DISABLED_WARNING);
+			warning.appendElement(bigIcon("Warning", Icon.WARNING));
+			warning.appendText(languageSettings.gts(type, KeyWords.JAVASCRIPT_DISABLED_WARNING));
 		}
 	}
 

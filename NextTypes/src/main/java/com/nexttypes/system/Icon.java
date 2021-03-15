@@ -33,4 +33,5 @@ public class Icon {
 	public static final String RSS = "rss";
 	public static final String SHARE_BOXED = "share-boxed";
 	public static final String UNSHARE_BOXED = "unshare-boxed";
+	public static final String WARNING = "warning";
 }
