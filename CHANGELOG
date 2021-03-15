@@ -10,6 +10,7 @@ Version 1.2
 	Add selectIndexAnchor event to near-selected-offset anchors.
 	Add methods to TypeSettings.
 	Add margin to logout-button.
+	Add Javascript disabled warning.
 
 Version 1.1
 	Fix backup files date parse.
