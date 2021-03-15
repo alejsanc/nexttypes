@@ -192,6 +192,10 @@ p {
     right: 125px;
 }
 
+#logout-button {
+	margin-left: 5px;
+}
+
 #search {
 	position: absolute;
     bottom: 5px;
