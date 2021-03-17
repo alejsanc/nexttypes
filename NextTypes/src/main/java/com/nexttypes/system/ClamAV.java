@@ -129,10 +129,8 @@ public class ClamAV {
 			output.write(END);
 			output.flush();
 			
-			System.out.println("antes readline");
 			String result = input.readLine().trim();
-			System.out.println("despues readline");
-							        
+										        
 		    if(!OK.equals(result)) {
 		    	
 		    	result = result.substring(8, result.length()-6);

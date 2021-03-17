@@ -4201,8 +4201,16 @@ public class PostgreSQLNode extends Node {
 			PSQLException pe = (PSQLException) e;
 			String sqlState = pe.getSQLState();
 			ServerErrorMessage serverMessage = pe.getServerErrorMessage();
-			String message = StringUtils.capitalize(serverMessage.getMessage()) + ".";
-
+			String message = serverMessage.getMessage();
+			
+			if (message.length() > 100) {
+				message = message.substring(0, 100) + "...";
+			} else {
+				message = message + ".";
+			}
+			
+			message = StringUtils.capitalize(message);
+			
 			switch (sqlState) {
 			case "42P01":
 				TypeNotFoundException te = new TypeNotFoundException(null);
