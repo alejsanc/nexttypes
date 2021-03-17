@@ -93,6 +93,11 @@ public class File extends PGobject{
 			AutoDetectParser parser = new AutoDetectParser();
 			handler = new BodyContentHandler(-1);
 			metadata = new Metadata();
+			
+			if (name != null) {
+				metadata.set(Metadata.RESOURCE_NAME_KEY, name);
+			}
+			
 			parser.parse(input, handler, metadata);
 			contentType = metadata.get(Metadata.CONTENT_TYPE);
 		} catch (IOException | TikaException | SAXException e) {
