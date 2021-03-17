@@ -14,7 +14,6 @@ Version 1.2
 	Add ClamAV antivirus scanning.
 	Limit PostgreSQL exception message to 100 characters.
 	Scape \ character in Document setValue and getValue.
-	Pass filename to Tika to improve content type detection.
 
 Version 1.1
 	Fix backup files date parse.
