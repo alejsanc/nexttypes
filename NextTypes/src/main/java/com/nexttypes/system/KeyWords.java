@@ -38,6 +38,7 @@ public class KeyWords {
 	public static final String ALTERED_INDEXES = "altered_indexes";
 	public static final String ALTERED_TYPES = "altered_types";
 	public static final String ANCHORS = "anchors";
+	public static final String ANTIVIRUS = "antivirus";
 	public static final String AREF = "aref";
 	public static final String AUTH = "auth";
 	public static final String AUTH_ERRORS_PER_MINUTE_EXCEEDED = "auth_errors_per_minute_exceeded";
@@ -372,6 +373,7 @@ public class KeyWords {
 	public static final String VIEW = "view";
 	public static final String VIEW_NOT_FOUND = "view_not_found";
 	public static final String VIEWS = "views";
+	public static final String VIRUS_FOUND = "virus_found";
 	public static final String WEBDAV = "webdav";
 	public static final String XML_ALLOWED_TAGS = "xml_allowed_tags";
 	public static final String YEAR = "year";

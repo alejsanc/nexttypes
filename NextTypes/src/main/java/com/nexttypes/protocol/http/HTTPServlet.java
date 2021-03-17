@@ -43,6 +43,7 @@ import org.apache.http.client.utils.URIBuilder;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.Message;
+import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.ObjectInfo;
 import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.RenameResult;
@@ -68,8 +69,10 @@ import com.nexttypes.interfaces.Stream;
 import com.nexttypes.logging.Logger;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Settings;
+import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.Action;
+import com.nexttypes.system.ClamAV;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
@@ -92,6 +95,7 @@ public class HTTPServlet extends HttpServlet {
 	protected boolean debug;
 	protected boolean binaryDebug;
 	protected int binaryDebugLimit;
+	protected ClamAV antivirus;
 	protected ConcurrentHashMap<String, Requests> requestsMap = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Requests> authErrorsMap = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, ConcurrentHashMap<String, Requests>> insertRequestsMap
@@ -111,6 +115,7 @@ public class HTTPServlet extends HttpServlet {
 		binaryDebug = settings.getBoolean(KeyWords.BINARY_DEBUG);
 		binaryDebugLimit = settings.getInt32(KeyWords.BINARY_DEBUG_LIMIT);
 		logger = context.getLogger();
+		antivirus = new ClamAV(context);
 				
 		purgeRequestsMapsThread();
 	}
@@ -361,8 +366,11 @@ public class HTTPServlet extends HttpServlet {
 			LanguageSettings languageSettings = context.getLanguageSettings(req.getLang());
 			ZonedDateTime udate = null;
 			String[] fields = null;
+			LinkedHashMap<String, TypeField> typeFields = null;
+			NXObject object = null;
+			String action = req.getAction();
 
-			switch (req.getAction()) {
+			switch (action) {
 			case Action.CREATE:
 				nextNode.create(req.readType());
 				content = new Content(languageSettings.gts(req.getType(), KeyWords.TYPE_SUCCESSFULLY_CREATED));
@@ -381,7 +389,14 @@ public class HTTPServlet extends HttpServlet {
 			case Action.INSERT:
 				fields = req.getTypeSettings().getActionStringArray(req.getType(),
 						Action.INSERT, KeyWords.FIELDS);
-				nextNode.insert(req.readObject(nextNode.getTypeFields(req.getType(), fields)));
+				typeFields = nextNode.getTypeFields(req.getType(), fields);
+				
+				object = req.readObject(typeFields);
+				
+				scanVirus(object, typeFields, Action.INSERT, req.getTypeSettings());
+				
+				nextNode.insert(object);
+				
 				content = new Content(languageSettings.gts(req.getType(), KeyWords.OBJECT_SUCCESSFULLY_INSERTED));
 				insertRequest(req);
 				break;
@@ -389,8 +404,13 @@ public class HTTPServlet extends HttpServlet {
 			case Action.UPDATE:
 				fields = req.getTypeSettings().getActionStringArray(req.getType(),
 						Action.UPDATE, KeyWords.FIELDS);
-				udate = nextNode.update(req.readObject(nextNode.getTypeFields(req.getType(),fields)),
-						req.getUDate());
+				typeFields = nextNode.getTypeFields(req.getType(), fields);
+				
+				object = req.readObject(typeFields);
+				
+				scanVirus(object, typeFields, Action.UPDATE, req.getTypeSettings());
+				
+				udate = nextNode.update(object, req.getUDate());
 				content = new Content(new UpdateResult(languageSettings.gts(req.getType(), 
 						KeyWords.OBJECT_SUCCESSFULLY_UPDATED), udate));
 				break;
@@ -443,20 +463,21 @@ public class HTTPServlet extends HttpServlet {
 				break;
 
 			default:
+				String type = req.getType();
 				String id = req.getId();
 				String[] objects = id != null ? new String[] { id } : req.getObjects();
 
-				LinkedHashMap<String, TypeField> typeFields = nextNode.getActionFields(req.getType(),
-						req.getAction());
+				typeFields = nextNode.getActionFields(type, action);
 				
 				if (typeFields == null) {
-					throw new ActionNotFoundException(req.getType(), req.getAction());
+					throw new ActionNotFoundException(type, action);
 				}
 				
 				Object[] values = req.readActionFields(typeFields);
+				
+				scanVirus(type, values, typeFields, action, req.getTypeSettings());
 
-				Object actionResult = nextNode.executeAction(req.getType(), objects,
-						req.getAction(), values);
+				Object actionResult = nextNode.executeAction(type, objects, action, values);
 				content = new Content(actionResult, Format.JSON);
 				break;
 			}
@@ -523,7 +544,7 @@ public class HTTPServlet extends HttpServlet {
 		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), req, NodeMode.WRITE)) {
 
 			Object value = IOUtils.toByteArray(req.getServletRequest().getInputStream());
-			
+								
 			if (debug) {
 				Debug.body();
 				
@@ -531,6 +552,10 @@ public class HTTPServlet extends HttpServlet {
 					Debug.binary((byte[]) value, binaryDebugLimit);
 				}
 			}
+			
+			String fieldType = nextNode.getTypeField(req.getType(), req.getField()).getType();
+			
+			scanVirus(req.getType(), Action.PUT, req.getField(), fieldType, value, req.getTypeSettings());
 			
 			if (req.getType() == null) {
 				throw new NXException(KeyWords.EMPTY_TYPE_NAME);
@@ -540,7 +565,6 @@ public class HTTPServlet extends HttpServlet {
 				nextNode.update(req.getType(), req.getId(), (byte[]) value);
 			} else {
 				
-				String fieldType = nextNode.getTypeField(req.getType(), req.getField()).getType();
 				String allowedTags = null;
 
 				switch (fieldType) {
@@ -1308,7 +1332,36 @@ public class HTTPServlet extends HttpServlet {
 			}
 		}
 	}
-
+	
+	protected void scanVirus(NXObject object, LinkedHashMap<String, TypeField> typeFields, String action,
+			TypeSettings typeSettings) {
+		
+		String type = object.getType();
+		
+		if (typeSettings.getActionBoolean(type, action, KeyWords.ANTIVIRUS)) {
+			
+			antivirus.scan(object, typeFields, action);
+		}
+	}
+	
+	protected void scanVirus(String type, Object[] parameters, LinkedHashMap<String, TypeField> typeFields,
+			String action, TypeSettings typeSettings) {
+		
+		if (typeSettings.getActionBoolean(type, action, KeyWords.ANTIVIRUS)) {
+			
+			antivirus.scan(type, parameters, typeFields, action);
+		}
+	}
+	
+	protected void scanVirus(String type, String action, String field, String fieldType, Object value,
+			TypeSettings typeSettings) {
+		
+		if (typeSettings.getActionBoolean(type, action, KeyWords.ANTIVIRUS)) {
+			
+			antivirus.scan(type, action, field, fieldType, value);
+		}
+	}
+	
 	protected class Requests {
 		protected int requests;
 		protected long firstRequestTime;

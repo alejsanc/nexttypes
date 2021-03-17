@@ -63,6 +63,7 @@ public @interface Action {
 	public static final String LOGIN_FORM = "login_form";
 	public static final String LOGOUT = "logout";
 	public static final String PREVIEW = "preview";
+	public static final String PUT = "put";
 	public static final String RENAME = "rename";
 	public static final String RENAME_FIELD = "rename_field";
 	public static final String RENAME_FORM = "rename_form";
@@ -77,6 +78,6 @@ public @interface Action {
 	public static final String UPDATE_ID_FORM = "update_id_form";
 	public static final String UPDATE_PASSWORD = "update_password";
 	public static final String UPDATE_PASSWORD_FORM = "update_password_form";
-	
+		
 	public String value();
 }
