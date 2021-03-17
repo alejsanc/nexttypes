@@ -78,6 +78,7 @@ public class Document extends File {
 
 	@Override
 	public String getValue() {
+		
 		String textParameter = "\"" + text.replace("\"", "\"\"").replace("\\", "\\\\") + "\"";
 
 		return "(" + hexEncode(content) + "," + textParameter + "," + contentType + ")";
@@ -86,15 +87,19 @@ public class Document extends File {
 	@Override
 	public void setValue(String value) {
 		if (value != null && value.length() > 0) {
+			
 			int token1 = value.indexOf(',');
 			int token2 = value.lastIndexOf(',');
 
 			content = hexDecode(value.substring(1, token1));
 
 			if (value.charAt(token1 + 1) == '"') {
+				
 				text = value.substring(token1 + 2, token2 - 1);
 				text = text.replace("\"\"", "\"").replace("\\\\", "\\");
+				
 			} else {
+				
 				text = value.substring(token1 + 1, token2);
 			}
 
