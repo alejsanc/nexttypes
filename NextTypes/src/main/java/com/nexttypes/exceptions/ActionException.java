@@ -22,10 +22,17 @@ public class ActionException extends NXException {
 	protected static final long serialVersionUID = 1L;
 
 	protected String action;
+	protected Object value;
 	
 	public ActionException(String type, String action, String setting) {
 		super(type, setting);
 		this.action = action;
+	}
+	
+	public ActionException(String type, String action, String setting, Object value) {
+		super(type, setting);
+		this.action = action;
+		this.value = value;
 	}
 	
 	public ActionException(String type, String action, String setting, Throwable cause) {
@@ -42,6 +49,12 @@ public class ActionException extends NXException {
 		String typeName = languageSettings.getTypeName(type);
 		String actionName = languageSettings.getActionName(type,  action);
 		
-		return languageSettings.gts(type, setting) + ": " + typeName + "::" + actionName;
+		String message =  languageSettings.gts(type, setting) + ": " + typeName + "::" + actionName;
+		
+		if (value != null) {
+			message += " -> " + value;
+		}
+
+		return message;
 	}
 }

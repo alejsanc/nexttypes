@@ -101,6 +101,7 @@ import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.IndexMode;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.enums.Order;
+import com.nexttypes.exceptions.ActionException;
 import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.FieldNotFoundException;
 import com.nexttypes.exceptions.FulltextIndexNotFoundException;
@@ -127,6 +128,8 @@ import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
+import com.nexttypes.system.Action;
+import com.nexttypes.system.ClamAV;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Context.TypesCache;
@@ -2683,14 +2686,30 @@ public class PostgreSQLNode extends Node {
 		try (ObjectsStream o = objects) {
 			o.exec();
 			
+			String type = o.getType();
 			LinkedHashMap<String, TypeField> typeFields = o.getTypeFields();
+			ClamAV antivirus = null;
+			boolean scanVirus = typeSettings.getActionBoolean(type, Action.IMPORT_OBJECTS,
+					KeyWords.ANTIVIRUS);
+			
+			if (scanVirus) {
+				antivirus = new ClamAV(context);
+			}			
 
 			while (o.next()) {
 				NXObject item = o.getItem();
 				Checks.checkObject(item);
+				
+				if (scanVirus) {
+					antivirus.scan(item, typeFields, Action.IMPORT_OBJECTS);
+				}
 
-				String type = item.getType();
 				String id = item.getId();
+				String itemType = item.getType();
+				if (!type.equals(itemType)) {
+					throw new ActionException(type, Action.IMPORT_OBJECTS, 
+							KeyWords.INVALID_OBJECT_TYPE, itemType);
+				}
 				
 				boolean importedType = importedTypes != null && importedTypes.contains(type);
 				

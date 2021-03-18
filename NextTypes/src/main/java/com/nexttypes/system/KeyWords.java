@@ -181,6 +181,7 @@ public class KeyWords {
 	public static final String INVALID_LANG = "invalid_lang";
 	public static final String INVALID_NUMERIC = "invalid_numeric";
 	public static final String INVALID_OBJECT_INPUT_MODE = "invalid_object_input_mode";
+	public static final String INVALID_OBJECT_TYPE = "invalid_object_type";
 	public static final String INVALID_OBJECTS_INPUT_MODE = "invalid_objects_input_mode";
 	public static final String INVALID_PARAMETERS = "invalid_parameters";
 	public static final String INVALID_PASSWORD = "invalid_password";
