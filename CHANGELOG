@@ -14,6 +14,7 @@ Version 1.2
 	Add ClamAV antivirus scanning.
 	Limit PostgreSQL exception message to 100 characters.
 	Scape \ character in Document setValue and getValue.
+	Simplify exception messages.
 
 Version 1.1
 	Fix backup files date parse.
