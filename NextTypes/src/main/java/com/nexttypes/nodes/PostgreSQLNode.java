@@ -4211,7 +4211,7 @@ public class PostgreSQLNode extends Node {
 	}
 	protected void checkObjects(String type, String[] objects) {
 		if (objects == null || objects.length == 0) {
-			throw new TypeException(type, KeyWords.EMPTY_OBJECTS_LIST);
+			throw new NXException(type, KeyWords.EMPTY_OBJECTS_LIST);
 		}
 	}
 

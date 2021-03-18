@@ -60,6 +60,7 @@ import com.nexttypes.exceptions.ActionExecutionException;
 import com.nexttypes.exceptions.ActionFieldException;
 import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.NXException;
+import com.nexttypes.exceptions.TypeException;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.LanguageSettings;
@@ -97,7 +98,7 @@ public class Controller {
 				KeyWords.OBJECTS_INPUT_NOT_NULL);
 		
 		if (objectsInputNotNull && (objects == null || objects.length == 0)) {
-			throw new ActionException(type, action, KeyWords.EMPTY_OBJECTS_LIST);
+			throw new NXException(type, KeyWords.EMPTY_OBJECTS_LIST);
 		}		
 		
 		ActionResult result = null;

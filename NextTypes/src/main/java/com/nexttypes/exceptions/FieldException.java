@@ -44,10 +44,9 @@ public class FieldException extends TypeException {
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		String typeName = languageSettings.getTypeName(type);
 		String fieldName = languageSettings.getFieldName(type, field);
 
-		String message = languageSettings.gts(type, setting) + ": " + typeName + "::" + fieldName;
+		String message = languageSettings.gts(type, setting) + ": " + fieldName;
 
 		if (value != null) {
 			message += " -> " + value;
