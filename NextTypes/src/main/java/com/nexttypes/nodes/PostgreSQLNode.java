@@ -2684,7 +2684,7 @@ public class PostgreSQLNode extends Node {
 		}
 		
 		try (ObjectsStream o = objects) {
-			o.exec();
+			o.exec(); 
 			
 			String type = o.getType();
 			LinkedHashMap<String, TypeField> typeFields = o.getTypeFields();
