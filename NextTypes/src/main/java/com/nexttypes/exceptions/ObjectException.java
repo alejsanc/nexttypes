@@ -36,6 +36,6 @@ public class ObjectException extends TypeException {
 	public String getMessage(LanguageSettings languageSettings) {
 		String typeName = languageSettings.getTypeName(type);
 		
-		return languageSettings.gts(type, setting) + ": " + typeName + "::" + id;
+		return languageSettings.gts(type, setting) + ": " + id;
 	}
 }

@@ -1340,7 +1340,7 @@ public class HTTPServlet extends HttpServlet {
 		
 		if (typeSettings.getActionBoolean(type, action, KeyWords.ANTIVIRUS)) {
 			
-			antivirus.scan(object, typeFields, action);
+			antivirus.scan(object, typeFields);
 		}
 	}
 	
@@ -1349,7 +1349,7 @@ public class HTTPServlet extends HttpServlet {
 		
 		if (typeSettings.getActionBoolean(type, action, KeyWords.ANTIVIRUS)) {
 			
-			antivirus.scan(type, parameters, typeFields, action);
+			antivirus.scan(type, parameters, typeFields);
 		}
 	}
 	
@@ -1358,7 +1358,7 @@ public class HTTPServlet extends HttpServlet {
 		
 		if (typeSettings.getActionBoolean(type, action, KeyWords.ANTIVIRUS)) {
 			
-			antivirus.scan(type, action, field, fieldType, value);
+			antivirus.scan(type, action, field, fieldType);
 		}
 	}
 	

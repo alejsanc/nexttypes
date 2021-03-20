@@ -29,8 +29,9 @@ public class FieldNotFoundException extends NotFoundException {
 		super(type, KeyWords.FIELD_NOT_FOUND);
 		this.field = field;
 	}
-
-	public void setMessage(String message) {
+	
+	public FieldNotFoundException(String message) {
+		super(null, null);
 		this.message = message;
 	}
 

@@ -35,8 +35,15 @@ public class ViewNotFoundException extends NXException {
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		String typeName = languageSettings.getTypeName(type);
+				
+		String message = languageSettings.gts(type, KeyWords.VIEW_NOT_FOUND) + ": ";
 		
-		return languageSettings.gts(type, KeyWords.VIEW_NOT_FOUND) + ": " + typeName + "::" + view;
+		if (type != null) {
+			message += languageSettings.getTypeName(type) + "::";
+		}
+		
+		message += view;
+		
+		return message;
 	}
 }

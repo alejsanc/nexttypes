@@ -13,7 +13,7 @@ import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.TypeField;
-import com.nexttypes.exceptions.ActionFieldException;
+import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.settings.Settings;
 
@@ -33,8 +33,7 @@ public class ClamAV {
 		port = settings.getInt32(KeyWords.PORT);
 	}
 	
-	public void scan(String type, Object[] parameters, LinkedHashMap<String, TypeField> typeFields,
-			String action) {
+	public void scan(String type, Object[] parameters, LinkedHashMap<String, TypeField> typeFields) {
 		
 		int x = 0;
 		
@@ -50,7 +49,7 @@ public class ClamAV {
 				
 				switch (fieldType) {
 				case PT.BINARY:
-					scan(type, action, field, (byte[])value);
+					scan(type, field, (byte[])value);
 					break;
 					
 				case PT.FILE:
@@ -58,14 +57,14 @@ public class ClamAV {
 				case PT.IMAGE:
 				case PT.AUDIO:
 				case PT.VIDEO:
-					scan(type, action, field, ((File)value).getContent());
+					scan(type, field, ((File)value).getContent());
 					break;
 				}
 			}
 		}
 	}
 	
-	public void scan(NXObject object, LinkedHashMap<String, TypeField> typeFields, String action) {
+	public void scan(NXObject object, LinkedHashMap<String, TypeField> typeFields) {
 		
 		for (Map.Entry<String, Object> entry : object.getFields().entrySet()) {
 				
@@ -79,7 +78,7 @@ public class ClamAV {
 			
 				switch (fieldType) {
 				case PT.BINARY:
-					scan(type, action, field, (byte[])value);
+					scan(type, field, (byte[])value);
 					break;
 					
 				case PT.FILE:
@@ -87,20 +86,20 @@ public class ClamAV {
 				case PT.IMAGE:
 				case PT.AUDIO:
 				case PT.VIDEO:
-					scan(type, action, field, ((File)value).getContent());
+					scan(type, field, ((File)value).getContent());
 					break;
 				}
 			}
 		}
 	}
 	
-	public void scan(String type, String action, String field, String fieldType, Object value) {
+	public void scan(String type, String field, String fieldType, Object value) {
 		
 		if (value != null) {
 			
 			switch (fieldType) {
 			case PT.BINARY:
-				scan(type, action, field, (byte[])value);
+				scan(type, field, (byte[])value);
 				break;
 				
 			case PT.FILE:
@@ -108,13 +107,13 @@ public class ClamAV {
 			case PT.IMAGE:
 			case PT.AUDIO:
 			case PT.VIDEO:
-				scan(type, action, field, (byte[])value);
+				scan(type, field, (byte[])value);
 				break;
 			}
 		}
 	}
 	
-	public void scan(String type, String action, String field, byte[] data) {
+	public void scan(String type, String field, byte[] data) {
 		
 		try (
 				Socket socket = new Socket(host, port);
@@ -135,7 +134,7 @@ public class ClamAV {
 		    	
 		    	result = result.substring(8, result.length()-6);
 		    	
-		    	throw new ActionFieldException(type, action, field, KeyWords.VIRUS_FOUND, result);
+		    	throw new FieldException(type, field, KeyWords.VIRUS_FOUND, result);
 		    } 
 		    
 		} catch (IOException e) {

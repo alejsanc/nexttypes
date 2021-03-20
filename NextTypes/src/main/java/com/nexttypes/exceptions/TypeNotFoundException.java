@@ -24,12 +24,17 @@ public class TypeNotFoundException extends NotFoundException {
 
 	protected String message;
 
+	public TypeNotFoundException() {
+		this(null);
+	}
+	
 	public TypeNotFoundException(String type) {
 		super(type, KeyWords.TYPE_NOT_FOUND);
 	}
-
-	public void setMessage(String message) {
+	
+	public TypeNotFoundException setMessage(String message) {
 		this.message = message;
+		return this;
 	}
 
 	@Override
@@ -44,4 +49,4 @@ public class TypeNotFoundException extends NotFoundException {
 
 		return message;
 	}
-}
+}	

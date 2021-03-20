@@ -18,22 +18,44 @@ package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
 
-public class IndexException extends TypeException {
+public class ImportObjectsException extends ObjectException {
 	protected static final long serialVersionUID = 1L;
+	
+	protected NXException e;
 
-	protected String index;
-
-	public IndexException(String type, String index, String setting) {
-		super(type, setting);
-		this.index = index;
+	public ImportObjectsException(String type, String id, NXException e) {
+		super(type, id, null);
+		this.e = e;
 	}
 
-	public String getIndex() {
-		return index;
+	public String getId() {
+		return id;
 	}
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		return languageSettings.gts(type, setting) + ": " + index;
+		String message = "";
+		
+		if (type != null) {
+			message += type;
+		}
+		
+		if (id != null) {
+			if (type != null) {
+				message += "::";
+			}
+			
+			message += id;
+		}
+		
+		if (type != null || id != null) {
+			message += ": ";
+		}
+		
+		return message + e.getMessage(languageSettings);
+	}
+	
+	public NXException getException() {
+		return e;
 	}
 }

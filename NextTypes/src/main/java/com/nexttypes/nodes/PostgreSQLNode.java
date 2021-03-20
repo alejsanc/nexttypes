@@ -101,10 +101,11 @@ import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.IndexMode;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.enums.Order;
-import com.nexttypes.exceptions.ActionException;
 import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.FieldNotFoundException;
 import com.nexttypes.exceptions.FulltextIndexNotFoundException;
+import com.nexttypes.exceptions.ImportObjectsException;
+import com.nexttypes.exceptions.ImportTypesException;
 import com.nexttypes.exceptions.IndexException;
 import com.nexttypes.exceptions.IndexNotFoundException;
 import com.nexttypes.exceptions.InvalidValueException;
@@ -2581,12 +2582,13 @@ public class PostgreSQLNode extends Node {
 		cacheEnabled = false;
 
 		ImportTypesResult result = new ImportTypesResult();
+		String typeName = null;
 
 		try (TypesStream t = types) {
 			t.exec();
 
 			for (Map.Entry<String, Type> entry : t.getTypes().entrySet()) {
-				String typeName = entry.getKey();
+				typeName = entry.getKey();
 
 				Type type = entry.getValue();
 				Checks.checkType(type);
@@ -2652,6 +2654,13 @@ public class PostgreSQLNode extends Node {
 			}
 
 			setDeferredConstraints(false);
+			
+		} catch(NXException e) {
+			if (e instanceof ImportObjectsException) {
+				throw e;
+			} else {
+				throw new ImportTypesException(typeName, e);
+			}
 		}
 
 		return result;
@@ -2683,10 +2692,14 @@ public class PostgreSQLNode extends Node {
 			setDeferredConstraints(true);
 		}
 		
+		String type = null;
+		String id = null;
+		
 		try (ObjectsStream o = objects) {
-			o.exec();  
+			o.exec();	
 			
-			String type = o.getType();
+			type = o.getType();
+			
 			LinkedHashMap<String, TypeField> typeFields = o.getTypeFields();
 			ClamAV antivirus = null;
 			boolean scanVirus = typeSettings.getActionBoolean(type, Action.IMPORT_OBJECTS,
@@ -2701,14 +2714,13 @@ public class PostgreSQLNode extends Node {
 				Checks.checkObject(item);
 				
 				if (scanVirus) {
-					antivirus.scan(item, typeFields, Action.IMPORT_OBJECTS);
+					antivirus.scan(item, typeFields);
 				}
 
-				String id = item.getId();
+				id = item.getId();
 				String itemType = item.getType();
 				if (!type.equals(itemType)) {
-					throw new ActionException(type, Action.IMPORT_OBJECTS, 
-							KeyWords.INVALID_OBJECT_TYPE, itemType);
+					throw new TypeException(itemType, KeyWords.INVALID_OBJECT_TYPE);
 				}
 				
 				boolean importedType = importedTypes != null && importedTypes.contains(type);
@@ -2727,6 +2739,8 @@ public class PostgreSQLNode extends Node {
 					result.addImportedObject(type);
 				}
 			}
+		} catch (NXException e) {
+			throw new ImportObjectsException(type, id, e);
 		}
 
 		if (deferredConstraints) {
@@ -4176,19 +4190,19 @@ public class PostgreSQLNode extends Node {
 	
 	protected void checkNewName(String type, String newName) {
 		if (newName == null || newName.length() == 0) {
-			throw new TypeException(type, KeyWords.EMPTY_NEW_NAME);
+			throw new NXException(type, KeyWords.EMPTY_NEW_NAME);
 		}
 	}
 		
 	protected void checkField(String type, String field) {
 		if (field == null || field.length() == 0) {
-			throw new TypeException(type, KeyWords.EMPTY_FIELD_NAME);
+			throw new NXException(type, KeyWords.EMPTY_FIELD_NAME);
 		}
 	}
 
 	protected void checkIndex(String type, String index) {
 		if (index == null || index.length() == 0) {
-			throw new TypeException(type, KeyWords.EMPTY_INDEX_NAME);
+			throw new NXException(type, KeyWords.EMPTY_INDEX_NAME);
 		}
 	}
 
@@ -4232,15 +4246,11 @@ public class PostgreSQLNode extends Node {
 			
 			switch (sqlState) {
 			case "42P01":
-				TypeNotFoundException te = new TypeNotFoundException(null);
-				te.setMessage(message);
-				throw te;
-
+				throw new TypeNotFoundException().setMessage(message);
+				
 			case "42703":
-				FieldNotFoundException fe = new FieldNotFoundException(null, null);
-				fe.setMessage(message);
-				throw fe;
-
+				throw new FieldNotFoundException(message);
+				
 			default:
 				throw new StringException(message);
 			}

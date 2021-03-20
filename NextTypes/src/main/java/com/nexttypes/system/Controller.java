@@ -55,12 +55,10 @@ import com.nexttypes.datatypes.UpdateIdResult;
 import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.Order;
-import com.nexttypes.exceptions.ActionException;
 import com.nexttypes.exceptions.ActionExecutionException;
-import com.nexttypes.exceptions.ActionFieldException;
 import com.nexttypes.exceptions.ActionNotFoundException;
+import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.exceptions.TypeException;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.LanguageSettings;
@@ -116,7 +114,7 @@ public class Controller {
 			TypeField typeField = entry.getValue();
 
 			if (typeField.isNotNull() && parameters[x] == null) {
-				throw new ActionFieldException(type, action, field, KeyWords.EMPTY_FIELD);
+				throw new FieldException(type, field, KeyWords.EMPTY_FIELD);
 			}
 
 			if (parameters[x] != null) {
@@ -166,8 +164,7 @@ public class Controller {
 				String contentType = ((File) value).getContentType();
 
 				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
-					throw new ActionFieldException(type, action, field,
-							KeyWords.DISALLOWED_CONTENT_TYPE, contentType);
+					throw new FieldException(type, field, KeyWords.DISALLOWED_CONTENT_TYPE, contentType);
 				}
 			}
 		}
@@ -218,8 +215,7 @@ public class Controller {
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
 			FieldRange range = getActionFieldRange(action, field);
 			if (range != null && !range.isInRange(value)) {
-				throw new ActionFieldException(type, action, field, KeyWords.OUT_OF_RANGE_VALUE,
-						value);
+				throw new FieldException(type, field, KeyWords.OUT_OF_RANGE_VALUE, value);
 			}
 		}
 	}

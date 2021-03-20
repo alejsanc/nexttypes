@@ -167,7 +167,7 @@ public class KeyWords {
 	public static final String INVALID_ACTION_NAME = "invalid_action_name";
 	public static final String INVALID_BOOLEAN = "invalid_boolean";
 	public static final String INVALID_CURRENT_PASSWORD = "invalid_current_password";
-	public static final String INVALID_ELEMENT = "element";
+	public static final String INVALID_ELEMENT = "invalid_element";
 	public static final String INVALID_ELEMENT_NAME = "invalid_element_name";
 	public static final String INVALID_EMAIL = "invalid_email";
 	public static final String INVALID_FIELD = "invalid_field";

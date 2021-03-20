@@ -18,40 +18,28 @@ package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
 
-public class ActionFieldException extends ActionException {
+public class ImportTypesException extends NXException {
 	protected static final long serialVersionUID = 1L;
+	
+	protected NXException e;
 
-	protected String field;
-	protected Object value;
-
-	public ActionFieldException(String type, String action, String field, String setting) {
-		this(type, action, field, setting, null);
-	}
-
-	public ActionFieldException(String type, String action, String field, String setting, Object value) {
-		super(type, action, setting);
-		this.field = field;
-		this.value = value;
-	}
-
-	public String getField() {
-		return field;
-	}
-
-	public Object getValue() {
-		return value;
+	public ImportTypesException(String type, NXException e) {
+		super(type, null);
+		this.e = e;
 	}
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		String fieldName = languageSettings.getActionFieldName(type, action, field);
-
-		String message = languageSettings.gts(type, setting) + ": " + fieldName;
-
-		if (value != null) {
-			message += " -> " + value;
+		String message = "";
+		
+		if (type != null) {
+			message += type + ": ";
 		}
-
-		return message;
+		
+		return message + e.getMessage(languageSettings);
+	}
+	
+	public NXException getException() {
+		return e;
 	}
 }

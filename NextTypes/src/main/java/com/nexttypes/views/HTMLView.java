@@ -926,7 +926,7 @@ public class HTMLView extends View {
 	public Content getElement(String type, String id, String field, String element, String lang,
 			String view, String etag) {
 		Content content = null;
-
+		
 		String fieldType = nextNode.getTypeField(type, field).getType();
 
 		switch (fieldType) {

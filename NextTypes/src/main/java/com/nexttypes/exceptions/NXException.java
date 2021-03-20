@@ -75,24 +75,6 @@ public class NXException extends RuntimeException {
 			message = className + ": " + message;
 		}
 
-		/*if (message == null) {
-			Throwable cause = e.getCause();
-
-			if (cause == null) {
-				message = e.getClass().getName();
-			} else {
-				message = cause.getMessage();
-
-				if (message == null) {
-					message = cause.getClass().getName();
-				} else {
-					message = cause.getClass().getName() + ": " + message;
-				}
-			}
-		} else {
-			message = e.getClass().getName() + ": " + message;
-		}*/
-
 		return message;
 	}
 }
