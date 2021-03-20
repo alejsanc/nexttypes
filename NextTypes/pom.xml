@@ -4,7 +4,7 @@
 	<groupId>com.nexttypes</groupId>
 	<artifactId>NextTypes</artifactId>
 	<packaging>war</packaging>
-	<version>1.1</version>
+	<version>1.2</version>
 	<name>NextTypes</name>
 	<url>http://www.nexttypes.com/</url>
 	<dependencies>
