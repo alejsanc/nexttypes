@@ -60,6 +60,10 @@ public class UnauthorizedActionException extends UnauthorizedException {
 	public String getMessage(LanguageSettings languageSettings) {
 		StringBuilder message = new StringBuilder(languageSettings.gts(type, KeyWords.UNAUTHORIZED_ACTION) + ": ");
 		
+		if (type != null) {
+			message.append(languageSettings.getTypeName(type) + "::");
+		}
+		
 		message.append(languageSettings.getActionName(type, action));
 		
 		if (objects != null && objects.length > 0) {

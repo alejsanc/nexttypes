@@ -34,8 +34,6 @@ public class ObjectException extends TypeException {
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		String typeName = languageSettings.getTypeName(type);
-		
-		return languageSettings.gts(type, setting) + ": " + id;
+		return languageSettings.gts(type, setting);
 	}
 }

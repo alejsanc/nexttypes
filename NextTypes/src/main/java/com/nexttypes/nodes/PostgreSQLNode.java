@@ -472,7 +472,7 @@ public class PostgreSQLNode extends Node {
 		checkType(typeName);
 
 		if (single && existsType(typeName)) {
-			throw new TypeException(typeName, KeyWords.TYPE_ALREADY_EXISTS);
+			throw new NXException(typeName, KeyWords.TYPE_ALREADY_EXISTS);
 		}
 
 		StringBuilder sql = new StringBuilder("create table \"" + typeName + "\"" + " (id character varying("
@@ -2604,7 +2604,7 @@ public class PostgreSQLNode extends Node {
 							result.addIgnoredType(typeName);
 						}
 					} else {
-						throw new TypeException(typeName, KeyWords.TYPE_ALREADY_EXISTS);
+						throw new NXException(typeName, KeyWords.TYPE_ALREADY_EXISTS);
 					}
 				} else {
 					create(type, false);
