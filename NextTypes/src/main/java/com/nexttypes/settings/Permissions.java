@@ -119,7 +119,7 @@ public class Permissions extends TypeSettings {
 	}
 	
 	public void checkPermissions(String type, String[] objects, String action) {
-		
+		   
 		String[] disallowedObjects = isAllowed(type, objects, action);
 		
 		if (disallowedObjects == null || disallowedObjects.length > 0) {
