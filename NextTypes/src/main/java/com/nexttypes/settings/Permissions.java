@@ -115,23 +115,16 @@ public class Permissions extends TypeSettings {
 	}
 	
 	public void checkPermissions(String type, String id, String action) {
-		if (!isAllowed(type, id, action)) {
-			throw new UnauthorizedActionException(type, id, action);
-		}
+		checkPermissions(type, new String[] {id}, action);
 	}
 	
 	public void checkPermissions(String type, String[] objects, String action) {
 		
-		checkPermissions(type, action);		
+		String[] disallowedObjects = isAllowed(type, objects, action);
 		
-		if (objects != null && objects.length > 0) {
-		
-			String[] disallowedObjects = isAllowed(type, objects, action);
-		
-			if (disallowedObjects != null && disallowedObjects.length > 0) {
-				throw new UnauthorizedActionException(type, disallowedObjects, action);
-			}
-		} 
+		if (disallowedObjects == null || disallowedObjects.length > 0) {
+			throw new UnauthorizedActionException(type, disallowedObjects, action);
+		}
 	}
 	
 	public boolean isAllowedToMakeReference(String referencingType, String referencingId, 
