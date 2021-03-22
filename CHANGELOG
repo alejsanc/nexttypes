@@ -16,6 +16,7 @@ Version 1.2
 	Scape \ character in Document setValue and getValue.
 	Simplify exception messages.
 	Update software dependencies.
+	Fix security bug in Permissions.java. Action with empty list of objects was allowed without check. Now isAllowed null return disallows the action with empty objects list.
 
 Version 1.1
 	Fix backup files date parse.
