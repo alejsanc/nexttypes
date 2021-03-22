@@ -121,11 +121,17 @@ public class Permissions extends TypeSettings {
 	}
 	
 	public void checkPermissions(String type, String[] objects, String action) {
-		String[] disallowedObjects = isAllowed(type, objects, action);
 		
-		if (disallowedObjects != null && disallowedObjects.length > 0) {
-			throw new UnauthorizedActionException(type, disallowedObjects, action);
-		}
+		checkPermissions(type, action);		
+		
+		if (objects != null && objects.length > 0) {
+		
+			String[] disallowedObjects = isAllowed(type, objects, action);
+		
+			if (disallowedObjects != null && disallowedObjects.length > 0) {
+				throw new UnauthorizedActionException(type, disallowedObjects, action);
+			}
+		} 
 	}
 	
 	public boolean isAllowedToMakeReference(String referencingType, String referencingId, 
