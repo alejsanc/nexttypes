@@ -116,7 +116,7 @@ public aspect NodeSecurity extends Checks {
 
     before (NXObject object) : execution(* Node.update(..)) && args(object, ..) {
     	checkObject(object);
-    	checkPermissions(object.getType(), Action.UPDATE, thisJoinPoint);
+    	checkPermissions(object.getType(), object.getId(), Action.UPDATE, thisJoinPoint);
     	checkReferencePermissions(object, thisJoinPoint);
     }
 

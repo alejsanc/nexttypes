@@ -102,7 +102,15 @@ public class Permissions extends TypeSettings {
 	}
 	
 	public boolean isAllowed(String type, String id, String action) {
-		return isAllowed(type, new String[] { id }, action).length == 0; 
+		boolean allowed = false;
+		
+		if (id == null) {
+			allowed = isAllowed(type, action);
+		} else {
+			allowed = isAllowed(type, new String[] {id}, action).length == 0;
+		}
+		
+		return allowed;
 	}
 	
 	public String[] isAllowed(String type, String[] objects, String action) {
@@ -115,11 +123,14 @@ public class Permissions extends TypeSettings {
 	}
 	
 	public void checkPermissions(String type, String id, String action) {
-		checkPermissions(type, new String[] {id}, action);
+		if (id == null) {
+			checkPermissions(type, action);
+		} else {
+			checkPermissions(type, new String[] {id}, action);
+		}
 	}
 	
 	public void checkPermissions(String type, String[] objects, String action) {
-		   
 		String[] disallowedObjects = isAllowed(type, objects, action);
 		
 		if (disallowedObjects == null || disallowedObjects.length > 0) {

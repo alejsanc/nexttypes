@@ -3694,7 +3694,7 @@ public class HTMLView extends View {
 		}
 
 		if (typeSettings.getTypeBoolean(type, KeyWords.SHOW_PREVIEW) && !request.isPreview()
-				&& permissions.isAllowed(type,  Action.PREVIEW)) {
+				&& permissions.isAllowed(type, Action.PREVIEW)) {
 			
 			String url = url(type, lang, view) + previewParameter() + searchParameter;
 							
@@ -4190,9 +4190,9 @@ public class HTMLView extends View {
 		if (actionsElement != null) {
 			String form = request.getForm();
 
-			if (permissions.isAllowed(type, id, Action.EXECUTE_ACTION_FORM) && type != null
-					&& !Action.INSERT.equals(form) && !Action.ALTER.equals(form)
-					&& !Action.RENAME.equals(form) && !request.isInfo()) {
+			if (type != null && !Action.INSERT.equals(form) && !Action.ALTER.equals(form)
+					&& !Action.RENAME.equals(form) && !request.isInfo() &&
+					permissions.isAllowed(type, id, Action.EXECUTE_ACTION_FORM)) {
 
 				LinkedHashMap<String, LinkedHashMap<String, TypeField>> actions = nextNode.getTypeActions(type);
 								
