@@ -2530,7 +2530,9 @@ public class PostgreSQLNode extends Node {
 	@Override
 	public TypesStream exportTypes(String[] types, Filter[] filters, boolean includeObjects) {
 
-		checkTypes(types);
+		if (types == null) {
+			types = this.getTypesName();
+		}
 		
 		Arrays.sort(types);
 
