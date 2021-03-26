@@ -225,6 +225,11 @@ public class ControllersNode extends Node {
 	public ImportObjectsResult importObjects(ObjectsStream objects, ImportAction existingObjectsAction) {
 		return nextNode.importObjects(objects, existingObjectsAction);
 	}
+	
+	@Override
+	public void scanVirus(String type, String[] objects) {
+		getController(type).scanVirus(type, objects);
+	}
 
 	@Override
 	public ZonedDateTime create(Type type) {
@@ -1049,6 +1054,11 @@ public class ControllersNode extends Node {
 	@Override
 	public Boolean existsObject(String type, String id) {
 		return getController(type).existsObject(id);
+	}
+	
+	@Override
+	public String[] getBinaryFieldsName(String type) {
+		return getController(type).getBinaryFieldsName(type);
 	}
 
 	@Override

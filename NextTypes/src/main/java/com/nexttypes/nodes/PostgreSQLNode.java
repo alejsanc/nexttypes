@@ -104,8 +104,8 @@ import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.FieldNotFoundException;
 import com.nexttypes.exceptions.FulltextIndexNotFoundException;
-import com.nexttypes.exceptions.ImportObjectsException;
-import com.nexttypes.exceptions.ImportTypesException;
+import com.nexttypes.exceptions.ObjectsStreamException;
+import com.nexttypes.exceptions.TypesStreamException;
 import com.nexttypes.exceptions.IndexException;
 import com.nexttypes.exceptions.IndexNotFoundException;
 import com.nexttypes.exceptions.InvalidValueException;
@@ -2658,10 +2658,10 @@ public class PostgreSQLNode extends Node {
 			setDeferredConstraints(false);
 			
 		} catch(NXException e) {
-			if (e instanceof ImportObjectsException) {
+			if (e instanceof ObjectsStreamException) {
 				throw e;
 			} else {
-				throw new ImportTypesException(typeName, e);
+				throw new TypesStreamException(typeName, e);
 			}
 		}
 
@@ -2742,7 +2742,7 @@ public class PostgreSQLNode extends Node {
 				}
 			}
 		} catch (NXException e) {
-			throw new ImportObjectsException(type, id, e);
+			throw new ObjectsStreamException(type, id, e);
 		}
 
 		if (deferredConstraints) {
@@ -2750,6 +2750,61 @@ public class PostgreSQLNode extends Node {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public String[] getBinaryFieldsName(String type) {
+		checkType(type);
+		
+		LinkedHashMap<String, TypeField> fields = getTypeFields(type);
+		ArrayList<String> binaryFields = new ArrayList<>();
+		
+		for (Map.Entry<String, TypeField> entry : fields.entrySet()) {
+			if (PT.isBinaryType(entry.getValue().getType())) {
+				binaryFields.add(entry.getKey());
+			}
+		}
+		
+		return binaryFields.toArray(new String[] {});
+	}
+	
+	@Override
+	public void scanVirus(String type, String[] objects) {
+		checkType(type);
+
+		String[] binaryFields = getBinaryFieldsName(type);
+		
+		if (binaryFields.length > 0) {
+			
+			IdFilter filter = null;
+
+			if (objects != null && objects.length > 0) {
+				filter = new IdFilter(Comparison.EQUAL, objects);
+			}
+		
+			ClamAV antivirus = new ClamAV(context);
+			
+			String id = null;
+
+			try(ObjectsStream stream = selectStream(type, binaryFields, null, filter, null, null,
+					false, true, false, false, false, false, 0L, 0L)) {
+				stream.exec();
+				
+				type = stream.getType();
+				
+				LinkedHashMap<String, TypeField> typeFields = getTypeFields(type);
+			
+				while(stream.next()) {
+					NXObject object = stream.getItem();
+					id = object.getId();
+					antivirus.scan(object, typeFields); 
+				}
+			} catch(NXException e) {
+				throw new ObjectsStreamException(type, id, e);
+			}
+		} else {
+			throw new NXException(type, KeyWords.TYPE_HAS_NO_BINARY_FIELDS);
+		}
 	}
 
 	@Override

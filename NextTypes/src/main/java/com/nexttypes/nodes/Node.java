@@ -166,6 +166,8 @@ public abstract class Node extends Module {
 	public abstract Boolean existsType(String type);
 
 	public abstract Boolean existsObject(String type, String id);
+	
+	public abstract String[] getBinaryFieldsName(String type);
 
 	public abstract String getName(String type, String id, String lang);
 
@@ -342,6 +344,8 @@ public abstract class Node extends Module {
 
 	public abstract ImportObjectsResult importObjects(ObjectsStream objects, ImportAction existingObjectsAction);
 
+	public abstract void scanVirus(String type, String[] objects);
+	
 	public abstract Short getInt16(String sql, Object... parameters);
 
 	public abstract Integer getInt32(String sql, Object... parameters);

@@ -18,12 +18,12 @@ package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
 
-public class ImportTypesException extends NXException {
+public class TypesStreamException extends NXException {
 	protected static final long serialVersionUID = 1L;
 	
 	protected NXException e;
 
-	public ImportTypesException(String type, NXException e) {
+	public TypesStreamException(String type, NXException e) {
 		super(type, null);
 		this.e = e;
 	}

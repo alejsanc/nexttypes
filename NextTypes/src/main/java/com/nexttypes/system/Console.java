@@ -50,6 +50,7 @@ public class Console {
 	public static final String EXISTING_TYPES_ACTION = "existing-types-action";
 	public static final String EXISTING_OBJECTS_ACTION = "existing-objects-action";
 	public static final String INCLUDE_OBJECTS = "include-objects";
+	public static final String VIRUS_SCAN = "virus-scan";
 
 	protected Options options;
 	protected Context context;
@@ -65,28 +66,93 @@ public class Console {
 			methods.addOption(new Option("b", KeyWords.BACKUP, false, "Backup types and objects."));
 			methods.addOption(new Option("it", IMPORT_TYPES, false, "Import types."));
 			methods.addOption(new Option("io", IMPORT_OBJECTS, false, "Import objects."));
-			methods.addOption(Option.builder("et").longOpt(EXPORT_TYPES).desc("Export types.").optionalArg(true)
-					.hasArgs().valueSeparator(',').argName(KeyWords.TYPES).build());
-			methods.addOption(Option.builder("eo").longOpt(EXPORT_OBJECTS).desc("Export objects.").optionalArg(true)
-					.hasArgs().valueSeparator(',').argName(KeyWords.OBJECTS).build());
+			
+			methods.addOption(Option.builder("et")
+					.longOpt(EXPORT_TYPES)
+					.hasArgs()
+					.valueSeparator(',')
+					.optionalArg(true)
+					.desc("Export types.")
+					.argName(KeyWords.TYPES)
+					.build()
+			);
+			
+			methods.addOption(Option.builder("eo")
+					.longOpt(EXPORT_OBJECTS)
+					.hasArgs()
+					.valueSeparator(',')
+					.optionalArg(true)
+					.desc("Export objects.")
+					.argName(KeyWords.OBJECTS)
+					.build()
+			);
+			
+			methods.addOption(new Option("vs", VIRUS_SCAN, false, "Virus scan."));
 			methods.addOption(new Option("h", KeyWords.HELP, false, "Help."));
 			methods.setRequired(true);
 			options.addOptionGroup(methods);
 
-			options.addOption(Option.builder("s").longOpt(KeyWords.SETTINGS).hasArg().desc("Settings directory.")
-					.argName(KeyWords.SETTINGS).build());
+			options.addOption(Option.builder("s")
+					.longOpt(KeyWords.SETTINGS)
+					.hasArg()
+					.desc("Settings directory.")
+					.argName(KeyWords.SETTINGS)
+					.build()
+			);
+			
 			options.addOption("f", KeyWords.FULL, false, "Make a full backup.");
-			options.addOption(Option.builder("eta").longOpt(EXISTING_TYPES_ACTION).hasArg()
-					.desc("Existing types action.").argName(KeyWords.ACTION).build());
-			options.addOption(Option.builder("eoa").longOpt(EXISTING_OBJECTS_ACTION).hasArg()
-					.desc("Existing objects action.").argName(KeyWords.ACTION).build());
-			options.addOption(Option.builder("t").longOpt(KeyWords.TYPE).hasArg().desc("Type name.")
-					.argName(KeyWords.TYPE).build());
+			
+			options.addOption(Option.builder("eta")
+					.longOpt(EXISTING_TYPES_ACTION)
+					.hasArg()
+					.desc("Existing types action.")
+					.argName(KeyWords.ACTION)
+					.build()
+			);
+			
+			options.addOption(Option.builder("eoa")
+					.longOpt(EXISTING_OBJECTS_ACTION)
+					.hasArg()
+					.desc("Existing objects action.")
+					.argName(KeyWords.ACTION)
+					.build()
+			);
+			
+			options.addOption(Option.builder("t")
+					.longOpt(KeyWords.TYPE)
+					.hasArg()
+					.desc("Type name.")
+					.argName(KeyWords.TYPE)
+					.build()
+			);
+			
+			options.addOption(Option.builder("o")
+					.longOpt(KeyWords.OBJECTS)
+					.hasArgs()
+					.valueSeparator(',')
+					.desc("Objects Id.")
+					.argName(KeyWords.OBJECTS)
+					.build()
+			);
+			
 			options.addOption("ino", INCLUDE_OBJECTS, false, "Include objects.");
-			options.addOption(Option.builder("o").longOpt(KeyWords.ORDER).hasArg().desc("Query order.")
-					.argName(KeyWords.ORDER).build());
-			options.addOption(Option.builder("l").longOpt(KeyWords.LANG).hasArg().desc("Language.")
-					.argName(KeyWords.LANG).build());
+			
+			options.addOption(Option.builder("or")
+					.longOpt(KeyWords.ORDER)
+					.hasArg()
+					.desc("Query order.")
+					.argName(KeyWords.ORDER)
+					.build()
+			);
+			
+			options.addOption(Option.builder("l")
+					.longOpt(KeyWords.LANG)
+					.hasArg()
+					.desc("Language.")
+					.argName(KeyWords.LANG)
+					.build()
+			);
+			
 			String method = null;
 
 			CommandLineParser parser = new DefaultParser();
@@ -105,6 +171,8 @@ public class Console {
 				method = IMPORT_OBJECTS;
 			} else if (command.hasOption(EXPORT_OBJECTS)) {
 				method = EXPORT_OBJECTS;
+			} else if (command.hasOption(VIRUS_SCAN)) {
+				method = VIRUS_SCAN;
 			} else {
 				printHelp();
 				return;
@@ -118,6 +186,10 @@ public class Console {
 			NodeMode mode = null;
 
 			switch (method) {
+			case VIRUS_SCAN:
+				mode = NodeMode.READ;
+				break;
+				
 			case KeyWords.BACKUP:
 			case EXPORT_TYPES:
 			case IMPORT_OBJECTS:
@@ -136,8 +208,17 @@ public class Console {
 				Object result = null;
 
 				ImportAction existingObjectsAction = null;
+				String type = null;
+				String[] objects = null;
 
 				switch (method) {
+				case VIRUS_SCAN:
+					type = command.getOptionValue(KeyWords.TYPE);
+					objects = command.getOptionValues(KeyWords.OBJECTS);
+					
+					nextNode.scanVirus(type, objects);
+					break;
+					
 				case KeyWords.BACKUP:
 					boolean full = command.hasOption(KeyWords.FULL);
 
@@ -174,8 +255,8 @@ public class Console {
 					break;
 
 				case EXPORT_OBJECTS:
-					String[] objects = command.getOptionValues(EXPORT_OBJECTS);
-					String type = command.getOptionValue(KeyWords.TYPE);
+					type = command.getOptionValue(KeyWords.TYPE);
+					objects = command.getOptionValues(EXPORT_OBJECTS);
 					LinkedHashMap<String, Order> order = Utils
 							.parserOrderString(command.getOptionValue(KeyWords.ORDER));
 

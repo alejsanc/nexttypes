@@ -293,6 +293,11 @@ public class ProxyNode extends Node {
 	public Boolean existsObject(String type, String id) {
 		return getNextNode(type).existsObject(type, id);
 	}
+	
+	@Override
+	public String[] getBinaryFieldsName(String type) {
+		return getNextNode(type).getBinaryFieldsName(type);
+	}
 
 	@Override
 	public String getName(String type, String id, String lang) {
@@ -694,6 +699,11 @@ public class ProxyNode extends Node {
 	@Override
 	public ImportObjectsResult importObjects(ObjectsStream objects, ImportAction existingObjectsAction) {
 		return nextNode.importObjects(objects, existingObjectsAction);
+	}
+	
+	@Override
+	public void scanVirus(String type, String[] objects) {
+		getNextNode(type).scanVirus(type, objects);
 	}
 
 	@Override

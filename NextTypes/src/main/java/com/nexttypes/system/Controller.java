@@ -248,6 +248,10 @@ public class Controller {
 		return nextNode.existsObject(type, id);
 	}
 	
+	public String[] getBinaryFieldsName(String type) {
+		return nextNode.getBinaryFieldsName(type);
+	}
+	
 	public FieldRange getActionFieldRange(String action, String field) {
 		return getActionField(action, field).getRange();
 	}
@@ -569,5 +573,9 @@ public class Controller {
 
 	public boolean hasNullValues(String field) {
 		return nextNode.hasNullValues(type, field);
+	}
+	
+	public void scanVirus(String type, String[] objects) {
+		nextNode.scanVirus(type, objects);
 	}
 }

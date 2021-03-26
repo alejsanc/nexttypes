@@ -344,6 +344,7 @@ public class KeyWords {
 	public static final String TYPE_ALREADY_EXISTS = "type_already_exists";
 	public static final String TYPE_ALREADY_HAS_OBJECTS = "type_already_has_objects";
 	public static final String TYPE_ALTERED = "type_altered";
+	public static final String TYPE_HAS_NO_BINARY_FIELDS = "type_has_no_binary_fields";
 	public static final String TYPE_NAME = "type_name";
 	public static final String TYPE_NAME_TOO_LONG = "type_name_too_long";
 	public static final String TYPE_NOT_ALTERED = "type_not_altered";
