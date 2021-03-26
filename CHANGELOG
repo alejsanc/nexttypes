@@ -2,6 +2,7 @@ Version 1.3
 	In Permissions class use isAllowed(type,action) method if "id" or "objects" is null or empty. 
 	Add PermissionsAspect aspect to intercept the execution of the isAllowed(type,objects,action) method and execute isAllowed(type,action) if "objects" is null or empty.
 	In exportTypes method if types is empty export all types.
+	Add virusScan method to PostgreSQLNode and Console classes.
 
 Version 1.2
 	Move confirmation message to submit button in data-confirmation-message attribute.
