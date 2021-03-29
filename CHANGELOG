@@ -4,6 +4,7 @@ Version 1.3
 	In exportTypes method if types is empty export all types.
 	Add virusScan method to PostgreSQLNode and Console classes.
 	Update software dependencies.
+	Exclude Xerces in Maven to use OpenJDK version with international messages.
 
 Version 1.2
 	Move confirmation message to submit button in data-confirmation-message attribute.
