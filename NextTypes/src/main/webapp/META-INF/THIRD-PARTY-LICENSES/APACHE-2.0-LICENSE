@@ -131,14 +131,6 @@ tika-core-1.25.jar
 tika-parsers-1.26.jar
 
 
-APACHE XERCES 2
----------------
-
-URL: http://xerces.apache.org/xerces2-j/
-
-xercesImpl-2.12.1.jar
-
-
 APACHE XMLBEANS
 ---------------
 
