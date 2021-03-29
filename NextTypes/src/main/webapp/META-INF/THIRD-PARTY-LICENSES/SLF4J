@@ -4,8 +4,8 @@ SLF4J
 URL: http://www.slf4j.org/
 
 slf4j-api-1.7.30.jar
-jcl-over-slf4j-1.7.28.jar
-jul-to-slf4j-1.7.28.jar
+jcl-over-slf4j-1.7.30.jar
+jul-to-slf4j-1.7.30.jar
 
 --------------------------------------------------------------------------------
 

@@ -22,11 +22,11 @@ APACHE CXF
 
 URL: https://cxf.apache.org/
 
-cxf-core-3.4.1.jar
-cxf-rt-frontend-jaxrs-3.4.1.jar
-cxf-rt-rs-client-3.4.1.jar
-cxf-rt-security-3.4.1.jar
-cxf-rt-transports-http-3.4.1.jar
+cxf-core-3.4.3.jar
+cxf-rt-frontend-jaxrs-3.4.3.jar
+cxf-rt-rs-client-3.4.3.jar
+cxf-rt-security-3.4.3.jar
+cxf-rt-transports-http-3.4.3.jar
 
 
 APACHE GERONIMO
@@ -81,12 +81,12 @@ APACHE PDFBOX
 
 URL: https://pdfbox.apache.org/
 
-fontbox-2.0.21.jar
+fontbox-2.0.23.jar
 jempbox-1.8.16.jar
-pdfbox-2.0.21.jar
-pdfbox-tools-2.0.21.jar
-preflight-2.0.21.jar
-xmpbox-2.0.21.jar
+pdfbox-2.0.23.jar
+pdfbox-tools-2.0.23.jar
+preflight-2.0.23.jar
+xmpbox-2.0.23.jar
 
 
 APACHE POI
@@ -128,7 +128,7 @@ APACHE TIKA
 URL: https://tika.apache.org/
 
 tika-core-1.25.jar
-tika-parsers-1.25.jar
+tika-parsers-1.26.jar
 
 
 APACHE XERCES 2
@@ -136,7 +136,7 @@ APACHE XERCES 2
 
 URL: http://xerces.apache.org/xerces2-j/
 
-xercesImpl-2.12.0.jar
+xercesImpl-2.12.1.jar
 
 
 APACHE XMLBEANS
@@ -176,7 +176,7 @@ ERROR PRONE
 
 URL: https://github.com/google/error-prone
 
-error_prone_annotations-2.3.4.jar
+error_prone_annotations-2.5.1.jar
 
 
 FINDBUGS JSR305
@@ -201,7 +201,7 @@ GUAVA
 URL: https://github.com/google/guava
 
 failureaccess-1.0.1.jar
-guava-30.0-jre.jar
+guava-30.1.1-jre.jar
 
 
 HIKARICP
@@ -241,8 +241,8 @@ JACKCESS
 
 URL: https://jackcess.sourceforge.io/
 
-jackcess-3.5.1.jar
-jackcess-encrypt-3.0.0.jar
+jackcess-4.0.0.jar
+jackcess-encrypt-4.0.1.jar
 
 
 FASTERXML
@@ -292,7 +292,7 @@ JCOMMANDER
 
 URL: https://jcommander.org/
 
-jcommander-1.78.jar
+jcommander-1.81.jar
 
 
 JODA TIME
@@ -332,7 +332,7 @@ PARSO
 
 URL: https://github.com/epam/parso
 
-parso-2.0.12.jar
+parso-2.0.14.jar
 
 
 QUARTZ

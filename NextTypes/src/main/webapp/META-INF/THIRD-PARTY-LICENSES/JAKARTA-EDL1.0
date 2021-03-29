@@ -9,10 +9,11 @@ jakarta.jws-api-2.1.0.jar
 jakarta.xml.bind-api-2.3.2.jar
 jakarta.xml.soap-api-1.4.2.jar
 jakarta.xml.ws-api-2.3.3.jar
-jaxb-runtime-2.3.3.jar
+jaxb-runtime-3.0.0.jar
+jaxb-core-3.0.0.jar
 saaj-impl-1.5.2.jar
 stax-ex-1.8.3.jar
-txw2-2.3.3.jar
+txw2-3.0.0.jar
 
 --------------------------------------------------------------------------------
     
