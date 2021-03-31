@@ -36,13 +36,13 @@ public aspect ViewAspect {
 		return content;
 	}
 
-	Content around(String type, String id, String field, String etag) :
-		execution(* View.getField(..)) && args(type, id, field, etag) {
+	Content around(String type, String id, String field, String lang, String etag) :
+		execution(* View.getField(..)) && args(type, id, field, lang, etag) {
 
 		Content content = checkModification(thisJoinPoint, type, id, etag);
 
 		if (content == null) {
-			content = proceed(type, id, field, etag);
+			content = proceed(type, id, field, lang, etag);
 		}
 
 		return content;

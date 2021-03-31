@@ -19,7 +19,6 @@ package com.nexttypes.views;
 import java.util.LinkedHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 
-
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.FieldReference;
@@ -99,7 +98,10 @@ public class SerialView extends View {
 			objectField = nextNode.getField(type, id, field);
 		}		
 		
-		return content(objectField, view, KeyWords.FIELD);
+		Content content = content(objectField, view, KeyWords.FIELD);
+		content.setHeader(HTTPHeader.ETAG, nextNode.getETag(type, id));
+
+		return content;
 	}
 	
 	@Override
