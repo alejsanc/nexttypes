@@ -45,7 +45,6 @@ public class XMLFragment extends XML {
 	
 	public XMLFragment(String xml, String lang, LinkedHashMap<String, String[]> allowedTags) {
 		super("<" + FRAGMENT + ">" + xml + "</" + FRAGMENT + ">", lang, addFragmentTag(allowedTags));
-		setXMLDeclaration(false);
 	}
 
 	@Override

@@ -368,7 +368,7 @@ public class WebDAVView extends View {
 	}
 
 	@Override
-	public Content getField(String type, String id, String field, String etag) {
+	public Content getField(String type, String id, String field, String view, String etag) {
 
 		ZonedDateTime udate = null;
 		String contentType = null;

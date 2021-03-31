@@ -69,7 +69,7 @@ public class XML extends PGobject {
 	protected String docType;
 	protected String lang;
 	protected LinkedHashMap<String, String[]> allowedTags;
-	protected boolean xmlDeclaration = true;
+	protected boolean xmlDeclaration = false;
 	
 	public XML() {
 		type = PT.XML;
@@ -330,7 +330,7 @@ public class XML extends PGobject {
 			if (docType != null) {
 				value.append(docType + "\n");
 			}
-
+			
 			StreamResult result = new StreamResult(new StringWriter());
 			DOMSource source = new DOMSource(node);
 			transformer.transform(source, result);
@@ -338,7 +338,7 @@ public class XML extends PGobject {
 		} catch (TransformerException e) {
 			throw new NXException(e);
 		}
-
+		
 		return value.toString();
 	}
 

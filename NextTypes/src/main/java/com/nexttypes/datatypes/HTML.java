@@ -159,7 +159,6 @@ public class HTML extends XML {
 	}
 
 	protected void init() {
-		setXMLDeclaration(false);
 		setDocType(DOCTYPE);
 	}
 

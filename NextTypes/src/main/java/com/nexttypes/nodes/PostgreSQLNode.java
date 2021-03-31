@@ -23,14 +23,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Savepoint;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -51,7 +48,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.postgresql.PGConnection;
 import org.postgresql.jdbc.PgArray;
-import org.postgresql.jdbc.PgSQLXML;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.ServerErrorMessage;
 
@@ -1593,19 +1589,7 @@ public class PostgreSQLNode extends Node {
 				break;
 			case PT.COLOR:
 				value = tuple.getColor(field);
-				break;
-			case PT.DATE:
-				value = tuple.getDate(field);
-				break;
-			case PT.TIME:
-				value = tuple.getTime(field);
-				break;
-			case PT.DATETIME:
-				value = tuple.getDateTime(field);
-				break;
-			case PT.JSON:
-				value = tuple.getJSON(field);
-				break;
+				break;			
 			case PT.DOCUMENT:
 				if (binary) {
 					value = tuple.getDocument(field);
@@ -1621,6 +1605,10 @@ public class PostgreSQLNode extends Node {
 					}
 				}
 				break;
+			case PT.JSON:
+			case PT.DATE:
+			case PT.TIME:
+			case PT.DATETIME:
 			case PT.FILE:
 			case PT.IMAGE:
 			case PT.AUDIO:
@@ -2253,14 +2241,6 @@ public class PostgreSQLNode extends Node {
 		}
 
 		Object value = tuple.get("field");
-
-		if (value instanceof PgSQLXML) {
-			try {
-				value = ((PgSQLXML) value).getString();
-			} catch (SQLException e) {
-				throwException(e);
-			}
-		}
 
 		if (contentType == null) {
 			contentType = tuple.getString(KeyWords.CONTENT_TYPE);
@@ -3166,7 +3146,7 @@ public class PostgreSQLNode extends Node {
 
 			try (ResultSet result = statement.executeQuery()) {
 				while (result.next()) {
-					objects.add((T) result.getObject(1));
+					objects.add((T) getObject(result, result.getMetaData(), 1));
 				}
 			}
 
@@ -3248,10 +3228,11 @@ public class PostgreSQLNode extends Node {
 			try (ResultSet result = statement.executeQuery()) {
 				ResultSetMetaData metaData = result.getMetaData();
 				ArrayList<Class> fieldTypes = new ArrayList<>();
-				for (int y = 1; y <= metaData.getColumnCount(); y++) {
-					fieldTypes.add(Class.forName(metaData.getColumnClassName(y)));
+				for (int column = 1; column <= metaData.getColumnCount(); column++) {
+					fieldTypes.add(getColumnClass(metaData, column));
 				}
-				Constructor<T> constructor = type.getDeclaredConstructor(fieldTypes.toArray(new Class[] {}));
+				Constructor<T> constructor = type.getDeclaredConstructor(
+						fieldTypes.toArray(new Class[] {}));
 
 				objects = new ArrayList<>();
 				while (result.next()) {
@@ -3264,14 +3245,79 @@ public class PostgreSQLNode extends Node {
 
 		return objects.toArray((T[]) Array.newInstance(type, 0));
 	}
+	
+	protected Class getColumnClass(ResultSetMetaData metaData, int column)
+			throws ClassNotFoundException, SQLException {
+		Class columnClass = null;
+		
+		String columnType = metaData.getColumnTypeName(column);
+		
+		switch (columnType) {
+		case "time":
+			columnClass = LocalTime.class;
+			break;
+			
+		case "date":
+			columnClass = LocalDate.class;
+			break;
+			
+		case "timestamp":
+			columnClass = LocalDateTime.class;
+			break;
+			
+		case "jsonb":
+		case "xml":
+			columnClass = String.class;
+			break;
+			
+		default:
+			columnClass = Class.forName(metaData.getColumnClassName(column));
+		}
+				
+		return columnClass;
+	}
+	
+	protected Object getObject(ResultSet result, ResultSetMetaData metaData, int column)
+			throws SQLException {
+		
+		String columnType = metaData.getColumnTypeName(column);
+		Class columnClass = null;
+		Object object = null;
+		
+		switch (columnType) {
+		case "time":
+			columnClass = LocalTime.class;
+			break;
+			
+		case "date":
+			columnClass = LocalDate.class;
+			break;
+			
+		case "timestamp":
+			columnClass = LocalDateTime.class;
+			break;
+		}
+		
+		if (columnClass != null) {
+			object = result.getObject(column, columnClass);
+		} else if ("xml".equals(columnType)) {
+			object = result.getString(column);
+		} else if ("jsonb".equals(columnType)) {
+			object = result.getString(column);
+		} else {
+			object = result.getObject(column);
+		}
+		
+		return object;
+	}
 
 	protected Tuple getTuple(ResultSet result, ResultSetMetaData metaData) {
 		Tuple tuple = null;
 
 		try {
 			tuple = new Tuple();
-			for (int y = 1; y <= metaData.getColumnCount(); y++) {
-				tuple.put(metaData.getColumnLabel(y), result.getObject(y));
+			for (int column = 1; column <= metaData.getColumnCount(); column++) {
+				tuple.put(metaData.getColumnLabel(column), getObject(result, metaData, column));
 			}
 		} catch (SQLException e) {
 			throwException(e);
@@ -3286,8 +3332,8 @@ public class PostgreSQLNode extends Node {
 		try {
 			ArrayList<Object> fields = new ArrayList<>();
 
-			for (int y = 1; y <= metaData.getColumnCount(); y++) {
-				fields.add(result.getObject(y));
+			for (int column = 1; column <= metaData.getColumnCount(); column++) {
+				fields.add(getObject(result, metaData, column));
 			}
 
 			classObject = constructor.newInstance(fields.toArray());
@@ -3465,18 +3511,13 @@ public class PostgreSQLNode extends Node {
 			for (int x = 0; x < parameters.length; x++) {
 				Object object = parameters[x];
 
-				if (object instanceof URL || object instanceof InternetAddress || object instanceof HTMLFragment
-						|| object instanceof Color || object instanceof ZoneId) {
+				if (object instanceof URL || object instanceof InternetAddress
+						|| object instanceof HTMLFragment || object instanceof Color
+						|| object instanceof ZoneId) {
 					object = object.toString();
-				} else if (object instanceof LocalTime) {
-					object = Time.valueOf((LocalTime) object);
-				} else if (object instanceof LocalDate) {
-					object = Date.valueOf((LocalDate) object);
-				} else if (object instanceof LocalDateTime) {
-					object = Timestamp.valueOf((LocalDateTime) object);
 				} else if (object instanceof ZonedDateTime) {
-					object = Timestamp.valueOf(((ZonedDateTime) object).toLocalDateTime());
-				} 
+					object = ((ZonedDateTime) object).toLocalDateTime();
+				}
 
 				statement.setObject(x + 1, object);
 			}

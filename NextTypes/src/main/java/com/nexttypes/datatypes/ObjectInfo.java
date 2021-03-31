@@ -16,7 +16,7 @@
 
 package com.nexttypes.datatypes;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 public class ObjectInfo {
@@ -28,7 +28,7 @@ public class ObjectInfo {
 		this.udate = udate;
 	}
 
-	public ObjectInfo(String id, Timestamp udate) {
+	public ObjectInfo(String id, LocalDateTime udate) {
 		this(id, Tuple.parseUTCDateTime(udate));
 	}
 

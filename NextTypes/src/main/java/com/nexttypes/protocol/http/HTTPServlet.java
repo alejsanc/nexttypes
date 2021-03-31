@@ -271,7 +271,8 @@ public class HTTPServlet extends HttpServlet {
 					} else if (req.isDefault()) {
 						content = view.getFieldDefault(req.getType(), req.getField());
 					} else {
-						content = view.getField(req.getType(), req.getId(), req.getField(), req.getETag());
+						content = view.getField(req.getType(), req.getId(), req.getField(), req.getView(),
+								req.getETag());
 					}
 				} else {
 
@@ -704,7 +705,8 @@ public class HTTPServlet extends HttpServlet {
 				} else if (req.getField() == null) {
 					content = view.get(req.getType(), req.getId(), req.getLang(), KeyWords.WEBDAV, req.getETag());
 				} else {
-					content = view.getField(req.getType(), req.getId(), req.getField(), req.getETag());
+					content = view.getField(req.getType(), req.getId(), req.getField(), KeyWords.WEBDAV,
+							req.getETag());
 				}
 
 			} catch (NotFoundException e) {

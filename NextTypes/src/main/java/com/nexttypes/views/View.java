@@ -137,6 +137,19 @@ public abstract class View extends Module {
 		throw new NotImplementedException();
 	}
 	
+	public Content getField(String type, String id, String field, String view, String etag) {
+		throw new NotImplementedException();
+	}
+	
+	public Content getFieldDefault(String type, String field) {
+		throw new NotImplementedException();
+	}
+
+	public Content getElement(String type, String id, String field, String element, String lang, String view,
+			String etag) {
+		throw new NotImplementedException();
+	}
+	
 	public Content getNames(String type, String lang, String view, ActionReference aref,
 			String search, Long offset) {
 		throw new NotImplementedException();
@@ -177,19 +190,6 @@ public abstract class View extends Module {
 	}
 
 	public Content executeActionForm(String type, String id, String action, String lang, String view) {
-		throw new NotImplementedException();
-	}
-
-	public Content getField(String type, String id, String field, String etag) {
-		throw new NotImplementedException();
-	}
-	
-	public Content getFieldDefault(String type, String field) {
-		throw new NotImplementedException();
-	}
-
-	public Content getElement(String type, String id, String field, String element, String lang, String view,
-			String etag) {
 		throw new NotImplementedException();
 	}
 

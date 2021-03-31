@@ -17,8 +17,8 @@
 package com.nexttypes.views;
 
 import java.util.LinkedHashMap;
-
 import org.apache.commons.lang3.ArrayUtils;
+
 
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.Filter;
@@ -27,6 +27,7 @@ import com.nexttypes.datatypes.ActionReference;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.Names;
 import com.nexttypes.datatypes.Objects;
+import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.Reference;
 import com.nexttypes.datatypes.Serial;
 import com.nexttypes.datatypes.Type;
@@ -38,6 +39,7 @@ import com.nexttypes.exceptions.ObjectNotFoundException;
 import com.nexttypes.protocol.http.HTTPHeader;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.protocol.http.HTTPStatus;
+import com.nexttypes.security.Security;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.system.KeyWords;
 
@@ -83,6 +85,21 @@ public class SerialView extends View {
 		content.setHeader(HTTPHeader.ETAG, object.getETag());
 
 		return content;
+	}
+	
+	@Override
+	public Content getField(String type, String id, String field, String view, String etag) {
+		Object objectField = null;
+		
+		String fieldType = nextNode.getFieldType(type, field);
+		
+		if (PT.PASSWORD.equals(fieldType)) {
+			objectField = Security.HIDDEN_PASSWORD;
+		} else {
+			objectField = nextNode.getField(type, id, field);
+		}		
+		
+		return content(objectField, view, KeyWords.FIELD);
 	}
 	
 	@Override
@@ -145,6 +162,10 @@ public class SerialView extends View {
 
 	public Content content(Object object, String format) {
 		return content(object, HTTPStatus.OK, format, null, null);
+	}
+	
+	public Content content(Object object, String format, String rootName) {
+		return content(object, HTTPStatus.OK, format, rootName, null);
 	}
 
 	public Content content(Object object, String format, String rootName, String itemName) {

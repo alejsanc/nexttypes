@@ -157,7 +157,7 @@ public class Tuple {
 	public XML getXML(String field, String lang, String allowedTags) {
 		return parseXML(get(field), lang, allowedTags);
 	}
-
+	
 	public static XML parseXML(Object value, String lang, String allowedTags) {
 		if (value instanceof String) {
 			value = new XML((String) value, lang, allowedTags);
@@ -422,7 +422,9 @@ public class Tuple {
 	}
 
 	public static ZonedDateTime parseUTCDateTime(Object value) {
-		if (value instanceof Timestamp) {
+		if (value instanceof LocalDateTime) {
+			value = ZonedDateTime.of((LocalDateTime) value, ZoneOffset.UTC);
+		} else if (value instanceof Timestamp) {
 			value = ZonedDateTime.of(((Timestamp) value).toLocalDateTime(), ZoneOffset.UTC);
 		} else if (value instanceof String) {
 			value = ZonedDateTime.parse((String) value);

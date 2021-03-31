@@ -871,7 +871,7 @@ public class HTMLView extends View {
 	}
 
 	@Override
-	public Content getField(String type, String id, String field, String etag) {
+	public Content getField(String type, String id, String field, String view, String etag) {
 		Content content = null;
 
 		ObjectField objectField = nextNode.getObjectField(type, id, field);

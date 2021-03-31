@@ -53,6 +53,10 @@ public class Serial {
 	public Serial(Object object, Format format) {
 		this(object, format, null, null);
 	}
+	
+	public Serial(Object object, String format, String rootName) {
+		this(object, Format.valueOf(format.toUpperCase()), rootName, null);
+	}
 
 	public Serial(Object object, String format, String rootName, String itemName) {
 		this(object, Format.valueOf(format.toUpperCase()), rootName, itemName);
@@ -104,7 +108,7 @@ public class Serial {
 
 		mapper.registerModule(module);
 
-		if (Format.XML.equals(format) && object instanceof Object[]) {
+		if (Format.XML.equals(format) && rootName != null) {
 			writter = mapper.writer().withRootName(rootName).withDefaultPrettyPrinter();
 		} else {
 			writter = mapper.writer().withDefaultPrettyPrinter();
