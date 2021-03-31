@@ -5,6 +5,9 @@ Version 1.3
 	Add virusScan method to PostgreSQLNode and Console classes.
 	Update software dependencies.
 	Exclude Xerces in Maven to use OpenJDK version with international messages.
+	Implement SerialView getField method.
+	Use PostgreSQL JDBC integration with java.time data types.
+	Get "jsonb" and "xml" columns as String class.
 
 Version 1.2
 	Move confirmation message to submit button in data-confirmation-message attribute.
