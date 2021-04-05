@@ -585,15 +585,15 @@ p {
 @media screen and (max-width: 900px) {
 	header {
 		height: auto;
+		padding-bottom: 5px;
 	}
 	
 	main {
-		float: none;
-		width: 100%;
+		width: 77%;
 	}
 	
-	textarea {
-		width: 75vw;
+	#menu {
+		width: 22%;
 	}
 	
 	#user {
@@ -606,6 +606,17 @@ p {
 	
 	#search {
 		position: static;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	main {
+		float: none;
+		width: 100%;
+	}
+	
+	textarea {
+		width: 75vw;
 	}
 	
 	#sidebar {

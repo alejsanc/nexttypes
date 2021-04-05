@@ -3579,9 +3579,45 @@ public class HTMLView extends View {
 	}
 
 	public Element logoAnchor(String type, String lang, String view) {
-		return imageAnchor(languageSettings.gts(type, KeyWords.LOGO_TEXT),
+		return imageSetAnchor(languageSettings.gts(type, KeyWords.LOGO_TEXT), 
 				hrefURL(typeSettings.gts(type, KeyWords.LOGO_URL), lang, view),
-				typeSettings.gts(type, KeyWords.LOGO));
+				typeSettings.gts(type, KeyWords.LOGO), typeSettings.gts(type, KeyWords.LOGO_SRCSET),
+				typeSettings.gts(type, KeyWords.LOGO_SIZES));
+	}
+	
+	public Element imageSetAnchor(String text, String href, String src, String srcset, String sizes) {
+		Element anchor = document.createElement(HTML.A);
+		
+		if (href != null) {
+			anchor.setAttribute(HTML.HREF, href);
+		}
+		
+		anchor.appendElement(imageSet(text, src, srcset, sizes));
+		
+		return anchor;
+	}
+	
+	public Element imageSet(String text, String src, String srcset, String sizes) {
+		Element image = document.createElement(HTML.IMG);
+		
+		if (text != null) {
+			image.setAttribute(HTML.ALT, text);
+			image.setAttribute(HTML.TITLE, text);
+		}
+		
+		if (src != null) {
+			image.setAttribute(HTML.SRC, src);
+		}
+		
+		if (srcset != null) {
+			image.setAttribute(HTML.SRCSET, srcset);
+		}
+		
+		if (sizes != null) {
+			image.setAttribute(HTML.SIZES, sizes);
+		}
+		
+		return image;
 	}
 
 	public Element image(String text, String type, String id, String field) {

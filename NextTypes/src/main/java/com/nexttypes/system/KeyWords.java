@@ -211,6 +211,8 @@ public class KeyWords {
 	public static final String LOGIN_TITLE = "login_title";
 	public static final String LOGIN_USER = "login_user";
 	public static final String LOGO = "logo";
+	public static final String LOGO_SIZES = "logo_sizes";
+	public static final String LOGO_SRCSET = "logo_srcset";
 	public static final String LOGO_TEXT = "logo_text";
 	public static final String LOGO_URL = "logo_url";
 	public static final String LOGOUT = "logout";
