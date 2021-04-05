@@ -1,3 +1,8 @@
+Version 1.4
+	Improve HTML responsiveness.
+	Add imageSetAnchor to HTMLView an use it for logo.
+	Add @media screen and (max-width: 600px).
+
 Version 1.3
 	In Permissions class use isAllowed(type,action) method if "id" or "objects" is null or empty. 
 	Add PermissionsAspect aspect to intercept the execution of the isAllowed(type,objects,action) method and execute isAllowed(type,action) if "objects" is null or empty.
