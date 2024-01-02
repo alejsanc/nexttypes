@@ -10,7 +10,7 @@ import { simpleSelection } from "../model/selection.js"
 import { setSelection } from "../model/selection_updates.js"
 import { getBidiPartAt, getOrder } from "../util/bidi.js"
 import { android, chrome, gecko, ie_version } from "../util/browser.js"
-import { contains, range, removeChildrenAndAdd, selectInput } from "../util/dom.js"
+import { activeElt, contains, range, removeChildrenAndAdd, selectInput, rootNode } from "../util/dom.js"
 import { on, signalDOMEvent } from "../util/event.js"
 import { Delayed, lst, sel_dontScroll } from "../util/misc.js"
 
@@ -94,9 +94,10 @@ export default class ContentEditableInput {
       }
       // Old-fashioned briefly-focus-a-textarea hack
       let kludge = hiddenTextarea(), te = kludge.firstChild
+      disableBrowserMagic(te)
       cm.display.lineSpace.insertBefore(kludge, cm.display.lineSpace.firstChild)
       te.value = lastCopied.text.join("\n")
-      let hadFocus = document.activeElement
+      let hadFocus = activeElt(rootNode(div))
       selectInput(te)
       setTimeout(() => {
         cm.display.lineSpace.removeChild(kludge)
@@ -119,7 +120,7 @@ export default class ContentEditableInput {
 
   prepareSelection() {
     let result = prepareSelection(this.cm, false)
-    result.focus = document.activeElement == this.div
+    result.focus = activeElt(rootNode(this.div)) == this.div
     return result
   }
 
@@ -213,7 +214,7 @@ export default class ContentEditableInput {
 
   focus() {
     if (this.cm.options.readOnly != "nocursor") {
-      if (!this.selectionInEditor() || document.activeElement != this.div)
+      if (!this.selectionInEditor() || activeElt(rootNode(this.div)) != this.div)
         this.showSelection(this.prepareSelection(), true)
       this.div.focus()
     }
@@ -226,7 +227,7 @@ export default class ContentEditableInput {
   receivedFocus() {
     let input = this
     if (this.selectionInEditor())
-      this.pollSelection()
+      setTimeout(() => this.pollSelection(), 20)
     else
       runInOp(this.cm, () => input.cm.curOp.selectionChanged = true)
 

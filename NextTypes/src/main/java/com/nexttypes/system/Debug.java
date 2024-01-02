@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2021 Alejandro Sánchez <alex@nexttypes.com>
+ * Copyright 2015-2024 Alejandro Sánchez <alex@nexttypes.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.nexttypes.system;
 
 import java.io.IOException;
 
-import org.apache.poi.util.HexDump;
+import org.apache.commons.io.HexDump;
 import org.bouncycastle.util.Arrays;
 
 import com.nexttypes.exceptions.NXException;

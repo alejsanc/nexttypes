@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2021 Alejandro Sánchez <alex@nexttypes.com>
+ * Copyright 2015-2024 Alejandro Sánchez <alex@nexttypes.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,11 +46,7 @@ public class Utils {
 		InputStream output = null;
 
 		if (input != null && input.length() > 0) {
-			try {
-				output = IOUtils.toInputStream(input, Constants.UTF_8_CHARSET);
-			} catch (IOException e) {
-				throw new NXException(e);
-			}
+			output = IOUtils.toInputStream(input, Constants.UTF_8_CHARSET);
 		}
 
 		return output;
@@ -74,11 +70,7 @@ public class Utils {
 		String output = null;
 		
 		if (input != null) {
-			try {
-				output = IOUtils.toString(input, Constants.UTF_8_CHARSET);
-			} catch (IOException e) {
-				throw new NXException(e);
-			}
+			output = IOUtils.toString(input, Constants.UTF_8_CHARSET);
 		}
 		
 		return output;

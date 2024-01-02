@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2021 Alejandro Sánchez <alex@nexttypes.com>
+ * Copyright 2015-2024 Alejandro Sánchez <alex@nexttypes.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.nexttypes.system;
 
 public class Constants {
 	public static final String NEXTTYPES = "NextTypes";
-	public static final String VERSION = "1.4";
+	public static final String VERSION = "1.5";
 	
 	public static final String UTF_8_CHARSET = "UTF-8";
 	

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2021 Alejandro Sánchez <alex@nexttypes.com>
+ * Copyright 2015-2024 Alejandro Sánchez <alex@nexttypes.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 
 import org.postgresql.jdbc.PgSQLXML;
 import org.postgresql.util.PGobject;

@@ -1,5 +1,5 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: https://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/5/LICENSE
 
 (function() {
   var mode = CodeMirror.getMode({indentUnit: 4},
@@ -41,4 +41,49 @@
   MT("bracesInFString", "[string f']{[variable x] [operator +] {}}[string !']")
 
   MT("nestedFString", "[string f']{[variable b][[ [string f\"c\"] ]]}[string f'] [comment # oops]")
+
+  MT("dontIndentTypeDecl",
+     "[variable i]: [builtin int] [operator =] [number 32]",
+     "[builtin print]([variable i])")
+
+  MT("dedentElse",
+     "[keyword if] [variable x]:",
+     "    [variable foo]()",
+     "[keyword elif] [variable y]:",
+     "    [variable bar]()",
+     "[keyword else]:",
+     "    [variable baz]()")
+
+  MT("dedentElsePass",
+     "[keyword if] [variable x]:",
+     "    [keyword pass]",
+     "[keyword elif] [variable y]:",
+     "    [keyword pass]",
+     "[keyword else]:",
+     "    [keyword pass]")
+
+  MT("dedentElseInFunction",
+     "[keyword def] [def foo]():",
+     "    [keyword if] [variable x]:",
+     "        [variable foo]()",
+     "    [keyword elif] [variable y]:",
+     "        [variable bar]()",
+     "        [keyword pass]",
+     "    [keyword else]:",
+     "        [variable baz]()")
+
+  MT("dedentCase",
+     "[keyword match] [variable x]:",
+     "    [keyword case] [variable y]:",
+     "        [variable foo]()")
+  MT("dedentCasePass",
+     "[keyword match] [variable x]:",
+     "    [keyword case] [variable y]:",
+     "        [keyword pass]")
+
+  MT("dedentCaseInFunction",
+     "[keyword def] [def foo]():",
+     "    [keyword match] [variable x]:",
+     "        [keyword case] [variable y]:",
+     "            [variable foo]()")
 })();

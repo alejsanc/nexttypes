@@ -16,8 +16,9 @@ export function maybeScrollWindow(cm, rect) {
   if (signalDOMEvent(cm, "scrollCursorIntoView")) return
 
   let display = cm.display, box = display.sizer.getBoundingClientRect(), doScroll = null
+  let doc = display.wrapper.ownerDocument
   if (rect.top + box.top < 0) doScroll = true
-  else if (rect.bottom + box.top > (window.innerHeight || document.documentElement.clientHeight)) doScroll = false
+  else if (rect.bottom + box.top > (doc.defaultView.innerHeight || doc.documentElement.clientHeight)) doScroll = false
   if (doScroll != null && !phantom) {
     let scrollNode = elt("div", "\u200b", null, `position: absolute;
                          top: ${rect.top - display.viewOffset - paddingTop(cm.display)}px;
@@ -39,8 +40,8 @@ export function scrollPosIntoView(cm, pos, end, margin) {
     // Set pos and end to the cursor positions around the character pos sticks to
     // If pos.sticky == "before", that is around pos.ch - 1, otherwise around pos.ch
     // If pos == Pos(_, 0, "before"), pos and end are unchanged
-    pos = pos.ch ? Pos(pos.line, pos.sticky == "before" ? pos.ch - 1 : pos.ch, "after") : pos
     end = pos.sticky == "before" ? Pos(pos.line, pos.ch + 1, "before") : pos
+    pos = pos.ch ? Pos(pos.line, pos.sticky == "before" ? pos.ch - 1 : pos.ch, "after") : pos
   }
   for (let limit = 0; limit < 5; limit++) {
     let changed = false
