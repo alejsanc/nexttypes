@@ -182,7 +182,7 @@ public class PostgreSQLNode extends Node {
 
 			"select"
 					+ " table_name as name,"
-					+ " pg_total_relation_size(table_name) as size"
+					+ " pg_total_relation_size(table_name::regclass) as size"
 
 			+ " from"
 					+ " information_schema.tables"
