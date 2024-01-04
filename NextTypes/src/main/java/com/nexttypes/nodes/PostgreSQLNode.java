@@ -32,7 +32,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -524,7 +523,7 @@ public class PostgreSQLNode extends Node {
 			addIndex(typeName, index, entry.getValue(), false);
 		}
 
-		ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+		ZonedDateTime now = Utils.getZonedDateTimeNow();
 
 		ZonedDateTime cdate = type.getCDate();
 		if (cdate == null) {
@@ -759,7 +758,7 @@ public class PostgreSQLNode extends Node {
 	}
 
 	protected ZonedDateTime updateTypeDates(String type) {
-		return updateTypeDates(type, ZonedDateTime.now(ZoneOffset.UTC));
+		return updateTypeDates(type, Utils.getZonedDateTimeNow());
 	}
 
 	protected ZonedDateTime updateTypeDates(String type, ZonedDateTime adate) {
@@ -979,7 +978,7 @@ public class PostgreSQLNode extends Node {
 		if (result.isAltered()) {
 			ZonedDateTime typeADate = type.getADate();
 			if (typeADate == null) {
-				typeADate = ZonedDateTime.now(ZoneOffset.UTC);
+				typeADate = Utils.getZonedDateTimeNow();
 			}
 			updateTypeDates(typeName, typeADate);
 			result.setADate(typeADate);
@@ -1181,7 +1180,7 @@ public class PostgreSQLNode extends Node {
 			}
 		}
 
-		ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+		ZonedDateTime now = Utils.getZonedDateTimeNow();
 
 		ZonedDateTime cdate = object.getCDate();
 		if (cdate == null) {
@@ -1289,7 +1288,7 @@ public class PostgreSQLNode extends Node {
 
 		ZonedDateTime objectUDate = object.getUDate();
 		if (objectUDate == null) {
-			objectUDate = ZonedDateTime.now(ZoneOffset.UTC);
+			objectUDate = Utils.getZonedDateTimeNow();
 		}
 
 		sql.append(" udate = ?, backup = ?,");
@@ -1317,7 +1316,7 @@ public class PostgreSQLNode extends Node {
 	public UpdateIdResult updateId(String type, String id, String newId) {
 		StringBuilder sql = new StringBuilder("update \"" + type + "\" set id = ");
 		ArrayList<Object> parameters = new ArrayList<>();
-		ZonedDateTime udate = ZonedDateTime.now(ZoneOffset.UTC);
+		ZonedDateTime udate = Utils.getZonedDateTimeNow();
 		
 		if (newId == null) {
 			sql.append(UUID_FUNCTION);
@@ -3738,7 +3737,7 @@ public class PostgreSQLNode extends Node {
 	protected class PostgreSQLTypesStream implements TypesStream {
 		protected LinkedHashMap<String, Type> types = new LinkedHashMap<>();
 		protected LinkedHashMap<String, ObjectsStream> objects = new LinkedHashMap<>();
-		protected ZonedDateTime date = ZonedDateTime.now(ZoneOffset.UTC);
+		protected ZonedDateTime date = Utils.getZonedDateTimeNow();
 
 		@Override
 		public String getFormat() {

@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -82,7 +83,7 @@ public class BackupTask extends Task {
 			filesByDate.sort(Collections.reverseOrder());
 
 			previousFileTime = Duration.between(ZonedDateTime.parse(filesByDate.get(0).substring(0, 27)),
-					ZonedDateTime.now(ZoneOffset.UTC)).toMillis();
+					Utils.getZonedDateTimeNow()).toMillis();
 
 			if (incremental > 0) {
 				for (String file : filesByDate) {
@@ -140,7 +141,7 @@ public class BackupTask extends Task {
 		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE),
 				new Auth(Auth.BACKUP), NodeMode.WRITE, lang, URL.LOCALHOST, context, true)) {
 
-			ZonedDateTime dateTime = ZonedDateTime.now(ZoneOffset.UTC);
+			ZonedDateTime dateTime = Utils.getZonedDateTimeNow();
 
 			StringBuilder filePath = new StringBuilder(directory + prefix + dateTime);
 
