@@ -21,8 +21,9 @@ import java.io.InputStream;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.nexttypes.datatypes.Serial;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.KeyWords;
@@ -42,7 +43,7 @@ public class StreamDeserializer {
 		JsonFactory factory = new JsonFactory();
 		try {
 			parser = factory.createParser(input);
-			ObjectMapper mapper = new ObjectMapper();
+			JsonMapper mapper = JsonMapper.builder().disable(Serial.autoDetectMapperFeatures).build();
 			mapper.registerModule(new JavaTimeModule());
 			parser.setCodec(mapper);
 		} catch (Exception e) {

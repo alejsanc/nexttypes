@@ -18,6 +18,7 @@ package com.nexttypes.datatypes;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -30,6 +31,7 @@ public class FieldRange {
 	protected Object min;
 	protected Object max;
 	
+	@JsonCreator
 	public FieldRange(@JsonProperty(KeyWords.MIN) String min,
 			@JsonProperty(KeyWords.MAX) String max) {
 		this.min = min;

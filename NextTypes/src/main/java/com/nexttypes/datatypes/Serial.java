@@ -26,9 +26,11 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.cfg.MapperBuilder;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.dataformat.smile.SmileFactory;
+import com.fasterxml.jackson.dataformat.smile.databind.SmileMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nexttypes.enums.Format;
@@ -39,6 +41,10 @@ import com.nexttypes.serialization.ArrayXMLSerializer;
 import com.nexttypes.system.KeyWords;
 
 public class Serial {
+	public static MapperFeature autoDetectMapperFeatures[] = {MapperFeature.AUTO_DETECT_CREATORS,
+			MapperFeature.AUTO_DETECT_FIELDS, MapperFeature.AUTO_DETECT_GETTERS,
+			MapperFeature.AUTO_DETECT_IS_GETTERS};
+	
 	protected Object object;
 	protected ObjectMapper mapper;
 	protected ObjectWriter writter;
@@ -67,27 +73,32 @@ public class Serial {
 		this.format = format;
 		this.rootName = rootName;
 		this.itemName = itemName;
+		
+		MapperBuilder builder;
 
 		switch (format) {
 		case JSON:
-			mapper = new ObjectMapper();
+			builder = JsonMapper.builder();
 			break;
+			
 		case SMILE:
-			mapper = new ObjectMapper(new SmileFactory());
+			builder = SmileMapper.builder();
 			break;
+			
 		case XML:
-			mapper = new XmlMapper();
+			builder = XmlMapper.builder();
 			break;
+			
 		default:
 			throw new InvalidValueException(KeyWords.INVALID_SERIAL_FORMAT, format);
 		}
-
+		
+		mapper = builder.disable(autoDetectMapperFeatures)
+				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,
+						SerializationFeature.FAIL_ON_EMPTY_BEANS).build();
+		
 		mapper.registerModule(new JavaTimeModule());
-		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-		mapper.disable(MapperFeature.AUTO_DETECT_CREATORS, MapperFeature.AUTO_DETECT_FIELDS,
-				MapperFeature.AUTO_DETECT_GETTERS, MapperFeature.AUTO_DETECT_IS_GETTERS);
-		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-
+		
 		SimpleModule module = new SimpleModule();
 
 		if (Format.XML.equals(format) && object instanceof Object[]) {
