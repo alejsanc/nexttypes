@@ -2,6 +2,7 @@ Version 1.4
 	Improve HTML responsiveness.
 	Add imageSetAnchor to HTMLView an use it for logo.
 	Add @media screen and (max-width: 600px).
+	Update software dependencies.	
 
 Version 1.3
 	In Permissions class use isAllowed(type,action) method if "id" or "objects" is null or empty. 
