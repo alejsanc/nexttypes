@@ -269,24 +269,24 @@ function addTypeField(event) {
 		var form = table.parentNode;
 		
 		var rowCount = body.rows.length;
-		var field = "fields:"+fieldCount;
+		var field = "fields:" + fieldCount;
 		fieldCount++;
     
 		var row = body.insertRow(rowCount);
 
-		row.insertCell(0).appendChild(select(field+":type", form.getAttribute("data-strings-type"), types));
+		row.insertCell(0).appendChild(select(field + ":type", form.getAttribute("data-strings-type"), types));
 		
 		var name = form.getAttribute("data-strings-name");
 		var nameCell = row.insertCell(1);
-		var fieldNameInput = input("text", field+":name", name);
+		var fieldNameInput = input("text", field + ":name", name);
 		fieldNameInput.setAttribute("maxlength", MAX_FIELD_NAME_LENGTH);
 		nameCell.appendChild(fieldNameInput);
-		nameCell.appendChild(input("hidden", field+":old_name", name));
+		nameCell.appendChild(input("hidden", field + ":old_name", name));
 		
-		row.insertCell(2).appendChild(input("text", field+":parameters",
+		row.insertCell(2).appendChild(input("text", field + ":parameters",
 			form.getAttribute("data-strings-parameters")));
 		
-		var notNull = input("checkbox", field+":not_null", form.getAttribute("data-strings-not-null"));
+		var notNull = input("checkbox", field + ":not_null", form.getAttribute("data-strings-not-null"));
 		notNull.checked = true;
 		row.insertCell(3).appendChild(notNull);
     
@@ -323,22 +323,22 @@ function addTypeIndex(event) {
 	var form = table.parentNode; 
 	
     var rowCount = body.rows.length;
-    var index = "indexes:"+indexCount;
+    var index = "indexes:" + indexCount;
     indexCount++;
     
     var row = body.insertRow(rowCount);
 
-    row.insertCell(0).appendChild(select(index+":mode", form.getAttribute("data-strings-mode"),
+    row.insertCell(0).appendChild(select(index + ":mode", form.getAttribute("data-strings-mode"),
     	Object.values(INDEX_MODES)));
     
     var name = form.getAttribute("data-strings-name");
     var nameCell = row.insertCell(1);
-    var indexNameInput = input("text", index+":name", name);
+    var indexNameInput = input("text", index + ":name", name);
     indexNameInput.setAttribute("maxlength", MAX_INDEX_NAME_LENGTH);
     nameCell.appendChild(indexNameInput);
-    nameCell.appendChild(input("hidden", index+":old_name", name));
+    nameCell.appendChild(input("hidden", index + ":old_name", name));
     
-    row.insertCell(2).appendChild(input("text", index+":fields", form.getAttribute("data-strings-fields")));
+    row.insertCell(2).appendChild(input("text", index + ":fields", form.getAttribute("data-strings-fields")));
         
     var deleteRowButton = smallButton(form.getAttribute("data-strings-drop-index"), "minus");
     deleteRowButton.addEventListener("click", deleteRow);
@@ -569,7 +569,7 @@ function smallIcon(text, image) {
 }
 
 function icon(text, imageName) {
-	return image(text, "/static/icons/"+imageName+".svg");
+	return image(text, "/static/icons/" + imageName + ".svg");
 }
 
 function image(text, image) {
@@ -652,7 +652,7 @@ function submitForm(event) {
 							var inputs = form.querySelectorAll("input[name$=':name']");
 							for (let input of inputs) {
 								var field = input.name.split(":");
-								form.elements[field[0] + ":" + field[1]+ ":old_name"].value = input.value;
+								form.elements[field[0] + ":" + field[1] + ":old_name"].value = input.value;
 							}
 						} else {
 							dialogType = DIALOG.WARNING;
@@ -667,7 +667,7 @@ function submitForm(event) {
 						callback = function() {
 							var pathname = pageURL.pathname;
 							var newName = form.elements["new_name"].value;
-							pageURL.pathname = pathname.substr(0, pathname.lastIndexOf("/")+1)+newName;
+							pageURL.pathname = pathname.substr(0, pathname.lastIndexOf("/") + 1) + newName;
 							pageURL.searchParams.set("form", "alter");
 							window.location = pageURL;
 						}
@@ -851,9 +851,9 @@ function resultDialog(message, type, textAlign, callback, acceptString) {
 		
 	dialog.style.textAlign = textAlign;
 	dialog.appendChild(icon(iconName, iconName));
-	dialog.appendChild(document.createTextNode(message+" "));
+	dialog.appendChild(document.createTextNode(message + " "));
 	dialog.classList.remove("progress-dialog");
-	dialog.classList.add(type+"-dialog");
+	dialog.classList.add(type + "-dialog");
 				
 	var acceptButton = document.createElement("button");
 	acceptButton.appendChild(document.createTextNode(acceptString));
