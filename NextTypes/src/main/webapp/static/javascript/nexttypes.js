@@ -283,7 +283,8 @@ function addTypeField(event) {
 		nameCell.appendChild(fieldNameInput);
 		nameCell.appendChild(input("hidden", field+":old_name", name));
 		
-		row.insertCell(2).appendChild(input("text", field+":parameters", form.getAttribute("data-strings-parameters")));
+		row.insertCell(2).appendChild(input("text", field+":parameters",
+			form.getAttribute("data-strings-parameters")));
 		
 		var notNull = input("checkbox", field+":not_null", form.getAttribute("data-strings-not-null"));
 		notNull.checked = true;
@@ -300,7 +301,7 @@ function addTypeField(event) {
 }
 
 function select(name, title, values) {
-	var select = document.createElement("select")
+	var select = document.createElement("select");
 	select.name = name;
 	select.title = title;
 	
@@ -327,14 +328,15 @@ function addTypeIndex(event) {
     
     var row = body.insertRow(rowCount);
 
-    row.insertCell(0).appendChild(select(index+":mode", form.getAttribute("data-strings-mode"), Object.values(INDEX_MODES)));
+    row.insertCell(0).appendChild(select(index+":mode", form.getAttribute("data-strings-mode"),
+    	Object.values(INDEX_MODES)));
     
     var name = form.getAttribute("data-strings-name");
     var nameCell = row.insertCell(1);
     var indexNameInput = input("text", index+":name", name);
     indexNameInput.setAttribute("maxlength", MAX_INDEX_NAME_LENGTH);
     nameCell.appendChild(indexNameInput);
-    nameCell.appendChild(input("hidden", index+":old_name", name))
+    nameCell.appendChild(input("hidden", index+":old_name", name));
     
     row.insertCell(2).appendChild(input("text", index+":fields", form.getAttribute("data-strings-fields")));
         
@@ -622,7 +624,7 @@ function submitForm(event) {
 						message = request.responseText;
 						
 						loadSelectTable(button, form.getAttribute("data-url"),
-								button.getAttribute("data-component"));
+							button.getAttribute("data-component"));
 												
 						break;
 					
@@ -766,7 +768,7 @@ function createProgress(request, cancelString) {
 	dialog.classList.add("progress-dialog");
 		
 	var bar = document.createElement("progress");
-	bar.id = "progress-bar"
+	bar.id = "progress-bar";
 	dialog.appendChild(bar);
 	
 	var text = document.createElement("span");
@@ -820,7 +822,7 @@ function humanReadableBytes(bytes, lang) {
 }
 
 function localeNumeric(value, lang) {
-	return value.toLocaleString(lang, { maximumFractionDigits:2 })
+	return value.toLocaleString(lang, { maximumFractionDigits:2 });
 }
 
 function resultDialog(message, type, textAlign, callback, acceptString) {
@@ -1018,7 +1020,7 @@ function changeURLParameter(event) {
 	var select = event.currentTarget;
 	var value = select.options[select.selectedIndex].value;
 	var parameter = select.getAttribute("data-url-parameter");
-	var component = select.getAttribute("data-component")
+	var component = select.getAttribute("data-component");
 		
 	if (component) {
 		var url = new URL(select.form.getAttribute("data-url"));
