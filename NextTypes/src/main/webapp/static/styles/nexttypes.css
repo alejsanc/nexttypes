@@ -227,22 +227,7 @@ p {
 	display: block;
 }
 
-#dialog-background {
-	position: fixed;
-	z-index: 999;
-	background-color: rgba(84, 84, 84, 0.5);
-	width: 100%;
-    height: 100%;
-    top: 0px;
-	left: 0px;
-}
-
 #dialog {
-	position: fixed;
-	z-index: 1000;
-	top: 40%;
-	left: 50%;
-	transform: translate(-50%, -40%);
 	width: 49%;
 	max-height: 50%;
 	overflow-y: auto;
@@ -251,6 +236,10 @@ p {
 	border-width: 1px;
 	border-style: solid;
 	white-space: pre-wrap;
+}
+
+#dialog::backdrop {
+	background-color: rgba(84, 84, 84, 0.5);
 }
 
 #dialog img {

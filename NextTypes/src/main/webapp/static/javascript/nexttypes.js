@@ -752,14 +752,10 @@ function createDialog() {
 	if (dialog == null) {
 	
 		var body = document.querySelector("body");
-	
-		var dialogBackground = document.createElement("div");
-		dialogBackground.id = "dialog-background";
-		body.appendChild(dialogBackground);
-	
-		dialog = document.createElement("div");
-		dialog.id = "dialog"
-		dialogBackground.appendChild(dialog);
+		dialog = document.createElement("dialog");
+		dialog.id = "dialog";
+		body.appendChild(dialog);
+		dialog.showModal();
 	}
 	
 	return dialog;	
@@ -869,8 +865,8 @@ function resultDialog(message, type, textAlign, callback, acceptString) {
 }
 
 function removeDialog() {
-	var dialogBackground = document.getElementById("dialog-background");
-	dialogBackground.parentNode.removeChild(dialogBackground);
+	var dialog = document.getElementById("dialog");
+	dialog.parentNode.removeChild(dialog);
 }
 
 function exportFunction(event) {
