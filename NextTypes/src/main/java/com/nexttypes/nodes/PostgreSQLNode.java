@@ -724,6 +724,8 @@ public class PostgreSQLNode extends Node {
 		for (TypeReference reference : references) {
 			setFieldType(reference.getReferencingType(), reference.getReferencingField(), newName);
 		}
+		
+		renameReferences(type, newName);
 
 		execute("alter table \"" + type + "\" rename to \"" + newName + "\"");
 
@@ -740,13 +742,20 @@ public class PostgreSQLNode extends Node {
 	}
 
 	protected ZonedDateTime renameField(String type, String field, String newName, boolean single) {
+		
 		cacheEnabled = false;
 
 		ZonedDateTime adate = null;
+		
+		String fieldType = getFieldType(type, field);
 
 		execute("alter table \"" + type + "\" rename column \"" + field + "\" to \"" + newName + "\"");
-
-		if (single) {
+		
+		if (!PT.isPrimitiveType(fieldType)) {
+			renameReference(type, field, newName);
+		}
+				
+		if (single) {			
 			adate = updateTypeDates(type);
 		}
 
@@ -867,6 +876,23 @@ public class PostgreSQLNode extends Node {
 	protected void dropReference(String type, String field) {
 		execute("alter table \"" + type + "\" drop constraint " + type + "_" + field);
 	}
+	
+	protected void renameReference(String type, String field, String newName) {
+		execute("alter table \"" + type + "\" rename constraint \"" + type + "_" + field + "\" to "
+				+ "\"" + type + "_" + newName + "\"");	
+	}
+	
+	protected void renameReferences(String type, String newName) {
+		for (Map.Entry<String, TypeField> entry : getTypeFields(type).entrySet()) {
+			String field = entry.getKey();
+			String fieldType = entry.getValue().getType();
+			
+			if (!PT.isPrimitiveType(fieldType)) {
+				execute("alter table \"" + type + "\" rename constraint \"" + type + "_" + field
+						+ "\" to \"" + newName + "_" + field + "\"");
+			}
+		}
+	}
 
 	@Override
 	public AlterResult alter(Type type) {
@@ -898,9 +924,9 @@ public class PostgreSQLNode extends Node {
 		for (Map.Entry<String, TypeField> entry : type.getFields().entrySet()) {
 			String name = entry.getKey();
 			String oldName = entry.getValue().getOldName();
-
+			
 			if (oldName != null && !oldName.equals(name)) {
-				renameField(typeName, oldName, name);
+				renameField(typeName, oldName, name, false);
 				result.addRenamedField(oldName);
 			}
 		}
