@@ -474,11 +474,11 @@ public class HTTPServlet extends HttpServlet {
 					throw new ActionNotFoundException(type, action);
 				}
 				
-				Object[] values = req.readActionFields(typeFields);
+				Object[] parameters = req.readActionFields(typeFields);
 				
-				scanVirus(type, values, typeFields, action, req.getTypeSettings());
+				scanVirus(type, parameters, typeFields, action, req.getTypeSettings());
 
-				Object actionResult = nextNode.executeAction(type, objects, action, values);
+				Object actionResult = nextNode.executeAction(type, objects, action, parameters);
 				content = new Content(actionResult, Format.JSON);
 				break;
 			}
@@ -554,10 +554,6 @@ public class HTTPServlet extends HttpServlet {
 				}
 			}
 			
-			String fieldType = nextNode.getTypeField(req.getType(), req.getField()).getType();
-			
-			scanVirus(req.getType(), Action.PUT, req.getField(), fieldType, value, req.getTypeSettings());
-			
 			if (req.getType() == null) {
 				throw new NXException(KeyWords.EMPTY_TYPE_NAME);
 			} else if (req.getId() == null) {
@@ -567,6 +563,10 @@ public class HTTPServlet extends HttpServlet {
 			} else {
 				
 				String allowedTags = null;
+				
+				String fieldType = nextNode.getTypeField(req.getType(), req.getField()).getType();
+				
+				scanVirus(req.getType(), Action.UPDATE_FIELD, req.getField(), fieldType, value, req.getTypeSettings());
 
 				switch (fieldType) {
 				case PT.PASSWORD:
@@ -1360,7 +1360,7 @@ public class HTTPServlet extends HttpServlet {
 		
 		if (typeSettings.getActionBoolean(type, action, KeyWords.ANTIVIRUS)) {
 			
-			antivirus.scan(type, action, field, fieldType);
+			antivirus.scan(type, field, fieldType, value);
 		}
 	}
 	

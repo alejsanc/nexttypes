@@ -115,9 +115,6 @@ public class ClamAV {
 			
 			switch (fieldType) {
 			case PT.BINARY:
-				scan(type, field, (byte[])value);
-				break;
-				
 			case PT.FILE:
 			case PT.DOCUMENT:
 			case PT.IMAGE:
