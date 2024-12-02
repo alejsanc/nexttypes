@@ -63,18 +63,10 @@ public class ClamAV {
 				String field = entry.getKey();
 				String fieldType = entry.getValue().getType();
 				
-				switch (fieldType) {
-				case PT.BINARY:
+				if (PT.BINARY.equals(fieldType)) {
 					scan(type, field, (byte[])value);
-					break;
-					
-				case PT.FILE:
-				case PT.DOCUMENT:
-				case PT.IMAGE:
-				case PT.AUDIO:
-				case PT.VIDEO:
+				} else if (PT.isFileType(fieldType)) {
 					scan(type, field, ((File)value).getContent());
-					break;
 				}
 			}
 		}
@@ -92,18 +84,10 @@ public class ClamAV {
 				String field = entry.getKey();
 				String fieldType = typeFields.get(field).getType();
 			
-				switch (fieldType) {
-				case PT.BINARY:
+				if (PT.BINARY.equals(fieldType)) {
 					scan(type, field, (byte[])value);
-					break;
-					
-				case PT.FILE:
-				case PT.DOCUMENT:
-				case PT.IMAGE:
-				case PT.AUDIO:
-				case PT.VIDEO:
+				} else if (PT.isFileType(fieldType)) {
 					scan(type, field, ((File)value).getContent());
-					break;
 				}
 			}
 		}
@@ -111,18 +95,8 @@ public class ClamAV {
 	
 	public void scan(String type, String field, String fieldType, Object value) {
 		
-		if (value != null) {
-			
-			switch (fieldType) {
-			case PT.BINARY:
-			case PT.FILE:
-			case PT.DOCUMENT:
-			case PT.IMAGE:
-			case PT.AUDIO:
-			case PT.VIDEO:
-				scan(type, field, (byte[])value);
-				break;
-			}
+		if (value != null && PT.isBinaryType(fieldType)) {
+			scan(type, field, (byte[])value);
 		}
 	}
 	

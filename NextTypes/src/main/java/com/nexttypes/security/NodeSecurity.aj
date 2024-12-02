@@ -172,11 +172,12 @@ public aspect NodeSecurity extends Checks {
     }
 
     before (String type, String[] objects) : execution(* Node.delete(..)) && args(type, objects) {
+    	
     	checkType(type);
     	checkObjects(objects);
     	checkPermissions(type, objects, Action.DELETE, thisJoinPoint);
     }
-
+    
     before (String[] types, boolean includeObjects) : execution(* Node.exportTypes(..))
     	&& args(types, includeObjects) {
     	
@@ -312,6 +313,14 @@ public aspect NodeSecurity extends Checks {
     	checkType(type);
     	checkPermissions(type, Action.SELECT, thisJoinPoint);
     }
+    
+    before (String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
+    	String[] searchFields, String order) : (execution(* Node.select(..)))
+    	&& args(type, sql, parameters, filters, search, searchFields, order, ..) {
+    	
+    	checkType(type);
+    	checkPermissions(type, Action.SELECT, thisJoinPoint);
+    }
 
     before (String type, String id, String lang) : execution(* Node.getName(..)) && args(type, id, lang) {
     	checkType(type);
@@ -381,6 +390,7 @@ public aspect NodeSecurity extends Checks {
 	    execution(* Node.getTypeSettings(..)) ||
 	    execution(* Node.getTypeActions(..)) ||
 	    execution(* Node.getFieldsContentType(..)) ||
+	    execution(* Node.getBinaryFieldsName(..)) ||
 	    execution(* Node.getADate(..)) ||
 	    execution(* Node.existsType(..)) ||
 	    execution(* Node.count(..)) ||
@@ -470,10 +480,17 @@ public aspect NodeSecurity extends Checks {
     	execution(* Node.getActionField(..)) ||
     	execution(* Node.getActionFieldType(..)) ||
     	execution(* Node.getActionFieldRange(..))
-    	)&& args(type, action, field, ..) {
+    	) && args(type, action, field, ..) {
     	
     	checkType(type);
     	checkAction(action);
     	checkField(field);
+    }
+    
+    before (String type, String[] objects) : 
+    	execution(* Node.scanVirus(..)) && args(type, objects) {
+    	
+    	checkType(type);
+    	checkObjects(objects);
     }
 }

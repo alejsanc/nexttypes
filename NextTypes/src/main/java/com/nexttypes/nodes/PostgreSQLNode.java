@@ -707,10 +707,10 @@ public class PostgreSQLNode extends Node {
 
 	@Override
 	public ZonedDateTime rename(String type, String newName) {
-		return renameType(type, newName, true);
+		return rename(type, newName, true);
 	}
 
-	protected ZonedDateTime renameType(String type, String newName, boolean single) {
+	protected ZonedDateTime rename(String type, String newName, boolean single) {
 		
 		checkType(type);
 		checkNewName(type, newName);
@@ -1481,8 +1481,8 @@ public class PostgreSQLNode extends Node {
 	}
 
 	@Override
-	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String search,
-			String[] searchFields, String order, Long offset, Long limit) {
+	public Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
+			String search, String[] searchFields, String order, Long offset, Long limit) {
 
 		Tuples tuples = null;
 		
