@@ -53,7 +53,7 @@ public class StreamDeserializer {
 	
 	protected void checkTag(String expectedTag) {
 		try {
-			String tag = parser.getCurrentName();
+			String tag = parser.currentName();
 			if (!expectedTag.equals(tag)) {
 				throw new InvalidValueException(KeyWords.UNEXPECTED_TAG, tag);
 			}

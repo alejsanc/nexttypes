@@ -162,7 +162,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 				while (parser.nextToken() != JsonToken.END_OBJECT) {
 					parser.nextToken();
 
-					switch (parser.getCurrentName()) {
+					switch (parser.currentName()) {
 					case KeyWords.TYPE:
 						type = parser.getText();
 						break;
@@ -204,7 +204,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 			while (parser.nextToken() != JsonToken.END_OBJECT) {
 				parser.nextToken();
 
-				String field = parser.getCurrentName();
+				String field = parser.currentName();
 				TypeField typeField = typeFields.get(field);
 				String fieldType = typeField.getType();
 				Object value = null;
