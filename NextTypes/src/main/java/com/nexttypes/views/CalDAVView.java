@@ -93,7 +93,7 @@ public class CalDAVView extends WebDAVView {
 			break;
 		}
 
-		if (depth == DavConstants.DEPTH_1) {
+		if (depth >= DavConstants.DEPTH_1) {
 			Tuple[] resources = nextNode.query("select id, udate from # order by id", type);
 			ZonedDateTime udate = null;
 
@@ -170,7 +170,7 @@ public class CalDAVView extends WebDAVView {
 				break;
 		} 
 
-		if (depth == DavConstants.DEPTH_1) {
+		if (depth >= DavConstants.DEPTH_1) {
 			String sql = "select id, udate, summary, description, start_date, end_date"
 					+ " from (" + typeSettings.gts(type, Constants.ICALENDAR_SELECT) + ") as events";
 			Object[] parameters = null;

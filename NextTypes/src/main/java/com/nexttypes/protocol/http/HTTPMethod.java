@@ -19,6 +19,7 @@ package com.nexttypes.protocol.http;
 public enum HTTPMethod {
 	GET,
 	POST,
+	DELETE,
 	PROPFIND,
 	PUT,
 	HEAD,

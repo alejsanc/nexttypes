@@ -488,7 +488,7 @@ public class HTTPServlet extends HttpServlet {
 
 		return content;
 	}
-
+	
 	protected Content login(HTTPRequest req, Node nextNode, LanguageSettings languageSettings) {
 		String remoteAddress = req.getRemoteAddress();
 
@@ -540,12 +540,13 @@ public class HTTPServlet extends HttpServlet {
 		return content;
 	}
 
-	protected void put(HTTPRequest req) throws IOException {
+	protected Content put(HTTPRequest req) throws IOException {
 				
 		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), req, NodeMode.WRITE)) {
 
 			Object value = IOUtils.toByteArray(req.getServletRequest().getInputStream());
-								
+			ZonedDateTime udate;
+			
 			if (debug) {
 				Debug.body();
 				
@@ -559,7 +560,7 @@ public class HTTPServlet extends HttpServlet {
 			} else if (req.getId() == null) {
 				throw new NXException(req.getType(), KeyWords.EMPTY_ID);
 			} else if (req.getField() == null) {
-				nextNode.update(req.getType(), req.getId(), (byte[]) value);
+				udate = nextNode.update(req.getType(), req.getId(), (byte[]) value);
 			} else {
 				
 				String allowedTags = null;
@@ -679,11 +680,26 @@ public class HTTPServlet extends HttpServlet {
 					value = Tuple.parseString(value);
 				}
 
-				nextNode.updateField(req.getType(), req.getId(), req.getField(), value);
+				udate = nextNode.updateField(req.getType(), req.getId(), req.getField(), value);
 			}
 
 			nextNode.commit();
+			
+			Content content = new Content();
+			content.setHeader(HTTPHeader.ETAG, Utils.etag(udate));
+			return content;
 		}
+	}
+	
+	protected Content delete(HTTPRequest req) {
+		
+		try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), req, NodeMode.WRITE)) {
+			
+			nextNode.delete(req.getType(), req.getId());
+			nextNode.commit();
+		}
+		
+		return new Content();
 	}
 
 	protected Content webdav(HTTPRequest req) {
@@ -1038,9 +1054,13 @@ public class HTTPServlet extends HttpServlet {
 						case POST:
 							content = post(req, response);
 							break;
+							
+						case DELETE:
+							content = delete(req);
+							break;
 
 						case PUT:
-							put(req);
+							content = put(req);
 							break;
 
 						case PROPFIND:

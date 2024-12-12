@@ -32,11 +32,11 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.component.CalendarComponent;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.property.Attach;
-import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
-import net.fortuna.ical4j.util.RandomUidGenerator;
+import net.fortuna.ical4j.model.property.immutable.ImmutableCalScale;
+import net.fortuna.ical4j.model.property.immutable.ImmutableVersion;
+import net.fortuna.ical4j.model.property.Uid;
 
 public class ICalendar {
 
@@ -46,13 +46,9 @@ public class ICalendar {
 		
 		calendar = new Calendar();
 		calendar.add(new ProdId(KeyWords.NEXTTYPES));
+		calendar.add(ImmutableVersion.VERSION_2_0);
+		calendar.add(ImmutableCalScale.GREGORIAN);
 		
-		Version version = new Version();
-		version.setValue(Version.VALUE_2_0);
-		calendar.add(version);
-		
-		calendar.add(new CalScale(CalScale.VALUE_GREGORIAN));
-
 		try {
 			for (Tuple event : events) {
 				String id = event.getString(KeyWords.ID); 
@@ -75,7 +71,7 @@ public class ICalendar {
 
 				vevent.add(new Attach(new URI(url + id)));
 
-				vevent.add(new RandomUidGenerator().generateUid());
+				vevent.add(new Uid(id));
 
 				calendar.add(vevent);
 			}
