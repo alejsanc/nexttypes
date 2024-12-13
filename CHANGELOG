@@ -1,8 +1,10 @@
+Version 1.6
+	Improbe CalDAV support.
+	Add HTTP DELETE method.
+
 Version 1.5
 	Update software dependencies.
 	Fix VirusScan bugs.
-	Improbe CalDAV support.
-	Add HTTP DELETE method.
 
 Version 1.4
 	Improve HTML responsiveness.
