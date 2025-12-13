@@ -309,7 +309,8 @@ public class ControllersNode extends Node {
 	@Override
 	public ZonedDateTime updatePassword(String type, String id, String field, String currentPassword,
 			String newPassword, String newPasswordRepeat) {
-		return getController(type).updatePassword(id, field, currentPassword, newPassword, newPasswordRepeat);
+		return getController(type).updatePassword(id, field, currentPassword, newPassword, 
+				newPasswordRepeat);
 	}
 
 	@Override
@@ -323,40 +324,45 @@ public class ControllersNode extends Node {
 	}
 
 	@Override
-	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext, boolean binary,
-			boolean documentPreview, boolean password, boolean objectName, boolean referencesName) {
-		return getController(type).get(id, fields, lang, fulltext, binary, documentPreview,
-				password, objectName, referencesName);
+	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext,
+			boolean binary, boolean imageThumbnail, boolean documentPreview, boolean password,
+			boolean objectName, boolean referenceName) {
+		return getController(type).get(id, fields, lang, fulltext, binary, imageThumbnail, documentPreview,
+				password, objectName, referenceName);
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return getController(type).select(fields, lang, filter, search, order, offset, limit);
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean imageThumbnail) {
+		return getController(type).select(fields, lang, filter, search, order, offset, limit,
+				imageThumbnail);
 
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return getController(type).select(fields, lang, filter, search, order, fulltext, binary, documentPreview,
-				password, objectsName, referencesName, offset, limit);
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail, 
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName, 
+			Long offset, Long limit) {
+		return getController(type).select(fields, lang, filter, search, order, fulltext, binary,
+				imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return getController(type).select(fields, lang, filters, search, order, offset, limit);
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean imageThumbnail) {
+		return getController(type).select(fields, lang, filters, search, order, offset, limit,
+				imageThumbnail);
 
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return getController(type).select(fields, lang, filters, search, order, fulltext, binary, documentPreview,
-				password, objectsName, referencesName, offset, limit);
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit) {
+		return getController(type).select(fields, lang, filters, search, order, fulltext, binary,
+				imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	@Override
@@ -367,38 +373,41 @@ public class ControllersNode extends Node {
 	}
 
 	@Override
-	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order) {
+	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
+			String order) {
 		return getController(type).select(sql, parameters, filters, order);
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return getController(type).selectStream(fields, lang, filter, search, order, offset, limit);
 
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter,
+			String search, LinkedHashMap<String, Order> order, boolean fulltext, boolean binary,
+			boolean imageThumbnail, boolean documentPreview, boolean password, boolean objectName,
+			boolean referenceName, Long offset, Long limit) {
 		return getController(type).selectStream(fields, lang, filter, search, order, fulltext, binary,
-				documentPreview, password, objectsName, referencesName, offset, limit);
+				imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return getController(type).selectStream(fields, lang, filters, search, order, offset, limit);
 
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, boolean fulltext, boolean binary,
+			boolean imageThumbnail, boolean documentPreview, boolean password, boolean objectName,
+			boolean referenceName, Long offset, Long limit) {
 		return getController(type).selectStream(fields, lang, filters, search, order, fulltext, binary,
-				documentPreview, password, objectsName, referencesName, offset, limit);
+				imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	@Override

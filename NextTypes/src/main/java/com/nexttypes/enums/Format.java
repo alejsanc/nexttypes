@@ -24,6 +24,7 @@ public enum Format {
 	JAVASCRIPT("javascript", "application/javascript", "js"),
 	JSON("json", "application/json", "json"),
 	JSON_LD("json_ld", "application/ld+json", "json"),
+	PDF("pdf", "application/pdf", "pdf"),
 	PNG("png", "image/png", "png"),
 	RSS("rss", "application/rss+xml", "rss"),
 	SMILE("smile", "application/x-jackson-smile", "sml"),

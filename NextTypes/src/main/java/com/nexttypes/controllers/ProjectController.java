@@ -57,8 +57,8 @@ public class ProjectController extends Controller {
 			ICalendar calendar = new ICalendar(data);
 			VEvent vevent = calendar.getFirstEvent();
 
-			String startDateString = vevent.getDateTimeStart().get().getValue();
-			String endDateString = vevent.getDateTimeEnd().get().getValue();
+			String startDateString = vevent.getDateTimeStart().getValue();
+			String endDateString = vevent.getDateTimeEnd().getValue();
 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.BASIC_DATETIME_FORMAT);
 
@@ -74,7 +74,7 @@ public class ProjectController extends Controller {
 				object.put(KeyWords.END_TIME, endDate.toLocalTime());
 			}
 
-			object.put(KeyWords.DESCRIPTION, vevent.getDescription().get().getValue());
+			object.put(KeyWords.DESCRIPTION, vevent.getDescription().getValue());
 
 			return nextNode.update(object);
 		} else {

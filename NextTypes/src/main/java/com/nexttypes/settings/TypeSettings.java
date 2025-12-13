@@ -25,6 +25,7 @@ import java.util.Properties;
 
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.TypeField;
+import com.nexttypes.enums.Format;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
@@ -35,7 +36,17 @@ public class TypeSettings extends Settings {
 	}
 	
 	public String getView(String type, String view) {
-		return getTypeString(type, KeyWords.VIEWS + "." + view);
+		String className = getTypeString(type, KeyWords.VIEWS + "." + view);
+		
+		if (KeyWords.NULL.equals(className)) {
+			className = null;
+		}
+		
+		return className;
+	}
+	
+	public String getView(String type, Format view) {
+		return getView(type, view.toString());
 	}
 
 	//Type Methods
@@ -56,19 +67,19 @@ public class TypeSettings extends Settings {
 		return getTypeString(type, new String[] { setting });
 	}
 
-	protected String getTypeString(String type, String[] setting) {
+	protected String getTypeString(String type, String[] settings) {
 		String value = null;
 
 		if (type == null) {
-			value = getString("*", setting);
+			value = getString("*", settings);
 		} else {
 			String prefix = type;
 
-			value = getString(prefix, setting);
+			value = getString(prefix, settings);
 
 			if (value == null) {
 				while (true) {
-					value = getString(prefix + "*", setting);
+					value = getString(prefix + "*", settings);
 					if (value != null) {
 						break;
 					}
@@ -78,7 +89,7 @@ public class TypeSettings extends Settings {
 					if (index != -1) {
 						prefix = prefix.substring(0, index);
 					} else {
-						value = getString("*", setting);
+						value = getString("*", settings);
 						break;
 					}
 				}

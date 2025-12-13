@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class HTML extends XML {
 	private static final long serialVersionUID = 1L;
@@ -195,6 +197,17 @@ public class HTML extends XML {
 
 	public Element getFooter() {
 		return getElementByTagName(FOOTER);
+	}
+	
+	public void removeAnchors() {
+		NodeList anchors = document.getElementsByTagName(A);
+		int anchorsLength = anchors.getLength();
+		
+		for (int x = 0; x < anchorsLength; x++) {
+			Node anchor = anchors.item(0);
+			Node text = document.createTextNode(anchor.getTextContent());
+			anchor.getParentNode().replaceChild(text, anchor);
+		}
 	}
 	
 	public class ListInput extends Element {

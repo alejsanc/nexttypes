@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.HTML;
+import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.Menu;
 import com.nexttypes.datatypes.MenuSection;
 import com.nexttypes.datatypes.TypeField;
@@ -65,7 +66,9 @@ public class Context {
 	protected ConcurrentHashMap<String, HTML> templates = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, byte[]> defaults = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Menu> menus = new ConcurrentHashMap<>();
-
+	protected ConcurrentHashMap<String, String> styles = new ConcurrentHashMap<>();
+	protected ConcurrentHashMap<String, Image> images = new ConcurrentHashMap<>();
+	
 	public Context(String directory) {
 		this.directory = Utils.readDirectory(directory);
 		init();
@@ -293,6 +296,30 @@ public class Context {
 		}
 		
 		return menu;
+	}
+	
+	public String getStyle(String file) {
+		String style = styles.get(file);
+		
+		if (style == null) {
+			style = Utils.toString(context.getResourceAsStream(file));
+		}
+		
+		return style;
+	}
+	
+	public Image getImage(String file) {
+		Image image = images.get(file);
+		
+		if (image == null) {
+			try {
+				image = new Image(IOUtils.toByteArray(context.getResourceAsStream(file)));
+			} catch (IOException e) {
+				throw new NXException(e);
+			}
+		}
+		
+		return image;
 	}
 
 	public TypesCache getTypesCache() {

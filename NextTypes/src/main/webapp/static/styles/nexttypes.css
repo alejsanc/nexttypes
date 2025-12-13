@@ -250,7 +250,7 @@ p {
 }
 
 #progress-bar {
-	width: 100%;
+	width: 99%;
 }
 
 #cancel-button {
@@ -637,6 +637,10 @@ p {
 		width: 100%;
 	}
 	
+	button {
+		display: none;
+	}
+	
 	#menu {
 		display: none;
 	}	
@@ -655,5 +659,21 @@ p {
 	
 	#search {
 		display: none;
+	}
+	
+	#validators {
+		display: none;
+	}
+	
+	#langs {
+		display: none;
+	}
+	
+	.limit {
+		border-color: black;
+		border-width: 1px;
+		border-style: solid;
+		padding: 2px;
+		background-color: #d7d7d7;
 	}
 }

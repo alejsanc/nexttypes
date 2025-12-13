@@ -326,33 +326,36 @@ public class Controller {
 	}
 
 	public NXObject get(String id, String[] fields, String lang, boolean fulltext, boolean binary,
-			boolean documentPreview, boolean password, boolean objectName, boolean referencesName) {
-		return nextNode.get(type, id, fields, lang, fulltext, binary, documentPreview, password,
-				objectName, referencesName);
+			boolean imageThumbnail, boolean documentPreview, boolean password, boolean objectName,
+			boolean referenceName) {
+		return nextNode.get(type, id, fields, lang, fulltext, binary, imageThumbnail, documentPreview,
+				password, objectName, referenceName);
 	}
 
 	public Objects select(String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return nextNode.select(type, fields, lang, filter, search, order, offset, limit);
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean imageThumbnail) {
+		return nextNode.select(type, fields, lang, filter, search, order, offset, limit, imageThumbnail);
 	}
 
 	public Objects select(String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return nextNode.select(type, fields, lang, filter, search, order, fulltext, binary,
-				documentPreview, password, objectsName, referencesName, offset, limit);
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit) {
+		return nextNode.select(type, fields, lang, filter, search, order, fulltext, binary, imageThumbnail,
+				documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	public Objects select(String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return nextNode.select(type, fields, lang, filters, search, order, offset, limit);
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean imageThumbnail) {
+		return nextNode.select(type, fields, lang, filters, search, order, offset, limit, imageThumbnail);
 	}
 
 	public Objects select(String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return nextNode.select(type, fields, lang, filters, search, order, fulltext, binary,
-				documentPreview, password, objectsName, referencesName, offset, limit);
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail, 
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit) {
+		return nextNode.select(type, fields, lang, filters, search, order, fulltext, binary, imageThumbnail,
+				documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	public Tuples select(StringBuilder sql, ArrayList<Object> parameters, String filters,
@@ -371,10 +374,11 @@ public class Controller {
 	}
 
 	public ObjectsStream selectStream(String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit) {
 		return nextNode.selectStream(type, fields, lang, filter, search, order, fulltext, binary,
-				documentPreview, password, objectsName, referencesName, offset, limit);
+				imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	public ObjectsStream selectStream(String[] fields, String lang, Filter[] filters, String search,
@@ -383,10 +387,11 @@ public class Controller {
 	}
 
 	public ObjectsStream selectStream(String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return nextNode.selectStream(type, fields, lang, filters, search, order, fulltext, binary, documentPreview,
-				password, objectsName, referencesName, offset, limit);
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit) {
+		return nextNode.selectStream(type, fields, lang, filters, search, order, fulltext, binary,
+				imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	public String getName(String id, String lang) {

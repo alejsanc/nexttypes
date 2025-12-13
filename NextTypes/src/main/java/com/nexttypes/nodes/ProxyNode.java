@@ -164,10 +164,11 @@ public class ProxyNode extends Node {
 	}
 
 	@Override
-	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext, boolean binary,
-			boolean documentPreview, boolean password, boolean objectName, boolean referencesName) {
-		return getNextNode(type).get(type, id, fields, lang, fulltext, binary, documentPreview,
-				password, objectName, referencesName);
+	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext,
+			boolean binary, boolean imageThumbnail, boolean documentPreview, boolean password,
+			boolean objectName, boolean referenceName) {
+		return getNextNode(type).get(type, id, fields, lang, fulltext, binary, imageThumbnail,
+				documentPreview, password, objectName, referenceName);
 	}
 
 	@Override
@@ -183,7 +184,8 @@ public class ProxyNode extends Node {
 	@Override
 	public ZonedDateTime updatePassword(String type, String id, String field, String currentPassword,
 			String newPassword, String newPasswordRepeat) {
-		return getNextNode(type).updatePassword(type, id, field, currentPassword, newPassword, newPasswordRepeat);
+		return getNextNode(type).updatePassword(type, id, field, currentPassword, newPassword,
+				newPasswordRepeat);
 	}
 
 	@Override
@@ -193,30 +195,34 @@ public class ProxyNode extends Node {
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return getNextNode(type).select(type, fields, lang, filter, search, order, offset, limit);
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean imageThumbnail) {
+		return getNextNode(type).select(type, fields, lang, filter, search, order, offset, limit,
+				imageThumbnail);
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return getNextNode(type).select(type, fields, lang, filter, search, order, fulltext, binary, documentPreview,
-				password, objectsName, referencesName, offset, limit);
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit) {
+		return getNextNode(type).select(type, fields, lang, filter, search, order, fulltext, binary,
+				imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return getNextNode(type).select(type, fields, lang, filters, search, order, offset, limit);
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean imageThumbnail) {
+		return getNextNode(type).select(type, fields, lang, filters, search, order, offset, limit,
+				imageThumbnail);
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
-		return getNextNode(type).select(type, fields, lang, filters, search, order, fulltext, binary, documentPreview,
-				password, objectsName, referencesName, offset, limit);
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit) {
+		return getNextNode(type).select(type, fields, lang, filters, search, order, fulltext, binary,
+				imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	@Override
@@ -227,36 +233,39 @@ public class ProxyNode extends Node {
 	}
 
 	@Override
-	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters, String order) {
+	public Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
+			String order) {
 		return getNextNode(type).select(type, sql, parameters, filters, order);
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return getNextNode(type).selectStream(type, fields, lang, filter, search, order, offset, limit);
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter,
+			String search, LinkedHashMap<String, Order> order, boolean fulltext, boolean binary,
+			boolean imageThumbnail, boolean documentPreview, boolean password, boolean objectName,
+			boolean referenceName, Long offset, Long limit) {
 		return getNextNode(type).selectStream(type, fields, lang, filter, search, order, fulltext, binary,
-				documentPreview, password, objectsName, referencesName, offset, limit);
+				imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		return getNextNode(type).selectStream(type, fields, lang, filters, search, order, offset, limit);
 	}
 
 	@Override
-	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters,
+			String search, LinkedHashMap<String, Order> order, boolean fulltext, boolean binary,
+			boolean imageThumbnail, boolean documentPreview, boolean password, boolean objectName, 
+			boolean referenceName, Long offset, Long limit) {
 		return getNextNode(type).selectStream(type, fields, lang, filters, search, order, fulltext, binary,
-				documentPreview, password, objectsName, referencesName, offset, limit);
+				imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	@Override

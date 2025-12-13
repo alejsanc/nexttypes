@@ -56,7 +56,7 @@ public class Image extends File {
 	public Image(byte[] content) {
 		this(null, content);
 	}
-
+	
 	public Image(String name, byte[] content) {
 		super(name, content);
 		

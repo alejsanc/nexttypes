@@ -1,3 +1,21 @@
+## 5.65.20 (2025-08-10)
+
+### Bug fixes
+
+[show-hint addon](https://codemirror.net/5/doc/manual.html#addon_show-hint): Fix a positioning issue when the tooltip is at the bottom of the screen.
+
+[gas mode](https://codemirror.net/5/mode/gas/index.html): Properly define the MIME type the mode's demo page mentions.
+
+## 5.65.19 (2025-03-20)
+
+### Bug fixes
+
+[gherkin mode](https://codemirror.net/5/mode/gherkin/index.html): Add support for Rule Example keywords
+
+[pascal mode](https://codemirror.net/5/mode/pascal/index.html) Make keywords case-insensitive
+
+[sql mode](https://codemirror.net/5/mode/sql/) Support quoted identifier for PostgreSQL
+
 ## 5.65.18 (2024-09-20)
 
 ### Bug fixes

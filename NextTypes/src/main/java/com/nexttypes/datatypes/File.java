@@ -25,6 +25,8 @@ import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.parser.ocr.TesseractOCRConfig;
 import org.apache.tika.sax.BodyContentHandler;
 import org.postgresql.util.PGobject;
 import org.xml.sax.SAXException;
@@ -90,10 +92,15 @@ public class File extends PGobject{
 	
 	protected void init() {
 		try (ByteArrayInputStream input = new ByteArrayInputStream(content)) {
+			TesseractOCRConfig config = new TesseractOCRConfig();
+	        config.setSkipOcr(true);
+	        ParseContext context = new ParseContext();
+	        context.set(TesseractOCRConfig.class, config);
+	        
 			AutoDetectParser parser = new AutoDetectParser();
 			handler = new BodyContentHandler(-1);
 			metadata = new Metadata();
-			parser.parse(input, handler, metadata);
+			parser.parse(input, handler, metadata, context);
 			contentType = metadata.get(Metadata.CONTENT_TYPE);
 		} catch (IOException | TikaException | SAXException e) {
 			throw new NXException(e);

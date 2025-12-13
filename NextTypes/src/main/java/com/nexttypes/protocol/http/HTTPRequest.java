@@ -774,7 +774,11 @@ public class HTTPRequest {
 	public String getLang() {
 		return lang;
 	}
-
+	
+	public void setView(String view) {
+		this.view = view;
+	}
+	
 	public String getView() {
 		return view;
 	}

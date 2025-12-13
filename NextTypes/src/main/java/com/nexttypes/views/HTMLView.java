@@ -43,9 +43,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.hc.client5.http.utils.Base64;
 import org.apache.http.client.utils.URIBuilder;
 
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
 import com.nexttypes.datatypes.Anchor;
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.DocumentPreview;
@@ -56,6 +58,7 @@ import com.nexttypes.datatypes.FieldReference;
 import com.nexttypes.datatypes.HTML;
 import com.nexttypes.datatypes.HTML.InputGroup;
 import com.nexttypes.datatypes.HTMLFragment;
+import com.nexttypes.datatypes.Image;
 import com.nexttypes.datatypes.Menu;
 import com.nexttypes.datatypes.MenuSection;
 import com.nexttypes.datatypes.NXObject;
@@ -110,12 +113,13 @@ import com.nexttypes.system.Utils;
 public class HTMLView extends View {
 
 	//Strings
+	public static final String PDF = "PDF";
 	public static final String RSS = "RSS";
 	public static final String ICALENDAR = "iCalendar";
 	public static final String HTML5 = "HTML5";
 	public static final String CSS = "CSS";
 	public static final String WCAG = "WCAG";
-			
+				
 	//Data Strings Attributes
 	public static final String DATA_STRINGS_ACCEPT = "data-strings-accept";
 	public static final String DATA_STRINGS_CANCEL = "data-strings-cancel";
@@ -210,13 +214,53 @@ public class HTMLView extends View {
 	
 	//Objects Input Modes
 	public static final String MULTIPLE_SELECT = "multiple_select";
-					
+	
+	//Queries
+	protected static final String IMAGES_QUERY = 
+		
+			"select"
+					+ " il.id,"
+					+ " ill.language,"
+					+ " ill.description,"
+					+ " ill.alt,"
+					+ " coalesce(ill.link, il.link) as link,"
+					+ " coalesce(ill.title, il.title) as title,"
+					+ " case"
+						+ " when ill.image is null then 'image_link'"
+						+ " else 'image_link_language'"
+					+ " end as image_type,"
+					+ " case"
+						+ " when ill.image is null then il.id"
+						+ " else ill.id"
+					+ " end as image_id"
+
+				+ " from"
+					+ " image_link il join image_link_language ill on il.id = ill.image_link"
+
+				+ " where"
+					+ " il.id || ':' || ill.language in(?)";
+	
+	protected static final String DATA_IMAGES_QUERY =
+		
+			"select"
+					+ " il.id,"
+					+ " ill.language,"
+					+ " ill.description,"
+					+ " coalesce(ill.image, il.image) as image"
+
+				+ " from"
+					+ " image_link il join image_link_language ill on il.id = ill.image_link"
+
+				+ " where"
+					+ " il.id || ':' || ill.language in(?)";
+						
 	protected HTML document;
 	protected Element head;
 	protected Element main;
 	protected Element footer;
 	protected DecimalFormat humanReadableBytesFormat;
 	protected Permissions permissions;
+	protected boolean print;
 	
 	public HTMLView(String type, HTMLView parent) {
 		document = parent.getDocument();
@@ -252,7 +296,11 @@ public class HTMLView extends View {
 		TreeMap<String, TypeInfo> types = nextNode.getTypesInfoOrderByName();
 
 		if (types.size() > 0) {
-			main.appendElement(typesTable(types, lang, view));
+			if (print) {
+				main.appendElement(printTypesTable(types, lang));
+			} else {
+				main.appendElement(typesTable(types, lang, view));
+			}
 		} else {
 			main.appendElement(HTML.P).appendText(languageSettings.gts(KeyWords.NO_TYPES_FOUND));
 		}
@@ -836,7 +884,7 @@ public class HTMLView extends View {
 		String[] fields = typeSettings.getActionStringArray(type, Action.GET, KeyWords.FIELDS);
 		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
 
-		NXObject object = nextNode.get(type, id, fields, lang, true, false, true, false, true, true);
+		NXObject object = nextNode.get(type, id, fields, lang, true, false, print, true, false, true, true);
 
 		if (object == null) {
 			return objectNotFound(type, id, lang, view);
@@ -1045,7 +1093,8 @@ public class HTMLView extends View {
 		loadTemplate(type, lang, view);
 		String[] fields = typeSettings.getActionStringArray(type, Action.UPDATE, KeyWords.FIELDS);
 		
-		NXObject object = nextNode.get(type, id, fields, lang, true, false, false, false, false, false);
+		NXObject object = nextNode.get(type, id, fields, lang, true, false, false, false, false, false,
+				false);
 
 		if (object == null) {
 			return objectNotFound(type, id, lang, view);
@@ -1228,6 +1277,30 @@ public class HTMLView extends View {
 		return form;
 	}
 	
+public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
+		
+		Element table = main.appendElement(HTML.TABLE);
+		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
+		Element body = table.appendElement(HTML.TBODY);
+
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(KeyWords.NAME));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(KeyWords.OBJECTS));
+		header.appendElement(HTML.TH).appendText(languageSettings.gts(KeyWords.SIZE));
+				
+		for (Map.Entry<String,TypeInfo> entry : types.entrySet()) {
+			String typeName = entry.getKey();
+			TypeInfo typeInfo = entry.getValue();
+						
+			Element row = body.appendElement(HTML.TR);
+			
+			row.appendElement(HTML.TD).appendText(typeName);
+			row.appendElement(HTML.TD).appendText(typeInfo.getObjects() + "");
+			row.appendElement(HTML.TD).appendText(humanReadableBytes(typeInfo.getSize(), lang));
+		}
+		
+		return table;
+	}
+	
 	public Element allCheckbox() {
 		return allCheckbox(null);
 	}
@@ -1398,7 +1471,11 @@ public class HTMLView extends View {
 		main = document.getMain();
 		footer = document.getFooter();
 
-		initTemplate(type, lang, view);
+		if (print) {
+			initPrintTemplate(type, lang, view);
+		} else {
+			initTemplate(type, lang, view);
+		}
 	}
 
 	public void initTemplate(String type, String lang, String view) {
@@ -1416,6 +1493,14 @@ public class HTMLView extends View {
 		actions(type, request.getId(), lang, view);
 		qrcode(type, request.getId());
 		validators(type);
+		footer(type);
+	}
+	
+	public void initPrintTemplate(String type, String lang, String view) {
+		
+		printHead(type, lang, view);
+		dataLogo(type, lang, view);
+		qrcode(type, request.getId());
 		footer(type);
 	}
 
@@ -1455,7 +1540,8 @@ public class HTMLView extends View {
 		select.addClass(HTML.SELECT);
 
 		String[] fields = typeSettings.getActionStringArray(type, Action.SELECT, KeyWords.FIELDS);
-		Objects result = nextNode.select(type, fields, lang, refAndFilters, search, order, offset, limit);
+		Objects result = nextNode.select(type, fields, lang, refAndFilters, search, order, offset, limit,
+				print);
 		NXObject[] objects = result.getItems();
 		Long count = result.getCount();
 		offset = result.getOffset();
@@ -1527,15 +1613,64 @@ public class HTMLView extends View {
 		header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.FIELD));
 		header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.COMPARISON));
 		header.appendElement(HTML.TH).appendText(languageSettings.gts(type, KeyWords.VALUE));
-		header.appendElement(HTML.TH);
+		
+		if (!print) {
+			header.appendElement(HTML.TH);
+		}
 		
 		Element body = table.appendElement(HTML.TBODY);
 		
 		for (int x = 0; x < filters.length; x++) {
-			body.appendElement(filter(type, filters[x], x, typeFields, lang));			
+			if (print) {
+				body.appendElement(printFilter(type, filters[x], x, typeFields, lang));
+			} else {
+				body.appendElement(filter(type, filters[x], x, typeFields, lang));	
+			}
 		}
 		
 		return div;
+	}
+	
+	public Element printFilter(String type, Filter filter, int count, LinkedHashMap<String, TypeField> typeFields,
+			String lang) {
+		
+		Element row = document.createElement(HTML.TR);
+		
+		String filterField = filter.getField();
+		Comparison filterComparison = filter.getComparison();
+		Object filterValue = filter.getValue();
+				
+		TypeField filterTypeField = null;
+		String filterFieldName = null;
+		String filterFieldType = null;
+				
+		if (KeyWords.ID.equals(filterField)) {
+			filterFieldName = languageSettings.getIdName(type);
+			filterFieldType = type;
+		} else {
+			filterFieldName = languageSettings.getFieldName(type, filterField);
+			filterTypeField = typeFields.get(filterField);
+			filterFieldType = filterTypeField.getType();
+		}
+		
+		String filterComparisonName = languageSettings.getComparisonName(type, 
+				filterComparison.toString());
+		
+		row.appendElement(HTML.TD).appendText(filterFieldName);
+		row.appendElement(HTML.TD).appendText(filterComparisonName);
+		Element valueCell = row.appendElement(HTML.TD);
+		
+		if (Comparison.LIKE.equals(filterComparison)
+				|| Comparison.NOT_LIKE.equals(filterComparison)) {
+			valueCell.appendText(filterValue.toString());
+		} else if (KeyWords.ID.equals(filterField) || !PT.isPrimitiveType(filterFieldType)) {
+			valueCell.appendText(nextNode.getName(filterFieldType, filterValue.toString(), lang));
+		} else {
+			valueCell.appendElement(fieldOutput(type, null, filterField, filterValue, filterTypeField,
+					lang, null, false));
+		}
+		
+		return row;
 	}
 	
 	public Element filter(String type, Filter filter, int count, LinkedHashMap<String, TypeField> typeFields,
@@ -2848,13 +2983,15 @@ public class HTMLView extends View {
 		Element header = table.appendElement(HTML.THEAD).appendElement(HTML.TR);
 		Element body = table.appendElement(HTML.TBODY);
 
-		Element allCheckbox = header.appendElement(HTML.TH).appendElement(allCheckbox(type));
-		
-		if (objects.length == deleteDisallowedObjects.length
-				&& objects.length == exportDisallowedObjects.length) {
-			allCheckbox.setAttribute(HTML.DISABLED);
+		if (!print) {
+			Element allCheckbox = header.appendElement(HTML.TH).appendElement(allCheckbox(type));
+			
+			if (objects.length == deleteDisallowedObjects.length
+					&& objects.length == exportDisallowedObjects.length) {
+				allCheckbox.setAttribute(HTML.DISABLED);
+			}
 		}
-
+		
 		header.appendElement(selectTableHeaderCell(type, KeyWords.ID, lang, view, ref, filters, 
 				search, order, offset, limit, component));
 
@@ -2863,19 +3000,23 @@ public class HTMLView extends View {
 					search, order, offset, limit, component));
 		}
 
-		header.appendElement(HTML.TH);
+		if (!print) {
+			header.appendElement(HTML.TH);
+		}
 		
 		for (NXObject object : objects) {
 			String id = object.getId();
 			
 			Element row = body.appendElement(HTML.TR);
 
-			Element checkbox = row.appendElement(HTML.TD).appendElement(
-					input(HTML.CHECKBOX, KeyWords.OBJECTS, languageSettings.getObjectsName(type), id)
-							.addClass(ITEM_CHECKBOX));
-			if (ArrayUtils.contains(deleteDisallowedObjects, id)
-					&& ArrayUtils.contains(exportDisallowedObjects, id)) {
-				checkbox.setAttribute(HTML.DISABLED);
+			if (!print) {
+				Element checkbox = row.appendElement(HTML.TD).appendElement(
+						input(HTML.CHECKBOX, KeyWords.OBJECTS, languageSettings.getObjectsName(type), id)
+								.addClass(ITEM_CHECKBOX));
+				if (ArrayUtils.contains(deleteDisallowedObjects, id)
+						&& ArrayUtils.contains(exportDisallowedObjects, id)) {
+					checkbox.setAttribute(HTML.DISABLED);
+				}
 			}
 			
 			String idString = null;
@@ -2912,12 +3053,14 @@ public class HTMLView extends View {
 				}
 			}
 
-			if (!ArrayUtils.contains(updateDisallowedObjects, id)) {
-				String updateActionName = languageSettings.getActionName(object.getType(), Action.UPDATE);
-				
-				row.appendElement(HTML.TD).appendElement(iconAnchor(updateActionName,
-					url(object.getType(), id, lang, view)
-					+ formParameter(Action.UPDATE), Icon.PENCIL));
+			if (!print) {
+				if (!ArrayUtils.contains(updateDisallowedObjects, id)) {
+					String updateActionName = languageSettings.getActionName(object.getType(), Action.UPDATE);
+					
+					row.appendElement(HTML.TD).appendElement(iconAnchor(updateActionName,
+						url(object.getType(), id, lang, view)
+						+ formParameter(Action.UPDATE), Icon.PENCIL));
+				}
 			}
 		}
 
@@ -3015,8 +3158,12 @@ public class HTMLView extends View {
 
 		if (count > minLimit) {
 
-			index.appendElement(
-					selectTableLimitSelect(type, count, limit, minLimit, maxLimit, limitIncrement, component));
+			if (print) {
+				index.appendElement(HTML.SPAN).addClass(KeyWords.LIMIT).appendText(limit);
+			} else {
+				index.appendElement(selectTableLimitSelect(type, count, limit, minLimit, maxLimit,
+						limitIncrement, component));
+			}
 		}
 
 		return index;
@@ -3034,8 +3181,13 @@ public class HTMLView extends View {
 			String text = selectTableIndexOffsetText(offsetTextMode, count, offset, limit);
 
 			if (offset != selectedOffset) {
-				index.add(selectTableAnchor(text, type, lang, view, ref, filters, search, order, offset,
+				if (print) {
+					index.add(document.createElement(HTML.SPAN).addClass(KeyWords.OFFSET)
+							.appendText(text));
+				} else {
+					index.add(selectTableAnchor(text, type, lang, view, ref, filters, search, order, offset,
 						limit, component).addClass(KeyWords.OFFSET));
+				}
 			} else {
 				index.add(document.createElement(HTML.SPAN).addClass(SELECTED_OFFSET).appendText(text));
 			}
@@ -3351,6 +3503,14 @@ public class HTMLView extends View {
 
 	public Element fieldOutput(NXObject object, String field, Object value, TypeField typeField,
 			String lang, String view, boolean preview) {
+		
+		return this.fieldOutput(object.getType(), object.getId(), field, value, typeField, lang, view,
+				preview);
+	}
+	
+	public Element fieldOutput(String type, String id, String field, Object value, TypeField typeField,
+			String lang, String view, boolean preview) {
+	
 		Element fieldElement = null;
 
 		if (value != null) {
@@ -3372,13 +3532,13 @@ public class HTMLView extends View {
 				fieldElement = booleanOutput(value);
 				break;
 			case PT.DATE:
-				fieldElement = dateOutput(object.getType(), value);
+				fieldElement = dateOutput(type, value);
 				break;
 			case PT.TIME:
-				fieldElement = timeOutput(object.getType(), value);
+				fieldElement = timeOutput(type, value);
 				break;
 			case PT.DATETIME:
-				fieldElement = dateTimeOutput(object.getType(), value);
+				fieldElement = dateTimeOutput(type, value);
 				break;
 			case PT.COLOR:
 				fieldElement = colorOutput(value);
@@ -3389,23 +3549,23 @@ public class HTMLView extends View {
 				fieldElement = fieldAnchor(value, typeField);
 				break;
 			case PT.HTML:
-				fieldElement = htmlOutput(value);
+				fieldElement = htmlOutput(value, preview);
 				break;
 			case PT.BINARY:
 			case PT.FILE:
-				fieldElement = binaryFieldOutput(object.getType(), object.getId(), field, value, lang);
+				fieldElement = binaryFieldOutput(type, id, field, value, lang);
 				break;
 			case PT.IMAGE:
-				fieldElement = imageFieldOutput(object.getType(), object.getId(), field, value);
+				fieldElement = imageFieldOutput(type, id, field, value);
 				break;
 			case PT.DOCUMENT:
-				fieldElement = documentFieldOutput(object.getType(), object.getId(), field, value, lang, preview);
+				fieldElement = documentFieldOutput(type, id, field, value, lang, preview);
 				break;
 			case PT.AUDIO:
-				fieldElement = audioFieldOutput(object.getType(), object.getId(), field, value);
+				fieldElement = audioFieldOutput(type, id, field, value);
 				break;
 			case PT.VIDEO:
-				fieldElement = videoFieldOutput(object.getType(), object.getId(), field, value);
+				fieldElement = videoFieldOutput(type, id, field, value);
 				break;
 			case PT.TEXT:
 			case PT.JSON:
@@ -3458,14 +3618,19 @@ public class HTMLView extends View {
 		return anchor;
 	}
 
-	public Element htmlOutput(Object value) {
+	public Element htmlOutput(Object value, boolean preview) {
 		Element html = document.createElement(HTML.DIV);
 
 		if (value instanceof HTMLFragment) {
 			html.appendFragment((HTMLFragment) value);
 		} else {
-			html.appendText(value + " ...");
+			html.appendText(value);
 		}
+		
+		if (preview) {
+			html.appendText(" ...");
+		}
+		
 		return html;
 	}
 
@@ -3480,7 +3645,11 @@ public class HTMLView extends View {
 		Element fieldElement = null;
 
 		if (value != null) {
-			fieldElement = imageAnchor(id, "/" + type + "/" + id + "/" + field, type, id, field);
+			if (value instanceof byte[]) {
+				fieldElement = dataImage((byte[])value, Format.PNG.getContentType());
+			} else {
+				fieldElement = imageAnchor(id, "/" + type + "/" + id + "/" + field, type, id, field);
+			}
 		} else {
 			fieldElement = document.createElement(HTML.SPAN);
 		}
@@ -3623,10 +3792,22 @@ public class HTMLView extends View {
 	public Element image(String text, String type, String id, String field) {
 		return image(text, "/" + type + "/" + id + "/" + field + "/" + KeyWords.THUMBNAIL);
 	}
+	
+	public Element image(String src) {
+		return document.createElement(HTML.IMG).setAttribute(HTML.SRC, src);
+	}
 
 	public Element image(String text, String src) {
 		return document.createElement(HTML.IMG).setAttribute(HTML.SRC, src).setAttribute(HTML.ALT, text)
 				.setAttribute(HTML.TITLE, text);
+	}
+	
+	public Element dataImage(Image image) {
+		return dataImage(image.getContent(), image.getContentType());
+	}
+	
+	public Element dataImage(byte[] content, String contentType) {
+		return image("data:" + contentType + ";base64," + Base64.encodeBase64String(content));
 	}
 
 	public Element smallButton(String text, String image, String buttonClass) {
@@ -3752,7 +3933,12 @@ public class HTMLView extends View {
 			elements.add(iconAnchor(languageSettings.gts(type, KeyWords.TYPE), url(type, lang, view)
 					+ parameter(KeyWords.INFO), Icon.INFO));
 		}
-
+		
+		if (component == null && request.getForm() == null &&
+				typeSettings.getView(type, Format.PDF) != null) {
+			elements.add(pdfIconAnchor(request.getURL()));
+		}
+		
 		String rssSelect = typeSettings.gts(type, Constants.RSS_SELECT);
 
 		if (rssSelect != null) {
@@ -3787,13 +3973,18 @@ public class HTMLView extends View {
 	}
 	
 	public Element icalendarIconAnchor(String type, String lang, FieldReference ref) {
-		return iconAnchor(ICALENDAR, icalendarURL(type, lang, ref), Icon.FILE);
+		return iconAnchor(ICALENDAR, icalendarURL(type, lang, ref), Icon.DATA_TRANSFER_DOWNLOAD);
 	}
 	
 	public String icalendarURL(String type, String lang, FieldReference ref) {
 		return url(type, lang, Format.ICALENDAR.toString()) + refParameter(ref);
 	}
-
+	
+	public Element pdfIconAnchor(URL url) {
+		url.setParameter(KeyWords.VIEW, Format.PDF.toString());
+		return iconAnchor(PDF, url.toString(), Icon.FILE);
+	}
+		
 	public Element booleanOutput(Object value) {
 		Element input = document.createElement(HTML.INPUT)
 				.setAttribute(HTML.TYPE, HTML.CHECKBOX)
@@ -3966,14 +4157,15 @@ public class HTMLView extends View {
 	}
 
 	public Content render(String type) {
+				
 		images();
-
+			
 		Content content = new Content(document.toString(), Format.XHTML);
 		content.setHeader(HTTPHeader.CONTENT_SECURITY_POLICY,
 				typeSettings.gts(type, KeyWords.CONTENT_SECURITY_POLICY));
 		content.setHeader(HTTPHeader.REFERRER_POLICY,
 				typeSettings.gts(type, KeyWords.REFERRER_POLICY));
-
+				
 		return content;
 	}
 
@@ -3994,6 +4186,10 @@ public class HTMLView extends View {
 
 		if (className != null) {
 			htmlView = Loader.loadHTMLView(className, type, this);
+			
+			if (print) {
+				htmlView.setPrint(true);
+			}
 		} else {
 			htmlView = this;
 		}
@@ -4024,11 +4220,26 @@ public class HTMLView extends View {
 				.setAttribute(HTML.HREF, "/static/images/logo.ico");
 		}
 	}
+	
+	public void printHead(String type, String lang, String view) {
+		if (head != null) {
+			String style = context.getStyle(typeSettings.gts(type, KeyWords.STYLE));
+			head.appendElement(HTML.STYLE).appendText(style);
+		}
+	}
 
 	public void logo(String type, String lang, String view) {
 		Element logo = document.getElementById(KeyWords.LOGO);
 		if (logo != null) {
 			logo.appendElement(logoAnchor(type, lang, view));
+		}
+	}
+	
+	public void dataLogo(String type, String lang, String view) {
+		Element logo = document.getElementById(KeyWords.LOGO);
+		if (logo != null) {
+			Image image = context.getImage(typeSettings.gts(type, KeyWords.LOGO));
+			logo.appendElement(dataImage(image));
 		}
 	}
 
@@ -4201,11 +4412,16 @@ public class HTMLView extends View {
 
 	public void typeMenu(String type, String id, String lang, String view, FieldReference ref,
 			String search, Component component) {
-		if (type != null) {
-			Element typeMenu = document.getElementById(TYPE_MENU);
+		
+		Element typeMenu = document.getElementById(TYPE_MENU);
 
-			if (typeMenu != null) {
+		if (typeMenu != null) {
+			
+			if (type != null) {
 				typeMenu.appendElements(typeMenuElements(type, id, lang, view, ref, search, component));
+			} else if (request.getForm() == null 
+					&& typeSettings.getView(null, Format.PDF.toString()) != null) {
+				typeMenu.appendElement(pdfIconAnchor(request.getURL()));
 			}
 		}
 	}
@@ -4299,51 +4515,45 @@ public class HTMLView extends View {
 			Map<String, List<Element>> imagesById = Arrays.stream(images).collect(
 					Collectors.groupingBy(div -> div.getAttribute(DATA_ID) + ":" + div.getAttribute(DATA_LANG)));
 
-			String sql =
-					"select"
-							+ " il.id,"
-							+ " ill.language,"
-							+ " ill.description,"
-							+ " ill.alt,"
-							+ " coalesce(ill.link, il.link) as link,"
-							+ " coalesce(ill.title, il.title) as title,"
-							+ " case"
-								+ " when ill.image is null then 'image_link'"
-								+ " else 'image_link_language'"
-							+ " end as image_type,"
-							+ " case"
-								+ " when ill.image is null then il.id"
-								+ " else ill.id"
-							+ " end as image_id"
-
-					+ " from"
-						+ " image_link il join image_link_language ill on il.id = ill.image_link"
-
-					+ " where"
-						+ " il.id || ':' || ill.language in(?)";
-
+			String sql = null;
+			
+			if (print) {
+				sql = DATA_IMAGES_QUERY;
+			} else {
+				sql = IMAGES_QUERY;
+			}
+			
 			Tuple[] tuples = nextNode.query(sql, new Object[] { imagesById.keySet().toArray() });
 
 			for (Tuple tuple : tuples) {
 				for (Element div : imagesById.get(tuple.getString(KeyWords.ID) + ":" + tuple.getString(KeyWords.LANGUAGE))) {
 					Element container = div;
 
-					Element image = document.createElement(HTML.IMG)
+					Element image = null;
+					
+					if (print) {
+						
+						image = dataImage(tuple.getImage(IMAGE));
+						
+					} else {
+						
+						image = document.createElement(HTML.IMG)
 							.setAttribute(HTML.SRC, imageURL(tuple))
 							.setAttribute(HTML.ALT, tuple.getString(HTML.ALT));
+						
+						String title = tuple.getString(HTML.TITLE);
+						if (title != null) {
+							image.setAttribute(HTML.TITLE, title);
+						}
+
+						String link = tuple.getString(KeyWords.LINK);
+						if (link != null) {
+							Element anchor = document.createElement(HTML.A).setAttribute(HTML.HREF, link);
+							anchor.appendElement(image);
+							image = anchor;
+						}
+					}
 					
-					String title = tuple.getString(HTML.TITLE);
-					if (title != null) {
-						image.setAttribute(HTML.TITLE, title);
-					}
-
-					String link = tuple.getString(KeyWords.LINK);
-					if (link != null) {
-						Element anchor = document.createElement(HTML.A).setAttribute(HTML.HREF, link);
-						anchor.appendElement(image);
-						image = anchor;
-					}
-
 					String description = tuple.getString(KeyWords.DESCRIPTION);
 					if (description != null) {
 						Element figure = div.appendElement(HTML.FIGURE);
@@ -4358,7 +4568,7 @@ public class HTMLView extends View {
 			}
 		}
 	}
-
+		
 	public void qrcode(String type, String id) {
 		if (id != null) {
 			Element qrcodeElement = document.getElementById(KeyWords.QRCODE);
@@ -4465,7 +4675,12 @@ public class HTMLView extends View {
 		Map<LocalDate, List<Tuple>> eventsByDate = Arrays.stream(events)
 				.collect(Collectors.groupingBy(event -> event.getDate(KeyWords.DATE)));
 
-		calendar.appendElement(dateSelect(type, lang, view, ref, date));
+		if (print) {
+			calendar.appendText(printDateSelect(lang, date));
+		} else {
+			calendar.appendElement(dateSelect(type, lang, view, ref, date));
+		}
+		
 		calendar.appendElement(month(type, lang, view, month, today, firstDate, eventsByDate));
 
 		return calendar;
@@ -4493,6 +4708,13 @@ public class HTMLView extends View {
 		}
 
 		return monthElement;
+	}
+	
+	public String printDateSelect(String lang, LocalDate date) {
+		Locale locale = new Locale(lang);
+		Month month = date.getMonth();
+		
+		return date.getYear() + " - " + month.getDisplayName(TextStyle.FULL, locale);
 	}
 
 	public Element dateSelect(String type, String lang, String view, FieldReference ref, LocalDate date) {
@@ -4599,6 +4821,10 @@ public class HTMLView extends View {
 		date = date.withDayOfMonth(day);
 		date = date.plusDays(7 - date.getDayOfWeek().getValue());
 		return date;
+	}
+	
+	public void setPrint(boolean print) {
+		this.print = print;
 	}
 
 	@Override

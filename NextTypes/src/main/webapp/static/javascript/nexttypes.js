@@ -771,6 +771,8 @@ function createProgress(request, cancelString) {
 	bar.id = "progress-bar";
 	dialog.appendChild(bar);
 	
+	dialog.appendChild(document.createElement("br"));
+	
 	var text = document.createElement("span");
 	text.id = "progress-text";
 	dialog.appendChild(text);

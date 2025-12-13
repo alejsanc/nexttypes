@@ -60,7 +60,7 @@ public abstract class View extends Module {
 
 	public View(HTTPRequest request, String settings) {
 		this.request = request;
-		this.context = request.getContext();
+		context = request.getContext();
 		this.settings = context.getSettings(settings);
 
 		nextNode = Loader.loadNode(this.settings.getString(KeyWords.NEXT_NODE), request, NodeMode.READ);

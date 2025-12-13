@@ -1406,10 +1406,11 @@ public class PostgreSQLNode extends Node {
 
 	@Override
 	public NXObject get(String type, String id, String[] fields, String lang, boolean fulltext,
-			boolean binary, boolean documentPreview, boolean password, boolean objectName, 
-			boolean referencesName) {
+			boolean binary, boolean imageThumbnail, boolean documentPreview, boolean password, boolean objectName, 
+			boolean referenceName) {
 		Objects objects = select(type, fields, lang, new IdFilter(Comparison.EQUAL, id), null, null,
-				fulltext, binary, documentPreview, password, objectName, referencesName, 0L, 1L);
+				fulltext, binary, imageThumbnail, documentPreview, password, objectName, referenceName,
+				0L, 1L);
 
 		if (objects != null && objects.getItems().length == 1) {
 			return objects.getItems()[0];
@@ -1420,42 +1421,44 @@ public class PostgreSQLNode extends Node {
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean imageThumbnail) {
 		Filter[] filters = filter != null ? new Filter[] { filter } : null;
-		return select(type, fields, lang, filters, search, order, false, false, true, false, true, true, 
-				offset, limit);
+		return select(type, fields, lang, filters, search, order, false, false, imageThumbnail, true, false, true,
+				true, offset, limit);
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit) {
 
 		Filter[] filters = filter != null ? new Filter[] { filter } : null;
 
-		return select(type, fields, lang, filters, search, order, fulltext, binary, documentPreview,
-				password, objectsName, referencesName, offset, limit);
+		return select(type, fields, lang, filters, search, order, fulltext, binary, imageThumbnail, documentPreview,
+				password, objectName, referenceName, offset, limit);
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit) {
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean imageThumbnail) {
 
-		return select(type, fields, lang, filters, search, order, false, false, true, false, true, true,
-				offset, limit);
+		return select(type, fields, lang, filters, search, order, false, false, imageThumbnail, true, false, true,
+				true, offset, limit);
 	}
 
 	@Override
 	public Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit) {
 
 		Objects objects = null;
 
 		try {
 
 			SelectQuery query = new SelectQuery(type, fields, lang, filters, search, order, fulltext,
-					binary, documentPreview, password, objectsName, referencesName, offset, limit);
+					binary, imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 
 			if (query.getCount() > 0) {
 			
@@ -1465,7 +1468,7 @@ public class PostgreSQLNode extends Node {
 
 				for (Tuple tuple : tuples) {
 					items.add(getObject(type, query.getTypeFields(), fulltext, binary, documentPreview,
-							objectsName, referencesName, tuple));
+							objectName, referenceName, tuple));
 				}
 
 				objects = new Objects(items.toArray(new NXObject[] {}), query.getCount(), query.getOffset(),
@@ -1524,42 +1527,43 @@ public class PostgreSQLNode extends Node {
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
 		Filter[] filters = filter != null ? new Filter[] { filter } : null;
-		return selectStream(type, fields, lang, filters, search, order, false, false, true, false,
+		return selectStream(type, fields, lang, filters, search, order, false, false, false, true, false,
 				true, true, offset, limit);
 	}
 
 	@Override
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName, Long offset, Long limit) {
 
 		Filter[] filters = filter != null ? new Filter[] { filter } : null;
-		return selectStream(type, fields, lang, filters, search, order, fulltext, binary,
-				documentPreview, password, objectsName, referencesName, offset, limit);
+		return selectStream(type, fields, lang, filters, search, order, fulltext, binary, imageThumbnail,
+				documentPreview, password, objectName, referenceName, offset, limit);
 	}
 
 	@Override
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
 			LinkedHashMap<String, Order> order, Long offset, Long limit) {
-		return selectStream(type, fields, lang, filters, search, order, false, false, true, false,
+		return selectStream(type, fields, lang, filters, search, order, false, false, false, true, false,
 				true, true, offset, limit);
 	}
 
 	@Override
 	public ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit) {
 
 		ObjectsStream objects = null;
 
 		try {
 			SelectQuery query = new SelectQuery(type, fields, lang, filters, search, order, fulltext,
-					binary, documentPreview, password, objectsName, referencesName, offset, limit);
+					binary, imageThumbnail, documentPreview, password, objectName, referenceName, offset, limit);
 			
 			if (query.getCount() > 0) {
 				TuplesStream tuples = new PostgreSQLTuplesStream(query.getSQL(), query.getParameters());
 				objects = new PostgreSQLObjectsStream(type, query.getTypeFields(), fulltext, binary,
-						documentPreview, objectsName, referencesName, query.getCount(), tuples);
+						documentPreview, objectName, referenceName, query.getCount(), tuples);
 			} else {
 				objects = new PostgreSQLObjectsStream();
 			}
@@ -1572,7 +1576,7 @@ public class PostgreSQLNode extends Node {
 
 	protected NXObject getObject(String type, LinkedHashMap<String, TypeField> typeFields,
 			boolean fulltext, boolean binary, boolean documentPreview, boolean objectName,
-			boolean referencesName, Tuple tuple) {
+			boolean referenceName, Tuple tuple) {
 		
 		String name = objectName ? tuple.getString("@name") : null;
 		
@@ -1653,7 +1657,7 @@ public class PostgreSQLNode extends Node {
 				value = tuple.get(field);
 				break;
 			default:
-				if (referencesName) {
+				if (referenceName) {
 					String id = tuple.getString("@" + field + "_id");
 					if (id != null) {
 						value = new ObjectReference(id, tuple.getString("@" + field + "_name"));
@@ -1731,7 +1735,7 @@ public class PostgreSQLNode extends Node {
 		String idName = typeSettings.gts(type, KeyWords.ID_NAME);
 
 		if (idName != null) {
-			String sql = "select id, name from (" + idName + ") as id_name where id = ?";
+			String sql = "select name from (" + idName + ") as id_name where id = ?";
 			Object[] parameters = null;
 
 			if (idName.contains("?")) {
@@ -1740,7 +1744,7 @@ public class PostgreSQLNode extends Node {
 				parameters = new Object[] { id };
 			}
 
-			name = getTuple(sql, parameters).getString(KeyWords.NAME);
+			name = getString(sql, parameters);
 
 			if (name == null) {
 				name = id;
@@ -2549,7 +2553,7 @@ public class PostgreSQLNode extends Node {
 
 			if (includeObjects) {
 				ObjectsStream objects = selectStream(type, null, lang, filters, null, null, true,
-						true, false, true, false, false, 0L, 0L);
+						true, true, false, true, false, false, 0L, 0L);
 
 				if (objects.getCount() > 0) {
 					export.getObjects().put(type, objects);
@@ -2572,7 +2576,7 @@ public class PostgreSQLNode extends Node {
 			filter = new IdFilter(Comparison.EQUAL, objects);
 		}
 
-		return selectStream(type, null, lang, filter, null, order, true, true, false, true,
+		return selectStream(type, null, lang, filter, null, order, true, true, true, false, true,
 				false, false, 0L, 0L);
 	}
 
@@ -2792,7 +2796,7 @@ public class PostgreSQLNode extends Node {
 			String id = null;
 
 			try(ObjectsStream stream = selectStream(type, binaryFields, null, filter, null, null,
-					false, true, false, false, false, false, 0L, 0L)) {
+					false, true, true, false, false, false, false, 0L, 0L)) {
 				stream.exec();
 				
 				type = stream.getType();
@@ -3570,8 +3574,8 @@ public class PostgreSQLNode extends Node {
 		protected boolean fulltext;
 		protected boolean binary;
 		protected boolean documentPreview;
-		protected boolean objectsName;
-		protected boolean referencesName;
+		protected boolean objectName;
+		protected boolean referenceName;
 		protected Long count;
 		protected TuplesStream tuples;
 
@@ -3580,16 +3584,16 @@ public class PostgreSQLNode extends Node {
 		}
 		
 		protected PostgreSQLObjectsStream(String type, LinkedHashMap<String, TypeField> typeFields,
-				boolean fulltext, boolean binary, boolean documentPreview, boolean objectsName,
-				boolean referencesName, Long count, TuplesStream tuples) {
+				boolean fulltext, boolean binary, boolean documentPreview, boolean objectName,
+				boolean referenceName, Long count, TuplesStream tuples) {
 			
 			this.type = type;
 			this.typeFields = typeFields;
 			this.fulltext = fulltext;
 			this.binary = binary;
 			this.documentPreview = documentPreview;
-			this.objectsName = objectsName;
-			this.referencesName = referencesName;
+			this.objectName = objectName;
+			this.referenceName = referenceName;
 			this.count = count;
 			this.tuples = tuples;
 		}
@@ -3627,7 +3631,7 @@ public class PostgreSQLNode extends Node {
 		@Override
 		public NXObject getItem() {
 			return PostgreSQLNode.this.getObject(type, typeFields, fulltext, binary, documentPreview,
-					objectsName, referencesName, tuples.getTuple());
+					objectName, referenceName, tuples.getTuple());
 		}
 
 		@Override
@@ -3885,8 +3889,9 @@ public class PostgreSQLNode extends Node {
 		}
 
 		protected SelectQuery(String type, String[] fields, String lang, Filter[] filters, String search,
-				LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-				boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit) {
+				LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail,
+				boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+				Long offset, Long limit) {
 
 			StringBuilder fieldsSQL = new StringBuilder();
 			StringBuilder joinSQL = new StringBuilder();
@@ -3895,7 +3900,7 @@ public class PostgreSQLNode extends Node {
 			typeFields = PostgreSQLNode.this.getTypeFields(type, fields);
 			LinkedHashMap<String, TypeIndex> typeIndexes = getTypeIndexes(type);
 
-			if (objectsName) {
+			if (objectName) {
 				String idName = typeSettings.gts(type, KeyWords.ID_NAME);
 				if (idName != null) {
 					fieldsSQL.append(", \"@@" + type + "\".name as \"@name\"");
@@ -3937,6 +3942,9 @@ public class PostgreSQLNode extends Node {
 				case PT.VIDEO:
 					if (binary) {
 						fieldsSQL.append(", \"" + type + "\".\"" + field + "\"");
+					} else if (imageThumbnail && PT.IMAGE.equals(typeField.getType())) {
+						fieldsSQL.append(", (\"" + type + "\".\"" + field + "\").thumbnail as \""
+								+ field + "\"");
 					} else {
 						fieldsSQL.append(", octet_length((\"" + type + "\".\"" + field
 								+ "\").content) as \"" + field + "\"");
@@ -3997,7 +4005,7 @@ public class PostgreSQLNode extends Node {
 					fieldsSQL.append(", \"" + type + "\".\"" + field + "\"");
 					break;
 				default:
-					if (referencesName) {
+					if (referenceName) {
 						addReference(fieldsSQL, joinSQL, type, field, typeField.getType(), lang);
 					} else {
 						fieldsSQL.append(", \"" + type + "\".\"" + field + "\"");
@@ -4116,19 +4124,11 @@ public class PostgreSQLNode extends Node {
 					
 					switch (comparison) {
 					case EQUAL:
-						if (value == null) {
-							whereSQL.append("is null");
-						} else {
-							whereSQL.append("in(?)");
-						}
+						whereSQL.append("is not distinct from ?");
 						break;
 						
 					case NOT_EQUAL:
-						if (value == null) {
-							whereSQL.append("is not null");
-						} else {
-							whereSQL.append("not in(?)");
-						}
+						whereSQL.append("is distinct from ?");
 						break;
 						
 					case GREATER:
@@ -4158,10 +4158,8 @@ public class PostgreSQLNode extends Node {
 						break;
 					}
 					
-					if (value != null) {
-						parameters.add(value);
-					}
-
+					parameters.add(value);
+					
 					whereSQL.append(" and ");
 				}
 

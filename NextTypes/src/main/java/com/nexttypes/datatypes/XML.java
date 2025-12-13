@@ -280,6 +280,10 @@ public class XML extends PGobject {
 		return element;
 	}
 
+	public Document getDocument() {
+		return document;
+	}
+	
 	public Element getDocumentElement() {
 		org.w3c.dom.Element element = document.getDocumentElement();
 		return element != null ? new Element(element) : null;

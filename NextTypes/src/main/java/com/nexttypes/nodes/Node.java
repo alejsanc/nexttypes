@@ -114,44 +114,46 @@ public abstract class Node extends Module {
 	public abstract boolean checkPassword(String type, String id, String field, String password);
 
 	public abstract NXObject get(String type, String id, String[] fields, String lang, boolean fulltext,
-			boolean binary, boolean documentPreview, boolean password, boolean objectName, 
-			boolean referencesName);
+			boolean binary, boolean imageThumbnail, boolean documentPreview, boolean password,
+			boolean objectName, boolean referenceName);
 
 	public abstract Objects select(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit);
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean imageThumbnail);
 
 	public abstract Objects select(String type, String[] fields, String lang, Filter filter, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit);
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail, 
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit);
 
 	public abstract Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, Long offset, Long limit);
+			LinkedHashMap<String, Order> order, Long offset, Long limit, boolean imageThumbnail);
 
 	public abstract Objects select(String type, String[] fields, String lang, Filter[] filters, String search,
-			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean documentPreview,
-			boolean password, boolean objectsName, boolean referencesName, Long offset, Long limit);
+			LinkedHashMap<String, Order> order, boolean fulltext, boolean binary, boolean imageThumbnail, 
+			boolean documentPreview, boolean password, boolean objectName, boolean referenceName,
+			Long offset, Long limit);
 
-	public abstract Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
-			String search, String[] searchFields, String order, Long offset, Long limit);
+	public abstract Tuples select(String type, StringBuilder sql, ArrayList<Object> parameters,
+			String filters, String search, String[] searchFields, String order, Long offset, Long limit);
 
-	public abstract Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters, String filters,
-			String order);
+	public abstract Tuple[] select(String type, StringBuilder sql, ArrayList<Object> parameters,
+			String filters, String order);
 
 	public abstract ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter,
 			String search, LinkedHashMap<String, Order> order, Long offset, Long limit);
 
 	public abstract ObjectsStream selectStream(String type, String[] fields, String lang, Filter filter,
 			String search, LinkedHashMap<String, Order> order, boolean fulltext, boolean binary,
-			boolean documentPreview, boolean password, boolean objectsName, boolean referencesName,
-			Long offset, Long limit);
+			boolean imageThumbnail, boolean documentPreview, boolean password, boolean objectName,
+			boolean referenceName, Long offset, Long limit);
 
 	public abstract ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters,
 			String search, LinkedHashMap<String, Order> order, Long offset, Long limit);
 
 	public abstract ObjectsStream selectStream(String type, String[] fields, String lang, Filter[] filters,
 			String search, LinkedHashMap<String, Order> order, boolean fulltext, boolean binary,
-			boolean documentPreview, boolean password, boolean objectsName, boolean referencesName,
-			Long offset, Long limit);
+			boolean imageThumbnail, boolean documentPreview, boolean password, boolean objectName,
+			boolean referenceName, Long offset, Long limit);
 
 	public abstract Type getType(String type);
 
@@ -288,7 +290,8 @@ public abstract class Node extends Module {
 
 	public abstract ActionResult executeAction(String type, String id, String action, Object... parameters);
 
-	public abstract ActionResult executeAction(String type, String[] objects, String action, Object... parameters);
+	public abstract ActionResult executeAction(String type, String[] objects, String action,
+			Object... parameters);
 
 	public abstract Long count(String type);
 
@@ -332,7 +335,8 @@ public abstract class Node extends Module {
 
 	public abstract TypesStream backup(boolean full);
 
-	public abstract ObjectsStream exportObjects(String type, String[] objects, LinkedHashMap<String, Order> order);
+	public abstract ObjectsStream exportObjects(String type, String[] objects,
+			LinkedHashMap<String, Order> order);
 
 	public abstract ImportTypesResult importTypes(InputStream types, ImportAction existingTypesAction,
 			ImportAction existingObjectsAction);
@@ -340,9 +344,11 @@ public abstract class Node extends Module {
 	public abstract ImportTypesResult importTypes(TypesStream types, ImportAction existingTypesAction,
 			ImportAction existingObjectsAction);
 
-	public abstract ImportObjectsResult importObjects(InputStream objects, ImportAction existingObjectsAction);
+	public abstract ImportObjectsResult importObjects(InputStream objects,
+			ImportAction existingObjectsAction);
 
-	public abstract ImportObjectsResult importObjects(ObjectsStream objects, ImportAction existingObjectsAction);
+	public abstract ImportObjectsResult importObjects(ObjectsStream objects,
+			ImportAction existingObjectsAction);
 
 	public abstract void scanVirus(String type, String[] objects);
 	

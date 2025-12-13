@@ -21,6 +21,7 @@ public class Icon {
 	public static final String ACCOUNT_LOGOUT = "account-logout";
 	public static final String CALENDAR = "calendar";
 	public static final String CHEVRON_TOP = "chevron-top";
+	public static final String DATA_TRANSFER_DOWNLOAD = "data-transfer-download";
 	public static final String DELETE = "delete";
 	public static final String FILE = "file";
 	public static final String INFO = "info";

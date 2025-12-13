@@ -48,6 +48,31 @@ public class ArticleView extends HTMLView {
 	public static final String SHOW_AUTHORS = "show_authors";
 	public static final String PUBLISHER = "publisher";
 	
+	protected static final String PREVIEW_IMAGES_QUERY =
+			
+			"select"
+					+ " a.id,"
+					+ " a.cdate,"
+					+ " coalesce(al.title, a.id) as title,"
+					+ " left(al.text, 300) as text,"
+					+ " case"
+						+ " when ill.image is null then 'image_link'"
+						+ " else 'image_link_language'"
+					+ " end as image_type,"
+					+ " case"
+						+ " when ill.image is null then a.image_link"
+						+ " else ill.id"
+					+ " end as image_id";
+	
+	protected static final String PREVIEW_DATA_IMAGES_QUERY =
+			
+			"select"
+					+ " a.id,"
+					+ " a.cdate,"
+					+ " coalesce(al.title, a.id) as title,"
+					+ " left(al.text, 300) as text,"
+					+ " coalesce((ill.image).thumbnail, (il.image).thumbnail) as image";			
+	
 	protected String category;
 	protected String categoryParameter;
 
@@ -218,26 +243,22 @@ public class ArticleView extends HTMLView {
 		Boolean showCategories = typeSettings.getTypeBoolean(type, SHOW_CATEGORIES);
 		String categoryFilter = null;
 		
-		StringBuilder sql = new StringBuilder(
-				"select"
-						+ " a.id,"
-						+ " a.cdate,"
-						+ " coalesce(al.title, a.id) as title,"
-						+ " left(al.text, 300) as text,"
-						+ " case"
-							+ " when ill.image is null then 'image_link'"
-							+ " else 'image_link_language'"
-						+ " end as image_type,"
-						+ " case"
-							+ " when ill.image is null then a.image_link"
-							+ " else ill.id"
-						+ " end as image_id");
+		String query = null;
 		
+		if (print) {
+			query = PREVIEW_DATA_IMAGES_QUERY;
+		} else {
+			query = PREVIEW_IMAGES_QUERY;
+		}
+		
+		StringBuilder sql = new StringBuilder(query);
+				
 		StringBuilder fromSQL = new StringBuilder(
 				" from"
 					+ " article a"
 					+ " left join article_language al on (a.id = al.article and al.language = ?)"
-					+ " left join image_link_language ill on (a.image_link = ill.image_link and ill.language = ?)");
+					+ " left join image_link_language ill on (a.image_link = ill.image_link and ill.language = ?)"
+					+ " left join image_link il on a.image_link = il.id");
 		
 		if (showAuthors) {
 			sql.append(", aas.authors");
@@ -322,16 +343,25 @@ public class ArticleView extends HTMLView {
 				String url = url(type, id, lang, view);
 
 				Element article = main.appendElement(HTML.DIV).addClass(KeyWords.PREVIEW);
-				article.appendElement(imageAnchor(title, url, tuple.getString(KeyWords.IMAGE_TYPE),
-					tuple.getString(KeyWords.IMAGE_ID), IMAGE));
+				
+				if (print) {
+					article.appendElement(dataImage(tuple.getImage(IMAGE)));
+				} else {
+					article.appendElement(imageAnchor(title, url, tuple.getString(KeyWords.IMAGE_TYPE),
+							tuple.getString(KeyWords.IMAGE_ID), IMAGE));
+				}
+				
 				article.appendElement(time(tuple.getDateTime(KeyWords.CDATE)));
 				article.appendElement(HTML.H2).appendText(title);
 				
 				String text = tuple.getHTMLText(KeyWords.TEXT);
 				
 				if (text != null) {
-					article.appendElement(HTML.P).appendText(text + " ... ")
-						.appendElement(anchor(languageSettings.gts(type, KeyWords.READ_MORE), url));
+					Element paragraph = article.appendElement(HTML.P);
+					paragraph.appendText(text + " ... ");
+					if (!print) {
+						paragraph.appendElement(anchor(languageSettings.gts(type, KeyWords.READ_MORE), url));
+					}
 				}
 				
 				if (showAuthors) {
