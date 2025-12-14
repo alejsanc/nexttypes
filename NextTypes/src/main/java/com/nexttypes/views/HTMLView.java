@@ -396,8 +396,8 @@ public class HTMLView extends View {
 			icon = Icon.PLUS;
 			
 			typeForm.appendElement(input(HTML.TEXT, KeyWords.TYPE, typeName)
-					.setAttribute(HTML.SIZE, Type.MAX_TYPE_NAME_LENGTH)
-					.setAttribute(HTML.MAXLENGTH, Type.MAX_TYPE_NAME_LENGTH));
+					.setAttribute(HTML.SIZE, Type.MAX_NAME_LENGTH)
+					.setAttribute(HTML.MAXLENGTH, Type.MAX_NAME_LENGTH));
 		}
 		
 		boolean disableAction = !permissions.isAllowed(type, action);

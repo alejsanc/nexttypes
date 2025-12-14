@@ -41,12 +41,12 @@ import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Module;
 
 public class Checks {
-	public static final Pattern TYPE_FIELD_INDEX_ACTION_CHECK = Pattern.compile("[a-z0-9_]+");
+	public static final Pattern NAME_CHECK = Pattern.compile("[a-z0-9_]+");
 	public static final Pattern ID_ELEMENT_CHECK = Pattern.compile("[a-z0-9\\-.]+");
 	public static final Pattern VIEW_CHECK = Pattern.compile("[a-z0-9\\-]+");
 	public static final Pattern LANG_CHECK = Pattern.compile("[a-z\\-]+");
 	public static final Pattern FIELD_PARAMETERS_CHECK = Pattern.compile("[a-z0-9_\\,]+");
-	
+		
 	public static void checkString(String value, Pattern check, String setting) {
 		if (value != null) {
 			Matcher matcher = check.matcher(value);
@@ -72,8 +72,8 @@ public class Checks {
 			throwException(KeyWords.TYPE_RESERVED_NAME, type);
 		}
 		
-		checkMaxLength(type, Type.MAX_TYPE_NAME_LENGTH, KeyWords.TYPE_NAME_TOO_LONG);
-		checkString(type, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_TYPE_NAME);
+		checkMaxLength(type, Type.MAX_NAME_LENGTH, KeyWords.TYPE_NAME_TOO_LONG);
+		checkString(type, NAME_CHECK, KeyWords.INVALID_TYPE_NAME);
 	}
 	
 	public static void checkCompositeType(String type) {
@@ -147,18 +147,18 @@ public class Checks {
 			throw new InvalidValueException(KeyWords.FIELD_RESERVED_NAME, field);
 		}
 
-		checkMaxLength(field, Type.MAX_FIELD_NAME_LENGTH, KeyWords.FIELD_NAME_TOO_LONG);
-		checkString(field, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_FIELD_NAME);
+		checkMaxLength(field, Type.MAX_NAME_LENGTH, KeyWords.FIELD_NAME_TOO_LONG);
+		checkString(field, NAME_CHECK, KeyWords.INVALID_FIELD_NAME);
 	}
 
 	public static void checkTypeOrField(String typeOrField) {
-		checkMaxLength(typeOrField, Type.MAX_FIELD_NAME_LENGTH, KeyWords.TYPE_OR_FIELD_NAME_TOO_LONG);
-		checkString(typeOrField, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_TYPE_OR_FIELD_NAME);
+		checkMaxLength(typeOrField, Type.MAX_NAME_LENGTH, KeyWords.TYPE_OR_FIELD_NAME_TOO_LONG);
+		checkString(typeOrField, NAME_CHECK, KeyWords.INVALID_TYPE_OR_FIELD_NAME);
 	}
 
 	public static void checkIndex(String index) {
-		checkMaxLength(index, Type.MAX_INDEX_NAME_LENGTH, KeyWords.INDEX_NAME_TOO_LONG);
-		checkString(index, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_INDEX_NAME);
+		checkMaxLength(index, Type.MAX_NAME_LENGTH, KeyWords.INDEX_NAME_TOO_LONG);
+		checkString(index, NAME_CHECK, KeyWords.INVALID_INDEX_NAME);
 	}
 
 	public static void checkIndexes(String[] indexes) {
@@ -257,17 +257,22 @@ public class Checks {
 	}
 
 	public static void checkAction(String action) {
-		checkMaxLength(action, Type.MAX_ACTION_NAME_LENGTH, KeyWords.ACTION_NAME_TOO_LONG);
-		checkString(action, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_ACTION_NAME);
+		checkMaxLength(action, Type.MAX_NAME_LENGTH, KeyWords.ACTION_NAME_TOO_LONG);
+		checkString(action, NAME_CHECK, KeyWords.INVALID_ACTION_NAME);
 	}
 
 	public static void checkFieldParameters(String parameters) {
-		checkString(parameters, FIELD_PARAMETERS_CHECK, KeyWords.INVALID_PARAMETERS);
+		checkString(parameters, FIELD_PARAMETERS_CHECK, KeyWords.INVALID_FIELD_PARAMETERS);
 	}
 
 	public static void checkTupleField(String field) {
-		checkMaxLength(field, Type.MAX_FIELD_NAME_LENGTH, KeyWords.FIELD_NAME_TOO_LONG);
-		checkString(field, TYPE_FIELD_INDEX_ACTION_CHECK, KeyWords.INVALID_FIELD_NAME);
+		checkMaxLength(field, Type.MAX_NAME_LENGTH, KeyWords.FIELD_NAME_TOO_LONG);
+		checkString(field, NAME_CHECK, KeyWords.INVALID_FIELD_NAME);
+	}
+	
+	public static void checkParameter(String field) {
+		checkMaxLength(field, Type.MAX_NAME_LENGTH, KeyWords.PARAMETER_NAME_TOO_LONG);
+		checkString(field, NAME_CHECK, KeyWords.INVALID_PARAMETER_NAME);
 	}
 
 	public static void checkObject(NXObject object) {
@@ -289,7 +294,13 @@ public class Checks {
 
 	public static void checkTuple(Tuple tuple) {
 		for (Entry<String, Object> entry : tuple.getFields().entrySet()) {
-			checkTupleField((String) entry.getKey());
+			checkTupleField(entry.getKey());
+		}
+	}
+	
+	public static void checkParameters(Tuple tuple) {
+		for (Entry<String, Object> entry : tuple.getFields().entrySet()) {
+			checkParameter(entry.getKey());
 		}
 	}
 	

@@ -34,10 +34,7 @@ import com.nexttypes.system.KeyWords;
 public class Type {
 
 	public static final int MAX_ID_LENGTH = 100;
-	public static final int MAX_TYPE_NAME_LENGTH = 30;
-	public static final int MAX_FIELD_NAME_LENGTH = 30;
-	public static final int MAX_INDEX_NAME_LENGTH = 30;
-	public static final int MAX_ACTION_NAME_LENGTH = 30;
+	public static final int MAX_NAME_LENGTH = 30;
 	public static final int DEFAULT_STRING_LENGTH = 250;
 
 	public static final String[] SYSTEM_TYPES = new String[] { "language", "language_language", "user",

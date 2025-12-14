@@ -183,7 +183,8 @@ public class KeyWords {
 	public static final String INVALID_OBJECT_INPUT_MODE = "invalid_object_input_mode";
 	public static final String INVALID_OBJECT_TYPE = "invalid_object_type";
 	public static final String INVALID_OBJECTS_INPUT_MODE = "invalid_objects_input_mode";
-	public static final String INVALID_PARAMETERS = "invalid_parameters";
+	public static final String INVALID_PARAMETER_NAME = "invalid_parameter_name";
+	public static final String INVALID_FIELD_PARAMETERS = "invalid_field_parameters";
 	public static final String INVALID_PASSWORD = "invalid_password";
 	public static final String INVALID_ROW_COUNT = "invalid_row_count";
 	public static final String INVALID_SERIAL_FORMAT = "invalid_serial_format";
@@ -275,6 +276,7 @@ public class KeyWords {
 	public static final String ORDER = "order";
 	public static final String OTHER_TYPES = "other_types";
 	public static final String OUT_OF_RANGE_VALUE = "out_of_range_value";
+	public static final String PARAMETER_NAME_TOO_LONG = "parameter_name_too_long";
 	public static final String PARAMETERS = "parameters";
 	public static final String PARAMETERS_ALTERED = "parameters_altered";
 	public static final String PASSWORD = "password";

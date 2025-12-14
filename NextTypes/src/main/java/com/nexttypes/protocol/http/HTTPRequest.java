@@ -27,6 +27,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -199,7 +200,7 @@ public class HTTPRequest {
 		Checks.checkOrder(order);
 		Checks.checkAction(action);
 		Checks.checkAction(_action);
-		Checks.checkTuple(parameters);
+		Checks.checkParameters(parameters);
 		Checks.checkTuple(fields);
 	}
 
@@ -355,7 +356,7 @@ public class HTTPRequest {
 			}
 		}
 	}
-
+	
 	public NXObject readObject(LinkedHashMap<String, TypeField> typeFields) {
 		
 		checkFields(typeFields);
