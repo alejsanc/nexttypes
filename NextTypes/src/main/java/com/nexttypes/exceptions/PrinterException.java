@@ -16,37 +16,52 @@
 
 package com.nexttypes.exceptions;
 
+import org.cups4j.PrintRequestResult;
+
 import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.KeyWords;
 
-public class TypeNotFoundException extends NotFoundException {
+public class PrinterException extends NXException {
 	private static final long serialVersionUID = 1L;
 
+	protected String printer;
+	protected String code;
 	protected String message;
+	protected String description;
+	
+	public PrinterException(String printer, Exception e)  {
+		super(KeyWords.PRINTER_ERROR);
+		this.printer = printer;
+		message = e.getMessage();
+	}
 
-	public TypeNotFoundException() {
-		this(null);
+	public PrinterException(String printer, PrintRequestResult printRequestResult) {
+		super(KeyWords.PRINTER_ERROR);
+		this.printer = printer;
+		code = printRequestResult.getResultCode();
+		message = printRequestResult.getResultMessage();
+		description = printRequestResult.getResultDescription();
 	}
 	
-	public TypeNotFoundException(String type) {
-		super(type, KeyWords.TYPE_NOT_FOUND);
+	public String getPrinter() {
+		return printer;
 	}
 	
-	public TypeNotFoundException setMessage(String message) {
-		this.message = message;
-		return this;
+	public String getCode() {
+		return code;
+	}
+	
+	@Override
+	public String getMessage() {
+		return message;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		String message = languageSettings.gts(type, KeyWords.TYPE_NOT_FOUND) + ": ";
-
-		if (type != null) {
-			message += type;
-		} else {
-			message += this.message;
-		}
-
-		return message;
+		return languageSettings.gts(KeyWords.PRINTER_ERROR) + ": " + message;
 	}
-}	
+}
