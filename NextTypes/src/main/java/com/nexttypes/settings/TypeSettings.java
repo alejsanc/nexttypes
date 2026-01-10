@@ -321,6 +321,10 @@ public class TypeSettings extends Settings {
 		return values != null ? values : defaultValues;
 	}
 	
+	public String getActionIcon(String type, String action, String defaultValue) {
+		return getActionString(type, action, KeyWords.ICON, defaultValue);
+	}
+	
 	//Actions Fields Methods
 	
 	public String getActionFieldString(String type, String action, String field, String setting) {

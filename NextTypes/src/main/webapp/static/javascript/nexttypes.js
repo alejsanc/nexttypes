@@ -58,7 +58,8 @@ const ACTION = {
 	IMPORT_TYPES: "import_types",
 	IMPORT_OBJECTS: "import_objects",
 	LOGIN: "login",
-	LOGOUT: "logout"
+	LOGOUT: "logout",
+	PRINT: "print"
 };
 
 const ICON = {
@@ -727,6 +728,7 @@ function submitForm(event) {
 					case ACTION.EXPORT_OBJECTS:
 					case ACTION.IMPORT_TYPES:
 					case ACTION.IMPORT_OBJECTS:
+					case ACTION.PRINT:
 						message = request.responseText;
 						break;
 						

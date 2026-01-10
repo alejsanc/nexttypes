@@ -28,7 +28,8 @@ public enum HTTPHeader {
 	LOCATION("Location"),
 	REFERRER_POLICY("Referrer-Policy"),
 	USER_AGENT("User-Agent"),
-	WWW_AUTHENTICATE("WWW-Authenticate");
+	WWW_AUTHENTICATE("WWW-Authenticate"),
+	NEXTTYPES_TITLE("NextTypes-Title");
 
 	protected String header;
 

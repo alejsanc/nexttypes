@@ -1,484 +1,662 @@
 {
-	"format": "nexttypes_types",
-	"version": "1.0",
-	"date": "2020-12-20T00:39:14.524595Z",
-	"types": {
-		"group": {
-			"name": "group",
-			"cdate": "2015-06-24T17:40:03Z",
-			"adate": "2015-06-24T17:40:03Z"
-		},
-		"group_language": {
-			"name": "group_language",
-			"cdate": "2015-06-24T17:40:03Z",
-			"adate": "2015-06-24T17:40:03Z",
-			"fields": {
-				"group": {
-					"type": "group",
-					"length": 100,
-					"not_null": true
-				},
-				"language": {
-					"type": "language",
-					"length": 100,
-					"not_null": true
-				},
-				"name": {
-					"type": "string",
-					"length": 250,
-					"not_null": true
-				},
-				"description": {
-					"type": "text",
-					"not_null": true
-				}
-			},
-			"indexes": {
-				"group_language_index": {
-					"mode": "unique",
-					"fields": [
-						"group",
-						"language"
-					]
-				}
-			}
-		},
-		"group_user": {
-			"name": "group_user",
-			"cdate": "2015-06-24T17:40:03Z",
-			"adate": "2015-06-24T17:40:03Z",
-			"fields": {
-				"group": {
-					"type": "group",
-					"length": 100,
-					"not_null": true
-				},
-				"user": {
-					"type": "user",
-					"length": 100,
-					"not_null": true
-				}
-			},
-			"indexes": {
-				"group_user_index": {
-					"mode": "unique",
-					"fields": [
-						"group",
-						"user"
-					]
-				}
-			}
-		},
-		"image_link": {
-			"name": "image_link",
-			"cdate": "2015-04-01T14:30:16Z",
-			"adate": "2018-09-27T21:18:32.949Z",
-			"fields": {
-				"title": {
-					"type": "string",
-					"length": 500,
-					"not_null": false
-				},
-				"link": {
-					"type": "url",
-					"length": 250,
-					"not_null": false
-				},
-				"image": {
-					"type": "image",
-					"not_null": false
-				}
-			}
-		},
-		"image_link_language": {
-			"name": "image_link_language",
-			"cdate": "2015-04-01T14:30:16Z",
-			"adate": "2018-09-27T21:19:06.827Z",
-			"fields": {
-				"description": {
-					"type": "text",
-					"not_null": false
-				},
-				"alt": {
-					"type": "string",
-					"length": 250,
-					"not_null": true
-				},
-				"title": {
-					"type": "string",
-					"length": 500,
-					"not_null": false
-				},
-				"image_link": {
-					"type": "image_link",
-					"length": 100,
-					"not_null": true
-				},
-				"language": {
-					"type": "language",
-					"length": 100,
-					"not_null": true
-				},
-				"link": {
-					"type": "url",
-					"length": 250,
-					"not_null": false
-				},
-				"image": {
-					"type": "image",
-					"not_null": false
-				}
-			},
-			"indexes": {
-				"image_description_index": {
-					"mode": "fulltext",
-					"fields": [
-						"description"
-					]
-				},
-				"image_language_index": {
-					"mode": "unique",
-					"fields": [
-						"title",
-						"language"
-					]
-				}
-			}
-		},
-		"language": {
-			"name": "language",
-			"cdate": "2015-06-24T17:40:03Z",
-			"adate": "2015-06-24T17:40:03Z"
-		},
-		"language_language": {
-			"name": "language_language",
-			"cdate": "2015-06-24T17:40:03Z",
-			"adate": "2015-06-24T17:40:03Z",
-			"fields": {
-				"name": {
-					"type": "string",
-					"length": 250,
-					"not_null": true
-				},
-				"language": {
-					"type": "language",
-					"length": 100,
-					"not_null": true
-				},
-				"translation": {
-					"type": "language",
-					"length": 100,
-					"not_null": true
-				}
-			},
-			"indexes": {
-				"language_language_index": {
-					"mode": "unique",
-					"fields": [
-						"language",
-						"translation"
-					]
-				}
-			}
-		},
-		"user": {
-			"name": "user",
-			"cdate": "2015-06-24T17:40:03Z",
-			"adate": "2015-06-24T17:40:03Z",
-			"fields": {
-				"first_name": {
-					"type": "string",
-					"length": 250,
-					"not_null": true
-				},
-				"second_name": {
-					"type": "string",
-					"length": 250,
-					"not_null": true
-				},
-				"time_zone": {
-					"type": "timezone",
-					"length": 50,
-					"not_null": true
-				},
-				"email": {
-					"type": "email",
-					"length": 250,
-					"not_null": true
-				},
-				"password": {
-					"type": "password",
-					"length": 60,
-					"not_null": false
-				}
-			},
-			"indexes": {
-				"user_email_index": {
-					"mode": "unique",
-					"fields": [
-						"email"
-					]
-				}
-			}
-		},
-		"user_certificate": {
-			"name": "user_certificate",
-			"cdate": "2015-06-24T17:40:03Z",
-			"adate": "2015-06-24T17:40:03Z",
-			"fields": {
-				"user": {
-					"type": "user",
-					"length": 100,
-					"not_null": true
-				},
-				"certificate_subject": {
-					"type": "string",
-					"length": 250,
-					"not_null": true
-				}
-			},
-			"indexes": {
-				"user_certificate_subject_index": {
-					"mode": "unique",
-					"fields": [
-						"certificate_subject"
-					]
-				}
-			}
-		}
-	},
-	"objects": {
-		"language": {
-			"format": "nexttypes_objects",
-			"version": "1.0",
-			"type" : "language",
-			"count": 2,
-			"items": [
-				{
-					"type": "language",
-					"id": "en",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						
-					}
-				},
-				{
-					"type": "language",
-					"id": "es",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						
-					}
-				}
-			]
-		},
-		"language_language": {
-			"format": "nexttypes_objects",
-			"version": "1.0",
-			"type": "language_language",
-			"count": 4,
-			"items": [
-				{
-					"type": "language_language",
-					"id": "en-es",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"name": "Inglés",
-						"language": "en",
-						"translation": "es"
-					}
-				},
-				{
-					"type": "language_language",
-					"id": "es-en",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"name": "Spanish",
-						"language": "es",
-						"translation": "en"
-					}
-				},
-				{
-					"type": "language_language",
-					"id": "es-es",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"name": "Español",
-						"language": "es",
-						"translation": "es"
-					}
-				},
-				{
-					"type": "language_language",
-					"id": "en-en",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"name": "English",
-						"language": "en",
-						"translation": "en"
-					}
-				}
-			]
-		},
-		"group": {
-			"format": "nexttypes_objects",
-			"version": "1.0",
-			"type": "group",
-			"count": 2,
-			"items": [
-				{
-					"type": "group",
-					"id": "administrators",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						
-					}
-				},
-				{
-					"type": "group",
-					"id": "users",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						
-					}
-				}
-			]
-		},
-		"user": {
-			"format": "nexttypes_objects",
-			"version": "1.0",
-			"type": "user",
-			"count": 1,
-			"items": [
-				{
-					"type": "user",
-					"id": "admin",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"first_name": "Admin",
-						"second_name": "Admin",
-						"time_zone": "UTC",
-						"email": "admin@example.com",
-						"password": "$2y$12$TFhXz5DvNAl0/jUg7hd56eLT52bZXiuBsDrapQ1Tm8LDaB7qaO3o6"
-					}
-				}
-			]
-		},
-		"group_user": {
-			"format": "nexttypes_objects",
-			"version": "1.0",
-			"type": "group_user",
-			"count": 1,
-			"items": [
-				{
-					"type": "group_user",
-					"id": "administrators-admin",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"group": "administrators",
-						"user": "admin"
-					}
-				}
-			]
-		},
-		"group_language": {
-			"format": "nexttypes_objects",
-			"version": "1.0",
-			"type": "group_language",
-			"count": 4,
-			"items": [
-				{
-					"type": "group_language",
-					"id": "administrators-en",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"group": "administrators",
-						"language": "en",
-						"name": "Administrators",
-						"description": "Administrators"
-					}
-				},
-				{
-					"type": "group_language",
-					"id": "administrators-es",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"group": "administrators",
-						"language": "es",
-						"name": "Administradores",
-						"description": "Administradores"
-					}
-				},
-				{
-					"type": "group_language",
-					"id": "users-en",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"group": "users",
-						"language": "en",
-						"name": "Users",
-						"description": "Users"
-					}
-				},
-				{
-					"type": "group_language",
-					"id": "users-es",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"group": "users",
-						"language": "es",
-						"name": "Usuarios",
-						"description": "Usuarios"
-					}
-				}
-			]
-		},
-		"user_certificate": {
-			"format": "nexttypes_objects",
-			"version": "1.0",
-			"type": "user_certificate",
-			"count": 1,
-			"items": [
-				{
-					"type": "user_certificate",
-					"id": "admin-certificate",
-					"cdate": "2015-06-24T17:40:03Z",
-					"udate": "2015-06-24T17:40:03Z",
-					"backup": false,
-					"fields": {
-						"user": "admin",
-						"certificate_subject": "CN=Admin,O=NextTypes"
-					}
-				}
-			]
-		}
-	}
+  "format" : "nexttypes_types",
+  "version" : "2.0",
+  "date" : "2026-01-08T00:21:01.376368Z",
+  "types" : {
+    "group" : {
+      "name" : "group",
+      "cdate" : "2015-06-24T17:40:03Z",
+      "adate" : "2015-06-24T17:40:03Z",
+      "fields" : { },
+      "indexes" : { },
+      "actions" : { }
+    },
+    "group_language" : {
+      "name" : "group_language",
+      "cdate" : "2015-06-24T17:40:03Z",
+      "adate" : "2015-06-24T17:40:03Z",
+      "fields" : {
+        "group" : {
+          "type" : "group",
+          "length" : 100,
+          "not_null" : true
+        },
+        "language" : {
+          "type" : "language",
+          "length" : 100,
+          "not_null" : true
+        },
+        "name" : {
+          "type" : "string",
+          "length" : 250,
+          "not_null" : true
+        },
+        "description" : {
+          "type" : "text",
+          "not_null" : true
+        }
+      },
+      "indexes" : {
+        "group_language_index" : {
+          "mode" : "unique",
+          "fields" : [ "group", "language" ]
+        }
+      },
+      "actions" : { }
+    },
+    "group_user" : {
+      "name" : "group_user",
+      "cdate" : "2015-06-24T17:40:03Z",
+      "adate" : "2015-06-24T17:40:03Z",
+      "fields" : {
+        "group" : {
+          "type" : "group",
+          "length" : 100,
+          "not_null" : true
+        },
+        "user" : {
+          "type" : "user",
+          "length" : 100,
+          "not_null" : true
+        }
+      },
+      "indexes" : {
+        "group_user_index" : {
+          "mode" : "unique",
+          "fields" : [ "group", "user" ]
+        }
+      },
+      "actions" : { }
+    },
+    "image_link" : {
+      "name" : "image_link",
+      "cdate" : "2015-04-01T14:30:16Z",
+      "adate" : "2018-09-27T21:18:32.949Z",
+      "fields" : {
+        "title" : {
+          "type" : "string",
+          "length" : 500,
+          "not_null" : false
+        },
+        "link" : {
+          "type" : "url",
+          "length" : 250,
+          "not_null" : false
+        },
+        "image" : {
+          "type" : "image",
+          "not_null" : false
+        }
+      },
+      "indexes" : { },
+      "actions" : {
+        "resize" : {
+          "width" : {
+            "type" : "int32",
+            "precision" : 32,
+            "scale" : 0,
+            "range" : {
+              "min" : -2147483648,
+              "max" : 2147483647
+            },
+            "not_null" : true
+          },
+          "height" : {
+            "type" : "int32",
+            "precision" : 32,
+            "scale" : 0,
+            "range" : {
+              "min" : -2147483648,
+              "max" : 2147483647
+            },
+            "not_null" : true
+          }
+        }
+      }
+    },
+    "image_link_language" : {
+      "name" : "image_link_language",
+      "cdate" : "2015-04-01T14:30:16Z",
+      "adate" : "2018-09-27T21:19:06.827Z",
+      "fields" : {
+        "description" : {
+          "type" : "text",
+          "not_null" : false
+        },
+        "alt" : {
+          "type" : "string",
+          "length" : 250,
+          "not_null" : true
+        },
+        "title" : {
+          "type" : "string",
+          "length" : 500,
+          "not_null" : false
+        },
+        "image_link" : {
+          "type" : "image_link",
+          "length" : 100,
+          "not_null" : true
+        },
+        "language" : {
+          "type" : "language",
+          "length" : 100,
+          "not_null" : true
+        },
+        "link" : {
+          "type" : "url",
+          "length" : 250,
+          "not_null" : false
+        },
+        "image" : {
+          "type" : "image",
+          "not_null" : false
+        }
+      },
+      "indexes" : {
+        "image_description_index" : {
+          "mode" : "fulltext",
+          "fields" : [ "description" ]
+        },
+        "image_language_index" : {
+          "mode" : "unique",
+          "fields" : [ "language", "title" ]
+        }
+      },
+      "actions" : {
+        "resize" : {
+          "width" : {
+            "type" : "int32",
+            "precision" : 32,
+            "scale" : 0,
+            "range" : {
+              "min" : -2147483648,
+              "max" : 2147483647
+            },
+            "not_null" : true
+          },
+          "height" : {
+            "type" : "int32",
+            "precision" : 32,
+            "scale" : 0,
+            "range" : {
+              "min" : -2147483648,
+              "max" : 2147483647
+            },
+            "not_null" : true
+          }
+        }
+      }
+    },
+    "language" : {
+      "name" : "language",
+      "cdate" : "2015-06-24T17:40:03Z",
+      "adate" : "2015-06-24T17:40:03Z",
+      "fields" : { },
+      "indexes" : { },
+      "actions" : { }
+    },
+    "language_language" : {
+      "name" : "language_language",
+      "cdate" : "2015-06-24T17:40:03Z",
+      "adate" : "2015-06-24T17:40:03Z",
+      "fields" : {
+        "name" : {
+          "type" : "string",
+          "length" : 250,
+          "not_null" : true
+        },
+        "language" : {
+          "type" : "language",
+          "length" : 100,
+          "not_null" : true
+        },
+        "translation" : {
+          "type" : "language",
+          "length" : 100,
+          "not_null" : true
+        }
+      },
+      "indexes" : {
+        "language_language_index" : {
+          "mode" : "unique",
+          "fields" : [ "language", "translation" ]
+        }
+      },
+      "actions" : { }
+    },
+    "printer" : {
+      "name" : "printer",
+      "cdate" : "2015-04-01T14:30:16Z",
+      "adate" : "2026-01-08T00:20:36.725817Z",
+      "fields" : {
+        "name" : {
+          "type" : "string",
+          "length" : 250,
+          "not_null" : true
+        }
+      },
+      "indexes" : { },
+      "actions" : { }
+    },
+    "printer_job" : {
+      "name" : "printer_job",
+      "cdate" : "2015-04-01T14:30:16Z",
+      "adate" : "2025-12-31T22:15:59.578487Z",
+      "fields" : {
+        "name" : {
+          "type" : "string",
+          "length" : 250,
+          "not_null" : true
+        },
+        "printer" : {
+          "type" : "printer",
+          "length" : 100,
+          "not_null" : true
+        },
+        "user" : {
+          "type" : "user",
+          "length" : 100,
+          "not_null" : true
+        },
+        "document" : {
+          "type" : "binary",
+          "not_null" : true
+        },
+        "mode" : {
+          "type" : "printer_mode",
+          "length" : 100,
+          "not_null" : true
+        },
+        "pages" : {
+          "type" : "string",
+          "length" : 250,
+          "not_null" : false
+        },
+        "copies" : {
+          "type" : "int16",
+          "precision" : 16,
+          "scale" : 0,
+          "range" : {
+            "min" : -32768,
+            "max" : 32767
+          },
+          "not_null" : true
+        }
+      },
+      "indexes" : { },
+      "actions" : { }
+    },
+    "printer_mode" : {
+      "name" : "printer_mode",
+      "cdate" : "2025-12-18T22:00:27.775469Z",
+      "adate" : "2025-12-18T22:00:27.775469Z",
+      "fields" : { },
+      "indexes" : { },
+      "actions" : { }
+    },
+    "printer_mode_language" : {
+      "name" : "printer_mode_language",
+      "cdate" : "2025-12-18T22:03:49.964504Z",
+      "adate" : "2025-12-18T22:05:43.089474Z",
+      "fields" : {
+        "name" : {
+          "type" : "string",
+          "length" : 250,
+          "not_null" : true
+        },
+        "mode" : {
+          "type" : "printer_mode",
+          "length" : 100,
+          "not_null" : true
+        },
+        "language" : {
+          "type" : "language",
+          "length" : 100,
+          "not_null" : true
+        }
+      },
+      "indexes" : { },
+      "actions" : { }
+    },
+    "user" : {
+      "name" : "user",
+      "cdate" : "2015-06-24T17:40:03Z",
+      "adate" : "2015-06-24T17:40:03Z",
+      "fields" : {
+        "first_name" : {
+          "type" : "string",
+          "length" : 250,
+          "not_null" : true
+        },
+        "second_name" : {
+          "type" : "string",
+          "length" : 250,
+          "not_null" : true
+        },
+        "time_zone" : {
+          "type" : "timezone",
+          "length" : 50,
+          "not_null" : true
+        },
+        "email" : {
+          "type" : "email",
+          "length" : 250,
+          "not_null" : true
+        },
+        "password" : {
+          "type" : "password",
+          "length" : 60,
+          "not_null" : false
+        }
+      },
+      "indexes" : {
+        "user_email_index" : {
+          "mode" : "unique",
+          "fields" : [ "email" ]
+        }
+      },
+      "actions" : { }
+    },
+    "user_certificate" : {
+      "name" : "user_certificate",
+      "cdate" : "2015-06-24T17:40:03Z",
+      "adate" : "2015-06-24T17:40:03Z",
+      "fields" : {
+        "user" : {
+          "type" : "user",
+          "length" : 100,
+          "not_null" : true
+        },
+        "certificate_subject" : {
+          "type" : "string",
+          "length" : 250,
+          "not_null" : true
+        }
+      },
+      "indexes" : {
+        "user_certificate_subject_index" : {
+          "mode" : "unique",
+          "fields" : [ "certificate_subject" ]
+        }
+      },
+      "actions" : { }
+    }
+  },
+  "objects" : {
+    "group" : {
+      "format" : "nexttypes_objects",
+      "version" : "2.0",
+      "type" : "group",
+      "count" : 2,
+      "items" : [ {
+        "type" : "group",
+        "id" : "administrators",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : { }
+      }, {
+        "type" : "group",
+        "id" : "users",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : { }
+      } ]
+    },
+    "group_language" : {
+      "format" : "nexttypes_objects",
+      "version" : "2.0",
+      "type" : "group_language",
+      "count" : 4,
+      "items" : [ {
+        "type" : "group_language",
+        "id" : "administrators-en",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : {
+          "group" : "administrators",
+          "language" : "en",
+          "name" : "Administrators",
+          "description" : "Administrators"
+        }
+      }, {
+        "type" : "group_language",
+        "id" : "administrators-es",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : {
+          "group" : "administrators",
+          "language" : "es",
+          "name" : "Administradores",
+          "description" : "Administradores"
+        }
+      }, {
+        "type" : "group_language",
+        "id" : "users-en",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : {
+          "group" : "users",
+          "language" : "en",
+          "name" : "Users",
+          "description" : "Users"
+        }
+      }, {
+        "type" : "group_language",
+        "id" : "users-es",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : {
+          "group" : "users",
+          "language" : "es",
+          "name" : "Usuarios",
+          "description" : "Usuarios"
+        }
+      } ]
+    },
+    "group_user" : {
+      "format" : "nexttypes_objects",
+      "version" : "2.0",
+      "type" : "group_user",
+      "count" : 1,
+      "items" : [ {
+        "type" : "group_user",
+        "id" : "administrators-admin",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : {
+          "group" : "administrators",
+          "user" : "admin"
+        }
+      } ]
+    },
+    "language" : {
+      "format" : "nexttypes_objects",
+      "version" : "2.0",
+      "type" : "language",
+      "count" : 2,
+      "items" : [ {
+        "type" : "language",
+        "id" : "en",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : { }
+      }, {
+        "type" : "language",
+        "id" : "es",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : { }
+      } ]
+    },
+    "language_language" : {
+      "format" : "nexttypes_objects",
+      "version" : "2.0",
+      "type" : "language_language",
+      "count" : 4,
+      "items" : [ {
+        "type" : "language_language",
+        "id" : "en-en",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : {
+          "name" : "English",
+          "language" : "en",
+          "translation" : "en"
+        }
+      }, {
+        "type" : "language_language",
+        "id" : "en-es",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : {
+          "name" : "Inglés",
+          "language" : "en",
+          "translation" : "es"
+        }
+      }, {
+        "type" : "language_language",
+        "id" : "es-en",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : {
+          "name" : "Spanish",
+          "language" : "es",
+          "translation" : "en"
+        }
+      }, {
+        "type" : "language_language",
+        "id" : "es-es",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2015-06-24T17:40:03Z",
+        "backup" : false,
+        "fields" : {
+          "name" : "Español",
+          "language" : "es",
+          "translation" : "es"
+        }
+      } ]
+    },
+    "printer_mode" : {
+      "format" : "nexttypes_objects",
+      "version" : "2.0",
+      "type" : "printer_mode",
+      "count" : 2,
+      "items" : [ {
+        "type" : "printer_mode",
+        "id" : "color",
+        "cdate" : "2025-12-18T22:04:11.904802Z",
+        "udate" : "2025-12-18T22:04:11.904802Z",
+        "backup" : false,
+        "fields" : { }
+      }, {
+        "type" : "printer_mode",
+        "id" : "monochrome",
+        "cdate" : "2025-12-18T22:04:39.494072Z",
+        "udate" : "2025-12-18T22:04:39.494072Z",
+        "backup" : false,
+        "fields" : { }
+      } ]
+    },
+    "printer_mode_language" : {
+      "format" : "nexttypes_objects",
+      "version" : "2.0",
+      "type" : "printer_mode_language",
+      "count" : 4,
+      "items" : [ {
+        "type" : "printer_mode_language",
+        "id" : "43e7a427-2a16-4e9b-b3e0-003c0f5ad554",
+        "cdate" : "2025-12-18T22:06:26.372595Z",
+        "udate" : "2025-12-18T22:06:26.372595Z",
+        "backup" : false,
+        "fields" : {
+          "name" : "Monocromo",
+          "mode" : "monochrome",
+          "language" : "es"
+        }
+      }, {
+        "type" : "printer_mode_language",
+        "id" : "63788358-328d-420c-829e-2e8c6ffd5384",
+        "cdate" : "2025-12-18T22:06:07.333638Z",
+        "udate" : "2025-12-18T22:06:07.333638Z",
+        "backup" : false,
+        "fields" : {
+          "name" : "Color",
+          "mode" : "color",
+          "language" : "en"
+        }
+      }, {
+        "type" : "printer_mode_language",
+        "id" : "82f7a8d4-7bcd-483f-9021-0c87fe6a79f0",
+        "cdate" : "2025-12-18T22:06:01.422397Z",
+        "udate" : "2025-12-18T22:06:01.422397Z",
+        "backup" : false,
+        "fields" : {
+          "name" : "Color",
+          "mode" : "color",
+          "language" : "es"
+        }
+      }, {
+        "type" : "printer_mode_language",
+        "id" : "a31912d9-ae09-4b76-879c-2894b43323b0",
+        "cdate" : "2025-12-18T22:06:38.251816Z",
+        "udate" : "2025-12-18T22:06:38.251816Z",
+        "backup" : false,
+        "fields" : {
+          "name" : "Monochrome",
+          "mode" : "monochrome",
+          "language" : "en"
+        }
+      } ]
+    },
+    "user" : {
+      "format" : "nexttypes_objects",
+      "version" : "2.0",
+      "type" : "user",
+      "count" : 1,
+      "items" : [ {
+        "type" : "user",
+        "id" : "admin",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2024-01-03T22:51:24.486301Z",
+        "backup" : false,
+        "fields" : {
+          "first_name" : "Admin",
+          "second_name" : "Admin",
+          "time_zone" : "UTC",
+          "email" : "admin@example.com",
+          "password" : "$2y$12$JE7CpckpBW9deeg9uQDS9.G1b2G5QrsTn8mr.zwDDHqAP/IRF859e"
+        }
+      } ]
+    },
+    "user_certificate" : {
+      "format" : "nexttypes_objects",
+      "version" : "2.0",
+      "type" : "user_certificate",
+      "count" : 1,
+      "items" : [ {
+        "type" : "user_certificate",
+        "id" : "admin-certificate",
+        "cdate" : "2015-06-24T17:40:03Z",
+        "udate" : "2024-01-03T22:46:21.59485Z",
+        "backup" : false,
+        "fields" : {
+          "user" : "admin",
+          "certificate_subject" : "CN=Admin,O=NextTypes"
+        }
+      } ]
+    }
+  }
 }

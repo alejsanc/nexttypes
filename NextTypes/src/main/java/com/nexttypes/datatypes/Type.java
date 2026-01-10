@@ -39,7 +39,7 @@ public class Type {
 
 	public static final String[] SYSTEM_TYPES = new String[] { "language", "language_language", "user",
 			"user_certificate", "group", "group_user", "group_language", "image_link",
-			"image_link_language" };
+			"image_link_language", "printer", "printer_job", "printer_mode", "printer_mode_language" };
 
 	protected String name;
 	protected ZonedDateTime cdate;

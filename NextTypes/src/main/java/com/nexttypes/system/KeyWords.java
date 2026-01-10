@@ -67,6 +67,7 @@ public class KeyWords {
 	public static final String CONTENT_TYPE = "content_type";
 	public static final String CONTROLLER = "controller";
 	public static final String CONTROL_PANEL = "control_panel";
+	public static final String COPIES = "copies";
 	public static final String COUNT = "count";
 	public static final String CREATE_TYPE = "create_type";
 	public static final String CREATION_DATE = "creation_date";
@@ -88,6 +89,8 @@ public class KeyWords {
 	public static final String DISALLOWED_ATTRIBUTE = "disallowed_attribute";
 	public static final String DISALLOWED_CONTENT_TYPE = "disallowed_content_type";
 	public static final String DISALLOWED_TAG = "disallowed_tag";
+	public static final String DOCUMENT = "document";
+	public static final String DOCUMENT_SENT_TO_PRINTER = "document_sent_to_printer";
 	public static final String DROP_FILTER = "drop_filter";
 	public static final String DROPPED_FIELDS = "dropped_fields";
 	public static final String DROPPED_INDEXES = "dropped_indexes";
@@ -141,6 +144,7 @@ public class KeyWords {
 	public static final String HOST = "host";
 	public static final String HTML_ALLOWED_TAGS = "html_allowed_tags";
 	public static final String HTTPS_PORT = "https_port";
+	public static final String ICON = "icon";
 	public static final String ID = "id";
 	public static final String ID_INPUT_SIZE = "id_input_size";
 	public static final String ID_NAME = "id_name";
@@ -276,6 +280,7 @@ public class KeyWords {
 	public static final String ORDER = "order";
 	public static final String OTHER_TYPES = "other_types";
 	public static final String OUT_OF_RANGE_VALUE = "out_of_range_value";
+	public static final String PAGES = "pages";
 	public static final String PARAMETER_NAME_TOO_LONG = "parameter_name_too_long";
 	public static final String PARAMETERS = "parameters";
 	public static final String PARAMETERS_ALTERED = "parameters_altered";
@@ -293,6 +298,16 @@ public class KeyWords {
 	public static final String PREVIEW_TITLE = "preview_title";
 	public static final String PREVIOUS = "previous";
 	public static final String PRIMITIVE_TYPE_WITH_THE_SAME_NAME = "primitive_type_with_the_same_name";
+	public static final String PRINTER = "printer";
+	public static final String PRINTER_ERROR = "printer_error";
+	public static final String PRINTER_JOB = "printer_job";
+	public static final String PRINTER_NOT_FOUND = "printer_not_found";
+	public static final String PRINT_EVENTS_TITLE = "print_events_title";
+	public static final String PRINT_OBJECT_TITLE = "print_object_title";
+	public static final String PRINT_OBJECTS_TITLE = "print_objects_title";
+	public static final String PRINT_PREVIEW_TITLE = "print_preview_title";
+	public static final String PRINT_TYPE_TITLE = "print_type_title";
+	public static final String PRINT_TYPES_TITLE = "print_types_title";
 	public static final String PUB_DATE = "pub_date";
 	public static final String QRCODE = "qrcode";
 	public static final String RANGE = "range";
@@ -318,6 +333,7 @@ public class KeyWords {
 	public static final String SETTINGS = "settings";
 	public static final String SETTINGS_DIRECTORY = "settings_directory";
 	public static final String SHOW_CONTROL_PANEL = "show_control_panel";
+	public static final String SHOW_DEFAULT = "show_default";
 	public static final String SHOW_HEADER = "show_header";
 	public static final String SHOW_ID = "show_id";
 	public static final String SHOW_INSERT_FORM_BUTTON = "show_insert_form_button";

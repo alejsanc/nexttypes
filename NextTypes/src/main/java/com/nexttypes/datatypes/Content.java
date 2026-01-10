@@ -83,6 +83,14 @@ public class Content implements Serializable {
 	public LinkedHashMap<String, String> getHeaders() {
 		return headers;
 	}
+	
+	public String getHeader(String header) {
+		return headers.get(header);
+	}
+	
+	public String getHeader(HTTPHeader header) {
+		return headers.get(header.toString());
+	}
 
 	public void setContentType(String contentType) {
 		this.contentType = contentType;

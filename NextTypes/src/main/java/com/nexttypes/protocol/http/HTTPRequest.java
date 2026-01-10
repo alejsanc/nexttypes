@@ -27,7 +27,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -357,7 +356,15 @@ public class HTTPRequest {
 		}
 	}
 	
+	public NXObject readObject(String type, LinkedHashMap<String, TypeField> typeFields) {
+		return readObject(type, null, typeFields);
+	}
+	
 	public NXObject readObject(LinkedHashMap<String, TypeField> typeFields) {
+		return readObject(type, id, typeFields);
+	}
+	
+	public NXObject readObject(String type, String id, LinkedHashMap<String, TypeField> typeFields) {
 		
 		checkFields(typeFields);
 		
@@ -814,6 +821,10 @@ public class HTTPRequest {
 
 	public Tuple getParameters() {
 		return parameters;
+	}
+	
+	public Tuple getFields() {
+		return fields;
 	}
 
 	public ZonedDateTime getADate() {

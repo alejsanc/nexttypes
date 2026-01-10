@@ -119,6 +119,11 @@
     		<artifactId>openpdf-html</artifactId>
     		<version>3.0.0</version>
 		</dependency>
+		<dependency>
+    		<groupId>org.cups4j</groupId>
+    		<artifactId>cups4j</artifactId>
+    		<version>0.7.9</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>NextTypes</finalName>

@@ -50,7 +50,7 @@ public class Console {
 	public static final String EXISTING_TYPES_ACTION = "existing-types-action";
 	public static final String EXISTING_OBJECTS_ACTION = "existing-objects-action";
 	public static final String INCLUDE_OBJECTS = "include-objects";
-	public static final String VIRUS_SCAN = "virus-scan";
+	public static final String SCAN_VIRUS = "scan-virus";
 
 	protected Options options;
 	protected Context context;
@@ -87,7 +87,7 @@ public class Console {
 					.build()
 			);
 			
-			methods.addOption(new Option("vs", VIRUS_SCAN, false, "Virus scan."));
+			methods.addOption(new Option("sv", SCAN_VIRUS, false, "Scan virus."));
 			methods.addOption(new Option("h", KeyWords.HELP, false, "Help."));
 			methods.setRequired(true);
 			options.addOptionGroup(methods);
@@ -171,8 +171,8 @@ public class Console {
 				method = IMPORT_OBJECTS;
 			} else if (command.hasOption(EXPORT_OBJECTS)) {
 				method = EXPORT_OBJECTS;
-			} else if (command.hasOption(VIRUS_SCAN)) {
-				method = VIRUS_SCAN;
+			} else if (command.hasOption(SCAN_VIRUS)) {
+				method = SCAN_VIRUS;
 			} else {
 				printHelp();
 				return;
@@ -186,7 +186,7 @@ public class Console {
 			NodeMode mode = null;
 
 			switch (method) {
-			case VIRUS_SCAN:
+			case SCAN_VIRUS:
 				mode = NodeMode.READ;
 				break;
 				
@@ -212,7 +212,7 @@ public class Console {
 				String[] objects = null;
 
 				switch (method) {
-				case VIRUS_SCAN:
+				case SCAN_VIRUS:
 					type = command.getOptionValue(KeyWords.TYPE);
 					objects = command.getOptionValues(KeyWords.OBJECTS);
 					

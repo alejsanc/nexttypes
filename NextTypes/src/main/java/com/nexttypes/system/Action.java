@@ -63,6 +63,8 @@ public @interface Action {
 	public static final String LOGIN_FORM = "login_form";
 	public static final String LOGOUT = "logout";
 	public static final String PREVIEW = "preview";
+	public static final String PRINT = "print";
+	public static final String PRINT_FORM = "print_form";
 	public static final String PUT = "put";
 	public static final String RENAME = "rename";
 	public static final String RENAME_FIELD = "rename_field";

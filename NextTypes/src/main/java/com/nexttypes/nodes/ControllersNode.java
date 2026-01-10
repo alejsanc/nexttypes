@@ -228,7 +228,7 @@ public class ControllersNode extends Node {
 	
 	@Override
 	public void scanVirus(String type, String[] objects) {
-		getController(type).scanVirus(type, objects);
+		getController(type).scanVirus(objects);
 	}
 
 	@Override
@@ -640,7 +640,7 @@ public class ControllersNode extends Node {
 
 	@Override
 	public String getFieldContentType(String type, String field) {
-		return getController(type).getFieldContentType(type, field);
+		return getController(type).getFieldContentType(field);
 	}
 
 	@Override
@@ -1067,7 +1067,7 @@ public class ControllersNode extends Node {
 	
 	@Override
 	public String[] getBinaryFieldsName(String type) {
-		return getController(type).getBinaryFieldsName(type);
+		return getController(type).getBinaryFieldsName();
 	}
 
 	@Override

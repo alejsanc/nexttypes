@@ -422,6 +422,10 @@ public class XML extends PGobject {
 			}
 			return this;
 		}
+		
+		public String getText() {
+			return element.getTextContent();
+		}
 
 		public Element prependText(Object text) {
 			if (text != null) {
@@ -593,6 +597,18 @@ public class XML extends PGobject {
 			NodeList nodes = element.getElementsByTagName(tag);
 			return nodes != null && nodes.getLength() > 0 ? 
 					new Element((org.w3c.dom.Element) nodes.item(0)) : null;
+		}
+		
+		public Element getElementByClassName(String className) {
+			try {
+				XPathFactory factory = XPathFactory.newInstance();
+				XPath path = factory.newXPath();
+				XPathExpression expression = path.compile("//*[contains(concat(' ', @class, ' '), ' " + className + " ')]");
+				NodeList nodes = (NodeList) expression.evaluate(element, XPathConstants.NODESET);
+				return nodes != null && nodes.getLength() > 0 ? new Element((org.w3c.dom.Element) nodes.item(0)) : null;
+			} catch (XPathExpressionException e) {
+				throw new NXException(e);
+			}
 		}
 
 		public Element clone() {

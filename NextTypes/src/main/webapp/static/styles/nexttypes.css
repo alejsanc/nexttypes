@@ -261,6 +261,11 @@ p {
 	margin-left: 5px;
 }
 
+#pdf-view {
+	width: 100%;
+	height: 500px;
+}
+
 .select {
 	display: block;
 	margin-top: 7px;

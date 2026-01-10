@@ -216,6 +216,10 @@ public abstract class View extends Module {
 	public Content renameForm(String type, String lang, String view) {
 		throw new NotImplementedException();
 	}
+	
+	public Content printForm(String type, String id, String lang, String view) {
+		throw new NotImplementedException();
+	}
 
 	public Content filterComponent(String type, String field, String lang, String view, int count) {
 		throw new NotImplementedException();

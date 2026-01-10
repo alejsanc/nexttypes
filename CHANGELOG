@@ -1,6 +1,7 @@
 Version 2.0
 	Add PDF View.
 	Add imageThumbnail option to Node methods.
+	Add Print System
 	Update software dependencies.
 
 Version 1.6

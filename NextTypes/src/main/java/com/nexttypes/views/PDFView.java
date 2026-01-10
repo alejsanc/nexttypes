@@ -13,6 +13,7 @@ import com.nexttypes.datatypes.HTML;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.ViewNotFoundException;
+import com.nexttypes.protocol.http.HTTPHeader;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.system.Loader;
 
@@ -93,6 +94,8 @@ public class PDFView extends View {
 		document.removeAnchors();
 		ITextRenderer renderer = new ITextRenderer();
 		byte[] value = renderer.createPDF(document.getDocument());
-		return new Content(value, Format.PDF);
+		Content content = new Content(value, Format.PDF);
+		content.setHeader(HTTPHeader.NEXTTYPES_TITLE, document.getTitle().getText());
+		return content;
 	}
 }

@@ -156,6 +156,7 @@ public class HTMLView extends View {
 	public static final String TYPE_MENU = "type-menu";
 	public static final String CONTROL_PANEL = "control-panel";
 	public static final String VALIDATORS = "validators";
+	public static final String PDF_VIEW = "pdf-view";
 
 	//Classes
 	public static final String ADD_FILTER = "add-filter";
@@ -253,7 +254,7 @@ public class HTMLView extends View {
 
 				+ " where"
 					+ " il.id || ':' || ill.language in(?)";
-						
+							
 	protected HTML document;
 	protected Element head;
 	protected Element main;
@@ -1319,14 +1320,15 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		boolean showHeader = typeSettings.getActionBoolean(type, Action.INSERT, KeyWords.SHOW_HEADER);
 		boolean showProgress = typeSettings.getActionBoolean(type, Action.INSERT, KeyWords.SHOW_PROGRESS);
 		boolean showRange = typeSettings.getActionBoolean(type, Action.INSERT, KeyWords.SHOW_RANGE);
-		
+		boolean showDefault = typeSettings.getActionBoolean(type, Action.INSERT, KeyWords.SHOW_DEFAULT);
+				
 		return insertForm(type, fields, lang, view, ref, showType, showId, showHeader, showProgress,
-				showRange);
+				showRange, showDefault);
 	}
 	
 	public Element insertForm(String type, String[] fields, String lang, String view,
 			FieldReference ref, boolean showType, boolean showId, boolean showHeader,
-			boolean showProgress, boolean showRange) {	
+			boolean showProgress, boolean showRange, boolean showDefault) {	
 		
 		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(type, fields);
 		
@@ -1377,7 +1379,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 			}
 		}
 		
-		boolean appendFieldAnchor = permissions.isAllowed(type, Action.GET_FIELD_DEFAULT);
+		boolean appendFieldAnchor = showDefault && permissions.isAllowed(type, Action.GET_FIELD_DEFAULT);
 		
 		for (Entry<String, TypeField> entry : typeFields.entrySet()) {
 			String field = entry.getKey();
@@ -1413,8 +1415,9 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		}
 		
 		String actionName = languageSettings.getActionName(type, Action.INSERT);
+		String actionIcon = typeSettings.getActionIcon(type, Action.INSERT, Icon.PLUS);
 
-		Element actionButton = form.appendElement(button(actionName, Action.INSERT, Icon.PLUS,
+		Element actionButton = form.appendElement(button(actionName, Action.INSERT, actionIcon,
 				SUBMIT_FORM));
 		if (!permissions.isAllowed(type, Action.INSERT) ||
 				(ref != null && !permissions.isAllowedToMakeReference(type, null, ref))) {
@@ -1439,12 +1442,12 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	public Element form(String type, String id, String field, String lang, String view) {
 		return form(url(type, id, field, lang, view))
 				.setAttribute(DATA_STRINGS_ACCEPT, languageSettings.gts(type, KeyWords.ACCEPT))
-				.setAttribute(DATA_STRINGS_CANCEL, languageSettings.gts(type, KeyWords.CANCEL));
+				.setAttribute(DATA_STRINGS_CANCEL, languageSettings.gts(type, KeyWords.CANCEL));		
 	}
 
 	public Element form(String action) {
 		Element form = document.createElement(HTML.FORM).setAttribute(HTML.ACTION, action);
-
+		
 		if (request.isSecure()) {
 			form.appendElement(input(HTML.HIDDEN, KeyWords.SESSION, KeyWords.SESSION, request.getSessionToken()));
 		}
@@ -3892,7 +3895,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 					+ refParameter, Icon.MAGNIFYING_GLASS));
 		}
 
-		if (!Action.INSERT.equals(form) && permissions.isAllowed(type, Action.INSERT_FORM)
+		if (type != null && !Action.INSERT.equals(form) && permissions.isAllowed(type, Action.INSERT_FORM)
 				&& ((ref == null || permissions.isAllowedToMakeReference(type, id, ref))
 						|| typeSettings.getFieldBoolean(type, ref.getReferencingField(), 
 								KeyWords.SHOW_INSERT_FORM_BUTTON))) {
@@ -3901,7 +3904,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 					url(type, lang, view) + formParameter(Action.INSERT) + refParameter, Icon.PLUS));
 		}
 
-		if (permissions.isAllowed(type, Action.SELECT) && (id != null || form != null
+		if (type != null && permissions.isAllowed(type, Action.SELECT) && (id != null || form != null
 				|| component != null || request.isInfo() || request.isPreview() 
 				|| request.isCalendar())) {
 
@@ -3910,15 +3913,17 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 			elements.add(iconAnchor(languageSettings.gts(type, KeyWords.LIST), url, Icon.LIST));
 		}
 
-		if (typeSettings.getTypeBoolean(type, KeyWords.SHOW_PREVIEW) && !request.isPreview()
+		if (type != null && typeSettings.getTypeBoolean(type, KeyWords.SHOW_PREVIEW) && !request.isPreview()
 				&& permissions.isAllowed(type, Action.PREVIEW)) {
 			
 			String url = url(type, lang, view) + previewParameter() + searchParameter;
 							
-			elements.add(iconAnchor(languageSettings.getActionName(type, Action.PREVIEW), url, Icon.LIST_RICH));
+			elements.add(iconAnchor(languageSettings.getActionName(type, Action.PREVIEW), url,
+					Icon.LIST_RICH));
 		}
 
-		if (id == null && !Action.ALTER.equals(form) && permissions.isAllowed(type, Action.ALTER_FORM)) {
+		if (type != null && id == null && !Action.ALTER.equals(form)
+				&& permissions.isAllowed(type, Action.ALTER_FORM)) {
 			elements.add(iconAnchor(languageSettings.getActionName(type, Action.ALTER),
 					url(type, lang, view) + formParameter(Action.ALTER), Icon.PENCIL));
 		}
@@ -3929,29 +3934,34 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 					url(type, id, lang, view) + formParameter(Action.UPDATE), Icon.PENCIL));
 		}
 
-		if (!request.isInfo() && permissions.isAllowed(type, Action.GET_TYPE)) {
+		if (type != null && !request.isInfo() && permissions.isAllowed(type, Action.GET_TYPE)) {
 			elements.add(iconAnchor(languageSettings.gts(type, KeyWords.TYPE), url(type, lang, view)
 					+ parameter(KeyWords.INFO), Icon.INFO));
 		}
 		
-		if (component == null && request.getForm() == null &&
-				typeSettings.getView(type, Format.PDF) != null) {
+		if (component == null && form == null && typeSettings.getView(type, Format.PDF) != null) {
 			elements.add(pdfIconAnchor(request.getURL()));
+			
+			if (permissions.isAllowed(type, id, Action.PRINT_FORM)) {
+				elements.add(printIconAnchor(type, request.getURL()));
+			}
 		}
 		
-		String rssSelect = typeSettings.gts(type, Constants.RSS_SELECT);
-
-		if (rssSelect != null) {
-			elements.add(rssIconAnchor(type, lang, ref));
+		if (type != null) {
+			String rssSelect = typeSettings.gts(type, Constants.RSS_SELECT);
+	
+			if (rssSelect != null) {
+				elements.add(rssIconAnchor(type, lang, ref));
+			}
+	
+			String icalendarSelect = typeSettings.gts(type, Constants.ICALENDAR_SELECT);
+	
+			if (icalendarSelect != null) {
+				elements.add(icalendarIconAnchor(type, lang, ref));
+			}
 		}
 
-		String icalendarSelect = typeSettings.gts(type, Constants.ICALENDAR_SELECT);
-
-		if (icalendarSelect != null) {
-			elements.add(icalendarIconAnchor(type, lang, ref));
-		}
-
-		if (!request.isCalendar() && permissions.isAllowed(type, Action.CALENDAR)) {
+		if (type != null && !request.isCalendar() && permissions.isAllowed(type, Action.CALENDAR)) {
 			String calendarSelect = typeSettings.gts(type, Constants.CALENDAR_SELECT);
 
 			if (calendarSelect != null) {
@@ -3981,8 +3991,16 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	}
 	
 	public Element pdfIconAnchor(URL url) {
-		url.setParameter(KeyWords.VIEW, Format.PDF.toString());
-		return iconAnchor(PDF, url.toString(), Icon.FILE);
+		URL pdfURL = new URL(url.toString());
+		pdfURL.setParameter(KeyWords.VIEW, Format.PDF.toString());
+		return iconAnchor(PDF, pdfURL.toString(), Icon.FILE);
+	}
+	
+	public Element printIconAnchor(String type, URL url) {
+		URL printURL = new URL(url.toString());
+		printURL.setParameter(KeyWords.FORM, Action.PRINT);
+		String actionName = languageSettings.getActionName(type, Action.PRINT);
+		return iconAnchor(actionName, printURL.toString(), Icon.PRINT);
 	}
 		
 	public Element booleanOutput(Object value) {
@@ -4416,13 +4434,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		Element typeMenu = document.getElementById(TYPE_MENU);
 
 		if (typeMenu != null) {
-			
-			if (type != null) {
-				typeMenu.appendElements(typeMenuElements(type, id, lang, view, ref, search, component));
-			} else if (request.getForm() == null 
-					&& typeSettings.getView(null, Format.PDF.toString()) != null) {
-				typeMenu.appendElement(pdfIconAnchor(request.getURL()));
-			}
+			typeMenu.appendElements(typeMenuElements(type, id, lang, view, ref, search, component));
 		}
 	}
 	
@@ -4821,6 +4833,71 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		date = date.withDayOfMonth(day);
 		date = date.plusDays(7 - date.getDayOfWeek().getValue());
 		return date;
+	}
+	
+	@Override
+	public Content printForm(String type, String id, String lang, String view) {
+		loadTemplate(type, lang, view);
+		
+		String setting = null;
+		String name = null;
+		
+		if (type != null) {
+			name = languageSettings.getTypeName(type);
+		}
+		
+		if (id != null) {
+			name += "::" + nextNode.getName(type, id, lang);
+		}
+		
+		if (request.isPreview()) {
+			setting = KeyWords.PRINT_PREVIEW_TITLE;
+		} else if (type == null) {
+			setting = KeyWords.PRINT_TYPES_TITLE;
+		} else if (id == null) {
+			if (request.isInfo()) {
+				setting = KeyWords.PRINT_TYPE_TITLE;
+			} else if (request.isCalendar()) {
+				setting = KeyWords.PRINT_EVENTS_TITLE;
+			} else {
+				setting = KeyWords.PRINT_OBJECTS_TITLE;
+			}
+		} else {
+			setting = KeyWords.PRINT_OBJECT_TITLE;
+		}
+		
+		String title = languageSettings.gts(type, setting);
+		String[] fields = typeSettings.getActionStringArray(type, Action.PRINT, KeyWords.FIELDS);
+		
+		setTitle(Utils.format(title, name));
+		
+		URL url = request.getURL();
+		url.setParameter(KeyWords.FORM, null);
+		url.setParameter(KeyWords.VIEW, Format.PDF.toString());
+				
+		main.appendElement(printForm(type, fields, url, lang, view));
+						
+		main.appendElement(HTML.BR);
+		
+		main.appendElement(pdfView(url));
+		
+		return render(type);
+	}
+	
+	public Element pdfView(URL url) {
+		return document.createElement(HTML.OBJECT).setId(PDF_VIEW).setAttribute(HTML.DATA, url.toString())
+				.setAttribute(HTML.TYPE, Format.PDF.getContentType());
+	}
+	
+	public Element printForm(String type, String[] fields, URL url, String lang, String view) {
+				
+		Element form = insertForm(KeyWords.PRINTER_JOB, fields, lang, view, null, false, false,
+				false, false, false, false);
+		form.setAttribute(KeyWords.ACTION, url.toString());
+		Element printButton  = form.getElementByClassName(SUBMIT_FORM);
+		printButton.setAttribute(HTML.VALUE, Action.PRINT);
+		
+		return form;
 	}
 	
 	public void setPrint(boolean print) {

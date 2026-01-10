@@ -114,7 +114,7 @@ public class URL {
 	public void setParameters(List<NameValuePair> parameters) {
 		url.setParameters(parameters);
 	}
-
+	
 	public String getRoot() {
 		URIBuilder root = new URIBuilder();
 		root.setScheme(url.getScheme());

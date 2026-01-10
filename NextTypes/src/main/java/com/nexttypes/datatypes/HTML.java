@@ -133,6 +133,8 @@ public class HTML extends XML {
 	public static final String NOSCRIPT = "noscript";
 	public static final String SRCSET = "srcset";
 	public static final String SIZES = "sizes";
+	public static final String OBJECT = "object";
+	public static final String DATA = "data";
 
 	public HTML() {
 		super();

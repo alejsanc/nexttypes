@@ -176,7 +176,12 @@ public class HTTPServlet extends HttpServlet {
 
 		try (View view = getView(req)) {
 			try {
-				if (type == null) {
+				
+				if (Action.PRINT.equals(form) ) {
+					
+					content = view.printForm(req.getType(), req.getId(), req.getLang(), req.getView());
+					
+				} else if (type == null) {
 
 					if (Action.CREATE.equals(form)) {
 						content = view.createForm(req.getLang(), req.getView());
@@ -324,7 +329,9 @@ public class HTTPServlet extends HttpServlet {
 		}
 	}
 
-	protected Content post(HTTPRequest req, HttpServletResponse response) throws IOException {
+	protected Content post(HTTPRequest req, HttpServletResponse response) throws IOException,
+		URISyntaxException {
+		
 		NodeMode mode = null;
 		Content content = null;
 
@@ -342,6 +349,19 @@ public class HTTPServlet extends HttpServlet {
 			if (content != null) {
 				return content;
 			}
+			
+			mode = NodeMode.WRITE;
+			break;
+		
+		case Action.PRINT:
+			content = checkMaxInsertRequests(KeyWords.PRINTER_JOB, req);
+			
+			if (content != null) {
+				return content;
+			}
+			
+			mode = NodeMode.WRITE;
+			break;
 			
 		case Action.UPDATE:
 		case Action.UPDATE_ID:
@@ -461,6 +481,23 @@ public class HTTPServlet extends HttpServlet {
 
 			case Action.LOGOUT:
 				content = logout(req, languageSettings);
+				break;
+			
+			case Action.PRINT:
+				content = get(req, response);
+				
+				fields = req.getTypeSettings().getActionStringArray(req.getType(),
+						Action.PRINT, KeyWords.FIELDS);
+				typeFields = nextNode.getTypeFields(KeyWords.PRINTER_JOB, fields);
+				
+				object = req.readObject(KeyWords.PRINTER_JOB, typeFields);
+				object.put(KeyWords.NAME, content.getHeader(HTTPHeader.NEXTTYPES_TITLE));
+				object.put(KeyWords.DOCUMENT, content.getValue());
+								
+				nextNode.insert(object);
+				content = new Content(languageSettings.gts(req.getType(),
+						KeyWords.DOCUMENT_SENT_TO_PRINTER));
+				insertRequest(KeyWords.PRINTER_JOB, req);
 				break;
 
 			default:
@@ -732,7 +769,7 @@ public class HTTPServlet extends HttpServlet {
 
 		return content;
 	}
-
+	
 	protected Content options() {
 		Content content = new Content();
 		content.setHeader(HTTPHeader.ALLOW, "OPTIONS, GET, POST, PUT, PROPFIND, REPORT");
@@ -1207,9 +1244,11 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected Content checkMaxInsertRequests(HTTPRequest req) {
+		return checkMaxInsertRequests(req.getType(), req);
+	}
+	
+	protected Content checkMaxInsertRequests(String type, HTTPRequest req) {
 		Content content = null;
-		
-		String type = req.getType();
 		
 		int maxInserts = req.getTypeSettings().getTypeInt32(type, KeyWords.MAX_INSERTS);
 
@@ -1290,9 +1329,11 @@ public class HTTPServlet extends HttpServlet {
 	}
 
 	protected void insertRequest(HTTPRequest req) {
-		
-		String type = req.getType();
-		
+		insertRequest(req.getType(), req);
+	}
+	
+	protected void insertRequest(String type, HTTPRequest req) {
+				
 		int maxInserts = req.getTypeSettings().getTypeInt32(type, KeyWords.MAX_INSERTS);
 
 		if (maxInserts > 0) {
