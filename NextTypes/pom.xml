@@ -123,6 +123,12 @@
     		<groupId>org.cups4j</groupId>
     		<artifactId>cups4j</artifactId>
     		<version>0.7.9</version>
+    		<exclusions>
+				<exclusion>
+					<groupId>stax</groupId>
+					<artifactId>stax-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 	<build>
