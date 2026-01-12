@@ -4897,6 +4897,10 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		Element printButton  = form.getElementByClassName(SUBMIT_FORM);
 		printButton.setAttribute(HTML.VALUE, Action.PRINT);
 		
+		if (!permissions.isAllowed(type, Action.PRINT)) {
+			printButton.setAttribute(HTML.DISABLED);
+		}
+		
 		return form;
 	}
 	

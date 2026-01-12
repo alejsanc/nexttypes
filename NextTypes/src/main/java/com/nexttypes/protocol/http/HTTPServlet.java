@@ -484,20 +484,7 @@ public class HTTPServlet extends HttpServlet {
 				break;
 			
 			case Action.PRINT:
-				content = get(req, response);
-				
-				fields = req.getTypeSettings().getActionStringArray(req.getType(),
-						Action.PRINT, KeyWords.FIELDS);
-				typeFields = nextNode.getTypeFields(KeyWords.PRINTER_JOB, fields);
-				
-				object = req.readObject(KeyWords.PRINTER_JOB, typeFields);
-				object.put(KeyWords.NAME, content.getHeader(HTTPHeader.NEXTTYPES_TITLE));
-				object.put(KeyWords.DOCUMENT, content.getValue());
-								
-				nextNode.insert(object);
-				content = new Content(languageSettings.gts(req.getType(),
-						KeyWords.DOCUMENT_SENT_TO_PRINTER));
-				insertRequest(KeyWords.PRINTER_JOB, req);
+				content = print(req, response, nextNode, languageSettings);
 				break;
 
 			default:
@@ -523,6 +510,29 @@ public class HTTPServlet extends HttpServlet {
 			nextNode.commit();
 		}
 
+		return content;
+	}
+	
+	protected Content print(HTTPRequest req, HttpServletResponse response, Node nextNode,
+			LanguageSettings languageSettings) throws IOException, URISyntaxException {
+		
+		String type = req.getType();
+		nextNode.getPermissions(type).checkPermissions(type, Action.PRINT);
+		
+		Content content = get(req, response);
+		
+		String[] fields = req.getTypeSettings().getActionStringArray(req.getType(),
+				Action.PRINT, KeyWords.FIELDS);
+		LinkedHashMap<String, TypeField> typeFields = nextNode.getTypeFields(KeyWords.PRINTER_JOB, fields);
+		
+		NXObject object = req.readObject(KeyWords.PRINTER_JOB, typeFields);
+		object.put(KeyWords.NAME, content.getHeader(HTTPHeader.NEXTTYPES_TITLE));
+		object.put(KeyWords.DOCUMENT, content.getValue());
+						
+		nextNode.insert(object);
+		content = new Content(languageSettings.gts(req.getType(),
+				KeyWords.DOCUMENT_SENT_TO_PRINTER));
+		insertRequest(KeyWords.PRINTER_JOB, req);
 		return content;
 	}
 	
