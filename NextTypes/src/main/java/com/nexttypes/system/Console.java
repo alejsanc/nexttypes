@@ -16,12 +16,13 @@
 
 package com.nexttypes.system;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.help.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
@@ -62,42 +63,42 @@ public class Console {
 
 			options = new Options();
 
-			OptionGroup methods = new OptionGroup();
-			methods.addOption(new Option("b", KeyWords.BACKUP, false, "Backup types and objects."));
-			methods.addOption(new Option("it", IMPORT_TYPES, false, "Import types."));
-			methods.addOption(new Option("io", IMPORT_OBJECTS, false, "Import objects."));
+			OptionGroup actions = new OptionGroup();
+			actions.addOption(new Option("b", KeyWords.BACKUP, false, "Backup types and objects."));
+			actions.addOption(new Option("it", IMPORT_TYPES, false, "Import types."));
+			actions.addOption(new Option("io", IMPORT_OBJECTS, false, "Import objects."));
 			
-			methods.addOption(Option.builder("et")
+			actions.addOption(Option.builder("et")
 					.longOpt(EXPORT_TYPES)
 					.hasArgs()
 					.valueSeparator(',')
 					.optionalArg(true)
 					.desc("Export types.")
 					.argName(KeyWords.TYPES)
-					.build()
+					.get()
 			);
 			
-			methods.addOption(Option.builder("eo")
+			actions.addOption(Option.builder("eo")
 					.longOpt(EXPORT_OBJECTS)
 					.hasArgs()
 					.valueSeparator(',')
 					.optionalArg(true)
 					.desc("Export objects.")
 					.argName(KeyWords.OBJECTS)
-					.build()
+					.get()
 			);
 			
-			methods.addOption(new Option("sv", SCAN_VIRUS, false, "Scan virus."));
-			methods.addOption(new Option("h", KeyWords.HELP, false, "Help."));
-			methods.setRequired(true);
-			options.addOptionGroup(methods);
+			actions.addOption(new Option("sv", SCAN_VIRUS, false, "Scan virus."));
+			actions.addOption(new Option("h", KeyWords.HELP, false, "Help."));
+			actions.setRequired(true);
+			options.addOptionGroup(actions);
 
 			options.addOption(Option.builder("s")
 					.longOpt(KeyWords.SETTINGS)
 					.hasArg()
 					.desc("Settings directory.")
 					.argName(KeyWords.SETTINGS)
-					.build()
+					.get()
 			);
 			
 			options.addOption("f", KeyWords.FULL, false, "Make a full backup.");
@@ -107,7 +108,7 @@ public class Console {
 					.hasArg()
 					.desc("Existing types action.")
 					.argName(KeyWords.ACTION)
-					.build()
+					.get()
 			);
 			
 			options.addOption(Option.builder("eoa")
@@ -115,7 +116,7 @@ public class Console {
 					.hasArg()
 					.desc("Existing objects action.")
 					.argName(KeyWords.ACTION)
-					.build()
+					.get()
 			);
 			
 			options.addOption(Option.builder("t")
@@ -123,7 +124,7 @@ public class Console {
 					.hasArg()
 					.desc("Type name.")
 					.argName(KeyWords.TYPE)
-					.build()
+					.get()
 			);
 			
 			options.addOption(Option.builder("o")
@@ -132,7 +133,7 @@ public class Console {
 					.valueSeparator(',')
 					.desc("Objects Id.")
 					.argName(KeyWords.OBJECTS)
-					.build()
+					.get()
 			);
 			
 			options.addOption("ino", INCLUDE_OBJECTS, false, "Include objects.");
@@ -142,7 +143,7 @@ public class Console {
 					.hasArg()
 					.desc("Query order.")
 					.argName(KeyWords.ORDER)
-					.build()
+					.get()
 			);
 			
 			options.addOption(Option.builder("l")
@@ -150,7 +151,7 @@ public class Console {
 					.hasArg()
 					.desc("Language.")
 					.argName(KeyWords.LANG)
-					.build()
+					.get()
 			);
 			
 			String method = null;
@@ -287,8 +288,12 @@ public class Console {
 
 	protected void printHelp() {
 
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp(PROGRAM_NAME, options, true);
+		try {
+			HelpFormatter formatter = HelpFormatter.builder().setShowSince(false).get();
+			formatter.printHelp(PROGRAM_NAME, null, options, null, true);
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
 
 	}
 

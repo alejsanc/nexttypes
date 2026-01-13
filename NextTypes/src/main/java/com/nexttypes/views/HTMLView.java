@@ -1168,7 +1168,8 @@ public class HTMLView extends View {
 			humanReadableBytes = bytes + " B";
 		} else {
 			if (humanReadableBytesFormat == null) {
-				humanReadableBytesFormat = (DecimalFormat) DecimalFormat.getInstance(new Locale(lang));
+				humanReadableBytesFormat = (DecimalFormat) DecimalFormat
+						.getInstance(Locale.forLanguageTag(lang));
 				humanReadableBytesFormat.applyPattern("#.## ");
 			}
 
@@ -3689,7 +3690,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	
 	public Object localeNumeric(Object value, String lang) {
 		if (value != null) {
-			DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale(lang));
+			DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.forLanguageTag(lang));
 			char separator = symbols.getDecimalSeparator();
 				
 			if (separator != '.') {
@@ -4723,7 +4724,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	}
 	
 	public String printDateSelect(String lang, LocalDate date) {
-		Locale locale = new Locale(lang);
+		Locale locale = Locale.forLanguageTag(lang);
 		Month month = date.getMonth();
 		
 		return date.getYear() + " - " + month.getDisplayName(TextStyle.FULL, locale);
@@ -4732,7 +4733,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	public Element dateSelect(String type, String lang, String view, FieldReference ref, LocalDate date) {
 		Element navigator = document.createElement(HTML.DIV);
 
-		Locale locale = new Locale(lang);
+		Locale locale = Locale.forLanguageTag(lang);
 
 		int currentYear = date.getYear();
 		Month currentMonth = date.getMonth();
@@ -4779,7 +4780,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	public Element monthHead(String lang) {
 		Element head = document.createElement(HTML.THEAD);
 
-		Locale locale = new Locale(lang);
+		Locale locale = Locale.forLanguageTag(lang);
 
 		Element tr = head.appendElement(HTML.TR);
 

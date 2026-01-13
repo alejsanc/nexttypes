@@ -137,7 +137,7 @@ public class XML extends PGobject {
 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setAttribute("http://apache.org/xml/properties/locale", new Locale(lang));
+			factory.setAttribute("http://apache.org/xml/properties/locale", Locale.forLanguageTag(lang));
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			builder.setErrorHandler(new ErrorHandler() {
 
