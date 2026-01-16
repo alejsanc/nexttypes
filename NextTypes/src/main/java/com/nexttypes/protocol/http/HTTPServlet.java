@@ -42,7 +42,6 @@ import org.apache.http.client.utils.URIBuilder;
 
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Content;
-import com.nexttypes.datatypes.Message;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.ObjectInfo;
 import com.nexttypes.datatypes.PT;
@@ -63,6 +62,7 @@ import com.nexttypes.exceptions.InvalidUserOrPasswordException;
 import com.nexttypes.exceptions.MethodNotAllowedException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.NotFoundException;
+import com.nexttypes.exceptions.TypeException;
 import com.nexttypes.exceptions.UnauthorizedException;
 import com.nexttypes.exceptions.ViewNotFoundException;
 import com.nexttypes.interfaces.Stream;
@@ -559,8 +559,8 @@ public class HTTPServlet extends HttpServlet {
 			HttpSession session = req.getSession();
 			session.setAttribute(KeyWords.AUTH, new Auth(user, groups, true));
 
-			content = new Content(languageSettings.gts(KeyWords.SUCCESSFUL_LOGIN) + ".");
-			logger.info(this, user, remoteAddress, new Message(KeyWords.SUCCESSFUL_LOGIN, user));
+			content = new Content(languageSettings.gts(KeyWords.SUCCESSFUL_LOGIN));
+			logger.info(user, remoteAddress, new NXException(KeyWords.SUCCESSFUL_LOGIN));
 		} else {
 			authError(remoteAddress);
 			throw new InvalidUserOrPasswordException();
@@ -579,7 +579,7 @@ public class HTTPServlet extends HttpServlet {
 		if (auth != null) {
 			session.removeAttribute(KeyWords.AUTH);
 			content = new Content(languageSettings.gts(KeyWords.SUCCESSFUL_LOGOUT));
-			logger.info(this, auth.getUser(), remoteAddress, new Message(KeyWords.SUCCESSFUL_LOGOUT));
+			logger.info(auth.getUser(), remoteAddress, new NXException(KeyWords.SUCCESSFUL_LOGOUT));
 		} else {
 			throw new NXException(KeyWords.USER_NOT_LOGGED_IN);
 		}
@@ -1280,14 +1280,13 @@ public class HTTPServlet extends HttpServlet {
 					} else {
 				
 						if (requests.requests >= maxInserts) {
-							String message = req.getLanguageSettings().gts(type,
-									KeyWords.MAX_INSERTS_EXCEEDED);
-
+							NXException exception = new NXException(type, KeyWords.MAX_INSERTS_EXCEEDED);
+							String message = exception.getMessage(req.getLanguageSettings());
+							
 							content = new Content(message, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
 
 							if (!requests.logged) {
-								logger.severe(this, req.getAuth().getUser(), remoteAddress,
-									new Message(KeyWords.MAX_INSERTS_EXCEEDED));
+								logger.severe(req.getAuth().getUser(), remoteAddress, exception);
 								requests.logged = true;
 							}
 						}

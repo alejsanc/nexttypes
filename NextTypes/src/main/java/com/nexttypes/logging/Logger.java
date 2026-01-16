@@ -18,7 +18,6 @@ package com.nexttypes.logging;
 
 import java.util.logging.Level;
 
-import com.nexttypes.datatypes.Message;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.LanguageSettings;
@@ -64,18 +63,6 @@ public class Logger extends java.util.logging.Logger {
 		log(Level.SEVERE, user, remoteAddress, e);
 	}
 
-	public void info(Object source, String user, String remoteAddress, Message message) {
-		log(Level.INFO, source, user, remoteAddress, message);
-	}
-
-	public void warning(Object source, String user, String remoteAddress, Message message) {
-		log(Level.WARNING, source, user, remoteAddress, message);
-	}
-
-	public void severe(Object source, String user, String remoteAddress, Message message) {
-		log(Level.SEVERE, source, user, remoteAddress, message);
-	}
-
 	public void log(Level level, Object source, String user, String remoteAddress, String message) {
 		log(level, source.getClass().getName(), user, remoteAddress, message);
 	}
@@ -99,10 +86,6 @@ public class Logger extends java.util.logging.Logger {
 		}
 
 		log(level, sourceClass, user, remoteAddress, message);
-	}
-
-	public void log(Level level, Object source, String user, String remoteAddress, Message message) {
-		log(level, source.getClass().getName(), user, remoteAddress, message.getMessage(languageSettings));
 	}
 
 	public void log(Level level, String sourceClass, String user, String remoteAddress, String message) {
