@@ -19,7 +19,7 @@ package com.nexttypes.controllers;
 import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Image;
-import com.nexttypes.exceptions.ObjectException;
+import com.nexttypes.exceptions.ObjectFieldException;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.KeyWords;
@@ -28,7 +28,6 @@ import com.nexttypes.system.Controller;
 public class ImageController extends Controller {
 
 	public final String RESIZE = "resize";
-	public final String IMAGE_NOT_FOUND = "image_not_found";
 	public final String IMAGE_SUCCESSFULLY_RESIZED = "image_successfully_resized";
 	public final String IMAGES_SUCCESSFULLY_RESIZED = "images_successfully_resized";
 
@@ -46,7 +45,7 @@ public class ImageController extends Controller {
 			if (image != null) {
 				updateField(id, KeyWords.IMAGE, image.resize(width, height));
 			} else {
-				throw new ObjectException(type, id, IMAGE_NOT_FOUND);
+				throw new ObjectFieldException(type, id, KeyWords.IMAGE, KeyWords.EMPTY_FIELD);
 			}
 		}
 

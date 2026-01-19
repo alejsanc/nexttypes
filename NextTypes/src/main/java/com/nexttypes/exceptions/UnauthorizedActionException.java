@@ -67,7 +67,7 @@ public class UnauthorizedActionException extends UnauthorizedException {
 		message.append(languageSettings.getActionName(type, action));
 		
 		if (objects != null && objects.length > 0) {
-			message.append(" -> " + StringUtils.join(objects, ","));
+			message.append(" (" + StringUtils.join(objects, ",") + ")");
 		}
 		
 		return message.toString();
