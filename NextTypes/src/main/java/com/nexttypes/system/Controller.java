@@ -56,8 +56,8 @@ import com.nexttypes.datatypes.XML;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.ActionExecutionException;
+import com.nexttypes.exceptions.ActionFieldException;
 import com.nexttypes.exceptions.ActionNotFoundException;
-import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.nodes.Node;
@@ -114,12 +114,12 @@ public class Controller {
 			TypeField typeField = entry.getValue();
 
 			if (typeField.isNotNull() && parameters[x] == null) {
-				throw new FieldException(type, field, KeyWords.EMPTY_FIELD);
+				throw new ActionFieldException(type, objects, action, field, KeyWords.EMPTY_FIELD);
 			}
 
 			if (parameters[x] != null) {
-				checkActionFieldRange(action, field, parameters[x]);
-				checkActionFileField(action, field, parameters[x]);
+				checkActionFieldRange(objects, action, field, parameters[x]);
+				checkActionFileField(objects, action, field, parameters[x]);
 			}
 
 			x++;
@@ -155,7 +155,7 @@ public class Controller {
 		return result;
 	}
 	
-	protected void checkActionFileField(String action, String field, Object value) {
+	protected void checkActionFileField(String[] objects, String action, String field, Object value) {
 		if (value instanceof File) {
 			String[] allowedContentTypes = typeSettings.getActionFieldStringArray(type, action, field,
 					KeyWords.ALLOWED_CONTENT_TYPES);
@@ -164,7 +164,8 @@ public class Controller {
 				String contentType = ((File) value).getContentType();
 
 				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
-					throw new FieldException(type, field, KeyWords.DISALLOWED_CONTENT_TYPE, contentType);
+					throw new ActionFieldException(type, objects, action, field,
+							KeyWords.DISALLOWED_CONTENT_TYPE, contentType);
 				}
 			}
 		}
@@ -208,14 +209,15 @@ public class Controller {
 		return actions;
 	}
 	
-	public void checkActionFieldRange(String action, String field, Object value) {
+	public void checkActionFieldRange(String[] objects, String action, String field, Object value) {
 		
 		String fieldType = getActionFieldType(action, field);
 
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
 			FieldRange range = getActionFieldRange(action, field);
 			if (range != null && !range.isInRange(value)) {
-				throw new FieldException(type, field, KeyWords.OUT_OF_RANGE_VALUE, value);
+				throw new ActionFieldException(type, objects, action, field, KeyWords.OUT_OF_RANGE_VALUE,
+						value);
 			}
 		}
 	}
