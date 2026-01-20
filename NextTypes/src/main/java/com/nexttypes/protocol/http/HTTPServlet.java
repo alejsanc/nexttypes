@@ -62,7 +62,6 @@ import com.nexttypes.exceptions.InvalidUserOrPasswordException;
 import com.nexttypes.exceptions.MethodNotAllowedException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.NotFoundException;
-import com.nexttypes.exceptions.TypeException;
 import com.nexttypes.exceptions.UnauthorizedException;
 import com.nexttypes.exceptions.ViewNotFoundException;
 import com.nexttypes.interfaces.Stream;
@@ -500,7 +499,7 @@ public class HTTPServlet extends HttpServlet {
 				
 				Object[] parameters = req.readActionFields(typeFields);
 				
-				scanVirus(type, parameters, typeFields, action, req.getTypeSettings());
+				scanVirus(type, objects, action, parameters, typeFields, req.getTypeSettings());
 
 				Object actionResult = nextNode.executeAction(type, objects, action, parameters);
 				content = new Content(actionResult, Format.JSON);
@@ -614,7 +613,8 @@ public class HTTPServlet extends HttpServlet {
 				
 				String fieldType = nextNode.getTypeField(req.getType(), req.getField()).getType();
 				
-				scanVirus(req.getType(), Action.UPDATE_FIELD, req.getField(), fieldType, value, req.getTypeSettings());
+				scanVirus(req.getType(), req.getId(), Action.UPDATE_FIELD, req.getField(), fieldType,
+						value, req.getTypeSettings());
 
 				switch (fieldType) {
 				case PT.PASSWORD:
@@ -1416,21 +1416,21 @@ public class HTTPServlet extends HttpServlet {
 		}
 	}
 	
-	protected void scanVirus(String type, Object[] parameters, LinkedHashMap<String, TypeField> typeFields,
-			String action, TypeSettings typeSettings) {
+	protected void scanVirus(String type, String[] objects, String action, Object[] parameters,
+			LinkedHashMap<String, TypeField> typeFields, TypeSettings typeSettings) {
 		
 		if (typeSettings.getActionBoolean(type, action, KeyWords.ANTIVIRUS)) {
 			
-			antivirus.scan(type, parameters, typeFields);
+			antivirus.scan(type, objects, action, parameters, typeFields);
 		}
 	}
 	
-	protected void scanVirus(String type, String action, String field, String fieldType, Object value,
+	protected void scanVirus(String type, String id, String action, String field, String fieldType, Object value,
 			TypeSettings typeSettings) {
 		
 		if (typeSettings.getActionBoolean(type, action, KeyWords.ANTIVIRUS)) {
 			
-			antivirus.scan(type, field, fieldType, value);
+			antivirus.scan(type, id, field, fieldType, value);
 		}
 	}
 	

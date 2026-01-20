@@ -29,8 +29,9 @@ import com.nexttypes.datatypes.File;
 import com.nexttypes.datatypes.NXObject;
 import com.nexttypes.datatypes.PT;
 import com.nexttypes.datatypes.TypeField;
-import com.nexttypes.exceptions.FieldException;
+import com.nexttypes.exceptions.ActionFieldException;
 import com.nexttypes.exceptions.NXException;
+import com.nexttypes.exceptions.ObjectFieldException;
 import com.nexttypes.settings.Settings;
 
 public class ClamAV {
@@ -49,7 +50,7 @@ public class ClamAV {
 		port = settings.getInt32(KeyWords.PORT);
 	}
 	
-	public void scan(String type, Object[] parameters, LinkedHashMap<String, TypeField> typeFields) {
+	public void scan(String type, String[] objects, String action, Object[] parameters, LinkedHashMap<String, TypeField> typeFields) {
 		
 		int x = 0;
 		
@@ -64,9 +65,9 @@ public class ClamAV {
 				String fieldType = entry.getValue().getType();
 				
 				if (PT.BINARY.equals(fieldType)) {
-					scan(type, field, (byte[])value);
+					scan(type, objects, action, field, (byte[])value);
 				} else if (PT.isFileType(fieldType)) {
-					scan(type, field, ((File)value).getContent());
+					scan(type, objects, action, field, ((File)value).getContent());
 				}
 			}
 		}
@@ -81,26 +82,43 @@ public class ClamAV {
 			if (value != null) {
 				
 				String type = object.getType();
+				String id = object.getId();
 				String field = entry.getKey();
 				String fieldType = typeFields.get(field).getType();
 			
 				if (PT.BINARY.equals(fieldType)) {
-					scan(type, field, (byte[])value);
+					scan(type, id, field, (byte[])value);
 				} else if (PT.isFileType(fieldType)) {
-					scan(type, field, ((File)value).getContent());
+					scan(type, id, field, ((File)value).getContent());
 				}
 			}
 		}
 	}
 	
-	public void scan(String type, String field, String fieldType, Object value) {
+	public void scan(String type, String id, String field, String fieldType, Object value) {
 		
 		if (value != null && PT.isBinaryType(fieldType)) {
-			scan(type, field, (byte[])value);
+			scan(type, id, field, (byte[])value);
 		}
 	}
 	
-	public void scan(String type, String field, byte[] data) {
+	public void scan(String type, String[] objects, String action, String field, byte[] data) {
+		String result = scan(data);
+		
+		if (result != null) {
+			throw new ActionFieldException(type, objects, action, field, KeyWords.VIRUS_FOUND, result);
+		}
+	}
+	
+	public void scan(String type, String id, String field, byte[] data) {
+		String result = scan(data);
+		
+		if (result != null) {
+			throw new ObjectFieldException(type, id, field, KeyWords.VIRUS_FOUND, result);
+		}
+	}
+		
+	public String scan(byte[] data) {
 		
 		try (
 				Socket socket = new Socket(host, port);
@@ -117,12 +135,17 @@ public class ClamAV {
 			
 			String result = input.readLine().trim();
 										        
-		    if(!OK.equals(result)) {
+		    if (OK.equals(result)) {
+		    	
+		    	result = null;
+		    	
+		    } else {
 		    	
 		    	result = result.substring(8, result.length()-6);
-		    	
-		    	throw new FieldException(type, field, KeyWords.VIRUS_FOUND, result);
+		  
 		    } 
+		    
+		    return result;
 		    
 		} catch (IOException e) {
 			throw new NXException(e);
