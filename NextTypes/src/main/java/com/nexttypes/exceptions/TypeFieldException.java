@@ -18,17 +18,17 @@ package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
 
-public class FieldException extends TypeException {
+public class TypeFieldException extends TypeException {
 	protected static final long serialVersionUID = 1L;
 
 	protected String field;
 	protected Object value;
 
-	public FieldException(String type, String field, String setting) {
+	public TypeFieldException(String type, String field, String setting) {
 		this(type, field, setting, null);
 	}
 
-	public FieldException(String type, String field, String setting, Object value) {
+	public TypeFieldException(String type, String field, String setting, Object value) {
 		super(type, setting);
 		this.field = field;
 		this.value = value;
@@ -44,14 +44,21 @@ public class FieldException extends TypeException {
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
+		
 		String fieldName = languageSettings.getFieldName(type, field);
 
-		String message = languageSettings.gts(type, setting) + ": " + fieldName;
+		StringBuilder message = new StringBuilder(languageSettings.gts(type, setting) + ": ");
+		
+		if (type != null) {
+			message.append(languageSettings.getTypeName(type) + "::");
+		}
+		
+		message.append(fieldName);
 
 		if (value != null) {
-			message += " -> " + value;
+			message.append(" -> " + value);
 		}
 
-		return message;
+		return message.toString();
 	}
 }

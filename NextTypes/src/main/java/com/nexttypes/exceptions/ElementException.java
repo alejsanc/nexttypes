@@ -18,13 +18,13 @@ package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
 
-public class ElementException extends FieldException {
+public class ElementException extends ObjectFieldException {
 	protected static final long serialVersionUID = 1L;
 
 	protected String element;
 
-	public ElementException(String type, String field, String element, String setting) {
-		super(type, field, setting);
+	public ElementException(String type, String id, String field, String element, String setting) {
+		super(type, id, field, setting);
 		this.element = element;
 	}
 
@@ -37,6 +37,13 @@ public class ElementException extends FieldException {
 		String typeName = languageSettings.getTypeName(type);
 		String fieldName = languageSettings.getFieldName(type, field);
 		
-		return languageSettings.gts(type, setting) + ": " + typeName + "::" + fieldName + "::" + element;
+		String message =  languageSettings.gts(type, setting) + ": " + typeName + "::" + fieldName
+				+ "::" + element;
+		
+		if (id != null) {
+			message += " (" + id + ")";
+		}
+		
+		return message;
 	}
 }

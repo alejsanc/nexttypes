@@ -86,10 +86,10 @@ import com.nexttypes.enums.Component;
 import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.ElementException;
 import com.nexttypes.exceptions.ElementNotFoundException;
-import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.NotFoundException;
+import com.nexttypes.exceptions.ObjectFieldException;
 import com.nexttypes.exceptions.ObjectNotFoundException;
 import com.nexttypes.exceptions.UnauthorizedActionException;
 import com.nexttypes.exceptions.UnauthorizedException;
@@ -1000,12 +1000,12 @@ public class HTMLView extends View {
 					content = new Content(thumbnail, Format.PNG);
 				}
 			} else {
-				throw new ElementException(type, field, element, KeyWords.INVALID_ELEMENT);
+				throw new ElementException(type, id, field, element, KeyWords.INVALID_ELEMENT);
 			}
 			break;
 
 		default:
-			throw new FieldException(type, field, KeyWords.FIELD_HAS_NO_ELEMENTS);
+			throw new ObjectFieldException(type, id, field, KeyWords.FIELD_HAS_NO_ELEMENTS);
 		}
 
 		if (content == null) {

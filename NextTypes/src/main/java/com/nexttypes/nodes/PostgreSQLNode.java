@@ -96,7 +96,8 @@ import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.IndexMode;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.enums.Order;
-import com.nexttypes.exceptions.FieldException;
+import com.nexttypes.exceptions.TypeFieldException;
+import com.nexttypes.exceptions.ObjectFieldException;
 import com.nexttypes.exceptions.FieldNotFoundException;
 import com.nexttypes.exceptions.FulltextIndexNotFoundException;
 import com.nexttypes.exceptions.ObjectsStreamException;
@@ -1040,25 +1041,25 @@ public class PostgreSQLNode extends Node {
 
 	protected void checkFieldNullability(String type, String field, boolean notNull) {
 		if (notNull && hasNullValues(type, field)) {
-			throw new FieldException(type, field, KeyWords.FIELD_HAS_NULL_VALUES);
+			throw new TypeFieldException(type, field, KeyWords.FIELD_HAS_NULL_VALUES);
 		}
 	}
 
 	protected void checkNewFieldNullability(String type, String field, boolean notNull) {
 		if (notNull && hasObjects(type)) {
-			throw new FieldException(type, field, KeyWords.TYPE_ALREADY_HAS_OBJECTS);
+			throw new TypeFieldException(type, field, KeyWords.TYPE_ALREADY_HAS_OBJECTS);
 		}
 	}
 
 	protected void checkFieldIsPartOfIndex(String type, String field, LinkedHashMap<String, TypeIndex> indexes) {
 		for (Map.Entry<String, TypeIndex> entry : indexes.entrySet()) {
 			if (ArrayUtils.contains(entry.getValue().getFields(), field)) {
-				throw new FieldException(type, field, KeyWords.FIELD_IS_PART_OF_INDEX, entry.getKey());
+				throw new TypeFieldException(type, field, KeyWords.FIELD_IS_PART_OF_INDEX, entry.getKey());
 			}
 		}
 	}
 
-	protected void checkFileField(String type, String field, Object value) {
+	protected void checkFileField(String type, String id, String field, Object value) {
 		if (value instanceof File) {
 			String[] allowedContentTypes = typeSettings.getFieldStringArray(type, field,
 					KeyWords.ALLOWED_CONTENT_TYPES);
@@ -1067,18 +1068,19 @@ public class PostgreSQLNode extends Node {
 				String contentType = ((File) value).getContentType();
 
 				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
-					throw new FieldException(type, field, KeyWords.DISALLOWED_CONTENT_TYPE, contentType);
+					throw new ObjectFieldException(type, id, field, KeyWords.DISALLOWED_CONTENT_TYPE,
+							contentType);
 				}
 			}
 		}
 	}
 	
-	protected void checkFieldRange(String type, String field, String fieldType, Object value) {
+	protected void checkFieldRange(String type, String id, String field, String fieldType, Object value) {
 				
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
 			FieldRange range = getFieldRange(type, field);
 			if (range != null && !range.isInRange(value)) {
-				throw new FieldException(type, field, KeyWords.OUT_OF_RANGE_VALUE, value);
+				throw new ObjectFieldException(type, id, field, KeyWords.OUT_OF_RANGE_VALUE, value);
 			}
 		}
 	}
@@ -1188,7 +1190,7 @@ public class PostgreSQLNode extends Node {
 				value = object.get(field);
 
 				if (value == null && typeField.isNotNull()){
-					throw new FieldException(type, field, KeyWords.EMPTY_FIELD);
+					throw new ObjectFieldException(type, id, field, KeyWords.EMPTY_FIELD);
 				}
 			} else {
 				value = getFieldDefault(type, field, fieldType);
@@ -1196,13 +1198,13 @@ public class PostgreSQLNode extends Node {
 				if (value != null) {
 					object.put(field, value);
 				} else if (typeField.isNotNull()) {
-					throw new FieldException(type, field, KeyWords.MISSING_FIELD);
+					throw new ObjectFieldException(type, id, field, KeyWords.MISSING_FIELD);
 				}
 			}	
 
 			if (value != null) {
-				checkFieldRange(type, field, typeFields.get(field).getType(), value);
-				checkFileField(type, field, value);
+				checkFieldRange(type, id, field, typeFields.get(field).getType(), value);
+				checkFileField(type, id, field, value);
 			}
 		}
 
@@ -1284,14 +1286,14 @@ public class PostgreSQLNode extends Node {
 			TypeField typeField = entry.getValue();
 
 			if (object.containsKey(field) && typeField.isNotNull() && object.get(field) == null) {
-				throw new FieldException(type, field, KeyWords.EMPTY_FIELD);
+				throw new ObjectFieldException(type, id, field, KeyWords.EMPTY_FIELD);
 			}
 
 			Object value = object.get(field);
 
 			if (value != null) {
-				checkFieldRange(type, field, typeFields.get(field).getType(), value);
-				checkFileField(type, field, value);
+				checkFieldRange(type, id, field, typeFields.get(field).getType(), value);
+				checkFileField(type, id, field, value);
 			}
 		}
 
@@ -2476,7 +2478,7 @@ public class PostgreSQLNode extends Node {
 					break;
 					
 				case PT.PASSWORD:
-					throw new FieldException(type, field, KeyWords.PASSWORD_FIELD_DEFAULT_VALUE);
+					throw new TypeFieldException(type, field, KeyWords.PASSWORD_FIELD_DEFAULT_VALUE);
 							
 				default:
 					value = setting;	

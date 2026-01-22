@@ -57,10 +57,10 @@ import com.nexttypes.enums.Component;
 import com.nexttypes.enums.ImportAction;
 import com.nexttypes.enums.IndexMode;
 import com.nexttypes.enums.Order;
-import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.IndexException;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
+import com.nexttypes.exceptions.TypeFieldException;
 import com.nexttypes.security.Checks;
 import com.nexttypes.security.Security;
 import com.nexttypes.settings.Settings;
@@ -184,6 +184,10 @@ public class HTTPRequest {
 		if (objects != null && objects.length == 1 && objects[0].contains("\n")) {
 			objects = objects[0].split("\\r\\n|\\n");
 		}
+		
+		if (_action != null) {
+			action = _action;
+		}
 
 		Checks.checkType(type);
 		Checks.checkId(id);
@@ -198,7 +202,6 @@ public class HTTPRequest {
 		Checks.checkARef(aref);
 		Checks.checkOrder(order);
 		Checks.checkAction(action);
-		Checks.checkAction(_action);
 		Checks.checkParameters(parameters);
 		Checks.checkTuple(fields);
 	}
@@ -350,7 +353,7 @@ public class HTTPRequest {
 				if (!((field.endsWith("_" + KeyWords.REPEAT) || field.endsWith("_" + KeyWords.NULL))
 						&& typeFields.containsKey(field.substring(0, field.lastIndexOf("_"))))) {
 					
-					throw new FieldException(type, field, KeyWords.INVALID_FIELD);
+					throw new TypeFieldException(type, field, KeyWords.INVALID_FIELD);
 				}
 			}
 		}
@@ -394,7 +397,7 @@ public class HTTPRequest {
 			} else if (fields.containsKey(field)) {
 
 				if (PT.PASSWORD.equals(fieldType) && Action.UPDATE.equals(action)) {
-					throw new FieldException(type, field, KeyWords.PASSWORD_FIELD_UPDATE);
+					throw new TypeFieldException(type, field, KeyWords.PASSWORD_FIELD_UPDATE);
 				}
 
 				object.put(field, readField(field, fieldType));
@@ -622,7 +625,7 @@ public class HTTPRequest {
 				String fieldName = value.get(KeyWords.NAME);
 
 				if (typeObjectFields.containsKey(fieldName)) {
-					throw new FieldException(type, fieldName, KeyWords.DUPLICATE_FIELD);
+					throw new TypeFieldException(type, fieldName, KeyWords.DUPLICATE_FIELD);
 				}
 
 				String fieldType = value.get(KeyWords.TYPE);
@@ -816,7 +819,7 @@ public class HTTPRequest {
 	}
 
 	public String getAction() {
-		return action != null ? action : _action ;
+		return action;
 	}
 
 	public Tuple getParameters() {

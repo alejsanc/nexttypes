@@ -56,12 +56,12 @@ import com.nexttypes.enums.Format;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.exceptions.ActionNotFoundException;
 import com.nexttypes.exceptions.CertificateNotFoundException;
-import com.nexttypes.exceptions.FieldException;
 import com.nexttypes.exceptions.InvalidHostNameException;
 import com.nexttypes.exceptions.InvalidUserOrPasswordException;
 import com.nexttypes.exceptions.MethodNotAllowedException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.NotFoundException;
+import com.nexttypes.exceptions.ObjectFieldException;
 import com.nexttypes.exceptions.UnauthorizedException;
 import com.nexttypes.exceptions.ViewNotFoundException;
 import com.nexttypes.interfaces.Stream;
@@ -618,7 +618,8 @@ public class HTTPServlet extends HttpServlet {
 
 				switch (fieldType) {
 				case PT.PASSWORD:
-					throw new FieldException(req.getType(), req.getField(), KeyWords.PASSWORD_FIELD_UPDATE);
+					throw new ObjectFieldException(req.getType(), req.getId(), req.getField(),
+							KeyWords.PASSWORD_FIELD_UPDATE);
 
 				case PT.BINARY:
 					break;
