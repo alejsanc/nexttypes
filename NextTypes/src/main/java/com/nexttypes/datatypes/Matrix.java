@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.TreeSet;
 
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.system.KeyWords;
 
 public class Matrix {
 	
@@ -30,7 +29,7 @@ public class Matrix {
 	public Matrix(Tuple[] tuples, String[] axes) {
 		
 		if (axes == null || axes.length == 0) {
-			throw new NXException(KeyWords.EMPTY_AXES_LIST);
+			throw new NXException(NXException.EMPTY_AXES_LIST);
 		}
 		
 		for (String axis : axes) {

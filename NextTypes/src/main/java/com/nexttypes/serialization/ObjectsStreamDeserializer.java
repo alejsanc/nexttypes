@@ -113,7 +113,7 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 			
 			String format = parser.getText();
 			if (!NEXTTYPES_OBJECTS.equals(format)) {
-				throw new InvalidValueException(KeyWords.INVALID_STREAM_FORMAT, format);
+				throw new InvalidValueException(NXException.INVALID_STREAM_FORMAT, format);
 			}
 			
 			parser.nextToken();

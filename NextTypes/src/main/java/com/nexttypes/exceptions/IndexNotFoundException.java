@@ -17,7 +17,6 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class IndexNotFoundException extends NotFoundException {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +24,7 @@ public class IndexNotFoundException extends NotFoundException {
 	protected String index;
 
 	public IndexNotFoundException(String type, String index) {
-		super(type, KeyWords.INDEX_NOT_FOUND);
+		super(type, INDEX_NOT_FOUND);
 		this.index = index;
 	}
 
@@ -37,6 +36,6 @@ public class IndexNotFoundException extends NotFoundException {
 	public String getMessage(LanguageSettings languageSettings) {
 		String typeName = languageSettings.getTypeName(type);
 		
-		return languageSettings.gts(type, KeyWords.INDEX_NOT_FOUND) + ": " + typeName + "::" + index;
+		return languageSettings.gts(type, INDEX_NOT_FOUND) + ": " + typeName + "::" + index;
 	}
 }

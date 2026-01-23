@@ -17,7 +17,6 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class UnauthorizedReferenceException extends UnauthorizedException {
 	protected static final long serialVersionUID = 1L;
@@ -30,7 +29,7 @@ public class UnauthorizedReferenceException extends UnauthorizedException {
 	
 	public UnauthorizedReferenceException(String referencingType, String referencingId,
 			String referencingField, String referencedType, String referencedId) {
-		super(KeyWords.UNAUTHORIZED_REFERENCE);
+		super(UNAUTHORIZED_REFERENCE);
 		
 		this.referencingType = referencingType;
 		this.referencingId = referencingId;
@@ -65,7 +64,7 @@ public class UnauthorizedReferenceException extends UnauthorizedException {
 		String referencingFieldName = languageSettings.getFieldName(referencingType, referencingField);
 		String referencedTypeName = languageSettings.getTypeName(referencedType);
 		
-		StringBuilder message = new StringBuilder(languageSettings.gts(type, KeyWords.UNAUTHORIZED_REFERENCE)
+		StringBuilder message = new StringBuilder(languageSettings.gts(type, UNAUTHORIZED_REFERENCE)
 				+ ": " + referencingTypeName);
 		
 		if (referencingId != null) {

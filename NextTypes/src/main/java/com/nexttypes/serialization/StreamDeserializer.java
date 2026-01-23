@@ -26,7 +26,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nexttypes.datatypes.Serial;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.system.KeyWords;
 
 public class StreamDeserializer {
 	protected JsonParser parser;
@@ -37,7 +36,7 @@ public class StreamDeserializer {
 
 	public StreamDeserializer(InputStream input) {
 		if (input == null) {
-			throw new NXException(KeyWords.EMPTY_INPUT);
+			throw new NXException(NXException.EMPTY_INPUT);
 		}
 
 		JsonFactory factory = new JsonFactory();
@@ -47,7 +46,7 @@ public class StreamDeserializer {
 			mapper.registerModule(new JavaTimeModule());
 			parser.setCodec(mapper);
 		} catch (Exception e) {
-			throw new NXException(KeyWords.INVALID_INPUT);
+			throw new NXException(NXException.INVALID_INPUT);
 		}
 	}
 	
@@ -55,7 +54,7 @@ public class StreamDeserializer {
 		try {
 			String tag = parser.currentName();
 			if (!expectedTag.equals(tag)) {
-				throw new InvalidValueException(KeyWords.UNEXPECTED_TAG, tag);
+				throw new InvalidValueException(NXException.UNEXPECTED_TAG, tag);
 			}
 		} catch (IOException e) {
 			throw new NXException(e);

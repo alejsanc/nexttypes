@@ -31,6 +31,7 @@ import com.nexttypes.datatypes.Tuples;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.datatypes.JSONLD;
 import com.nexttypes.enums.Order;
+import com.nexttypes.exceptions.NXException;
 import com.nexttypes.enums.Component;
 import com.nexttypes.enums.Format;
 import com.nexttypes.protocol.http.HTTPRequest;
@@ -386,7 +387,7 @@ public class ArticleView extends HTMLView {
 					tuples.getCount(), tuples.getOffset(), tuples.getLimit(), tuples.getMinLimit(),
 					tuples.getMaxLimit(), tuples.getLimitIncrement(), Component.TYPE));
 		} else {
-			main.appendElement(HTML.P).appendText(languageSettings.gts(KeyWords.NO_OBJECTS_FOUND));
+			main.appendElement(HTML.P).appendText(languageSettings.gts(NXException.NO_OBJECTS_FOUND));
 		}
 
 		return render(type);

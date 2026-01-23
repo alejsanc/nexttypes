@@ -19,6 +19,7 @@ package com.nexttypes.controllers;
 import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Image;
+import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.ObjectFieldException;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.system.Action;
@@ -45,7 +46,7 @@ public class ImageController extends Controller {
 			if (image != null) {
 				updateField(id, KeyWords.IMAGE, image.resize(width, height));
 			} else {
-				throw new ObjectFieldException(type, id, KeyWords.IMAGE, KeyWords.EMPTY_FIELD);
+				throw new ObjectFieldException(type, id, KeyWords.IMAGE, NXException.EMPTY_FIELD);
 			}
 		}
 

@@ -96,7 +96,7 @@ public class Controller {
 				KeyWords.OBJECTS_INPUT_NOT_NULL);
 		
 		if (objectsInputNotNull && (objects == null || objects.length == 0)) {
-			throw new NXException(type, KeyWords.EMPTY_OBJECTS_LIST);
+			throw new NXException(type, NXException.EMPTY_OBJECTS_LIST);
 		}		
 		
 		ActionResult result = null;
@@ -114,7 +114,7 @@ public class Controller {
 			TypeField typeField = entry.getValue();
 
 			if (typeField.isNotNull() && parameters[x] == null) {
-				throw new ActionFieldException(type, objects, action, field, KeyWords.EMPTY_FIELD);
+				throw new ActionFieldException(type, objects, action, field, NXException.EMPTY_FIELD);
 			}
 
 			if (parameters[x] != null) {
@@ -165,7 +165,7 @@ public class Controller {
 
 				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
 					throw new ActionFieldException(type, objects, action, field,
-							KeyWords.DISALLOWED_CONTENT_TYPE, contentType);
+							NXException.DISALLOWED_CONTENT_TYPE, contentType);
 				}
 			}
 		}
@@ -216,7 +216,7 @@ public class Controller {
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
 			FieldRange range = getActionFieldRange(action, field);
 			if (range != null && !range.isInRange(value)) {
-				throw new ActionFieldException(type, objects, action, field, KeyWords.OUT_OF_RANGE_VALUE,
+				throw new ActionFieldException(type, objects, action, field, NXException.OUT_OF_RANGE_VALUE,
 						value);
 			}
 		}

@@ -215,17 +215,17 @@ public class HTTPRequest {
 				String token = getSessionToken();
 
 				if (token == null) {
-					throw new NXException(type, KeyWords.SESSION_EXPIRED);
+					throw new NXException(type, NXException.SESSION_EXPIRED);
 				}
 
 				String requestToken = request.getParameter(KeyWords.SESSION);
 
 				if (requestToken == null) {
-					throw new NXException(type, KeyWords.SESSION_PARAMETER_NOT_FOUND);
+					throw new NXException(type, NXException.SESSION_PARAMETER_NOT_FOUND);
 				}
 
 				if (!requestToken.equals(token)) {
-					throw new NXException(type, KeyWords.INVALID_SESSION);
+					throw new NXException(type, NXException.INVALID_SESSION);
 				}
 			}
 		}
@@ -353,7 +353,7 @@ public class HTTPRequest {
 				if (!((field.endsWith("_" + KeyWords.REPEAT) || field.endsWith("_" + KeyWords.NULL))
 						&& typeFields.containsKey(field.substring(0, field.lastIndexOf("_"))))) {
 					
-					throw new TypeFieldException(type, field, KeyWords.INVALID_FIELD);
+					throw new TypeFieldException(type, field, NXException.INVALID_FIELD);
 				}
 			}
 		}
@@ -397,7 +397,7 @@ public class HTTPRequest {
 			} else if (fields.containsKey(field)) {
 
 				if (PT.PASSWORD.equals(fieldType) && Action.UPDATE.equals(action)) {
-					throw new TypeFieldException(type, field, KeyWords.PASSWORD_FIELD_UPDATE);
+					throw new TypeFieldException(type, field, NXException.PASSWORD_FIELD_UPDATE);
 				}
 
 				object.put(field, readField(field, fieldType));
@@ -541,7 +541,7 @@ public class HTTPRequest {
 					String fieldType = typeFields.get(field).getType();
 				
 					if (PT.isPrimitiveType(fieldType) && !PT.isFilterType(fieldType)) {
-						throw new InvalidValueException(KeyWords.INVALID_FILTER_TYPE, fieldType);
+						throw new InvalidValueException(NXException.INVALID_FILTER_TYPE, fieldType);
 					}
 				
 					switch(fieldType) {
@@ -625,7 +625,7 @@ public class HTTPRequest {
 				String fieldName = value.get(KeyWords.NAME);
 
 				if (typeObjectFields.containsKey(fieldName)) {
-					throw new TypeFieldException(type, fieldName, KeyWords.DUPLICATE_FIELD);
+					throw new TypeFieldException(type, fieldName, NXException.DUPLICATE_FIELD);
 				}
 
 				String fieldType = value.get(KeyWords.TYPE);
@@ -648,7 +648,7 @@ public class HTTPRequest {
 				String indexName = value.get(KeyWords.NAME);
 
 				if (typeObjectIndexes.containsKey(indexName)) {
-					throw new IndexException(type, indexName, KeyWords.DUPLICATE_INDEX);
+					throw new IndexException(type, indexName, NXException.DUPLICATE_INDEX);
 				}
 
 				IndexMode indexMode = IndexMode.valueOf(value.get(KeyWords.MODE).toUpperCase());
@@ -1003,11 +1003,11 @@ public class HTTPRequest {
 			String passwordRepeat = getString(field + "_" + KeyWords.REPEAT);
 
 			if (!Security.passwordsMatch(password, passwordRepeat)) {
-				throw new NXException(type, KeyWords.PASSWORDS_DONT_MATCH);
+				throw new NXException(type, NXException.PASSWORDS_DONT_MATCH);
 			}
 
 			if (!Security.checkPasswordStrength(password)) {
-				throw new NXException(type, KeyWords.INVALID_PASSWORD);
+				throw new NXException(type, NXException.INVALID_PASSWORD);
 			}
 
 			return Security.passwordHash(password);

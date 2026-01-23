@@ -90,7 +90,7 @@ public class Serial {
 			break;
 			
 		default:
-			throw new InvalidValueException(KeyWords.INVALID_SERIAL_FORMAT, format);
+			throw new InvalidValueException(NXException.INVALID_SERIAL_FORMAT, format);
 		}
 		
 		mapper = builder.disable(autoDetectMapperFeatures)

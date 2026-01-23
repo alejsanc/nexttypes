@@ -468,7 +468,7 @@ public class PostgreSQLNode extends Node {
 		checkType(typeName);
 
 		if (single && existsType(typeName)) {
-			throw new NXException(typeName, KeyWords.TYPE_ALREADY_EXISTS);
+			throw new NXException(typeName, NXException.TYPE_ALREADY_EXISTS);
 		}
 
 		StringBuilder sql = new StringBuilder("create table \"" + typeName + "\"" + " (id character varying("
@@ -913,7 +913,7 @@ public class PostgreSQLNode extends Node {
 		checkType(typeName);
 
 		if (adate != null && !adate.equals(getADate(typeName))) {
-			throw new NXException(typeName, KeyWords.ALREADY_ALTERED_TYPE);
+			throw new NXException(typeName, NXException.ALREADY_ALTERED_TYPE);
 		}
 
 		AlterResult result = new AlterResult();
@@ -1041,20 +1041,20 @@ public class PostgreSQLNode extends Node {
 
 	protected void checkFieldNullability(String type, String field, boolean notNull) {
 		if (notNull && hasNullValues(type, field)) {
-			throw new TypeFieldException(type, field, KeyWords.FIELD_HAS_NULL_VALUES);
+			throw new TypeFieldException(type, field, NXException.FIELD_HAS_NULL_VALUES);
 		}
 	}
 
 	protected void checkNewFieldNullability(String type, String field, boolean notNull) {
 		if (notNull && hasObjects(type)) {
-			throw new TypeFieldException(type, field, KeyWords.TYPE_ALREADY_HAS_OBJECTS);
+			throw new TypeFieldException(type, field, NXException.TYPE_ALREADY_HAS_OBJECTS);
 		}
 	}
 
 	protected void checkFieldIsPartOfIndex(String type, String field, LinkedHashMap<String, TypeIndex> indexes) {
 		for (Map.Entry<String, TypeIndex> entry : indexes.entrySet()) {
 			if (ArrayUtils.contains(entry.getValue().getFields(), field)) {
-				throw new TypeFieldException(type, field, KeyWords.FIELD_IS_PART_OF_INDEX, entry.getKey());
+				throw new TypeFieldException(type, field, NXException.FIELD_IS_PART_OF_INDEX, entry.getKey());
 			}
 		}
 	}
@@ -1068,7 +1068,7 @@ public class PostgreSQLNode extends Node {
 				String contentType = ((File) value).getContentType();
 
 				if (!ArrayUtils.contains(allowedContentTypes, contentType)) {
-					throw new ObjectFieldException(type, id, field, KeyWords.DISALLOWED_CONTENT_TYPE,
+					throw new ObjectFieldException(type, id, field, NXException.DISALLOWED_CONTENT_TYPE,
 							contentType);
 				}
 			}
@@ -1080,7 +1080,7 @@ public class PostgreSQLNode extends Node {
 		if (PT.isTimeType(fieldType) || PT.isNumericType(fieldType)) {
 			FieldRange range = getFieldRange(type, field);
 			if (range != null && !range.isInRange(value)) {
-				throw new ObjectFieldException(type, id, field, KeyWords.OUT_OF_RANGE_VALUE, value);
+				throw new ObjectFieldException(type, id, field, NXException.OUT_OF_RANGE_VALUE, value);
 			}
 		}
 	}
@@ -1173,7 +1173,7 @@ public class PostgreSQLNode extends Node {
 		checkType(type);
 		
 		if (id != null && single && existsObject(type, id)) {
-			throw new ObjectException(type, id, KeyWords.OBJECT_ALREADY_EXISTS);
+			throw new ObjectException(type, id, NXException.OBJECT_ALREADY_EXISTS);
 		}
 		
 		if (typeFields == null) {
@@ -1190,7 +1190,7 @@ public class PostgreSQLNode extends Node {
 				value = object.get(field);
 
 				if (value == null && typeField.isNotNull()){
-					throw new ObjectFieldException(type, id, field, KeyWords.EMPTY_FIELD);
+					throw new ObjectFieldException(type, id, field, NXException.EMPTY_FIELD);
 				}
 			} else {
 				value = getFieldDefault(type, field, fieldType);
@@ -1198,7 +1198,7 @@ public class PostgreSQLNode extends Node {
 				if (value != null) {
 					object.put(field, value);
 				} else if (typeField.isNotNull()) {
-					throw new ObjectFieldException(type, id, field, KeyWords.MISSING_FIELD);
+					throw new ObjectFieldException(type, id, field, NXException.MISSING_FIELD);
 				}
 			}	
 
@@ -1286,7 +1286,7 @@ public class PostgreSQLNode extends Node {
 			TypeField typeField = entry.getValue();
 
 			if (object.containsKey(field) && typeField.isNotNull() && object.get(field) == null) {
-				throw new ObjectFieldException(type, id, field, KeyWords.EMPTY_FIELD);
+				throw new ObjectFieldException(type, id, field, NXException.EMPTY_FIELD);
 			}
 
 			Object value = object.get(field);
@@ -1302,7 +1302,7 @@ public class PostgreSQLNode extends Node {
 		}
 
 		if (udate != null && !udate.equals(getUDate(type, id))) {
-			throw new ObjectException(type, id, KeyWords.ALREADY_UPDATED_OBJECT);
+			throw new ObjectException(type, id, NXException.ALREADY_UPDATED_OBJECT);
 		}
 
 		StringBuilder sql = new StringBuilder("update \"" + type + "\" set ");
@@ -1382,20 +1382,20 @@ public class PostgreSQLNode extends Node {
 
 		if (currentPassword == null) {
 			if (!auth.isAdministrator() && getPasswordField(type, id, field) != null) {
-				throw new NXException(type, KeyWords.EMPTY_CURRENT_PASSWORD);
+				throw new NXException(type, NXException.EMPTY_CURRENT_PASSWORD);
 			}
 		} else {
 			if (!Security.checkPassword(getPasswordField(type, id, field), currentPassword)) {
-				throw new NXException(type, KeyWords.INVALID_CURRENT_PASSWORD);
+				throw new NXException(type, NXException.INVALID_CURRENT_PASSWORD);
 			}
 		}
 
 		if (!Security.passwordsMatch(newPassword, newPasswordRepeat)) {
-			throw new NXException(type, KeyWords.PASSWORDS_DONT_MATCH);
+			throw new NXException(type, NXException.PASSWORDS_DONT_MATCH);
 		}
 
 		if (!Security.checkPasswordStrength(newPassword)) {
-			throw new NXException(type, KeyWords.INVALID_PASSWORD);
+			throw new NXException(type, NXException.INVALID_PASSWORD);
 		}
 
 		return updateField(type, id, field, Security.passwordHash(newPassword));
@@ -2101,7 +2101,7 @@ public class PostgreSQLNode extends Node {
 
 		for (String type : types) {
 			if (ArrayUtils.contains(Type.SYSTEM_TYPES, type)) {
-				throw new TypeException(type, KeyWords.SYSTEM_TYPES_CANT_BE_DROPPED);
+				throw new TypeException(type, NXException.SYSTEM_TYPES_CANT_BE_DROPPED);
 			}
 
 			sql.append("\"" + type + "\",");
@@ -2478,7 +2478,7 @@ public class PostgreSQLNode extends Node {
 					break;
 					
 				case PT.PASSWORD:
-					throw new TypeFieldException(type, field, KeyWords.PASSWORD_FIELD_DEFAULT_VALUE);
+					throw new TypeFieldException(type, field, NXException.PASSWORD_FIELD_DEFAULT_VALUE);
 							
 				default:
 					value = setting;	
@@ -2617,7 +2617,7 @@ public class PostgreSQLNode extends Node {
 							result.addIgnoredType(typeName);
 						}
 					} else {
-						throw new NXException(typeName, KeyWords.TYPE_ALREADY_EXISTS);
+						throw new NXException(typeName, NXException.TYPE_ALREADY_EXISTS);
 					}
 				} else {
 					create(type, false);
@@ -2733,7 +2733,7 @@ public class PostgreSQLNode extends Node {
 				id = item.getId();
 				String itemType = item.getType();
 				if (!type.equals(itemType)) {
-					throw new TypeException(itemType, KeyWords.INVALID_OBJECT_TYPE);
+					throw new TypeException(itemType, NXException.INVALID_OBJECT_TYPE);
 				}
 				
 				boolean importedType = importedTypes != null && importedTypes.contains(type);
@@ -2745,7 +2745,7 @@ public class PostgreSQLNode extends Node {
 						update(item, null, false, typeFields);
 						result.addUpdatedObject(type);
 					} else {
-						throw new ObjectException(type, id, KeyWords.OBJECT_ALREADY_EXISTS);
+						throw new ObjectException(type, id, NXException.OBJECT_ALREADY_EXISTS);
 					}
 				} else {
 					insert(item, false, typeFields);
@@ -2814,7 +2814,7 @@ public class PostgreSQLNode extends Node {
 				throw new ObjectsStreamException(type, id, e);
 			}
 		} else {
-			throw new NXException(type, KeyWords.TYPE_HAS_NO_BINARY_FIELDS);
+			throw new NXException(type, NXException.TYPE_HAS_NO_BINARY_FIELDS);
 		}
 	}
 
@@ -2911,7 +2911,7 @@ public class PostgreSQLNode extends Node {
 			rows = statement.executeUpdate();
 
 			if (expectedRows != null && rows != expectedRows) {
-				throw new InvalidValueException(KeyWords.INVALID_ROW_COUNT, rows);
+				throw new InvalidValueException(NXException.INVALID_ROW_COUNT, rows);
 			}
 
 		} catch (Exception e) {
@@ -3473,7 +3473,7 @@ public class PostgreSQLNode extends Node {
 							Checks.checkTypeOrField((String) parameter);
 							newSQL.append("\"" + parameter + "\"");
 						} else {
-							throw new InvalidValueException(KeyWords.INVALID_TYPE_OR_FIELD_NAME, parameter);
+							throw new InvalidValueException(NXException.INVALID_TYPE_OR_FIELD_NAME, parameter);
 						}
 						x++;
 					} else if (c == '?') {
@@ -4307,48 +4307,48 @@ public class PostgreSQLNode extends Node {
 
 	protected void checkType(String type) {
 		if (type == null || type.length() == 0) {
-			throw new NXException(KeyWords.EMPTY_TYPE_NAME);
+			throw new NXException(NXException.EMPTY_TYPE_NAME);
 		}
 	}
 	
 	protected void checkNewName(String type, String newName) {
 		if (newName == null || newName.length() == 0) {
-			throw new NXException(type, KeyWords.EMPTY_NEW_NAME);
+			throw new NXException(type, NXException.EMPTY_NEW_NAME);
 		}
 	}
 		
 	protected void checkField(String type, String field) {
 		if (field == null || field.length() == 0) {
-			throw new NXException(type, KeyWords.EMPTY_FIELD_NAME);
+			throw new NXException(type, NXException.EMPTY_FIELD_NAME);
 		}
 	}
 
 	protected void checkIndex(String type, String index) {
 		if (index == null || index.length() == 0) {
-			throw new NXException(type, KeyWords.EMPTY_INDEX_NAME);
+			throw new NXException(type, NXException.EMPTY_INDEX_NAME);
 		}
 	}
 
 	protected void checkIndexFieldsList(String type, String index, String[] fields) {
 		if (fields == null || fields.length == 0) {
-			throw new IndexException(type, index, KeyWords.EMPTY_INDEX_FIELDS_LIST);
+			throw new IndexException(type, index, NXException.EMPTY_INDEX_FIELDS_LIST);
 		}
 	}
 
 	protected void checkId(String type, String id) {
 		if (id == null || id.length() == 0) {
-			throw new NXException(type, KeyWords.EMPTY_ID);
+			throw new NXException(type, NXException.EMPTY_ID);
 		}
 	}
 
 	protected void checkTypes(String[] types) {
 		if (types == null || types.length == 0) {
-			throw new NXException(KeyWords.EMPTY_TYPES_LIST);
+			throw new NXException(NXException.EMPTY_TYPES_LIST);
 		}
 	}
 	protected void checkObjects(String type, String[] objects) {
 		if (objects == null || objects.length == 0) {
-			throw new NXException(type, KeyWords.EMPTY_OBJECTS_LIST);
+			throw new NXException(type, NXException.EMPTY_OBJECTS_LIST);
 		}
 	}
 

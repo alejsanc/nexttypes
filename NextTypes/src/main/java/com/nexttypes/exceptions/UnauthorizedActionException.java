@@ -19,7 +19,6 @@ package com.nexttypes.exceptions;
 import org.apache.commons.lang3.StringUtils;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class UnauthorizedActionException extends UnauthorizedException {
 	protected static final long serialVersionUID = 1L;
@@ -37,7 +36,7 @@ public class UnauthorizedActionException extends UnauthorizedException {
 	}
 	
 	public UnauthorizedActionException(String type, String[] objects, String action) {
-		super(KeyWords.UNAUTHORIZED_ACTION);
+		super(UNAUTHORIZED_ACTION);
 		
 		this.type = type;
 		this.objects = objects;
@@ -58,7 +57,7 @@ public class UnauthorizedActionException extends UnauthorizedException {
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		StringBuilder message = new StringBuilder(languageSettings.gts(type, KeyWords.UNAUTHORIZED_ACTION) + ": ");
+		StringBuilder message = new StringBuilder(languageSettings.gts(type, UNAUTHORIZED_ACTION) + ": ");
 		
 		if (type != null) {
 			message.append(languageSettings.getTypeName(type) + "::");

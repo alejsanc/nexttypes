@@ -16,12 +16,10 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.system.KeyWords;
-
 public class NotImplementedException extends NXException {
 	private static final long serialVersionUID = 1L;
 
 	public NotImplementedException() {
-		super(KeyWords.NOT_IMPLEMENTED_METHOD);
+		super(NOT_IMPLEMENTED_METHOD);
 	}
 }

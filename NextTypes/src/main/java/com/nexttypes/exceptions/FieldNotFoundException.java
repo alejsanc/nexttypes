@@ -17,7 +17,6 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class FieldNotFoundException extends NotFoundException {
 	private static final long serialVersionUID = 1L;
@@ -26,7 +25,7 @@ public class FieldNotFoundException extends NotFoundException {
 	protected String message;
 
 	public FieldNotFoundException(String type, String field) {
-		super(type, KeyWords.FIELD_NOT_FOUND);
+		super(type, FIELD_NOT_FOUND);
 		this.field = field;
 	}
 	
@@ -41,7 +40,7 @@ public class FieldNotFoundException extends NotFoundException {
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		String message = languageSettings.gts(type, KeyWords.FIELD_NOT_FOUND) + ": ";
+		String message = languageSettings.gts(type, FIELD_NOT_FOUND) + ": ";
 
 		if (type != null) {
 			String typeName = languageSettings.getTypeName(type);

@@ -29,7 +29,6 @@ import com.nexttypes.exceptions.NXException;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.system.Constants;
-import com.nexttypes.system.KeyWords;
 
 public class RSSView extends View {
 
@@ -50,7 +49,7 @@ public class RSSView extends View {
 			Content content = new Content(rss.toString(), Format.RSS);
 			return content;
 		} else {
-			throw new NXException(type, KeyWords.SELECT_STRING_NOT_FOUND);
+			throw new NXException(type, NXException.SELECT_STRING_NOT_FOUND);
 		}
 	}
 }

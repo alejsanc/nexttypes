@@ -16,12 +16,10 @@
 
 package com.nexttypes.exceptions;
 
-import com.nexttypes.system.KeyWords;
-
 public class InvalidUserOrPasswordException extends UnauthorizedException {
 	protected static final long serialVersionUID = 1L;
 
 	public InvalidUserOrPasswordException() {
-		super(KeyWords.INVALID_USER_OR_PASSWORD);
+		super(INVALID_USER_OR_PASSWORD);
 	}
 }

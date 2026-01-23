@@ -35,6 +35,7 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.datatypes.TypeIndex;
 import com.nexttypes.enums.Order;
 import com.nexttypes.exceptions.InvalidValueException;
+import com.nexttypes.exceptions.NXException;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.Permissions;
 import com.nexttypes.system.KeyWords;
@@ -69,16 +70,16 @@ public class Checks {
 
 	public static void checkType(String type) {
 		if (KeyWords.STATIC.equals(type)) {
-			throwException(KeyWords.TYPE_RESERVED_NAME, type);
+			throwException(NXException.TYPE_RESERVED_NAME, type);
 		}
 		
-		checkMaxLength(type, Type.MAX_NAME_LENGTH, KeyWords.TYPE_NAME_TOO_LONG);
-		checkString(type, NAME_CHECK, KeyWords.INVALID_TYPE_NAME);
+		checkMaxLength(type, Type.MAX_NAME_LENGTH, NXException.TYPE_NAME_TOO_LONG);
+		checkString(type, NAME_CHECK, NXException.INVALID_TYPE_NAME);
 	}
 	
 	public static void checkCompositeType(String type) {
 		if (PT.isPrimitiveType(type)) {
-			throwException(KeyWords.PRIMITIVE_TYPE_WITH_THE_SAME_NAME, type);
+			throwException(NXException.PRIMITIVE_TYPE_WITH_THE_SAME_NAME, type);
 		}
 	}
 
@@ -126,8 +127,8 @@ public class Checks {
 	}
 
 	public static void checkId(String id) {
-		checkMaxLength(id, Type.MAX_ID_LENGTH, KeyWords.ID_TOO_LONG);
-		checkString(id, ID_ELEMENT_CHECK, KeyWords.INVALID_ID);
+		checkMaxLength(id, Type.MAX_ID_LENGTH, NXException.ID_TOO_LONG);
+		checkString(id, ID_ELEMENT_CHECK, NXException.INVALID_ID);
 	}
 
 	public static void checkObjects(String[] objects) {
@@ -139,26 +140,26 @@ public class Checks {
 	}
 
 	public static void checkLang(String lang) {
-		checkString(lang, LANG_CHECK, KeyWords.INVALID_LANG);
+		checkString(lang, LANG_CHECK, NXException.INVALID_LANG);
 	}
 
 	public static void checkField(String field) {
 		if (TypeField.isReservedName(field)) {
-			throw new InvalidValueException(KeyWords.FIELD_RESERVED_NAME, field);
+			throw new InvalidValueException(NXException.FIELD_RESERVED_NAME, field);
 		}
 
-		checkMaxLength(field, Type.MAX_NAME_LENGTH, KeyWords.FIELD_NAME_TOO_LONG);
-		checkString(field, NAME_CHECK, KeyWords.INVALID_FIELD_NAME);
+		checkMaxLength(field, Type.MAX_NAME_LENGTH, NXException.FIELD_NAME_TOO_LONG);
+		checkString(field, NAME_CHECK, NXException.INVALID_FIELD_NAME);
 	}
 
 	public static void checkTypeOrField(String typeOrField) {
-		checkMaxLength(typeOrField, Type.MAX_NAME_LENGTH, KeyWords.TYPE_OR_FIELD_NAME_TOO_LONG);
-		checkString(typeOrField, NAME_CHECK, KeyWords.INVALID_TYPE_OR_FIELD_NAME);
+		checkMaxLength(typeOrField, Type.MAX_NAME_LENGTH, NXException.TYPE_OR_FIELD_NAME_TOO_LONG);
+		checkString(typeOrField, NAME_CHECK, NXException.INVALID_TYPE_OR_FIELD_NAME);
 	}
 
 	public static void checkIndex(String index) {
-		checkMaxLength(index, Type.MAX_NAME_LENGTH, KeyWords.INDEX_NAME_TOO_LONG);
-		checkString(index, NAME_CHECK, KeyWords.INVALID_INDEX_NAME);
+		checkMaxLength(index, Type.MAX_NAME_LENGTH, NXException.INDEX_NAME_TOO_LONG);
+		checkString(index, NAME_CHECK, NXException.INVALID_INDEX_NAME);
 	}
 
 	public static void checkIndexes(String[] indexes) {
@@ -238,11 +239,11 @@ public class Checks {
 	}
 
 	public static void checkElement(String element) {
-		checkString(element, ID_ELEMENT_CHECK, KeyWords.INVALID_ELEMENT_NAME);
+		checkString(element, ID_ELEMENT_CHECK, NXException.INVALID_ELEMENT_NAME);
 	}
 
 	public static void checkView(String view) {
-		checkString(view, VIEW_CHECK, KeyWords.INVALID_VIEW_NAME);
+		checkString(view, VIEW_CHECK, NXException.INVALID_VIEW_NAME);
 	}
 
 	public static void checkOrder(LinkedHashMap<String, Order> order) {
@@ -257,22 +258,22 @@ public class Checks {
 	}
 
 	public static void checkAction(String action) {
-		checkMaxLength(action, Type.MAX_NAME_LENGTH, KeyWords.ACTION_NAME_TOO_LONG);
-		checkString(action, NAME_CHECK, KeyWords.INVALID_ACTION_NAME);
+		checkMaxLength(action, Type.MAX_NAME_LENGTH, NXException.ACTION_NAME_TOO_LONG);
+		checkString(action, NAME_CHECK, NXException.INVALID_ACTION_NAME);
 	}
 
 	public static void checkFieldParameters(String parameters) {
-		checkString(parameters, FIELD_PARAMETERS_CHECK, KeyWords.INVALID_FIELD_PARAMETERS);
+		checkString(parameters, FIELD_PARAMETERS_CHECK, NXException.INVALID_FIELD_PARAMETERS);
 	}
 
 	public static void checkTupleField(String field) {
-		checkMaxLength(field, Type.MAX_NAME_LENGTH, KeyWords.FIELD_NAME_TOO_LONG);
-		checkString(field, NAME_CHECK, KeyWords.INVALID_FIELD_NAME);
+		checkMaxLength(field, Type.MAX_NAME_LENGTH, NXException.FIELD_NAME_TOO_LONG);
+		checkString(field, NAME_CHECK, NXException.INVALID_FIELD_NAME);
 	}
 	
 	public static void checkParameter(String field) {
-		checkMaxLength(field, Type.MAX_NAME_LENGTH, KeyWords.PARAMETER_NAME_TOO_LONG);
-		checkString(field, NAME_CHECK, KeyWords.INVALID_PARAMETER_NAME);
+		checkMaxLength(field, Type.MAX_NAME_LENGTH, NXException.PARAMETER_NAME_TOO_LONG);
+		checkString(field, NAME_CHECK, NXException.INVALID_PARAMETER_NAME);
 	}
 
 	public static void checkObject(NXObject object) {

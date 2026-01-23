@@ -17,7 +17,6 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class ActionNotFoundException extends NotFoundException {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +24,7 @@ public class ActionNotFoundException extends NotFoundException {
 	protected String action;
 
 	public ActionNotFoundException(String type, String action) {
-		super(type, KeyWords.ACTION_NOT_FOUND);
+		super(type, ACTION_NOT_FOUND);
 		this.action = action;
 	}
 
@@ -37,6 +36,6 @@ public class ActionNotFoundException extends NotFoundException {
 	public String getMessage(LanguageSettings languageSettings) {
 		String typeName = languageSettings.getTypeName(type);
 
-		return languageSettings.gts(type, KeyWords.ACTION_NOT_FOUND) + ": " + typeName + "::" + action;
+		return languageSettings.gts(type, ACTION_NOT_FOUND) + ": " + typeName + "::" + action;
 	}
 }

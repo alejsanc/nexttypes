@@ -106,7 +106,7 @@ public class ClamAV {
 		String result = scan(data);
 		
 		if (result != null) {
-			throw new ActionFieldException(type, objects, action, field, KeyWords.VIRUS_FOUND, result);
+			throw new ActionFieldException(type, objects, action, field, NXException.VIRUS_FOUND, result);
 		}
 	}
 	
@@ -114,7 +114,7 @@ public class ClamAV {
 		String result = scan(data);
 		
 		if (result != null) {
-			throw new ObjectFieldException(type, id, field, KeyWords.VIRUS_FOUND, result);
+			throw new ObjectFieldException(type, id, field, NXException.VIRUS_FOUND, result);
 		}
 	}
 		

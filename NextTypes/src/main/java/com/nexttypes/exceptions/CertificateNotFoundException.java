@@ -17,7 +17,6 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class CertificateNotFoundException extends NXException {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +24,7 @@ public class CertificateNotFoundException extends NXException {
 	protected String subject;
 
 	public CertificateNotFoundException(String subject) {
-		super(KeyWords.CERTIFICATE_NOT_FOUND);
+		super(CERTIFICATE_NOT_FOUND);
 		this.subject = subject;
 	}
 
@@ -35,6 +34,6 @@ public class CertificateNotFoundException extends NXException {
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		return languageSettings.gts(KeyWords.CERTIFICATE_NOT_FOUND) + ": " + subject;
+		return languageSettings.gts(CERTIFICATE_NOT_FOUND) + ": " + subject;
 	}
 }

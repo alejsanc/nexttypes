@@ -17,7 +17,6 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class ObjectNotFoundException extends NotFoundException {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +24,7 @@ public class ObjectNotFoundException extends NotFoundException {
 	protected String id;
 
 	public ObjectNotFoundException(String type, String id) {
-		super(type, KeyWords.OBJECT_NOT_FOUND);
+		super(type, OBJECT_NOT_FOUND);
 		this.id = id;
 	}
 
@@ -37,6 +36,6 @@ public class ObjectNotFoundException extends NotFoundException {
 	public String getMessage(LanguageSettings languageSettings) {
 		String typeName = languageSettings.getTypeName(type);
 		
-		return languageSettings.gts(type, KeyWords.OBJECT_NOT_FOUND) + ": " + typeName + "::" + id;
+		return languageSettings.gts(type, OBJECT_NOT_FOUND) + ": " + typeName + "::" + id;
 	}
 }

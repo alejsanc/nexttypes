@@ -25,6 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nexttypes.exceptions.InvalidValueException;
+import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.KeyWords;
 
 @JacksonXmlRootElement(localName = KeyWords.TYPE)
@@ -67,11 +68,11 @@ public class Type {
 			@JsonProperty(KeyWords.ACTIONS) LinkedHashMap<String, LinkedHashMap<String, TypeField>> actions) {
 
 		if (cdate != null && !cdate.getOffset().equals(ZoneOffset.UTC)) {
-			throw new InvalidValueException(KeyWords.INVALID_TIMEZONE, cdate.getZone());
+			throw new InvalidValueException(NXException.INVALID_TIMEZONE, cdate.getZone());
 		}
 
 		if (adate != null && !adate.getOffset().equals(ZoneOffset.UTC)) {
-			throw new InvalidValueException(KeyWords.INVALID_TIMEZONE, adate.getZone());
+			throw new InvalidValueException(NXException.INVALID_TIMEZONE, adate.getZone());
 		}
 
 		this.name = name;

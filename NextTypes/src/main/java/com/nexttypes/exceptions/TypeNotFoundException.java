@@ -17,7 +17,6 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class TypeNotFoundException extends NotFoundException {
 	private static final long serialVersionUID = 1L;
@@ -29,7 +28,7 @@ public class TypeNotFoundException extends NotFoundException {
 	}
 	
 	public TypeNotFoundException(String type) {
-		super(type, KeyWords.TYPE_NOT_FOUND);
+		super(type, TYPE_NOT_FOUND);
 	}
 	
 	public TypeNotFoundException setMessage(String message) {
@@ -39,7 +38,7 @@ public class TypeNotFoundException extends NotFoundException {
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		String message = languageSettings.gts(type, KeyWords.TYPE_NOT_FOUND) + ": ";
+		String message = languageSettings.gts(type, TYPE_NOT_FOUND) + ": ";
 
 		if (type != null) {
 			message += type;

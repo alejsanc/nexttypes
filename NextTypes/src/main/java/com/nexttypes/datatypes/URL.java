@@ -25,6 +25,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 
 import com.nexttypes.exceptions.InvalidValueException;
+import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.KeyWords;
 
 public class URL {
@@ -54,7 +55,7 @@ public class URL {
 		try {
 			this.url = new URIBuilder(url);
 		} catch (URISyntaxException e) {
-			throw new InvalidValueException(KeyWords.INVALID_URL, url);
+			throw new InvalidValueException(NXException.INVALID_URL, url);
 		}
 	}
 

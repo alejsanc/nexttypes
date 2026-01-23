@@ -544,12 +544,12 @@ public class HTTPServlet extends HttpServlet {
 
 		String user = req.getLoginUser();
 		if (user == null) {
-			throw new NXException(KeyWords.EMPTY_USER_NAME);
+			throw new NXException(NXException.EMPTY_USER_NAME);
 		}
 
 		String password = req.getLoginPassword();
 		if (password == null) {
-			throw new NXException(KeyWords.EMPTY_PASSWORD);
+			throw new NXException(NXException.EMPTY_PASSWORD);
 		}
 
 		if (nextNode.checkPassword(KeyWords.USER, user, KeyWords.PASSWORD, password)) {
@@ -580,7 +580,7 @@ public class HTTPServlet extends HttpServlet {
 			content = new Content(languageSettings.gts(KeyWords.SUCCESSFUL_LOGOUT));
 			logger.info(auth.getUser(), remoteAddress, new NXException(KeyWords.SUCCESSFUL_LOGOUT));
 		} else {
-			throw new NXException(KeyWords.USER_NOT_LOGGED_IN);
+			throw new NXException(NXException.USER_NOT_LOGGED_IN);
 		}
 
 		return content;
@@ -602,9 +602,9 @@ public class HTTPServlet extends HttpServlet {
 			}
 			
 			if (req.getType() == null) {
-				throw new NXException(KeyWords.EMPTY_TYPE_NAME);
+				throw new NXException(NXException.EMPTY_TYPE_NAME);
 			} else if (req.getId() == null) {
-				throw new NXException(req.getType(), KeyWords.EMPTY_ID);
+				throw new NXException(req.getType(), NXException.EMPTY_ID);
 			} else if (req.getField() == null) {
 				udate = nextNode.update(req.getType(), req.getId(), (byte[]) value);
 			} else {
@@ -619,7 +619,7 @@ public class HTTPServlet extends HttpServlet {
 				switch (fieldType) {
 				case PT.PASSWORD:
 					throw new ObjectFieldException(req.getType(), req.getId(), req.getField(),
-							KeyWords.PASSWORD_FIELD_UPDATE);
+							NXException.PASSWORD_FIELD_UPDATE);
 
 				case PT.BINARY:
 					break;
@@ -1281,7 +1281,7 @@ public class HTTPServlet extends HttpServlet {
 					} else {
 				
 						if (requests.requests >= maxInserts) {
-							NXException exception = new NXException(type, KeyWords.MAX_INSERTS_EXCEEDED);
+							NXException exception = new NXException(type, NXException.MAX_INSERTS_EXCEEDED);
 							String message = exception.getMessage(req.getLanguageSettings());
 							
 							content = new Content(message, Format.TEXT, HTTPStatus.TOO_MANY_REQUESTS);
@@ -1399,7 +1399,7 @@ public class HTTPServlet extends HttpServlet {
 	
 					if (authErrors.requests >= maxAuthErrors) {
 	
-						throw new NXException(KeyWords.AUTH_ERRORS_PER_MINUTE_EXCEEDED);
+						throw new NXException(NXException.AUTH_ERRORS_PER_MINUTE_EXCEEDED);
 					}
 				}
 			}

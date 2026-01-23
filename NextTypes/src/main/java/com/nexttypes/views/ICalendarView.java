@@ -29,7 +29,6 @@ import com.nexttypes.exceptions.NXException;
 import com.nexttypes.protocol.http.HTTPRequest;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.system.Constants;
-import com.nexttypes.system.KeyWords;
 
 public class ICalendarView extends View {
 
@@ -54,7 +53,7 @@ public class ICalendarView extends View {
 			ICalendar calendar = new ICalendar(request.getURLRoot() + "/" + type + "/", events);
 			return new Content(calendar.toString(), Format.ICALENDAR);
 		} else {
-			throw new NXException(type, KeyWords.SELECT_STRING_NOT_FOUND);
+			throw new NXException(type, NXException.SELECT_STRING_NOT_FOUND);
 		}
 
 	}

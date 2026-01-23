@@ -17,7 +17,6 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class ViewNotFoundException extends NXException {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +24,7 @@ public class ViewNotFoundException extends NXException {
 	protected String view;
 
 	public ViewNotFoundException(String type, String view) {
-		super(type, KeyWords.VIEW_NOT_FOUND);
+		super(type, VIEW_NOT_FOUND);
 		this.view = view;
 	}
 
@@ -36,7 +35,7 @@ public class ViewNotFoundException extends NXException {
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
 				
-		String message = languageSettings.gts(type, KeyWords.VIEW_NOT_FOUND) + ": ";
+		String message = languageSettings.gts(type, VIEW_NOT_FOUND) + ": ";
 		
 		if (type != null) {
 			message += languageSettings.getTypeName(type) + "::";

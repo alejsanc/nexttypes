@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.nexttypes.exceptions.InvalidValueException;
+import com.nexttypes.exceptions.NXException;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Utils;
 
@@ -67,11 +68,11 @@ public class NXObject extends Tuple {
 			Boolean backup, LinkedHashMap<String, Object> fields) {
 		
 		if (cdate != null && !cdate.getOffset().equals(ZoneOffset.UTC)) {
-			throw new InvalidValueException(KeyWords.INVALID_TIMEZONE, cdate.getZone());
+			throw new InvalidValueException(NXException.INVALID_TIMEZONE, cdate.getZone());
 		}
 
 		if (udate != null && !udate.getOffset().equals(ZoneOffset.UTC)) {
-			throw new InvalidValueException(KeyWords.INVALID_TIMEZONE, udate.getZone());
+			throw new InvalidValueException(NXException.INVALID_TIMEZONE, udate.getZone());
 		}
 
 		this.type = type;

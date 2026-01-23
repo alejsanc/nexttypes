@@ -17,7 +17,6 @@
 package com.nexttypes.exceptions;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class InvalidHostNameException extends NXException {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +24,7 @@ public class InvalidHostNameException extends NXException {
 	protected String host;
 
 	public InvalidHostNameException(String host) {
-		super(KeyWords.INVALID_HOST_NAME);
+		super(INVALID_HOST_NAME);
 		this.host = host;
 	}
 
@@ -35,6 +34,6 @@ public class InvalidHostNameException extends NXException {
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		return languageSettings.gts(KeyWords.INVALID_HOST_NAME) + ": " + host;
+		return languageSettings.gts(INVALID_HOST_NAME) + ": " + host;
 	}
 }

@@ -19,7 +19,6 @@ package com.nexttypes.exceptions;
 import org.cups4j.PrintRequestResult;
 
 import com.nexttypes.settings.LanguageSettings;
-import com.nexttypes.system.KeyWords;
 
 public class PrinterException extends NXException {
 	private static final long serialVersionUID = 1L;
@@ -30,13 +29,13 @@ public class PrinterException extends NXException {
 	protected String description;
 	
 	public PrinterException(String printer, Exception e)  {
-		super(KeyWords.PRINTER_ERROR);
+		super(PRINTER_ERROR);
 		this.printer = printer;
 		message = e.getMessage();
 	}
 
 	public PrinterException(String printer, PrintRequestResult printRequestResult) {
-		super(KeyWords.PRINTER_ERROR);
+		super(PRINTER_ERROR);
 		this.printer = printer;
 		code = printRequestResult.getResultCode();
 		message = printRequestResult.getResultMessage();
@@ -62,6 +61,6 @@ public class PrinterException extends NXException {
 
 	@Override
 	public String getMessage(LanguageSettings languageSettings) {
-		return languageSettings.gts(KeyWords.PRINTER_ERROR) + ": " + message;
+		return languageSettings.gts(PRINTER_ERROR) + ": " + message;
 	}
 }

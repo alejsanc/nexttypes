@@ -305,7 +305,7 @@ public class Tuple {
 		BigDecimal numeric = parseNumeric(value);
 		
 		if (numeric != null && (numeric.compareTo(min) == -1 || numeric.compareTo(max) == 1)) {
-			throw new InvalidValueException(KeyWords.INVALID_NUMERIC, numeric);
+			throw new InvalidValueException(NXException.INVALID_NUMERIC, numeric);
 		}
 		
 		return numeric;
@@ -324,7 +324,7 @@ public class Tuple {
 			} else if ((Long) value == 1) {
 				value = true;
 			} else {
-				throw new InvalidValueException(KeyWords.INVALID_BOOLEAN, value);
+				throw new InvalidValueException(NXException.INVALID_BOOLEAN, value);
 			}
 		} else if (value instanceof byte[]) {
 			value = Boolean.parseBoolean(bytesToString(value));
@@ -362,7 +362,7 @@ public class Tuple {
 				((InternetAddress) value).validate();
 			}
 		} catch (AddressException e) {
-			throw new InvalidValueException(KeyWords.INVALID_EMAIL, value);
+			throw new InvalidValueException(NXException.INVALID_EMAIL, value);
 		}
 		return (InternetAddress) value;
 	}
@@ -431,7 +431,7 @@ public class Tuple {
 			ZoneOffset offset = ((ZonedDateTime) value).getOffset();
 
 			if (!offset.equals(ZoneOffset.UTC)) {
-				throw new InvalidValueException(KeyWords.INVALID_TIMEZONE, offset.getId());
+				throw new InvalidValueException(NXException.INVALID_TIMEZONE, offset.getId());
 			}
 		}
 		return (ZonedDateTime) value;

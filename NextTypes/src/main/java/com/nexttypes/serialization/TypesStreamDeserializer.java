@@ -74,7 +74,7 @@ public class TypesStreamDeserializer extends StreamDeserializer implements Types
 			
 			String format = parser.getText();
 			if (!NEXTTYPES_TYPES.equals(format)) {
-				throw new InvalidValueException(KeyWords.INVALID_STREAM_FORMAT, format);
+				throw new InvalidValueException(NXException.INVALID_STREAM_FORMAT, format);
 			}
 			
 			parser.nextToken();

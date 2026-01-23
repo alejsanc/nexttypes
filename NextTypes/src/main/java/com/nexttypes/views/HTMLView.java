@@ -303,7 +303,7 @@ public class HTMLView extends View {
 				main.appendElement(typesTable(types, lang, view));
 			}
 		} else {
-			main.appendElement(HTML.P).appendText(languageSettings.gts(KeyWords.NO_TYPES_FOUND));
+			main.appendElement(HTML.P).appendText(languageSettings.gts(NXException.NO_TYPES_FOUND));
 		}
 
 		return render();
@@ -1000,12 +1000,12 @@ public class HTMLView extends View {
 					content = new Content(thumbnail, Format.PNG);
 				}
 			} else {
-				throw new ElementException(type, id, field, element, KeyWords.INVALID_ELEMENT);
+				throw new ElementException(type, id, field, element, NXException.INVALID_ELEMENT);
 			}
 			break;
 
 		default:
-			throw new ObjectFieldException(type, id, field, KeyWords.FIELD_HAS_NO_ELEMENTS);
+			throw new ObjectFieldException(type, id, field, NXException.FIELD_HAS_NO_ELEMENTS);
 		}
 
 		if (content == null) {
@@ -2522,7 +2522,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 			break;
 			
 		default:
-			throw new InvalidValueException(KeyWords.INVALID_OBJECT_INPUT_MODE, mode);
+			throw new InvalidValueException(NXException.INVALID_OBJECT_INPUT_MODE, mode);
 		}	
 		
 		return input;
@@ -2556,7 +2556,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 			break;
 			
 		default:
-			throw new InvalidValueException(KeyWords.INVALID_OBJECTS_INPUT_MODE, mode);
+			throw new InvalidValueException(NXException.INVALID_OBJECTS_INPUT_MODE, mode);
 		}
 		
 		return input;
@@ -4196,7 +4196,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 
 	protected HTMLView getHTMLView(String type, String view) {
 		if (type == null) {
-			throw new NXException(KeyWords.EMPTY_TYPE_NAME);
+			throw new NXException(NXException.EMPTY_TYPE_NAME);
 		}
 
 		HTMLView htmlView = null;
