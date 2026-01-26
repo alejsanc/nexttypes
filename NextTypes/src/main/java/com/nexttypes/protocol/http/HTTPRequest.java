@@ -172,7 +172,7 @@ public class HTTPRequest {
 		readParameters();
 
 		if (view == null || !ArrayUtils.contains(settings.getStringArray(KeyWords.VIEWS), view)) {
-			view = settings.getString(KeyWords.DEFAULT_VIEW);
+			view = settings.getString(Settings.DEFAULT_VIEW);
 		}
 
 		if (limit != null && limit == 0) {
@@ -438,11 +438,11 @@ public class HTTPRequest {
 		switch (fieldType) {
 		case PT.HTML:
 			value = fields.getHTML(field, lang, typeSettings.getFieldString(type, field,
-					KeyWords.HTML_ALLOWED_TAGS));
+					Settings.HTML_ALLOWED_TAGS));
 			break;
 		case PT.XML:
 			value = fields.getXML(field, lang, typeSettings.getFieldString(type, field,
-					KeyWords.XML_ALLOWED_TAGS));
+					Settings.XML_ALLOWED_TAGS));
 			break;
 		case PT.JSON:
 			value = fields.getJSON(field);

@@ -292,9 +292,9 @@ public class PostgreSQLNode extends Node {
 	public PostgreSQLNode(Context context) {
 		
 		settings = context.getSettings(Settings.POSTGRESQL_SETTINGS);
-		lang = settings.getString(KeyWords.DEFAULT_LANG);
+		lang = settings.getString(Settings.DEFAULT_LANG);
 		connectionPool = DBConnection.getConnectionPool(settings, POSTGRESQL, DRIVER);
-		context.putDBConnectionPool(settings.getString(KeyWords.POOL), connectionPool);
+		context.putDBConnectionPool(settings.getString(Settings.POOL), connectionPool);
 		
 		try (PostgreSQLNode node = new PostgreSQLNode(new Auth(Auth.ADMIN, Auth.ADMINISTRATORS),
 				NodeMode.ADMIN, lang, URL.LOCALHOST, context, true)) {
@@ -332,7 +332,7 @@ public class PostgreSQLNode extends Node {
 		typeSettings = context.getTypeSettings(auth);
 		
 		if (lang == null) {
-			lang = settings.getString(KeyWords.DEFAULT_LANG);
+			lang = settings.getString(Settings.DEFAULT_LANG);
 		} 
 
 		this.lang = lang;
@@ -340,7 +340,7 @@ public class PostgreSQLNode extends Node {
 		languageSettings = context.getLanguageSettings(lang);
 
 		if (useConnectionPool) {
-			connectionPool = context.getDatabaseConnectionPool(settings.getString(KeyWords.POOL));
+			connectionPool = context.getDatabaseConnectionPool(settings.getString(Settings.POOL));
 			connection = connectionPool.getConnection(mode);
 		} else {
 			connection = DBConnection.getConnection(settings, POSTGRESQL, mode);
@@ -1009,10 +1009,10 @@ public class PostgreSQLNode extends Node {
 			}
 			updateTypeDates(typeName, typeADate);
 			result.setADate(typeADate);
-			result.setMessage(languageSettings.gts(typeName, KeyWords.TYPE_SUCCESSFULLY_ALTERED));
+			result.setMessage(languageSettings.gts(typeName, Settings.TYPE_SUCCESSFULLY_ALTERED));
 		} else {
 			result.setADate(getADate(typeName));
-			result.setMessage(languageSettings.gts(typeName, KeyWords.TYPE_NOT_ALTERED));
+			result.setMessage(languageSettings.gts(typeName, Settings.TYPE_NOT_ALTERED));
 		}
 
 		return result;
@@ -1062,7 +1062,7 @@ public class PostgreSQLNode extends Node {
 	protected void checkFileField(String type, String id, String field, Object value) {
 		if (value instanceof File) {
 			String[] allowedContentTypes = typeSettings.getFieldStringArray(type, field,
-					KeyWords.ALLOWED_CONTENT_TYPES);
+					Settings.ALLOWED_CONTENT_TYPES);
 
 			if (allowedContentTypes != null) {
 				String contentType = ((File) value).getContentType();
@@ -1364,7 +1364,7 @@ public class PostgreSQLNode extends Node {
 			execute(sql, parameters);
 		}		
 		
-		String message = languageSettings.gts(type, KeyWords.OBJECT_ID_SUCCESSFULLY_UPDATED);
+		String message = languageSettings.gts(type, Settings.OBJECT_ID_SUCCESSFULLY_UPDATED);
 		
 		return new UpdateIdResult(message, udate, newId);
 	}
@@ -1596,7 +1596,7 @@ public class PostgreSQLNode extends Node {
 			case PT.HTML:
 				if (fulltext) {
 					value = tuple.getHTML(field, lang, typeSettings.getFieldString(type, field,
-							KeyWords.HTML_ALLOWED_TAGS));
+							Settings.HTML_ALLOWED_TAGS));
 				} else {
 					value = tuple.getHTMLText(field);
 				}
@@ -1604,7 +1604,7 @@ public class PostgreSQLNode extends Node {
 			case PT.XML:
 				if (fulltext) {
 					value = tuple.getXML(field, lang, typeSettings.getFieldString(type, field,
-							KeyWords.XML_ALLOWED_TAGS));
+							Settings.XML_ALLOWED_TAGS));
 				} else {
 					value = tuple.getString(field);
 				}
@@ -1734,7 +1734,7 @@ public class PostgreSQLNode extends Node {
 	@Override
 	public String getName(String type, String id, String lang) {
 		String name = null;
-		String idName = typeSettings.gts(type, KeyWords.ID_NAME);
+		String idName = typeSettings.gts(type, Settings.ID_NAME);
 
 		if (idName != null) {
 			String sql = "select name from (" + idName + ") as id_name where id = ?";
@@ -1782,7 +1782,7 @@ public class PostgreSQLNode extends Node {
 			Long offset, Long limit) {
 		StringBuilder sql = new StringBuilder();
 		ArrayList<Object> parameters = new ArrayList<>();
-		String idName = typeSettings.gts(type, KeyWords.ID_NAME);
+		String idName = typeSettings.gts(type, Settings.ID_NAME);
 
 		if (idName != null) {
 			sql.append(idName);
@@ -1817,7 +1817,7 @@ public class PostgreSQLNode extends Node {
 			parameters.add(search);
 		}
 		
-		String order = typeSettings.gts(type, KeyWords.ID_NAME + "." + KeyWords.ORDER);
+		String order = typeSettings.gts(type, Settings.ID_NAME + "." + KeyWords.ORDER);
 		if (order != null) {
 			sql.append(" order by " + order);
 		} else {
@@ -2167,7 +2167,7 @@ public class PostgreSQLNode extends Node {
 	@Override
 	public XML getXMLField(String type, String id, String field) {
 		String xml = getStringField(type, id, field);
-		String allowedTags = typeSettings.getFieldString(type, field, KeyWords.XML_ALLOWED_TAGS);
+		String allowedTags = typeSettings.getFieldString(type, field, Settings.XML_ALLOWED_TAGS);
 		return Tuple.parseXML(xml, lang, allowedTags);
 	}
 
@@ -2208,7 +2208,7 @@ public class PostgreSQLNode extends Node {
 					xml.append(node);
 				}
 
-				String allowedTags = typeSettings.getFieldString(type, field, KeyWords.XML_ALLOWED_TAGS);
+				String allowedTags = typeSettings.getFieldString(type, field, Settings.XML_ALLOWED_TAGS);
 				XML xmlDocument = new XML(xml.toString(), lang, allowedTags);
 				xmlElement = xmlDocument.getDocumentElement();
 			}
@@ -2220,7 +2220,7 @@ public class PostgreSQLNode extends Node {
 	@Override
 	public HTMLFragment getHTMLField(String type, String id, String field) {
 		String html = getStringField(type, id, field);
-		String allowedTags = typeSettings.getFieldString(type, field, KeyWords.HTML_ALLOWED_TAGS);
+		String allowedTags = typeSettings.getFieldString(type, field, Settings.HTML_ALLOWED_TAGS);
 		return Tuple.parseHTML(html, lang, allowedTags);
 	}
 
@@ -2406,7 +2406,7 @@ public class PostgreSQLNode extends Node {
 						
 					case PT.HTML:
 						value = new HTMLFragment(content, lang, typeSettings.getFieldString(type, field,
-								KeyWords.HTML_ALLOWED_TAGS));
+								Settings.HTML_ALLOWED_TAGS));
 						break;
 						
 					case PT.JSON:
@@ -2415,7 +2415,7 @@ public class PostgreSQLNode extends Node {
 					
 					case PT.XML:
 						value = new XML(content, lang, typeSettings.getFieldString(type, field,
-								KeyWords.XML_ALLOWED_TAGS));
+								Settings.XML_ALLOWED_TAGS));
 						break;
 					}
 				}
@@ -3903,7 +3903,7 @@ public class PostgreSQLNode extends Node {
 			LinkedHashMap<String, TypeIndex> typeIndexes = getTypeIndexes(type);
 
 			if (objectName) {
-				String idName = typeSettings.gts(type, KeyWords.ID_NAME);
+				String idName = typeSettings.gts(type, Settings.ID_NAME);
 				if (idName != null) {
 					fieldsSQL.append(", \"@@" + type + "\".name as \"@name\"");
 					joinSQL.append(" join (" + idName + ") as \"@@" + type + "\"" + " on \""
@@ -4202,7 +4202,7 @@ public class PostgreSQLNode extends Node {
 		protected void addReference(StringBuilder fieldsSQL, StringBuilder joinSQL, String type, String field,
 				String fieldType, String lang) {
 
-			String fieldIdName = typeSettings.gts(fieldType, KeyWords.ID_NAME);
+			String fieldIdName = typeSettings.gts(fieldType, Settings.ID_NAME);
 			
 			if (fieldIdName == null) {
 				fieldIdName = "select id, id as name from \"" + fieldType + "\"";

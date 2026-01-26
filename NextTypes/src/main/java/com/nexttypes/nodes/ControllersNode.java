@@ -92,7 +92,7 @@ public class ControllersNode extends Node {
 			Context context, boolean useConnectionPool) {
 		this.auth = auth;
 		settings = context.getSettings(Settings.CONTROLLERS_SETTINGS);
-		nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE), auth, mode, lang, remoteAddress,
+		nextNode = Loader.loadNode(settings.getString(Settings.NEXT_NODE), auth, mode, lang, remoteAddress,
 				context, useConnectionPool);
 		typeSettings = context.getTypeSettings(auth);
 	}

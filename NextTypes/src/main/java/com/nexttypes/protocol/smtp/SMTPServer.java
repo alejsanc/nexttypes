@@ -41,8 +41,8 @@ public class SMTPServer extends Thread {
 			logger = context.getLogger();
 			settings = context.getSettings(Settings.SMTP_SETTINGS);
 			languageSettings = context.getLanguageSettings(settings.getString(KeyWords.LANG));
-			socket = new ServerSocket(settings.getInt32(KeyWords.PORT), settings.getInt32(KeyWords.BACKLOG),
-					InetAddress.getByName((settings.getString(KeyWords.BIND_ADDRESS))));
+			socket = new ServerSocket(settings.getInt32(KeyWords.PORT), settings.getInt32(Settings.BACKLOG),
+					InetAddress.getByName((settings.getString(Settings.BIND_ADDRESS))));
 			open = true;
 		} catch (Exception e) {
 			logger.severe(Auth.SMTP, URL.LOCALHOST, e);

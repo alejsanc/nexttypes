@@ -62,6 +62,7 @@ import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.LanguageSettings;
+import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.TypeSettings;
 
 public class Controller {
@@ -93,7 +94,7 @@ public class Controller {
 	public ActionResult executeAction(String[] objects, String action, Object... parameters) {
 		
 		Boolean objectsInputNotNull = typeSettings.getActionBoolean(type, action,
-				KeyWords.OBJECTS_INPUT_NOT_NULL);
+				Settings.OBJECTS_INPUT_NOT_NULL);
 		
 		if (objectsInputNotNull && (objects == null || objects.length == 0)) {
 			throw new NXException(type, NXException.EMPTY_OBJECTS_LIST);
@@ -158,7 +159,7 @@ public class Controller {
 	protected void checkActionFileField(String[] objects, String action, String field, Object value) {
 		if (value instanceof File) {
 			String[] allowedContentTypes = typeSettings.getActionFieldStringArray(type, action, field,
-					KeyWords.ALLOWED_CONTENT_TYPES);
+					Settings.ALLOWED_CONTENT_TYPES);
 
 			if (allowedContentTypes != null) {
 				String contentType = ((File) value).getContentType();

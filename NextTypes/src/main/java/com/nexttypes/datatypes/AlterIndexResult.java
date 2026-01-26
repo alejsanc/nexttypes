@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nexttypes.system.KeyWords;
 
 public class AlterIndexResult {
-
+	
 	protected ZonedDateTime adate;
 	protected boolean mode = false;
 	protected boolean fields = false;

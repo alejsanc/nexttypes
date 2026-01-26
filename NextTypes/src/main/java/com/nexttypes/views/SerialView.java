@@ -122,9 +122,9 @@ public class SerialView extends View {
 		
 		if (referencingType != null) {
 			limit = typeSettings.getActionFieldInt64(referencingType, referencingAction,
-					referencingField, KeyWords.OBJECT_INPUT_LIMIT);
+					referencingField, Settings.OBJECT_INPUT_LIMIT);
 		} else {
-			limit = typeSettings.getActionInt64(type, referencingAction, KeyWords.OBJECT_INPUT_LIMIT);
+			limit = typeSettings.getActionInt64(type, referencingAction, Settings.OBJECT_INPUT_LIMIT);
 		}
 		
 		Names names = nextNode.getNames(type, referencingType,

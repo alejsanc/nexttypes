@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nexttypes.system.KeyWords;
 
 public class ImportObjectsResult {
-
+	
 	protected LinkedHashMap<String, Long> importedObjects = new LinkedHashMap<>();
 	protected LinkedHashMap<String, Long> ignoredObjects = new LinkedHashMap<>();
 	protected LinkedHashMap<String, Long> updatedObjects = new LinkedHashMap<>();

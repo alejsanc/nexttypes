@@ -35,6 +35,7 @@ import com.nexttypes.exceptions.NXException;
 import com.nexttypes.enums.Component;
 import com.nexttypes.enums.Format;
 import com.nexttypes.protocol.http.HTTPRequest;
+import com.nexttypes.settings.Settings;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.KeyWords;
@@ -132,7 +133,7 @@ public class ArticleView extends HTMLView {
 		article.appendElement(HTML.H1).appendText(title);
 		
 		HTMLFragment text = tuple.getHTML(KeyWords.TEXT, lang,
-				typeSettings.getFieldString(type, KeyWords.TEXT, KeyWords.HTML_ALLOWED_TAGS));
+				typeSettings.getFieldString(type, KeyWords.TEXT, Settings.HTML_ALLOWED_TAGS));
 		if (text != null) {
 			article.appendFragment(text);
 		}
@@ -299,7 +300,7 @@ public class ArticleView extends HTMLView {
 		parameters.add(lang);
 		parameters.add(lang);
 
-		String previewTitle = languageSettings.gts(type, KeyWords.PREVIEW_TITLE);
+		String previewTitle = languageSettings.gts(type, Settings.PREVIEW_TITLE);
 		
 		category = request.getParameters().getString(CATEGORY);
 		
@@ -361,7 +362,7 @@ public class ArticleView extends HTMLView {
 					Element paragraph = article.appendElement(HTML.P);
 					paragraph.appendText(text + " ... ");
 					if (!print) {
-						paragraph.appendElement(anchor(languageSettings.gts(type, KeyWords.READ_MORE), url));
+						paragraph.appendElement(anchor(languageSettings.gts(type, Settings.READ_MORE), url));
 					}
 				}
 				

@@ -22,6 +22,7 @@ import com.nexttypes.datatypes.HTMLFragment;
 import com.nexttypes.datatypes.Tuple;
 import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.protocol.http.HTTPRequest;
+import com.nexttypes.settings.Settings;
 import com.nexttypes.system.KeyWords;
 
 public class SoftwareView extends HTMLView {
@@ -111,7 +112,7 @@ public class SoftwareView extends HTMLView {
 		}
 
 		HTMLFragment description = tuple.getHTML("description", lang,
-				typeSettings.getFieldString(type, "description", KeyWords.HTML_ALLOWED_TAGS));
+				typeSettings.getFieldString(type, "description", Settings.HTML_ALLOWED_TAGS));
 		if (description != null) {
 			article.appendElement(fieldOutput(languageSettings.getString(DESCRIPTION), description));
 		}

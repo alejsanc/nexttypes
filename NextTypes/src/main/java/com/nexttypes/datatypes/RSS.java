@@ -23,6 +23,7 @@ public class RSS extends XML {
 	private static final long serialVersionUID = 1L;
 
 	public static final String PUBDATE = "pubDate";
+	public static final String PUB_DATE = "pub_date";
 
 	public RSS(String title, String description, String type, String lang, String urlRoot, Tuple[] tuples) {
 		Element rss = setDocumentElement(Format.RSS.toString()).setAttribute(KeyWords.VERSION, "2.0");
@@ -37,9 +38,9 @@ public class RSS extends XML {
 			item = channel.appendElement(KeyWords.ITEM);
 			item.appendElement(KeyWords.TITLE).appendText(tuple.getString(KeyWords.TITLE));
 			item.appendElement(KeyWords.DESCRIPTION).appendText(tuple.getHTMLText(KeyWords.DESCRIPTION));
-			item.appendElement(KeyWords.LINK).appendText(
-					urlRoot + "/" + type + "/" + tuple.getString(KeyWords.ID) + "?" + KeyWords.LANG + "=" + lang);
-			item.appendElement(PUBDATE).appendText(tuple.getUTCDateTime(KeyWords.PUB_DATE).toString());
+			item.appendElement(KeyWords.LINK).appendText(urlRoot + "/" + type + "/" 
+					+ tuple.getString(KeyWords.ID) + "?" + KeyWords.LANG + "=" + lang);
+			item.appendElement(PUBDATE).appendText(tuple.getUTCDateTime(PUB_DATE).toString());
 		}
 	}
 }

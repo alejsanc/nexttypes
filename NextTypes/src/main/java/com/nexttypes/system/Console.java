@@ -182,7 +182,7 @@ public class Console {
 			context = new Context(command.getOptionValue(KeyWords.SETTINGS));
 			settings = context.getSettings(Settings.CONSOLE_SETTINGS);
 			String lang = command.hasOption(KeyWords.LANG) ? command.getOptionValue(KeyWords.LANG)
-					: settings.getString(KeyWords.DEFAULT_LANG);
+					: settings.getString(Settings.DEFAULT_LANG);
 			languageSettings = context.getLanguageSettings(lang);
 			NodeMode mode = null;
 
@@ -203,7 +203,7 @@ public class Console {
 				break;
 			}
 
-			try (Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE),
+			try (Node nextNode = Loader.loadNode(settings.getString(Settings.NEXT_NODE),
 					new Auth(Auth.CONSOLE), mode, lang, URL.LOCALHOST, context, false)) {
 
 				Object result = null;

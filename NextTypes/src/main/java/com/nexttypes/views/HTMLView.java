@@ -312,7 +312,7 @@ public class HTMLView extends View {
 	@Override
 	public Content insertForm(String type, String lang, String view, FieldReference ref) {
 		loadTemplate(type, lang, view);
-		String title = languageSettings.gts(type, KeyWords.INSERT_TITLE);
+		String title = languageSettings.gts(type, Settings.INSERT_TITLE);
 		String typeName = languageSettings.getTypeName(type);
 
 		String[] fields = typeSettings.getActionStringArray(type, Action.INSERT, KeyWords.FIELDS);
@@ -328,7 +328,7 @@ public class HTMLView extends View {
 	@Override
 	public Content createForm(String lang, String view) {
 		loadTemplate(null, lang, view);
-		setTitle(languageSettings.gts(KeyWords.CREATE_TYPE));
+		setTitle(languageSettings.gts(Settings.CREATE_TITLE));
 
 		Element form = typeForm(null, lang, view);
 		main.appendElement(form);
@@ -340,7 +340,7 @@ public class HTMLView extends View {
 	public Content alterForm(String type, String lang, String view) {
 		loadTemplate(type, lang, view);
 
-		String title = languageSettings.gts(type, KeyWords.ALTER_TITLE);
+		String title = languageSettings.gts(type, Settings.ALTER_TITLE);
 		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
@@ -375,7 +375,7 @@ public class HTMLView extends View {
 				.setAttribute(DATA_STRINGS_DROP_FIELD, dropField)
 				.setAttribute(DATA_STRINGS_DROP_INDEX, dropIndex);
 
-		String typeName = languageSettings.gts(KeyWords.TYPE_NAME);
+		String typeName = languageSettings.gts(Settings.TYPE_NAME);
 		typeForm.appendElement(HTML.STRONG).appendText(typeName + ": ");
 
 		if (type != null) {
@@ -536,7 +536,7 @@ public class HTMLView extends View {
 	@Override
 	public Content renameForm(String type, String lang, String view) {
 		loadTemplate(type, lang, view);
-		String title = languageSettings.gts(type, KeyWords.RENAME_TITLE);
+		String title = languageSettings.gts(type, Settings.RENAME_TITLE);
 		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 		main.appendElement(renameFormElement(type, lang, view));
@@ -582,7 +582,7 @@ public class HTMLView extends View {
 			return notFound(type, lang, view, new ActionNotFoundException(type, action));
 		}
 
-		String title = languageSettings.gts(type, KeyWords.EXECUTE_ACTION_TITLE);
+		String title = languageSettings.gts(type, Settings.EXECUTE_ACTION_TITLE);
 		String typeName = languageSettings.getTypeName(type);
 		String actionName = languageSettings.getActionName(type, action);
 		setTitle(Utils.format(title, actionName, typeName));
@@ -596,11 +596,11 @@ public class HTMLView extends View {
 	public Element executeActionForm(String type, String id, String action, String actionName,
 			LinkedHashMap<String, TypeField> fields, String lang, String view) {
 		
-		boolean showType = typeSettings.getActionBoolean(type, action, KeyWords.SHOW_TYPE);
-		boolean showId = typeSettings.getActionBoolean(type, action, KeyWords.SHOW_ID);
-		boolean showHeader = typeSettings.getActionBoolean(type, action, KeyWords.SHOW_HEADER);
-		boolean showProgress = typeSettings.getActionBoolean(type, action, KeyWords.SHOW_PROGRESS);
-		boolean showRange = typeSettings.getActionBoolean(type, action, KeyWords.SHOW_RANGE);
+		boolean showType = typeSettings.getActionBoolean(type, action, Settings.SHOW_TYPE);
+		boolean showId = typeSettings.getActionBoolean(type, action, Settings.SHOW_ID);
+		boolean showHeader = typeSettings.getActionBoolean(type, action, Settings.SHOW_HEADER);
+		boolean showProgress = typeSettings.getActionBoolean(type, action, Settings.SHOW_PROGRESS);
+		boolean showRange = typeSettings.getActionBoolean(type, action, Settings.SHOW_RANGE);
 		
 		return executeActionForm(type, id, action, actionName, fields, lang, view, showType,
 				showId, showHeader, showProgress, showRange);
@@ -691,7 +691,8 @@ public class HTMLView extends View {
 		String existingTypesAction = languageSettings.gts(KeyWords.EXISTING_TYPES_ACTION);
 		String existingObjectsAction = languageSettings.gts(KeyWords.EXISTING_OBJECTS_ACTION);
 		String file = languageSettings.gts(KeyWords.FILE);
-		boolean showProgress = typeSettings.getActionBoolean(null, Action.IMPORT_TYPES, KeyWords.SHOW_PROGRESS);
+		boolean showProgress = typeSettings.getActionBoolean(null, Action.IMPORT_TYPES,
+				Settings.SHOW_PROGRESS);
 
 		setTitle(title);
 
@@ -708,12 +709,12 @@ public class HTMLView extends View {
 		Element row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(existingTypesAction + ":");
 		row.appendElement(HTML.TD).appendElement(select(KeyWords.EXISTING_TYPES_ACTION, existingTypesAction,
-				languageSettings.getTypeTuple(null, KeyWords.EXISTING_TYPES_ACTIONS)));
+				languageSettings.getTypeTuple(null, Settings.EXISTING_TYPES_ACTIONS)));
 
 		row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(existingObjectsAction + ":");
 		row.appendElement(HTML.TD).appendElement(select(KeyWords.EXISTING_OBJECTS_ACTION, existingObjectsAction,
-				languageSettings.getTypeTuple(null, KeyWords.EXISTING_OBJECTS_ACTIONS)));
+				languageSettings.getTypeTuple(null, Settings.EXISTING_OBJECTS_ACTIONS)));
 
 		row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(file + ":");
@@ -736,7 +737,8 @@ public class HTMLView extends View {
 		String title = languageSettings.gts(Action.IMPORT_OBJECTS);
 		String existingObjectsAction = languageSettings.gts(KeyWords.EXISTING_OBJECTS_ACTION);
 		String file = languageSettings.gts(KeyWords.FILE);
-		boolean showProgress = typeSettings.getActionBoolean(null, Action.IMPORT_OBJECTS, KeyWords.SHOW_PROGRESS);
+		boolean showProgress = typeSettings.getActionBoolean(null, Action.IMPORT_OBJECTS,
+				Settings.SHOW_PROGRESS);
 
 		setTitle(title);
 
@@ -753,7 +755,7 @@ public class HTMLView extends View {
 		Element row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(existingObjectsAction + ":");
 		row.appendElement(HTML.TD).appendElement(select(KeyWords.EXISTING_OBJECTS_ACTION, existingObjectsAction,
-				languageSettings.getTypeTuple(null, KeyWords.EXISTING_OBJECTS_ACTIONS)));
+				languageSettings.getTypeTuple(null, Settings.EXISTING_OBJECTS_ACTIONS)));
 
 		row = body.appendElement(HTML.TR);
 		row.appendElement(HTML.TH).appendText(file + ":");
@@ -776,7 +778,7 @@ public class HTMLView extends View {
 		String user = languageSettings.gts(KeyWords.USER);
 		String password = languageSettings.gts(KeyWords.PASSWORD);
 
-		setTitle(languageSettings.gts(KeyWords.LOGIN_TITLE));
+		setTitle(languageSettings.gts(Settings.LOGIN_TITLE));
 		Element form = form(lang, view);
 		main.appendElement(form);
 
@@ -1035,7 +1037,7 @@ public class HTMLView extends View {
 		
 		loadTemplate(type, lang, view);
 				
-		String title = languageSettings.gts(type, KeyWords.SELECT_TITLE);
+		String title = languageSettings.gts(type, Settings.SELECT_TITLE);
 		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
@@ -1057,9 +1059,9 @@ public class HTMLView extends View {
 		main.appendElement(select);
 		
 		if (search != null) {
-			String[] searchTypes = typeSettings.getTypeStringArray(type, KeyWords.FULLTEXT_SEARCH_TYPES);
+			String[] searchTypes = typeSettings.getTypeStringArray(type, Settings.FULLTEXT_SEARCH_TYPES);
 			if (searchTypes != null) {
-				main.appendElement(HTML.H2).appendText(languageSettings.gts(type, KeyWords.OTHER_TYPES));
+				main.appendElement(HTML.H2).appendText(languageSettings.gts(type, Settings.OTHER_TYPES));
 				
 				for (String searchType : searchTypes) {
 					main.appendElement(selectElement(searchType, lang, view, null, null, search, null,
@@ -1079,7 +1081,7 @@ public class HTMLView extends View {
 		
 		String url = deleteSearchURL(type, lang, view, ref, filters, order);
 		
-		div.appendElement(iconAnchor(languageSettings.gts(type, KeyWords.DELETE_SEARCH), url, Icon.DELETE));
+		div.appendElement(iconAnchor(languageSettings.gts(type, Settings.DELETE_SEARCH), url, Icon.DELETE));
 		return div;
 	}
 	
@@ -1101,7 +1103,7 @@ public class HTMLView extends View {
 			return objectNotFound(type, id, lang, view);
 		}
 
-		String title = languageSettings.gts(type, KeyWords.UPDATE_TITLE);
+		String title = languageSettings.gts(type, Settings.UPDATE_TITLE);
 		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
@@ -1115,7 +1117,7 @@ public class HTMLView extends View {
 	@Override
 	public Content updateIdForm(String type, String id, String lang, String view) {
 		loadTemplate(type, lang, view);
-		String title = languageSettings.gts(type, KeyWords.UPDATE_ID_TITLE);
+		String title = languageSettings.gts(type, Settings.UPDATE_ID_TITLE);
 		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 		main.appendElement(updateIdFormElement(type, id, lang, view));
@@ -1125,7 +1127,7 @@ public class HTMLView extends View {
 	@Override
 	public Content updatePasswordForm(String type, String id, String field, String lang, String view) {
 		loadTemplate(type, lang, view);
-		String title = languageSettings.gts(type, KeyWords.UPDATE_PASSWORD_TITLE);
+		String title = languageSettings.gts(type, Settings.UPDATE_PASSWORD_TITLE);
 		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 		main.appendElement(updatePasswordFormElement(type, id, field, lang, view));
@@ -1269,7 +1271,7 @@ public class HTMLView extends View {
 
 		Element actionButton = form.appendElement(button(actionName, Action.DROP, Icon.MINUS,
 				SUBMIT_FORM)).setAttribute(DATA_CONFIRMATION_MESSAGE, 
-						languageSettings.gts(KeyWords.TYPES_DROP_CONFIRMATION));
+						languageSettings.gts(Settings.TYPES_DROP_CONFIRMATION));
 		if (disableDropButton) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
@@ -1309,19 +1311,19 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	public Element allCheckbox(String type) {
 		return document.createElement(HTML.INPUT)
 				.setAttribute(HTML.TYPE, HTML.CHECKBOX)
-				.setAttribute(HTML.TITLE, languageSettings.gts(type, KeyWords.CHECK_UNCHECK_ALL))
+				.setAttribute(HTML.TITLE, languageSettings.gts(type, Settings.CHECK_UNCHECK_ALL))
 				.addClass(ALL_CHECKBOX);
 	}
 	
 	public Element insertForm(String type, String[] fields, String lang, String view,
 			FieldReference ref) {
 		
-		boolean showType = typeSettings.getActionBoolean(type, Action.INSERT, KeyWords.SHOW_TYPE);
-		boolean showId = typeSettings.getActionBoolean(type, Action.INSERT, KeyWords.SHOW_ID);
-		boolean showHeader = typeSettings.getActionBoolean(type, Action.INSERT, KeyWords.SHOW_HEADER);
-		boolean showProgress = typeSettings.getActionBoolean(type, Action.INSERT, KeyWords.SHOW_PROGRESS);
-		boolean showRange = typeSettings.getActionBoolean(type, Action.INSERT, KeyWords.SHOW_RANGE);
-		boolean showDefault = typeSettings.getActionBoolean(type, Action.INSERT, KeyWords.SHOW_DEFAULT);
+		boolean showType = typeSettings.getActionBoolean(type, Action.INSERT, Settings.SHOW_TYPE);
+		boolean showId = typeSettings.getActionBoolean(type, Action.INSERT, Settings.SHOW_ID);
+		boolean showHeader = typeSettings.getActionBoolean(type, Action.INSERT, Settings.SHOW_HEADER);
+		boolean showProgress = typeSettings.getActionBoolean(type, Action.INSERT, Settings.SHOW_PROGRESS);
+		boolean showRange = typeSettings.getActionBoolean(type, Action.INSERT, Settings.SHOW_RANGE);
+		boolean showDefault = typeSettings.getActionBoolean(type, Action.INSERT, Settings.SHOW_DEFAULT);
 				
 		return insertForm(type, fields, lang, view, ref, showType, showId, showHeader, showProgress,
 				showRange, showDefault);
@@ -1608,7 +1610,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		Element div = document.createElement(HTML.DIV);
 		
 		div.appendElement(HTML.STRONG).appendText(languageSettings.gts(type, KeyWords.FILTERS) + ": ");
-		div.appendElement(button(languageSettings.gts(type, KeyWords.ADD_FILTER), ADD_FILTER));
+		div.appendElement(button(languageSettings.gts(type, Settings.ADD_FILTER), ADD_FILTER));
 		div.appendElement(submitButton(languageSettings.gts(type, KeyWords.SEARCH)))
 				.setAttribute(HTML.FORM, KeyWords.SEARCH);
 		
@@ -1785,7 +1787,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 			}
 		}
 		
-		String dropFilter = languageSettings.gts(type, KeyWords.DROP_FILTER);
+		String dropFilter = languageSettings.gts(type, Settings.DROP_FILTER);
 		
 		row.appendElement(HTML.TD).appendElement(smallButton(dropFilter, Icon.MINUS, DELETE_ROW))
 			.setAttribute(HTML.FORM, KeyWords.SEARCH);
@@ -1806,7 +1808,8 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		
 		String url = url(type, lang, view) + filtersParameters(filters) + searchParameter(search)
 			+ orderParameter(order) + calendarParameter(request.isCalendar());
-		div.appendElement(iconAnchor(languageSettings.gts(type, KeyWords.DELETE_REFERENCE), url, Icon.DELETE));
+		div.appendElement(iconAnchor(languageSettings.gts(type, Settings.DELETE_REFERENCE), url,
+				Icon.DELETE));
 		
 		return div;
 	}
@@ -1828,11 +1831,11 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 				
 		String type = object.getType();
 		
-		boolean showType = typeSettings.getActionBoolean(type, Action.UPDATE, KeyWords.SHOW_TYPE);
-		boolean showId = typeSettings.getActionBoolean(type, Action.UPDATE, KeyWords.SHOW_ID);
-		boolean showHeader = typeSettings.getActionBoolean(type, Action.UPDATE, KeyWords.SHOW_HEADER);
-		boolean showProgress = typeSettings.getActionBoolean(type, Action.UPDATE, KeyWords.SHOW_PROGRESS);
-		boolean showRange = typeSettings.getActionBoolean(type, Action.UPDATE, KeyWords.SHOW_RANGE);
+		boolean showType = typeSettings.getActionBoolean(type, Action.UPDATE, Settings.SHOW_TYPE);
+		boolean showId = typeSettings.getActionBoolean(type, Action.UPDATE, Settings.SHOW_ID);
+		boolean showHeader = typeSettings.getActionBoolean(type, Action.UPDATE, Settings.SHOW_HEADER);
+		boolean showProgress = typeSettings.getActionBoolean(type, Action.UPDATE, Settings.SHOW_PROGRESS);
+		boolean showRange = typeSettings.getActionBoolean(type, Action.UPDATE, Settings.SHOW_RANGE);
 		
 		return updateForm(object, fields, lang, view, showType, showId, showHeader, showProgress,
 				showRange);
@@ -2111,11 +2114,11 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 			TypeField typeField, String lang) {
 		
 		String allowedContentTypes = typeSettings.getActionFieldString(type, action, field,
-					KeyWords.ALLOWED_CONTENT_TYPES);
+					Settings.ALLOWED_CONTENT_TYPES);
 		
 		if (allowedContentTypes == null && (Action.INSERT.equals(action)
 				|| Action.UPDATE.equals(action))) {
-			allowedContentTypes = typeSettings.getFieldString(type, field, KeyWords.ALLOWED_CONTENT_TYPES);
+			allowedContentTypes = typeSettings.getFieldString(type, field, Settings.ALLOWED_CONTENT_TYPES);
 		}
 
 		if (allowedContentTypes == null && PT.IMAGE.equals(typeField.getType())) {
@@ -2203,7 +2206,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		String inputType = null;
 						
 		if (PT.isStringType(fieldType)) {
-			Integer size = typeSettings.getActionFieldInt32(type, action, field, KeyWords.INPUT_SIZE);
+			Integer size = typeSettings.getActionFieldInt32(type, action, field, Settings.INPUT_SIZE);
 						
 			switch (fieldType) {
 			case PT.STRING:
@@ -2458,10 +2461,10 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	}
 	
 	public Element actionObjectsInput(String type, String action, String title, String lang) {
-		Boolean notNull = typeSettings.getActionBoolean(type, action, KeyWords.OBJECTS_INPUT_NOT_NULL);
-		String mode = typeSettings.getActionString(type, action, KeyWords.OBJECTS_INPUT_MODE);
-		Integer size = typeSettings.getActionInt32(type, action, KeyWords.OBJECTS_INPUT_SIZE);
-		Long limit = typeSettings.getActionInt64(type, action, KeyWords.OBJECTS_INPUT_LIMIT);
+		Boolean notNull = typeSettings.getActionBoolean(type, action, Settings.OBJECTS_INPUT_NOT_NULL);
+		String mode = typeSettings.getActionString(type, action, Settings.OBJECTS_INPUT_MODE);
+		Integer size = typeSettings.getActionInt32(type, action, Settings.OBJECTS_INPUT_SIZE);
+		Long limit = typeSettings.getActionInt64(type, action, Settings.OBJECTS_INPUT_LIMIT);
 		
 		return objectsInput(KeyWords.OBJECTS, title, null, type, action, notNull, mode, size, limit,
 				lang);
@@ -2470,9 +2473,9 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	public Element objectFieldInput(String type, String action, String field, String title, Object value,
 			TypeField typeField, String lang) {
 		
-		String mode = typeSettings.getActionFieldString(type, action, field, KeyWords.OBJECT_INPUT_MODE);
-		Long limit = typeSettings.getActionFieldInt64(type, action, field, KeyWords.OBJECT_INPUT_LIMIT);
-		Integer	size = typeSettings.getActionFieldInt32(type, action, field, KeyWords.INPUT_SIZE);
+		String mode = typeSettings.getActionFieldString(type, action, field, Settings.OBJECT_INPUT_MODE);
+		Long limit = typeSettings.getActionFieldInt64(type, action, field, Settings.OBJECT_INPUT_LIMIT);
+		Integer	size = typeSettings.getActionFieldInt32(type, action, field, Settings.INPUT_SIZE);
 								
 		return objectInput("@" + field, title, value, typeField.getType(), type, action, field,
 				typeField.isNotNull(), mode, size, limit, lang);
@@ -2481,16 +2484,16 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	public Element filterObjectInput(String name, String title, Object value, String type,
 			 boolean notNull, String lang) {
 		
-		String mode = typeSettings.getActionString(type, Action.SEARCH, KeyWords.OBJECT_INPUT_MODE);
-		Long limit = typeSettings.getActionInt64(type, Action.SEARCH, KeyWords.OBJECT_INPUT_LIMIT);
-		Integer size = typeSettings.getTypeInt32(type, KeyWords.ID_INPUT_SIZE);
+		String mode = typeSettings.getActionString(type, Action.SEARCH, Settings.OBJECT_INPUT_MODE);
+		Long limit = typeSettings.getActionInt64(type, Action.SEARCH, Settings.OBJECT_INPUT_LIMIT);
+		Integer size = typeSettings.getTypeInt32(type, Settings.ID_INPUT_SIZE);
 				
 		return objectInput(name, title, value, type, null, Action.SEARCH, null, notNull, mode, size,
 				limit, lang);
 	}
 	
 	public Element filterObjectTextInput(String name, String title, Object value, String type) {
-		Integer size = typeSettings.getTypeInt32(type, KeyWords.ID_INPUT_SIZE);
+		Integer size = typeSettings.getTypeInt32(type, Settings.ID_INPUT_SIZE);
 		
 		return objectTextInput(name, title, value, size);
 	}
@@ -2563,7 +2566,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	}
 	
 	public Element idInput(String type, String name, String title) {
-		Integer size = typeSettings.getTypeInt32(type, KeyWords.ID_INPUT_SIZE);
+		Integer size = typeSettings.getTypeInt32(type, Settings.ID_INPUT_SIZE);
 
 		return objectTextInput(name, title, null, size);
 	}
@@ -2799,7 +2802,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	
 	public Object localeDate(String type, Object value) {
 		if (value != null) {
-			String pattern = languageSettings.gts(type, KeyWords.DATE_FORMAT);
+			String pattern = languageSettings.gts(type, Settings.DATE_FORMAT);
 			
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
 			
@@ -2815,7 +2818,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	
 	public Object localeTime(String type, Object value) {
 		if (value != null) {
-			String pattern = languageSettings.gts(type, KeyWords.TIME_FORMAT);
+			String pattern = languageSettings.gts(type, Settings.TIME_FORMAT);
 			
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
 			
@@ -2831,7 +2834,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	
 	public Object localeDateTime(String type, Object value) {
 		if (value != null) {
-			String pattern = languageSettings.gts(type, KeyWords.DATETIME_FORMAT);
+			String pattern = languageSettings.gts(type, Settings.DATETIME_FORMAT);
 			
 			DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
 		   	    
@@ -3077,7 +3080,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 
 		Element actionButton = button(actionName, Action.DELETE, Icon.MINUS, SUBMIT_FORM)
 				.setAttribute(DATA_CONFIRMATION_MESSAGE, languageSettings.gts(type,
-						KeyWords.OBJECTS_DELETE_CONFIRMATION));
+						Settings.OBJECTS_DELETE_CONFIRMATION));
 		if (objects.length == deleteDisallowedObjects.length) {
 			actionButton.setAttribute(HTML.DISABLED);
 		}
@@ -3149,7 +3152,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 
 		if (count > limit) {
 			Long offsets = count / limit;
-			Long longObjectsCount = typeSettings.getTypeInt64(type, KeyWords.LONG_OBJECTS_COUNT);
+			Long longObjectsCount = typeSettings.getTypeInt64(type, Settings.LONG_OBJECTS_COUNT);
 
 			if (offsets < longObjectsCount) {
 				index.appendElements(shortSelectTableIndex(type, lang, view, ref, filters, search,
@@ -3179,7 +3182,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 
 		ArrayList<Element> index = new ArrayList<>();
 
-		String offsetTextMode = typeSettings.gts(type, KeyWords.OFFSET_TEXT_MODE);
+		String offsetTextMode = typeSettings.gts(type, Settings.OFFSET_TEXT_MODE);
 
 		for (Long offset = 0L; offset < count; offset += limit) {
 			String text = selectTableIndexOffsetText(offsetTextMode, count, offset, limit);
@@ -3206,7 +3209,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 
 		ArrayList<Element> index = new ArrayList<>();
 
-		String offsetTextMode = typeSettings.gts(type, KeyWords.OFFSET_TEXT_MODE);
+		String offsetTextMode = typeSettings.gts(type, Settings.OFFSET_TEXT_MODE);
 
 		long offsets = count / limit;
 		long lastOffset = count % limit == 0 ? (offsets - 1) * limit : offsets * limit;
@@ -3752,10 +3755,10 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	}
 
 	public Element logoAnchor(String type, String lang, String view) {
-		return imageSetAnchor(languageSettings.gts(type, KeyWords.LOGO_TEXT), 
-				hrefURL(typeSettings.gts(type, KeyWords.LOGO_URL), lang, view),
-				typeSettings.gts(type, KeyWords.LOGO), typeSettings.gts(type, KeyWords.LOGO_SRCSET),
-				typeSettings.gts(type, KeyWords.LOGO_SIZES));
+		return imageSetAnchor(languageSettings.gts(type, Settings.LOGO_TEXT), 
+				hrefURL(typeSettings.gts(type, Settings.LOGO_URL), lang, view),
+				typeSettings.gts(type, KeyWords.LOGO), typeSettings.gts(type, Settings.LOGO_SRCSET),
+				typeSettings.gts(type, Settings.LOGO_SIZES));
 	}
 	
 	public Element imageSetAnchor(String text, String href, String src, String srcset, String sizes) {
@@ -3899,7 +3902,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		if (type != null && !Action.INSERT.equals(form) && permissions.isAllowed(type, Action.INSERT_FORM)
 				&& ((ref == null || permissions.isAllowedToMakeReference(type, id, ref))
 						|| typeSettings.getFieldBoolean(type, ref.getReferencingField(), 
-								KeyWords.SHOW_INSERT_FORM_BUTTON))) {
+								Settings.SHOW_INSERT_FORM_BUTTON))) {
 			
 			elements.add(iconAnchor(languageSettings.getActionName(type, Action.INSERT),
 					url(type, lang, view) + formParameter(Action.INSERT) + refParameter, Icon.PLUS));
@@ -3914,7 +3917,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 			elements.add(iconAnchor(languageSettings.gts(type, KeyWords.LIST), url, Icon.LIST));
 		}
 
-		if (type != null && typeSettings.getTypeBoolean(type, KeyWords.SHOW_PREVIEW) && !request.isPreview()
+		if (type != null && typeSettings.getTypeBoolean(type, Settings.SHOW_PREVIEW) && !request.isPreview()
 				&& permissions.isAllowed(type, Action.PREVIEW)) {
 			
 			String url = url(type, lang, view) + previewParameter() + searchParameter;
@@ -4073,12 +4076,14 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		Element dates = document.createElement(HTML.DIV);
 		Element creation = dates.appendElement(HTML.P);
 		creation.addClass(KeyWords.DATE);
-		creation.appendElement(HTML.STRONG).appendText(languageSettings.gts(type, KeyWords.CREATION_DATE) + ": ");
+		creation.appendElement(HTML.STRONG).appendText(languageSettings.gts(type, Settings.CREATION_DATE)
+				+ ": ");
 		creation.appendElement(time(cdate));
 
 		Element updating = dates.appendElement(HTML.P);
 		updating.addClass(KeyWords.DATE);
-		updating.appendElement(HTML.STRONG).appendText(languageSettings.gts(type, KeyWords.UPDATING_DATE) + ": ");
+		updating.appendElement(HTML.STRONG).appendText(languageSettings.gts(type, Settings.UPDATING_DATE)
+				+ ": ");
 		updating.appendElement(time(udate));
 
 		return dates;
@@ -4181,9 +4186,9 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 			
 		Content content = new Content(document.toString(), Format.XHTML);
 		content.setHeader(HTTPHeader.CONTENT_SECURITY_POLICY,
-				typeSettings.gts(type, KeyWords.CONTENT_SECURITY_POLICY));
+				typeSettings.gts(type, Settings.CONTENT_SECURITY_POLICY));
 		content.setHeader(HTTPHeader.REFERRER_POLICY,
-				typeSettings.gts(type, KeyWords.REFERRER_POLICY));
+				typeSettings.gts(type, Settings.REFERRER_POLICY));
 				
 		return content;
 	}
@@ -4283,7 +4288,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 				}
 			}
 			
-			if (typeSettings.getTypeBoolean(type, KeyWords.SHOW_CONTROL_PANEL)) {
+			if (typeSettings.getTypeBoolean(type, Settings.SHOW_CONTROL_PANEL)) {
 				menuElement.appendElement(controlPanel(type, lang, view));
 			}
 		}
@@ -4292,7 +4297,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	public Element controlPanel(String type, String lang, String view) {
 		Element section = document.createElement(HTML.DIV).addClass(CONTROL_PANEL);
 	
-		section.appendElement(menuTitle(type, KeyWords.CONTROL_PANEL));
+		section.appendElement(menuTitle(type, Settings.CONTROL_PANEL));
 		
 		Element ul = section.appendElement(HTML.UL);
 		
@@ -4305,7 +4310,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		}
 		
 		if (permissions.isAllowed(type, Action.CREATE_FORM)) {
-			ul.appendElement(menuListItem(type, KeyWords.CREATE_TYPE, "/?form=create", lang, view));
+			ul.appendElement(menuListItem(type, Settings.CREATE_TITLE, "/?form=create", lang, view));
 		}
 		
 		if (permissions.isAllowed(type, Action.IMPORT_TYPES_FORM)) {
@@ -4445,7 +4450,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		if (noscript != null) {
 			Element warning = noscript.appendElement(HTML.DIV).addClass(JAVASCRIPT_DISABLED_WARNING);
 			warning.appendElement(bigIcon("Warning", Icon.WARNING));
-			warning.appendText(languageSettings.gts(type, KeyWords.JAVASCRIPT_DISABLED_WARNING));
+			warning.appendText(languageSettings.gts(type, Settings.JAVASCRIPT_DISABLED_WARNING));
 		}
 	}
 
@@ -4607,7 +4612,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 	}
 
 	public void validators(String type) {
-		Boolean showValidators = typeSettings.getTypeBoolean(type, KeyWords.SHOW_VALIDATORS);
+		Boolean showValidators = typeSettings.getTypeBoolean(type, Settings.SHOW_VALIDATORS);
 
 		if (showValidators) {
 
@@ -4636,7 +4641,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 			Month month) {
 		loadTemplate(type, lang, view);
 
-		String title = languageSettings.gts(type, KeyWords.CALENDAR_TITLE);
+		String title = languageSettings.gts(type, Settings.CALENDAR_TITLE);
 		String typeName = languageSettings.getTypeName(type);
 		setTitle(Utils.format(title, typeName));
 
@@ -4852,19 +4857,19 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		}
 		
 		if (request.isPreview()) {
-			setting = KeyWords.PRINT_PREVIEW_TITLE;
+			setting = Settings.PRINT_PREVIEW_TITLE;
 		} else if (type == null) {
-			setting = KeyWords.PRINT_TYPES_TITLE;
+			setting = Settings.PRINT_TYPES_TITLE;
 		} else if (id == null) {
 			if (request.isInfo()) {
-				setting = KeyWords.PRINT_TYPE_TITLE;
+				setting = Settings.PRINT_TYPE_TITLE;
 			} else if (request.isCalendar()) {
-				setting = KeyWords.PRINT_EVENTS_TITLE;
+				setting = Settings.PRINT_EVENTS_TITLE;
 			} else {
-				setting = KeyWords.PRINT_OBJECTS_TITLE;
+				setting = Settings.PRINT_OBJECTS_TITLE;
 			}
 		} else {
-			setting = KeyWords.PRINT_OBJECT_TITLE;
+			setting = Settings.PRINT_OBJECT_TITLE;
 		}
 		
 		String title = languageSettings.gts(type, setting);

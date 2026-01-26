@@ -38,7 +38,6 @@ import com.nexttypes.enums.IndexMode;
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.serialization.ArrayXMLSerializer;
-import com.nexttypes.system.KeyWords;
 
 public class Serial {
 	public static MapperFeature autoDetectMapperFeatures[] = {MapperFeature.AUTO_DETECT_CREATORS,

@@ -26,7 +26,6 @@ import org.apache.http.client.utils.URIBuilder;
 
 import com.nexttypes.exceptions.InvalidValueException;
 import com.nexttypes.exceptions.NXException;
-import com.nexttypes.system.KeyWords;
 
 public class URL {
 	public static final String LOCALHOST = "127.0.0.1";

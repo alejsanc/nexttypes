@@ -38,6 +38,7 @@ import com.nexttypes.exceptions.NXException;
 import com.nexttypes.interfaces.ObjectsStream;
 import com.nexttypes.nodes.Node;
 import com.nexttypes.settings.LanguageSettings;
+import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
 
@@ -217,11 +218,11 @@ public class ObjectsStreamDeserializer extends StreamDeserializer implements Obj
 						break;
 					case PT.HTML:
 						value = Tuple.parseHTML(parser.getText(), lang,
-								typeSettings.getFieldString(type, field, KeyWords.HTML_ALLOWED_TAGS));
+								typeSettings.getFieldString(type, field, Settings.HTML_ALLOWED_TAGS));
 						break;
 					case PT.XML:
 						value = Tuple.parseXML(parser.getText(), lang,
-								typeSettings.getFieldString(type, field, KeyWords.XML_ALLOWED_TAGS));
+								typeSettings.getFieldString(type, field, Settings.XML_ALLOWED_TAGS));
 						break;
 					case PT.JSON:
 						value = Tuple.parseJSON(parser.getText());

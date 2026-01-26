@@ -76,7 +76,7 @@ public class Context {
 
 	public Context(ServletContext context) {
 		this.context = context;
-		directory = Utils.readDirectory(context.getInitParameter(KeyWords.SETTINGS_DIRECTORY));
+		directory = Utils.readDirectory(context.getInitParameter(Settings.SETTINGS_DIRECTORY));
 		context.setAttribute(CONTEXT, this);
 		init();
 

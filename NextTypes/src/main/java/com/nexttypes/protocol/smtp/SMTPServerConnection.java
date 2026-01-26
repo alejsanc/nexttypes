@@ -141,7 +141,7 @@ public class SMTPServerConnection extends Thread {
 	public void run() {
 
 		try (
-			Node nextNode = Loader.loadNode(settings.getString(KeyWords.NEXT_NODE),
+			Node nextNode = Loader.loadNode(settings.getString(Settings.NEXT_NODE),
 				new Auth(Auth.SMTP), NodeMode.WRITE, settings.getString(KeyWords.LANG),
 				remoteAddress, context, true);
 				

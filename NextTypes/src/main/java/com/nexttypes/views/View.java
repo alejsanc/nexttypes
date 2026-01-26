@@ -38,7 +38,6 @@ import com.nexttypes.protocol.http.HTTPStatus;
 import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
-import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Loader;
 import com.nexttypes.system.Module;
@@ -63,7 +62,7 @@ public abstract class View extends Module {
 		context = request.getContext();
 		this.settings = context.getSettings(settings);
 
-		nextNode = Loader.loadNode(this.settings.getString(KeyWords.NEXT_NODE), request, NodeMode.READ);
+		nextNode = Loader.loadNode(this.settings.getString(Settings.NEXT_NODE), request, NodeMode.READ);
 
 		FieldReference ref = request.getRef();
 		

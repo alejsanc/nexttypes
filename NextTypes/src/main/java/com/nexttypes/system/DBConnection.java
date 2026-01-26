@@ -75,8 +75,8 @@ public class DBConnection {
 		protected DataSource createDataSource(String url, NodeMode mode, Settings settings, String driver) {
 			String user = settings.getString(mode + "_" + KeyWords.USER);
 			String password = settings.getString(mode + "_" + KeyWords.PASSWORD);
-			int maxConnections = settings.getInt32(mode + "_" + KeyWords.MAX_CONNECTIONS);
-			int maxTime = settings.getInt32(mode + "_" + KeyWords.MAX_TIME);
+			int maxConnections = settings.getInt32(mode + "_" + Settings.MAX_CONNECTIONS);
+			int maxTime = settings.getInt32(mode + "_" + Settings.MAX_TIME);
 
 			PoolProperties p = new PoolProperties();
 			p.setUrl(url); 
