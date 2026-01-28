@@ -23,7 +23,7 @@ public class Constants {
 	public static final String UTF_8_CHARSET = "UTF-8";
 	
 	public static final String BASIC_DATETIME_FORMAT = "yyyyMMdd'T'HHmmss";
-	public static final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+	public static final String UTC_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	public static final long MINUTE_MILLISECONDS = 60000;
 	
 	public static final String CALENDAR_SELECT = "calendar.select";

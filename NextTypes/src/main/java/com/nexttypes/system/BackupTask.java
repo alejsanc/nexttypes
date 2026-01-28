@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -70,7 +71,7 @@ public class BackupTask extends Task {
 		try (DirectoryStream<Path> files = Files.newDirectoryStream(Paths.get(directory))) {
 			for (Path file : files) {
 				String fileName = file.getFileName().toString();
-				filesByDate.add(fileName.substring(prefix.length(), prefix.length() + 32));
+				filesByDate.add(fileName.substring(prefix.length(), prefix.length() + 25));
 			}
 		} catch (IOException e) {
 			throw new NXException(e);
@@ -80,7 +81,7 @@ public class BackupTask extends Task {
 
 			filesByDate.sort(Collections.reverseOrder());
 
-			previousFileTime = Duration.between(ZonedDateTime.parse(filesByDate.get(0).substring(0, 27)),
+			previousFileTime = Duration.between(ZonedDateTime.parse(filesByDate.get(0).substring(0, 20)),
 					Utils.getZonedDateTimeNow()).toMillis();
 
 			if (incremental > 0) {
@@ -139,7 +140,8 @@ public class BackupTask extends Task {
 		try (Node nextNode = Loader.loadNode(settings.getString(Settings.NEXT_NODE),
 				new Auth(Auth.BACKUP), NodeMode.WRITE, lang, URL.LOCALHOST, context, true)) {
 
-			ZonedDateTime dateTime = Utils.getZonedDateTimeNow();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.UTC_DATETIME_FORMAT);
+			String dateTime = Utils.getZonedDateTimeNow().format(formatter);
 
 			StringBuilder filePath = new StringBuilder(directory + prefix + dateTime);
 
