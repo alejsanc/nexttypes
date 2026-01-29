@@ -126,7 +126,7 @@ window.addEventListener("load", function (){
 			
 			if (editorMode == "visual") {
 				
-				tinymceEditor(textarea);
+				hugerteEditor(textarea);
 				
 			} else {
 				
@@ -1049,8 +1049,8 @@ function codemirrorEditor(textarea, editorMode) {
 	});
 }
 
-function tinymceEditor(textarea) {
-	tinymce.init({
+function hugerteEditor(textarea) {
+	hugerte.init({
 	    target: textarea,
 	   	browser_spellcheck: true,
 		entity_encoding: "raw",

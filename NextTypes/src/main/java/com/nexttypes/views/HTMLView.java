@@ -4512,7 +4512,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 				.setAttribute(HTML.SRC, "/static/lib/codemirror/lib/codemirror.js");
 
 			head.appendElement(HTML.SCRIPT)
-				.setAttribute(HTML.SRC, "/static/lib/tinymce/js/tinymce/tinymce.min.js");
+				.setAttribute(HTML.SRC, "/static/lib/hugerte/hugerte.min.js");
 
 			head.appendElement(HTML.LINK).setAttribute(HTML.REL, HTML.STYLESHEET)
 				.setAttribute(HTML.TYPE, "text/css")
