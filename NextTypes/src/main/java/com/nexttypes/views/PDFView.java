@@ -59,10 +59,6 @@ public class PDFView extends View {
 		auth = request.getAuth();
 	}
 	
-	public PDFView(HTMLView view) {
-		this(view.getRequest());
-	}
-	
 	@Override
 	public Content getTypesInfo(String lang, String view) {
 		htmlView.getTypesInfo(lang, view);
