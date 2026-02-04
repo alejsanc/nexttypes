@@ -303,6 +303,7 @@ public class Context {
 		
 		if (style == null) {
 			style = Utils.toString(context.getResourceAsStream(file));
+			styles.putIfAbsent(file, style);
 		}
 		
 		return style;
@@ -314,6 +315,7 @@ public class Context {
 		if (image == null) {
 			try {
 				image = new Image(IOUtils.toByteArray(context.getResourceAsStream(file)));
+				images.putIfAbsent(file, image);
 			} catch (IOException e) {
 				throw new NXException(e);
 			}
