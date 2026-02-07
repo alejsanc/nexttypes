@@ -28,6 +28,7 @@ import com.nexttypes.datatypes.Filter;
 import com.nexttypes.datatypes.HTML;
 import com.nexttypes.enums.Format;
 import com.nexttypes.enums.Order;
+import com.nexttypes.exceptions.NotImplementedException;
 import com.nexttypes.exceptions.ViewNotFoundException;
 import com.nexttypes.protocol.http.HTTPHeader;
 import com.nexttypes.protocol.http.HTTPRequest;
@@ -76,6 +77,13 @@ public class PDFView extends View {
 		
 		htmlView.get(type, id, lang, view, etag);
 		return content();		
+	}
+	
+	@Override
+	public Content getReferences(String lang, String view) {
+		
+		htmlView.getReferences(lang, view);
+		return content();
 	}
 	
 	@Override
