@@ -4858,6 +4858,8 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 		
 		if (request.isPreview()) {
 			setting = Settings.PRINT_PREVIEW_TITLE;
+		} else if (request.isReferences()) {
+			setting = Settings.PRINT_REFERENCES_TITLE;
 		} else if (type == null) {
 			setting = Settings.PRINT_TYPES_TITLE;
 		} else if (id == null) {

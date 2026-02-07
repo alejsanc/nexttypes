@@ -116,6 +116,7 @@ public class Settings {
 	public static final String PRINT_OBJECT_TITLE = "print_object_title";
 	public static final String PRINT_OBJECTS_TITLE = "print_objects_title";
 	public static final String PRINT_PREVIEW_TITLE = "print_preview_title";
+	public static final String PRINT_REFERENCES_TITLE = "print_references_title";
 	public static final String PRINT_TYPE_TITLE = "print_type_title";
 	public static final String PRINT_TYPES_TITLE = "print_types_title";
 	public static final String READ_MORE = "read_more";
@@ -147,7 +148,7 @@ public class Settings {
 	public static final String UPDATE_TITLE = "update_title";
 	public static final String UPDATING_DATE = "updating_date";
 	public static final String XML_ALLOWED_TAGS = "xml_allowed_tags";
-	
+		
 	protected ArrayList<Properties> settings;
 
 	public Settings(ArrayList<Properties> settings) {
