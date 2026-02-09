@@ -40,6 +40,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.client.utils.URIBuilder;
 
+import com.nexttypes.antivirus.Antivirus;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.datatypes.NXObject;
@@ -71,7 +72,6 @@ import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.system.Action;
-import com.nexttypes.system.ClamAV;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.KeyWords;
 import com.nexttypes.system.Context;
@@ -94,7 +94,7 @@ public class HTTPServlet extends HttpServlet {
 	protected boolean debug;
 	protected boolean binaryDebug;
 	protected int binaryDebugLimit;
-	protected ClamAV antivirus;
+	protected Antivirus antivirus;
 	protected ConcurrentHashMap<String, Requests> requestsMap = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, Requests> authErrorsMap = new ConcurrentHashMap<>();
 	protected ConcurrentHashMap<String, ConcurrentHashMap<String, Requests>> insertRequestsMap
@@ -114,7 +114,7 @@ public class HTTPServlet extends HttpServlet {
 		binaryDebug = settings.getBoolean(Settings.BINARY_DEBUG);
 		binaryDebugLimit = settings.getInt32(Settings.BINARY_DEBUG_LIMIT);
 		logger = context.getLogger();
-		antivirus = new ClamAV(context);
+		antivirus = Loader.loadAntivirus(settings.getString(KeyWords.ANTIVIRUS), context);
 				
 		purgeRequestsMapsThread();
 	}

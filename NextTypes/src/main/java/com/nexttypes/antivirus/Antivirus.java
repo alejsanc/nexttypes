@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package com.nexttypes.system;
+package com.nexttypes.antivirus;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -32,23 +26,13 @@ import com.nexttypes.datatypes.TypeField;
 import com.nexttypes.exceptions.ActionFieldException;
 import com.nexttypes.exceptions.NXException;
 import com.nexttypes.exceptions.ObjectFieldException;
-import com.nexttypes.settings.Settings;
+import com.nexttypes.system.Context;
 
-public class ClamAV {
+public abstract class Antivirus {
 	
-	protected static final String OK = "stream: OK";
-	protected static final byte[] INSTREAM = "zINSTREAM\0".getBytes();
-	protected static final byte[] END = new byte[]{0,0,0,0};
+	public Antivirus() {}
 	
-	protected Settings settings;
-	protected String host;
-	protected int port;
-	
-	public ClamAV(Context context) {
-		settings = context.getSettings(Settings.CLAMAV_SETTINGS);
-		host = settings.getString(KeyWords.HOST);
-		port = settings.getInt32(KeyWords.PORT);
-	}
+	public Antivirus(Context context) {}
 	
 	public void scan(String type, String[] objects, String action, Object[] parameters, LinkedHashMap<String, TypeField> typeFields) {
 		
@@ -118,37 +102,6 @@ public class ClamAV {
 		}
 	}
 		
-	public String scan(byte[] data) {
-		
-		try (
-				Socket socket = new Socket(host, port);
-				BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				OutputStream output = socket.getOutputStream();
-		) {
-			byte[] size = ByteBuffer.allocate(4).putInt(data.length).array();
-			
-			output.write(INSTREAM);
-			output.write(size);
-			output.write(data);
-			output.write(END);
-			output.flush();
-			
-			String result = input.readLine().trim();
-										        
-		    if (OK.equals(result)) {
-		    	
-		    	result = null;
-		    	
-		    } else {
-		    	
-		    	result = result.substring(8, result.length()-6);
-		  
-		    } 
-		    
-		    return result;
-		    
-		} catch (IOException e) {
-			throw new NXException(e);
-		} 
-	}
+	public abstract String scan(byte[] data);
+
 }

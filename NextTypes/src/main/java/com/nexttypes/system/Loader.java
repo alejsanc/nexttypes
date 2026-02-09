@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import com.nexttypes.antivirus.Antivirus;
 import com.nexttypes.datatypes.Auth;
 import com.nexttypes.enums.NodeMode;
 import com.nexttypes.exceptions.NXException;
@@ -106,4 +107,8 @@ public class Loader {
 				new Class[] { ArrayList.class, Auth.class, Node.class },
 				new Object[] { settings, auth, nextNode });
 	}
-}
+	
+	public static Antivirus loadAntivirus(String className, Context context) {
+		return (Antivirus) Loader.load(className, Context.class, context);
+	}
+}	

@@ -50,6 +50,7 @@ import org.postgresql.jdbc.PgArray;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.ServerErrorMessage;
 
+import com.nexttypes.antivirus.Antivirus;
 import com.nexttypes.datatypes.ActionResult;
 import com.nexttypes.datatypes.AlterFieldResult;
 import com.nexttypes.datatypes.AlterIndexResult;
@@ -125,8 +126,8 @@ import com.nexttypes.settings.Settings;
 import com.nexttypes.settings.LanguageSettings;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.KeyWords;
+import com.nexttypes.system.Loader;
 import com.nexttypes.system.Action;
-import com.nexttypes.system.ClamAV;
 import com.nexttypes.system.Constants;
 import com.nexttypes.system.Context;
 import com.nexttypes.system.Context.TypesCache;
@@ -2714,12 +2715,12 @@ public class PostgreSQLNode extends Node {
 			type = o.getType();
 			
 			LinkedHashMap<String, TypeField> typeFields = o.getTypeFields();
-			ClamAV antivirus = null;
+			Antivirus antivirus = null;
 			boolean scanVirus = typeSettings.getActionBoolean(type, Action.IMPORT_OBJECTS,
 					KeyWords.ANTIVIRUS);
 			
 			if (scanVirus) {
-				antivirus = new ClamAV(context);
+				antivirus = Loader.loadAntivirus(settings.getString(KeyWords.ANTIVIRUS), context);
 			}			
 
 			while (o.next()) {
@@ -2793,7 +2794,7 @@ public class PostgreSQLNode extends Node {
 				filter = new IdFilter(Comparison.EQUAL, objects);
 			}
 		
-			ClamAV antivirus = new ClamAV(context);
+			Antivirus antivirus = Loader.loadAntivirus(settings.getString(KeyWords.ANTIVIRUS), context);
 			
 			String id = null;
 
