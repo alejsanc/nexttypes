@@ -2330,6 +2330,10 @@ public class PostgreSQLNode extends Node {
 				if (id != null) {
 					contentType = getCompositeFieldContentType(type, id, field);
 				}
+				
+				if (contentType == null) {
+					contentType = Format.BINARY.getContentType();
+				}
 				break;
 
 			case PT.HTML:
