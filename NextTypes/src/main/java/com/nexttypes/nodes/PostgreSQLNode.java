@@ -101,8 +101,6 @@ import com.nexttypes.exceptions.TypeFieldException;
 import com.nexttypes.exceptions.ObjectFieldException;
 import com.nexttypes.exceptions.FieldNotFoundException;
 import com.nexttypes.exceptions.FulltextIndexNotFoundException;
-import com.nexttypes.exceptions.ObjectsStreamException;
-import com.nexttypes.exceptions.TypesStreamException;
 import com.nexttypes.exceptions.IndexException;
 import com.nexttypes.exceptions.IndexNotFoundException;
 import com.nexttypes.exceptions.InvalidValueException;
@@ -2669,12 +2667,6 @@ public class PostgreSQLNode extends Node {
 
 			setDeferredConstraints(false);
 			
-		} catch(NXException e) {
-			if (e instanceof ObjectsStreamException) {
-				throw e;
-			} else {
-				throw new TypesStreamException(typeName, e);
-			}
 		}
 
 		return result;
@@ -2753,9 +2745,7 @@ public class PostgreSQLNode extends Node {
 					result.addImportedObject(type);
 				}
 			}
-		} catch (NXException e) {
-			throw new ObjectsStreamException(type, id, e);
-		}
+		} 
 
 		if (deferredConstraints) {
 			setDeferredConstraints(false);
@@ -2811,9 +2801,8 @@ public class PostgreSQLNode extends Node {
 					id = object.getId();
 					antivirus.scan(object, typeFields); 
 				}
-			} catch(NXException e) {
-				throw new ObjectsStreamException(type, id, e);
-			}
+			} 
+			
 		} else {
 			throw new NXException(type, NXException.TYPE_HAS_NO_BINARY_FIELDS);
 		}
