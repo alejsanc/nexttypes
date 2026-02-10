@@ -4115,23 +4115,34 @@ public class PostgreSQLNode extends Node {
 					Comparison comparison = filter.getComparison();
 					Object value = filter.getValue();
 					TypeField typeField = typeFields.get(field);
+					String fieldSQL = null;
 					
 					if (typeField != null && !PT.isPrimitiveType(typeField.getType())
 							&& (Comparison.LIKE.equals(comparison)
 									|| Comparison.NOT_LIKE.equals(comparison))) {
-						whereSQL.append("\"@" + field + "\".name");
+						fieldSQL = "\"@" + field + "\".name";
 					
 					} else {
-						whereSQL.append("\"" + type + "\".\"" + field + "\" ");
+						fieldSQL = "\"" + type + "\".\"" + field + "\" ";
 					} 
+					
+					whereSQL.append(fieldSQL);
 					
 					switch (comparison) {
 					case EQUAL:
-						whereSQL.append("is not distinct from ?");
+						if (value == null) {
+							whereSQL.append("is null");
+						} else {
+							whereSQL.append("in(?)");
+						}
 						break;
 						
 					case NOT_EQUAL:
-						whereSQL.append("is distinct from ?");
+						if (value == null) {
+							whereSQL.append("is not null");
+						} else {
+							whereSQL.append("not in(?) or " + fieldSQL + " is null");
+						}
 						break;
 						
 					case GREATER:
