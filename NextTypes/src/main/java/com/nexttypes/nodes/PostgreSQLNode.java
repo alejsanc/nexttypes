@@ -502,10 +502,10 @@ public class PostgreSQLNode extends Node {
 
 		execute(sql);
 
-		String read_user = settings.getString(NodeMode.READ + "_" + KeyWords.USER);
-		String write_user = settings.getString(NodeMode.WRITE + "_" + KeyWords.USER);
-		execute("grant select on \"" + typeName + "\" to " + read_user);
-		execute("grant select, insert, update, delete on \"" + typeName + "\" to " + write_user);
+		String readUser = settings.getString(NodeMode.READ + "_" + KeyWords.USER);
+		String writeUser = settings.getString(NodeMode.WRITE + "_" + KeyWords.USER);
+		execute("grant select on \"" + typeName + "\" to " + readUser);
+		execute("grant select, insert, update, delete on \"" + typeName + "\" to " + writeUser);
 
 		for (Map.Entry<String, TypeField> entry : type.getFields().entrySet()) {
 			String field = entry.getKey();
