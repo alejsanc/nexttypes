@@ -175,12 +175,12 @@ public class ArticleView extends HTMLView {
 					
 					+ " from"
 						+ " category c"
-						+ " left join category_language cl on (c.id = cl.category and cl.language = 'es')"
+						+ " left join category_language cl on (c.id = cl.category and cl.language = ?)"
 						+ " join article_category ac on c.id = ac.category"
 						
 					+ " where ac.article = ?";
 			
-			Tuple[] categories = nextNode.query(categoriesSQL, id);
+			Tuple[] categories = nextNode.query(categoriesSQL, lang, id);
 			
 			if (categories != null && categories.length > 0) {
 				main.appendElement(categoriesListOutput(type, categories, lang, view));
