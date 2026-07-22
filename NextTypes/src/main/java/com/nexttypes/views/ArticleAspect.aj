@@ -24,7 +24,7 @@ import com.nexttypes.system.Action;
 import com.nexttypes.system.KeyWords;
 
 public aspect ArticleAspect {
-	public final String ARTICLE_MENU = "aspects.article_menu";
+	public final String ARTICLE_MENU = "article_menu";
 
 	before(String type, String lang, String view) : execution(* HTMLView.menu(..)) && args(type, lang, view) {
 
