@@ -133,7 +133,6 @@ public class ProjectPermissions extends Permissions {
 					+ " type.id in (?) and p.owner != ? and pm.member is null";
 			
 			parameters = new Object[] { type, user, objects, user };
-			break;
 		}
 		
 		return nextNode.getStringArray(sql, parameters);

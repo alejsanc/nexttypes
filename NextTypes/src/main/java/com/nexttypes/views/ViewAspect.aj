@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.nexttypes.aspects;
+package com.nexttypes.views;
 
 import org.aspectj.lang.JoinPoint;
 
 import com.nexttypes.datatypes.Content;
 import com.nexttypes.nodes.Node;
-import com.nexttypes.views.View;
 import com.nexttypes.protocol.http.HTTPStatus;
 
 public aspect ViewAspect {

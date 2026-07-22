@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nexttypes.aspects;
+package com.nexttypes.views;
  
 import com.nexttypes.datatypes.HTML;
 import com.nexttypes.datatypes.Tuple;
@@ -22,10 +22,8 @@ import com.nexttypes.datatypes.XML.Element;
 import com.nexttypes.settings.TypeSettings;
 import com.nexttypes.system.Action;
 import com.nexttypes.system.KeyWords;
-import com.nexttypes.views.ArticleView;
-import com.nexttypes.views.HTMLView;
 
-public aspect ArticleMenu {
+public aspect ArticleAspect {
 	public final String ARTICLE_MENU = "aspects.article_menu";
 
 	before(String type, String lang, String view) : execution(* HTMLView.menu(..)) && args(type, lang, view) {

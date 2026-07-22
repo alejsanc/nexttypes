@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.nexttypes.aspects;
+package com.nexttypes.settings;
 
 import com.nexttypes.security.Checks;
-import com.nexttypes.settings.Permissions;
 
 public aspect PermissionsAspect extends Checks {
 	
