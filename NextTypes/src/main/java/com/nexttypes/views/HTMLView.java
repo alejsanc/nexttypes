@@ -4901,7 +4901,7 @@ public Element printTypesTable(TreeMap<String, TypeInfo> types, String lang) {
 				
 		Element form = insertForm(KeyWords.PRINTER_JOB, fields, lang, view, null, false, false,
 				false, false, false, false);
-		form.setAttribute(KeyWords.ACTION, url.toString());
+		form.setAttribute(HTML.ACTION, url.toString());
 		Element printButton  = form.getElementByClassName(SUBMIT_FORM);
 		printButton.setAttribute(HTML.VALUE, Action.PRINT);
 		

@@ -98,6 +98,16 @@ public aspect ViewSecurity extends Checks {
     	checkView(view);
     	checkPermissions(type, id, Action.UPDATE_ID_FORM, thisJoinPoint);
     }
+    
+    before(String type, String id, String lang, String view) : 
+		(execution(* View.printForm(..))) && args(type, id, lang, view) {
+	
+    	checkType(type);
+    	checkId(id);
+    	checkLang(lang);
+    	checkView(view);
+    	checkPermissions(type, id, Action.PRINT_FORM, thisJoinPoint);
+    }
 
     before(String type, String id, String field, String lang, String view) : 
 	(execution(* View.updatePasswordForm(..))) && args(type, id, field, lang, view) {
